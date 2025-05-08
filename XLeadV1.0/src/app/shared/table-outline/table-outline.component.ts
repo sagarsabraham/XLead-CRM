@@ -5,6 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './table-outline.component.html',
   styleUrls: ['./table-outline.component.css']
 })
-export class TableOutlineComponent {
-
-}
+export class TableOutlineComponent {}

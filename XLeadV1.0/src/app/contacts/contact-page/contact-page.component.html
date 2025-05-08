@@ -1,1 +1,11 @@
-<p>contact-page works!</p>
+<div class="page-layout">
+  <div class="content">
+    
+    <app-headersearch (search)="onSearch($event)"></app-headersearch>
+    <app-contacts-table
+      [data]="tableData"
+      [headers]="tableHeaders"
+      class="custom-table"
+    ></app-contacts-table>
+  </div>
+</div>

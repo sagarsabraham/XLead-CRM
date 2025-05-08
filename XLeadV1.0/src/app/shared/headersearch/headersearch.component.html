@@ -1,1 +1,17 @@
-<p>headersearch works!</p>
+<div class="search-bar-container">
+    <div class="search-wrapper">
+      <dx-text-box
+        [(value)]="searchText"
+        placeholder="Search..."
+        [showClearButton]="true"
+        (onValueChanged)="onSearchValueChanged($event)"
+        class="custom-search-field"
+      ></dx-text-box>
+      <span class="search-icon">🔍</span>
+    </div>
+    <app-export
+      [iconName]="posts[0].iconName"
+      [buttonText]="posts[0].buttonText"
+      (click)="onExport()"
+    ></app-export>
+  </div>
