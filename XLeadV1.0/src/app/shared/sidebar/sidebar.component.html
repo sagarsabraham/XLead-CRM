@@ -1,0 +1,20 @@
+<div class="sidebar" (click)="toggleSidebar()">
+    <div class="icons">
+      <app-icon *ngFor="let icon of icons" [iconPath]="icon"></app-icon>
+    </div>
+  
+    <div class="initials-badge">{{ initials }}</div>
+  
+    <div
+      class="sidebar-overlay"
+      *ngIf="isSidebarOpen"
+      (click)="toggleSidebar()"
+    ></div>
+  
+    <app-sidenav
+      *ngIf="isSidebarOpen"
+      [navItems]="navItems"
+      [profile]="profile"
+    ></app-sidenav>
+  </div>
+  

@@ -1,0 +1,56 @@
+mat-card {
+    margin: 5px;
+    margin-bottom: 15px;
+    position: relative;
+    background-color: white;
+    padding: 10px;
+    border: 0.5px solid #ccc;
+    
+}
+  
+.edit-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    padding: 5px; 
+    opacity: 0.8;
+    font-size: 15px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.dealname {
+    font-weight: 570;
+    font-size: 14px;
+    color: #333333;
+}
+
+.deal-details {
+    display: flex;
+    justify-content: space-between;
+    color: #666666;
+    font-size: 14px;
+}
+
+.deal-content {
+    color: #666666;
+    font-size: 14px;
+}
+
+.content > div {
+    margin-bottom: 8px;
+}
+
+/* Optional: remove margin from the last item */
+.content > div:last-child {
+    margin-bottom: 0;
+}
+  

@@ -1,0 +1,14 @@
+<div class="deal-header" [class.vertical]="collapsed">
+    <span *ngIf="!collapsed">
+      <div class="title">{{stageName}}</div>
+      <div class="summary">
+        <div class="amount"> {{amount}}</div>
+        <div class="count">{{dealCount}} Deals</div>
+      </div>
+    </span>
+    <span *ngIf="collapsed" class="vertical-text">
+      <span>{{ dealCount }} Deals</span>
+      <span>{{ amount }}</span>
+      <span>{{ stageName }}</span>
+    </span> 
+  </div>

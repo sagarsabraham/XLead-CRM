@@ -1,0 +1,29 @@
+<div class="sidenav-modal">
+    <div class="sidenav-panel">
+      <!-- Logo -->
+      <div class="logo">
+        <span class="logo-x">X</span><span class="logo-lead">Lead</span>
+      </div>
+  
+      <!-- Navigation -->
+      <div class="nav-items">
+        <a
+          *ngFor="let item of navItems"
+          [routerLink]="item.route"
+          class="nav-link"
+        >
+          <app-icon-text
+            [iconPath]="item.iconPath"
+            [text]="item.text"
+            [isActive]="item.isActive"
+          ></app-icon-text>
+        </a>
+      </div>
+  
+      <!-- Profile -->
+      <div class="profile-section">
+        <app-profile [name]="profile.name" [role]="profile.role"></app-profile>
+      </div>
+    </div>
+  </div>
+  

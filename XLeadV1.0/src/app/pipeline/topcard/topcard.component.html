@@ -1,0 +1,13 @@
+<mat-card class="card">
+    <div class="icon-container">
+      <mat-icon class="icon" [ngStyle]="{ 'background-color': isCurrency ? '#44C074' : '#896CC7' }">
+        {{ icon }}
+      </mat-icon>
+    </div>
+    <div class="details">
+      <h3 class="amount">
+        {{ isCurrency ? (amount | currency:'INR':'symbol':'1.2-2':'en-IN') : amount }}
+      </h3>
+      <p class="title">{{ title }}</p>
+    </div>
+  </mat-card>

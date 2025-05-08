@@ -1,0 +1,92 @@
+/* .total-container{
+    display: flex;
+    max-width: 75%;
+} */
+.total-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar-container {
+    flex: 0 0 76px;
+  }
+  
+  .content-container {
+    flex: 1;
+    margin-left: 40px;
+    max-width: calc(100% - 76px);
+    overflow-x: auto;
+  }
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.topbar h1 {
+    font-size: 24px;
+    margin: 0;
+    padding: 16px;
+    font-weight: bold;
+}
+
+app-export {
+    margin-right: 10px;
+    margin-top: 2px;
+    padding: 8px 16px;
+}
+
+.card-container {
+    display: flex; 
+    gap: 10px; 
+    overflow-x: auto; 
+    padding: 16px;
+    
+}
+.container {
+    display: flex;
+    justify-content: space-between;
+    max-width: 100%;
+    /* margin: 20px auto; */
+    padding: 0 16px;
+    gap: 20px;
+}
+.stage-card {
+    position: relative;
+    min-width: 249px;
+    min-height: 738px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.stage-card.collapsed {
+    flex: 0 0 50px !important;
+    max-width: 50px !important;
+    min-width: 50px !important;
+    width: 50px !important;
+    overflow: hidden;
+    padding: 0;
+    transition: width 0.3s ease;
+}
+
+.stage-card.collapsed * {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+  
+app-dealfooter {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+}

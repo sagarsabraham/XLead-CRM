@@ -1,0 +1,8 @@
+<div 
+  class="icon-text-container" 
+  [ngClass]="{ 'active': isActive }" 
+  (click)="navigate()"
+>
+  <app-icon [iconPath]="iconPath"></app-icon>
+  <span class="text">{{ text }}</span>
+</div>
