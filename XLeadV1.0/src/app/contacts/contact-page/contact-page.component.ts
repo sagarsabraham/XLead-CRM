@@ -66,9 +66,4 @@ export class ContactPageComponent {
     { name: 'Hannah Myers', company: 'Tech Corp', email: 'hannah@techcorp.com', phone: '901-234-5682', owner: 'Bob' },
     { name: 'Isaac Price', company: 'Innovate Inc', email: 'isaac@innovate.com', phone: '012-345-6793', owner: 'Charlie' }
   ];
-
-  onSearch(searchText: string) {
-    console.log('Search term from ContactPage:', searchText);
-    // Filtering will be implemented later
-  }
 }

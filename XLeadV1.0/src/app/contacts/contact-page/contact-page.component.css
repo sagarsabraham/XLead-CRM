@@ -1,32 +1,111 @@
-.page-layout {
-  display: flex;
+:host {
+  display: block;
   width: 100%;
-  height: 100%;
 }
 
-app-sidebar {
-  width: 120px;
-  height: 100%;
-}
-
-.content {
-  width: 1230px;
-  padding: 0 15px;
-  box-sizing: border-box;
+.table-container {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 1230px;
 }
 
-app-header {
-  width: 100%;
-  margin-bottom: 20px;
+.owner-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between avatar and name */
 }
 
-app-headersearch {
-  width: 100%;
-  margin-bottom: 20px;
+.owner-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.custom-table {
+.owner-alice {
+  background-color: #2196f3; /* Blue for Alice */
+}
+
+.owner-bob {
+  background-color: #4caf50; /* Green for Bob */
+}
+
+.owner-charlie {
+  background-color: #9c27b0; /* Purple for Charlie */
+}
+
+.owner-name {
+  font-size: 14px;
+  color: #333;
+}
+
+dx-data-grid {
   width: 100%;
+  max-width: 1230px;
+}
+
+/* Row styles */
+:host ::ng-deep .dx-datagrid-rowsview .dx-row {
+  font-size: 14px;
+  height: 48px; /* Consistent row height */
+}
+
+/* Header styles */
+:host ::ng-deep .dx-datagrid-headers .dx-header-row > td {
+  background-color: #f5f5f5;
+  font-weight: 500;
+  color: #333;
+  padding: 10px;
+  position: relative; /* For positioning icons */
+}
+
+/* Sort icons */
+:host ::ng-deep .dx-sort-up,
+:host ::ng-deep .dx-sort-down {
+  color: #666; /* Gray color for sort icons */
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+/* Header filter icon */
+:host ::ng-deep .dx-datagrid-header-filter {
+  color: #666; /* Gray color for filter icon */
+  font-size: 16px;
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+:host ::ng-deep .dx-datagrid-header-filter:hover {
+  color: #333; /* Darker gray on hover */
+}
+
+/* Pager styles */
+:host ::ng-deep .dx-datagrid-pager {
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Hover effect on rows */
+:host ::ng-deep .dx-datagrid-rowsview .dx-row:hover {
+  background-color: #f0f0f0;
+}
+
+/* Checkbox column alignment */
+:host ::ng-deep .dx-datagrid-rowsview .dx-selection .dx-checkbox {
+  margin: 0 auto;
+}
+
+/* Ensure consistent cell padding */
+:host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
+  padding: 10px;
 }

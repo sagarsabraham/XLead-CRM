@@ -1,21 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CheckboxComponent } from './checkbox/checkbox.component';
+import { DxDataGridModule, DxButtonModule } from 'devextreme-angular';
 import { ContactsTableComponent } from './contacts-table/contacts-table.component';
-import { HeadersearchComponent } from './headersearch/headersearch.component';
 import { TableOutlineComponent } from './table-outline/table-outline.component';
-
-
 
 @NgModule({
   declarations: [
-    CheckboxComponent,
     ContactsTableComponent,
-    HeadersearchComponent,
     TableOutlineComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    DxDataGridModule,
+    DxButtonModule
+  ],
+  exports: [
+    ContactsTableComponent,
+    TableOutlineComponent
   ]
 })
 export class SharedModule { }
