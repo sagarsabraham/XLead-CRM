@@ -45,12 +45,35 @@ app-dealfooter {
 }
 
 .container {
-    padding: 20px;
-    
-    
+    margin-left: 5px;
+    overflow-x: auto;
+    padding: 16px;
+    font-family: 'poppins';
 }
 .topcard-container {
+    padding-left: 16px;
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 60px;
 }
+
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-family: 'poppins';
+}
+
+.topbar h1 {
+    font-size: 24px;
+    margin: 0;
+    padding: 16px;
+    font-weight: bold;
+}
+
+/* app-export {
+    margin-right: 10px;
+    margin-top: 2px;
+    padding: 8px 16px;
+} */

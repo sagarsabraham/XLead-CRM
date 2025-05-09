@@ -10,7 +10,9 @@
   }
   .icon-container {
     margin-right: 1px;
+    padding-top: 20px;
   }
+
   .icon {
     display: flex;
     border-radius: 50%;
@@ -18,13 +20,13 @@
     color: white;
     align-items: center;
     justify-content: center;
-    min-width: 70px;
-    min-height: 70px;
+    min-width: 80px;
+    height: 80px;
     
   
   }
   i {
-    font-size: 26px;
+    font-size: 58px;
   }
   .amount {
     font-family: poppins;
@@ -44,8 +46,7 @@
     color: #333333;
   }
   .details {
-    
-    padding-left: 100px;
+    padding-left: 80px;
     margin-left: 20px;
     /* padding-top: 20px; */
   }

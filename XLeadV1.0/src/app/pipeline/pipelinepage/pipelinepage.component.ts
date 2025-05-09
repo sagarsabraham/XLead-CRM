@@ -9,7 +9,7 @@ import { TopcardComponent } from '../topcard/topcard.component';
 export class PipelinepageComponent {
   topcardData = [
     { amount: 120000, title: 'Total Return', isCurrency: true, icon: 'money' },
-    { amount: 14, title: 'Total Count of Deals', isCurrency: false, icon: 'mediumiconslayout' },
+    { amount: 14, title: 'Total Count of Deals', isCurrency: false, icon: 'sorted' },
   ]; 
 
   stages = [
