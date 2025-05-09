@@ -6,5 +6,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'XLeadV1.0';
+  stages = [
+    { stage: 'Qualification', amount: 3343874 },
+    { stage: 'Needs Analysis', amount: 456711 },
+    { stage: 'Proposal/Price Quote', amount: 241241 },
+    { stage: 'Negotiation/Review', amount: 680000 }
+  ];
 }

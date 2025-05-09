@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+.metric-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px 28px 12px 12px; 
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); 
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease-in-out; 
+}
+
+.metric-card:hover {
+  transform: translateY(-3px); 
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); 
+  border-color: #3b82f6; 
+  background-color: #f8fafc; 
+}
+
+.metric-card h3 {
+  font-size: 15px; 
+  font-weight: 700; 
+  color: #374151; 
+  margin: 0 0 6px 0;
+  letter-spacing: 0.3px;
+  
+}
+
+.metric-value {
+  font-size: 26px; 
+  font-weight: 700;
+  color: #1f2a44; 
+  margin: 6px 0;
+  letter-spacing: 0.6px;
+  transition: color 0.3s ease;
+}
+
+.metric-card:hover .metric-value {
+  color: #3b82f6; 
+}
+
+.metric-trend {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 20px; 
+  font-weight: 500;
+
+  
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.positive {
+  color: #10b981; 
+}
+
+.negative {
+  color: #ef4444; 
+}
+
+.positive-icon {
+  color: #10b981;
+}
+
+.negative-icon {
+  color: #ef4444;
+}
+
+.icons-for-trend{
+  font-size: 24px;
+}

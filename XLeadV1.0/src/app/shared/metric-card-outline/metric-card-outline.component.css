@@ -1,6 +1,6 @@
-.app-container {
+.metric-outline {
     display: flex;
-    flex-direction: column;
     gap: 16px;
     padding: 16px;
+    margin-left: 100px;
   }

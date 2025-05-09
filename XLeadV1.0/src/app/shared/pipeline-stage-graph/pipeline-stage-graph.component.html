@@ -1,0 +1,38 @@
+<div class="chart-container">
+    <dx-chart
+      [dataSource]="filteredStages"
+      title="Open Pipelines Amount by Stage"
+      [rotated]="true"
+      
+    >
+      <dxi-series
+        valueField="amount"
+        argumentField="stage"
+        type="bar"
+        color="#26A69A"
+      ></dxi-series>
+      <dxo-argument-axis
+        [tickInterval]="1"
+        [label]="{ visible: true }"
+      ></dxo-argument-axis>
+      <dxo-value-axis
+        title="Sum of Amount"
+        [visualRange]="valueAxisRange"
+        [tickInterval]="tickInterval"
+      >
+        <dxo-label
+          [customizeText]="customizeValueAxisText"
+        ></dxo-label>
+      </dxo-value-axis>
+      <dxo-tooltip
+        [enabled]="true"
+        [customizeTooltip]="customizeTooltip"
+      ></dxo-tooltip>
+      <dxo-legend
+        [visible]="false"
+      ></dxo-legend>
+      <dxo-size
+        [height]="300"
+      ></dxo-size>
+    </dx-chart>
+  </div>
