@@ -1,16 +1,20 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { RouterModule } from '@angular/router';
+import { PipelineModule } from './pipeline/pipeline.module';
 import { SharedModule } from './shared/shared.module';
-import { DxButtonModule } from 'devextreme-angular';
+
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    BrowserModule,
-    SharedModule,
-    DxButtonModule
+    BrowserModule,PipelineModule,
+    AppRoutingModule,RouterModule,SharedModule
   ],
-  bootstrap: [AppComponent]
+  providers: [],
+  bootstrap: [AppComponent],
+ 
 })
 export class AppModule { }
