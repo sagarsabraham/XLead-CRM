@@ -1,0 +1,44 @@
+/* top-card.component.css */
+.dx-card.top-card {
+  border-radius: 8px;
+  border: 1px ;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 16px;
+  background-color: white;
+  width: 278px;
+  height: 400px;
+
+}
+
+.top-card .top-card-header {
+  margin-bottom: 53px;
+}
+
+.top-card .top-card-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: #111827;
+  
+}
+
+.top-card .top-card-content .company-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  /* border-bottom: 1px solid #f3f4f6; */
+}
+
+.top-card .top-card-content .company-row:last-child {
+  border-bottom: none;
+}
+
+.top-card .top-card-content .company-row .company-name {
+  font-weight: 900;
+  color: #111827;
+}
+
+.top-card .top-card-content .company-row .company-value {
+  font-weight: 600;
+  font-size: 16px;
+}
