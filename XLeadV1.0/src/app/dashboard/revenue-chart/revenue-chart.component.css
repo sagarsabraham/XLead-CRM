@@ -18,14 +18,15 @@
   color: #333;
 }
 
-/* Deep styling for DevExtreme components */
-/* Customize the tooltip appearance */
+
 :root .dx-tooltip-wrapper .dx-overlay-content {
   background-color: white;
   border-radius: 4px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   padding: 8px 12px;
   font-size: 14px;
+  
+
 }
 
 
@@ -33,13 +34,13 @@
   fill: url(#barGradient);
 }
 
-/* Customize axis labels */
+
 :root .dx-chart text {
   font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
   font-size: 12px;
 }
 
-/* Customize axis titles */
+
 :root .dx-chart-title text {
   font-weight: 500;
   font-size: 13px;

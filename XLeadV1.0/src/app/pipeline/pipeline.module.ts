@@ -23,6 +23,6 @@ import { DxBoxModule, DxButtonModule } from 'devextreme-angular';
     CommonModule,
     PipelineRoutingModule,DxButtonModule,DxBoxModule
   ],
-  exports:[PipelinepageComponent,TopcardComponent]
+  exports:[PipelinepageComponent]
 })
 export class PipelineModule { }
