@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-dealfooter',
@@ -6,5 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./dealfooter.component.css']
 })
 export class DealfooterComponent {
+  @Output() collapse = new EventEmitter<void>();
 
+  onCollapse() {
+    this.collapse.emit();
+  }
 }

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DealcardComponent } from './dealcard.component';
+import { DxBoxModule} from 'devextreme-angular';
+import { CommonModule } from '@angular/common';
 
 describe('DealcardComponent', () => {
   let component: DealcardComponent;

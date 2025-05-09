@@ -1,0 +1,45 @@
+.card-container {
+    display: flex; 
+    gap: 10px; 
+    overflow-x: auto; 
+    padding: 16px;  
+}
+
+.stage-card {
+    position: relative;
+    min-width: 249px;
+    min-height: 738px;
+    /* background: white;
+    border: 1px solid #ccc; */
+    border-radius: 8px;
+    /* box-shadow: 0 2px 6px rgba(0,0,0,0.1); */
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.stage-card.collapsed {
+    flex: 0 0 50px !important;
+    max-width: 50px !important;
+    min-width: 50px !important;
+    width: 50px !important;
+    overflow: hidden;
+    padding: 0;
+    transition: width 0.3s ease;
+}
+
+.stage-card.collapsed * {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+  
+app-dealfooter {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+}
