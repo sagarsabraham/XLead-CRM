@@ -1,8 +1,8 @@
-<div 
-  class="icon-text-container" 
-  [ngClass]="{ 'active': isActive }" 
-  (click)="navigate()"
->
-  <app-icon [iconPath]="iconPath"></app-icon>
-  <span class="text">{{ text }}</span>
-</div>
+<dx-list>
+  <dxo-item [ngClass]="{ 'active': isActive }">
+    <div class="item-content">
+      <app-icon [iconPath]="iconPath"></app-icon>
+      <span>{{ text }}</span>
+    </div>
+  </dxo-item>
+</dx-list>

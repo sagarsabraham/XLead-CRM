@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { PipelineRoutingModule } from './pipeline-routing.module';
 import { DealbodyComponent } from './dealbody/dealbody.component';
 import { DealcardComponent } from './dealcard/dealcard.component';
@@ -11,17 +10,17 @@ import { TopcardComponent } from './topcard/topcard.component';
 
 
 @NgModule({
-  declarations: [
+  declarations: [],
+
+  imports: [
+    CommonModule,
+    PipelineRoutingModule,
     DealbodyComponent,
     DealcardComponent,
     DealheaderComponent,
     DealfooterComponent,
     PipelinepageComponent,
     TopcardComponent
-  ],
-  imports: [
-    CommonModule,
-    PipelineRoutingModule
   ]
 })
 export class PipelineModule { }

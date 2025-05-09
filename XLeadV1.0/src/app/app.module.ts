@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { IconComponent } from './shared/icon/icon.component';
-import { IconTextComponent } from './shared/icon-text/icon-text.component';
-
+import { DxDataGridModule, DxTextBoxModule, DxButtonModule } from 'devextreme-angular';
+import { SharedModule } from './shared/shared.module';
+import { ContactsModule } from './contacts/contacts.module';
+import { PipelineModule } from './pipeline/pipeline.module';
 // const routes: Routes = [
 //   { path: 'contacts', component: ContactsComponent },
 //   { path: 'companies', component: CompaniesComponent },
@@ -14,17 +14,19 @@ import { IconTextComponent } from './shared/icon-text/icon-text.component';
 // ];
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    IconComponent
-  ],
+  declarations: [AppComponent],
+
   imports: [
     BrowserModule,
     AppRoutingModule,
-    IconComponent,
-    IconTextComponent
+    DxDataGridModule,
+    DxTextBoxModule,
+    DxButtonModule,
+    SharedModule,
+    ContactsModule,
+    PipelineModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

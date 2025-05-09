@@ -1,20 +1,26 @@
-<div class="sidebar" (click)="toggleSidebar()">
+<dx-drawer [opened]="isSidebarOpen" [minSize]="0" [maxSize]="240" position="left">
+  <div class="sidebar">
+    <!-- Logo -->
+    <div class="logo">
+      <span class="logo-x">X</span><span class="logo-lead">Lead</span>
+    </div>
+
+    <!-- Icons -->
     <div class="icons">
       <app-icon *ngFor="let icon of icons" [iconPath]="icon"></app-icon>
     </div>
-  
-    <div class="initials-badge">{{ initials }}</div>
-  
-    <div
-      class="sidebar-overlay"
-      *ngIf="isSidebarOpen"
-      (click)="toggleSidebar()"
-    ></div>
-  
-    <app-sidenav
-      *ngIf="isSidebarOpen"
-      [navItems]="navItems"
-      [profile]="profile"
-    ></app-sidenav>
+
+    <!-- Navigation Icons -->
+    <div class="nav-items"
+     *ngFor="let icon of icons">
+        <app-icon-text
+          [iconPath]="icon"
+        ></app-icon-text>
+    </div>
+
+    <!-- Profile -->
+    <div class="profile-section">
+      <app-profile [name]="profile.name" [role]="profile.role"></app-profile>
+    </div>
   </div>
-  
+</dx-drawer>

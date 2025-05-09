@@ -1,0 +1,23 @@
+.export-button {
+    height: 36px;
+  }
+  
+  :host ::ng-deep .export-button .dx-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    height: 36px;
+    line-height: 36px;
+    transition: background-color 0.3s ease;
+  }
+  
+  :host ::ng-deep .export-button .dx-button:hover {
+    background-color: #218838;
+  }
+  
+  :host ::ng-deep .export-button .dx-icon {
+    margin-right: 4px;
+    font-size: 18px;
+  }

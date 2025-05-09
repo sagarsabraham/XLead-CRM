@@ -5,16 +5,23 @@ import { DealheaderComponent } from '../dealheader/dealheader.component';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 import { TopcardComponent } from '../topcard/topcard.component';
-
-
 import { DealfooterComponent } from '../dealfooter/dealfooter.component';
 import { ExportComponent } from '../../export/export.component';
 
 @Component({
   selector: 'app-pipelinepage',
-  imports: [DealbodyComponent, DealcardComponent, DealheaderComponent, CommonModule,TopcardComponent, DealfooterComponent, SharedModule, ExportComponent],
+  imports: [
+    DealbodyComponent,
+    DealcardComponent,
+    DealheaderComponent,
+    CommonModule,
+    TopcardComponent,
+    DealfooterComponent,
+    SharedModule,
+    ExportComponent
+  ],
   templateUrl: './pipelinepage.component.html',
-  styleUrl: './pipelinepage.component.css'
+  styleUrls: ['./pipelinepage.component.css']
 })
 export class PipelinepageComponent {
   topcardData = [
@@ -256,7 +263,7 @@ export class PipelinepageComponent {
   ];
 
   name = 'Subhash K Joseph';
-  role = 'Admin';
+  role = 'Salesperson';
 
   get connectedDropLists(): string[] {
     return this.stages.map(stage => stage.name);

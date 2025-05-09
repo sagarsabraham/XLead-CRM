@@ -1,0 +1,12 @@
+<div class="page-layout">
+  <app-sidebar [icons] = "icons" ></app-sidebar>
+  <div class="content">
+    
+    <app-headersearch></app-headersearch>
+    <app-contacts-table
+      [data]="tableData"
+      [headers]="tableHeaders"
+      class="custom-table"
+    ></app-contacts-table>
+  </div>
+</div>
