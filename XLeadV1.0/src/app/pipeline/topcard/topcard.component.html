@@ -1,0 +1,20 @@
+<dx-box
+  class="card"
+  [direction]="'row'"
+  [width]="610"
+  [height]="153.51">
+  <dxi-item [ratio]="0">
+    <div class="icon-container">
+      <div class="icon" [ngStyle]="{ 'background-color': isCurrency ? '#44C074' : '#896CC7' }">
+        <i class="dx-icon-{{icon}}"></i>
+      </div>
+    </div>
+  </dxi-item>
+  <dxi-item [ratio]="0.5">
+    <div class="details">
+      <h3 class="amount">
+        {{ isCurrency ? (amount | currency:'INR':'symbol':'1.2-2':'en-IN') : amount }}
+      </h3>
+      <p class="title">{{ title }}</p>
+    </div>
+  </dxi-item>
