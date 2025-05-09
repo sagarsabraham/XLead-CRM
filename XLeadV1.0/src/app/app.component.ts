@@ -7,9 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   stages = [
-    { stage: 'Qualification', amount: 3343874 },
-    { stage: 'Needs Analysis', amount: 456711 },
-    { stage: 'Proposal/Price Quote', amount: 241241 },
-    { stage: 'Negotiation/Review', amount: 680000 }
+    { stage: 'Qualification', amount: 33438 },
+    { stage: 'Needs Analysis', amount: 45671 },
+    { stage: 'Proposal/Price Quote', amount: 24124 },
+    { stage: 'Negotiation/Review', amount: 68000 }
   ];
 }
