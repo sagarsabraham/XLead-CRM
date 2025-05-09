@@ -1,10 +1,4 @@
 <div class="footer">
-    <app-export
-    [iconName]="'add'"
-    [buttonText]="'Deal'"
-    (click)="onAddDeal()"
-  ></app-export>
-    <button mat-icon-button color="basic" (click)="onCollapse()">
-      <mat-icon>unfold_less</mat-icon>
-    </button>
+    <dx-button text="Deal" icon="add" class="add-button"></dx-button>
+    <dx-button icon="collapse" (onClick)="onCollapse()"></dx-button>
 </div>

@@ -9,7 +9,10 @@ import { CheckboxComponent } from './checkbox/checkbox.component';
 import { ContactsTableComponent } from './contacts-table/contacts-table.component';
 import { HeadersearchComponent } from './headersearch/headersearch.component';
 import { TableOutlineComponent } from './table-outline/table-outline.component';
-
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { DxButtonModule } from 'devextreme-angular';
+import { RouterModule } from '@angular/router';
+import { ButtonComponent } from './button/button.component';
 
 @NgModule({
   declarations: [
@@ -21,11 +24,15 @@ import { TableOutlineComponent } from './table-outline/table-outline.component';
     CheckboxComponent,
     ContactsTableComponent,
     HeadersearchComponent,
-    TableOutlineComponent
+    TableOutlineComponent,
+    PageNotFoundComponent,
+    ButtonComponent
   ],
   
   imports: [
-    CommonModule
+    CommonModule,
+    DxButtonModule,
+    RouterModule
    
   ],
 
@@ -38,7 +45,8 @@ import { TableOutlineComponent } from './table-outline/table-outline.component';
     CheckboxComponent,
     ContactsTableComponent,
     HeadersearchComponent,
-    TableOutlineComponent
+    TableOutlineComponent,
+    PageNotFoundComponent
   ],
 // schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

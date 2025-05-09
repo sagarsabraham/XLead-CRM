@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
@@ -11,5 +10,5 @@ export class DealheaderComponent {
   @Input() stageName: string = '';
   @Input() amount: string = '';
   @Input() dealCount: number = 0;
-  @Input() collapsed = false;
+  @Input() collapsed: boolean = false;
 }

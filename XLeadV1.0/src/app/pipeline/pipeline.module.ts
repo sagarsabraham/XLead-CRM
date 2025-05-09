@@ -6,7 +6,9 @@ import { DealcardComponent } from './dealcard/dealcard.component';
 import { DealheaderComponent } from './dealheader/dealheader.component';
 import { DealfooterComponent } from './dealfooter/dealfooter.component';
 import { PipelinepageComponent } from './pipelinepage/pipelinepage.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TopcardComponent } from './topcard/topcard.component';
+import { DxBoxModule, DxButtonModule } from 'devextreme-angular';
 
 
 @NgModule({
@@ -21,6 +23,24 @@ import { TopcardComponent } from './topcard/topcard.component';
     DealfooterComponent,
     PipelinepageComponent,
     TopcardComponent
+  ],
+  imports: [
+    CommonModule,
+    PipelineRoutingModule,
+    DxButtonModule,
+    DxBoxModule,
+    DragDropModule,
+   
+  ],
+  exports: [
+    DealbodyComponent,
+    DealcardComponent,
+    DealheaderComponent,
+    DealfooterComponent,
+    PipelinepageComponent,
+    TopcardComponent
+   
+    
   ]
 })
 export class PipelineModule { }

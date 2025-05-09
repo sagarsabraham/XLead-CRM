@@ -1,4 +1,4 @@
-<mat-card (mouseenter)="hover = true" (mouseleave)="hover = false">
+<div class="deal-card dx-card" (mouseenter)="hover = true" (mouseleave)="hover = false">
     <div class="content">
       <div class="dealname">{{deal.title}}</div>
       <div class="deal-details">
@@ -10,5 +10,5 @@
       <div class="deal-content">{{deal.probability}}</div>
       <div class="deal-content">{{deal.region}}</div>
     </div>
-    <mat-icon *ngIf="hover" class="edit-icon">edit</mat-icon>
-</mat-card>
+    <span class="dx-icon-edit edit-icon" *ngIf="hover"></span>
+</div>

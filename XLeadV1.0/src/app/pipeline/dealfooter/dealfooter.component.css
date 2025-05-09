@@ -9,17 +9,11 @@
     border-top: 1px solid #ccc;
 }
 
-/* .add-button {
+.add-button {
     background-color: green !important;
     color: white !important;
     border-radius: 8px;
     margin-right: 10px;
     padding: 8px 16px;
-    margin-top: 5px;
-} */
-
-app-export {
-    margin-right: 10px;
     margin-top: 2px;
-    padding: 8px 16px;
-}
+} 
