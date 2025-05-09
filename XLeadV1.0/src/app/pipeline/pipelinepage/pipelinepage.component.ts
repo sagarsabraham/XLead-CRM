@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TopcardComponent } from '../topcard/topcard.component';
+
 
 @Component({
   selector: 'app-pipelinepage',

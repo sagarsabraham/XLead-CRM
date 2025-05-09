@@ -31,14 +31,12 @@ import { SharedModule } from '../shared/shared.module';
     SharedModule
   ],
   exports: [
-    DealbodyComponent,
-    DealcardComponent,
-    DealheaderComponent,
-    DealfooterComponent,
+    
     PipelinepageComponent,
-    TopcardComponent
+  
    
     
   ]
+
 })
 export class PipelineModule { }

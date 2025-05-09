@@ -7,7 +7,14 @@ const routes: Routes = [
     import('./pipeline/pipeline.module').then(m => m.PipelineModule)
   },
 
+  
+  // {path: '',component:PipelinepageComponent},
+  // {path:'pipeline',component:PipelinepageComponent}
+  { path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule) },
   {path: '**', component: PageNotFoundComponent},
+  // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  // { path: '', redirectTo: 'pipeline', pathMatch: 'full' },
+
 ];
 
 @NgModule({

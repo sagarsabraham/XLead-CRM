@@ -8,5 +8,5 @@ import { RouterModule, RouterOutlet } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'XLeadV1.0';
+  
 }

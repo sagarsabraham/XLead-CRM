@@ -1,0 +1,40 @@
+<!-- 
+
+  <div class="dx-card p-3 shadow rounded">
+    <h3 class="mb-3">Top 4 Companies - Pipelines Won</h3>
+  
+    <ng-container *ngFor="let company of companyData">
+      
+        
+        
+      
+        <dxi-item [ratio]="0">
+       
+        </dxi-item>
+  
+     
+        <dxi-item [ratio]="0.5">
+          <div class="details d-flex justify-content-between align-items-center">
+            <h3 class="amount mb-0 text-success" style="font-size: 16px; font-weight: 600;">
+                ${{ company.revenue | number:'1.0-0' }}
+            </h3>
+            <p class="title mb-0" style="font-weight: 500;">{{ company.Account}}</p>
+          </div>
+        </dxi-item>
+     
+    </ng-container>
+  </div> -->
+  
+  
+<div class="dx-card top-card ">
+  <div class="top-card-header">
+    <h4>Top 4 Companies - Pipelines Won</h4>
+  </div>
+  <div class="top-card-content">
+    <div *ngFor="let company of companyData" class="company-row">
+      <span class="company-name">{{ company.Account}}</span>
+      <span class="company-value" [style.color]="'#22c55e'">{{ formatCurrency(company.revenue) }}</span>
+    </div>
+  </div>
+</div>
+
