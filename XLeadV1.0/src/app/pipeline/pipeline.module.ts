@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { PipelineRoutingModule } from './pipeline-routing.module';
 import { DealbodyComponent } from './dealbody/dealbody.component';
 import { DealcardComponent } from './dealcard/dealcard.component';
 import { DealheaderComponent } from './dealheader/dealheader.component';
 import { DealfooterComponent } from './dealfooter/dealfooter.component';
 import { PipelinepageComponent } from './pipelinepage/pipelinepage.component';
-import { DxBoxModule, DxButtonModule } from 'devextreme-angular';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { TopcardComponent } from './topcard/topcard.component';
+import { DxBoxModule, DxButtonModule } from 'devextreme-angular';
 
 
 @NgModule({
@@ -17,7 +17,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     DealcardComponent,
     DealheaderComponent,
     DealfooterComponent,
-    PipelinepageComponent
+    PipelinepageComponent,
+    TopcardComponent
   ],
   imports: [
     CommonModule,
@@ -33,6 +34,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     DealheaderComponent,
     DealfooterComponent,
     PipelinepageComponent,
+    TopcardComponent
    
     
   ]
