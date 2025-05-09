@@ -1,4 +1,14 @@
+
 <div class="container">
+    <div class="topbar">
+        <h1>Pipelines</h1>
+        <app-button
+            *ngFor="let button of dealButton"
+            [label]="button.label"
+            [icon]="button.icon"
+            (onClick)="onAddDeal()"
+        ></app-button>
+    </div>
     <div class="topcard-container">
       <app-topcard 
         *ngFor="let card of topcardData"
@@ -8,4 +18,27 @@
         [icon]="card.icon">
       </app-topcard>
     </div>
-  </div>
+    <div class="card-container" cdkDropListGroup>
+      <div
+          *ngFor="let stage of stages; let i = index;"
+          class="stage-card dx-card" 
+          [class.collapsed]="stage.collapsed" 
+          (mouseenter)="onMouseEnter(i)" 
+          (mouseleave)="onMouseLeave(i)"
+          (click)="toggleCollapse(i)"
+      >
+          <div>
+              <app-dealheader [stageName]="stage.name" [amount]="stage.amount" [dealCount]="stage.deals.length" [collapsed]="stage.collapsed"></app-dealheader>
+          </div>
+
+          <div *ngIf="!stage.collapsed">
+              <app-dealbody [deals]="stage.deals" [connectedTo]="connectedDropLists" [stageName]="stage.name" (dealDropped)="onDealDropped($event)"></app-dealbody>
+          </div>
+
+          <div *ngIf="stage.hover && !stage.collapsed">
+              <app-dealfooter [buttons]="dealButton"></app-dealfooter>
+          </div>
+      </div>
+    </div>
+</div>
+

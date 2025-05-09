@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-dealcard',
@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./dealcard.component.css']
 })
 export class DealcardComponent {
-
+  @Input() deal: any;
+  hover = false;
 }

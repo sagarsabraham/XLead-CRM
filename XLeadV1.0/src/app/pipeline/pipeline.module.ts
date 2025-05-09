@@ -6,8 +6,11 @@ import { DealcardComponent } from './dealcard/dealcard.component';
 import { DealheaderComponent } from './dealheader/dealheader.component';
 import { DealfooterComponent } from './dealfooter/dealfooter.component';
 import { PipelinepageComponent } from './pipelinepage/pipelinepage.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TopcardComponent } from './topcard/topcard.component';
 import { DxBoxModule, DxButtonModule } from 'devextreme-angular';
+import { ButtonComponent } from '../shared/button/button.component';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -21,8 +24,19 @@ import { DxBoxModule, DxButtonModule } from 'devextreme-angular';
   ],
   imports: [
     CommonModule,
-    PipelineRoutingModule,DxButtonModule,DxBoxModule
+    PipelineRoutingModule,
+    DxButtonModule,
+    DxBoxModule,
+    DragDropModule,
+    SharedModule
   ],
-  exports:[PipelinepageComponent]
+  exports: [
+    
+    PipelinepageComponent,
+  
+   
+    
+  ]
+
 })
 export class PipelineModule { }
