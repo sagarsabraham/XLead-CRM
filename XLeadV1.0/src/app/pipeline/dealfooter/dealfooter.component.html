@@ -1,4 +1,9 @@
 <div class="footer">
-    <dx-button text="Deal" icon="add" class="add-button"></dx-button>
+     <app-button
+        *ngFor="let button of buttons"
+        [label]="button.label"
+        [icon]="button.icon"
+        (onClick)="onButtonClick(button.label)">
+    </app-button>
     <dx-button icon="collapse" (onClick)="onCollapse()"></dx-button>
 </div>

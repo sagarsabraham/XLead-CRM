@@ -9,6 +9,8 @@ import { PipelinepageComponent } from './pipelinepage/pipelinepage.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TopcardComponent } from './topcard/topcard.component';
 import { DxBoxModule, DxButtonModule } from 'devextreme-angular';
+import { ButtonComponent } from '../shared/button/button.component';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -26,7 +28,7 @@ import { DxBoxModule, DxButtonModule } from 'devextreme-angular';
     DxButtonModule,
     DxBoxModule,
     DragDropModule,
-   
+    SharedModule
   ],
   exports: [
     DealbodyComponent,

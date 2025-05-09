@@ -8,12 +8,3 @@
     transition: opacity 0.3s ease;
     border-top: 1px solid #ccc;
 }
-
-.add-button {
-    background-color: green !important;
-    color: white !important;
-    border-radius: 8px;
-    margin-right: 10px;
-    padding: 8px 16px;
-    margin-top: 2px;
-} 

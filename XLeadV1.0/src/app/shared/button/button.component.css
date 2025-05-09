@@ -1,0 +1,17 @@
+.custom-button {
+  font-family: 'Poppins';
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #44C074;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.custom-button:hover {
+  background-color: #218838;
+}
+.custom-button .dx-icon {
+  color: #ffffff;
+}
+

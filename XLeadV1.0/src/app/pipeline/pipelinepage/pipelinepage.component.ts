@@ -12,6 +12,10 @@ export class PipelinepageComponent {
     { amount: 14, title: 'Total Count of Deals', isCurrency: false, icon: 'sorted' },
   ]; 
 
+  dealButton = [
+    { label: 'Deal', icon: 'add'},
+  ];
+
   stages = [
     { 
       name: 'Qualification', 
@@ -232,5 +236,9 @@ export class PipelinepageComponent {
       const [movedItem] = previousDeals.splice(previousIndex, 1);
       currentDeals.splice(currentIndex, 0, movedItem);
     }
+  }
+
+  onAddDeal() {
+    console.log('Add Deal clicked');
   }
 }

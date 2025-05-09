@@ -20,7 +20,8 @@ import { ButtonComponent } from './button/button.component';
   ],
 
   exports: [
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    ButtonComponent
   ]
 })
 export class SharedModule { }
