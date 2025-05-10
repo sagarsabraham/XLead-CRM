@@ -1,0 +1,396 @@
+/* Component Host Styles */
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+
+/* Table Container Styles */
+.table-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 1230px;
+  position: relative;
+  width: 100%;
+}
+
+/* Owner Cell and Avatar Styles */
+.owner-cell {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.owner-avatar {
+  align-items: center;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  height: 32px;
+  justify-content: center;
+  width: 32px;
+}
+
+.owner-name {
+  color: #333;
+  font-size: 14px;
+}
+
+/* DevExtreme Grid Overrides */
+dx-data-grid {
+  max-width: 1230px;
+  width: 100%;
+}
+
+:host ::ng-deep .dx-datagrid-rowsview .dx-row {
+  font-size: 14px;
+  height: 48px;
+}
+
+:host ::ng-deep .dx-datagrid-rowsview .dx-row:hover {
+  background-color: #f0f0f0;
+}
+
+:host ::ng-deep .dx-datagrid-rowsview .dx-selection .dx-checkbox {
+  margin: 0 auto;
+}
+
+:host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
+  padding: 10px;
+}
+
+:host ::ng-deep .dx-datagrid-headers .dx-header-row > td {
+  background-color: #f5f5f5;
+  color: #333;
+  font-weight: 500;
+  padding: 10px;
+}
+
+:host ::ng-deep .dx-header-filter {
+  color: #666 !important;
+  font-size: 16px !important;
+}
+
+:host ::ng-deep .dx-header-filter:hover {
+  color: #333 !important;
+}
+
+:host ::ng-deep .dx-datagrid-filter-row .dx-editor-cell {
+  padding: 5px;
+}
+
+:host ::ng-deep .dx-datagrid-filter-row input {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  color: #333;
+  font-size: 14px;
+  padding: 4px;
+}
+
+:host ::ng-deep .dx-datagrid-filter-row input:focus {
+  border-color: #1976d2;
+  outline: none;
+}
+
+:host ::ng-deep .dx-datagrid-filter-panel {
+  background-color: #f9f9f9;
+  border-top: 1px solid #e0e0e0;
+  padding: 10px;
+}
+
+:host ::ng-deep .dx-datagrid-filter-panel .dx-filter-panel-text {
+  color: #333;
+  font-size: 14px;
+}
+
+:host ::ng-deep .dx-datagrid-filter-panel .dx-filter-panel-clear-filter {
+  color: #1976d2;
+  cursor: pointer;
+}
+
+:host ::ng-deep .dx-datagrid-filter-panel .dx-filter-panel-clear-filter:hover {
+  color: #0d47a1;
+}
+
+:host ::ng-deep .dx-datagrid-pager {
+  background-color: #f9f9f9;
+  border-top: 1px solid #e0e0e0;
+  padding: 10px;
+}
+
+:host ::ng-deep .dx-toolbar {
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 8px 12px;
+}
+
+:host ::ng-deep .dx-toolbar-items-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+:host ::ng-deep .dx-toolbar-after {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+:host ::ng-deep .dx-button {
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  display: flex;
+  height: 32px;
+  justify-content: center;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+:host ::ng-deep .dx-button:hover {
+  background-color: #f0f0f0;
+  border-color: #d0d0d0;
+}
+
+:host ::ng-deep .dx-button .dx-icon {
+  color: #666;
+  font-size: 16px;
+}
+
+:host ::ng-deep .dx-button:hover .dx-icon {
+  color: #333;
+}
+
+:host ::ng-deep .dx-button .dx-button-text {
+  font-size: 14px;
+  margin-left: 4px;
+}
+
+:host ::ng-deep .dx-button:hover .dx-button-text {
+  color: #333;
+}
+
+:host ::ng-deep .dx-button[aria-label='Show Column Chooser'] {
+  min-width: 32px;
+  padding: 0 8px;
+}
+
+:host ::ng-deep .dx-button[icon='export'],
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data'] {
+  background-color: #4caf50 !important;
+  border-color: #4caf50 !important;
+  padding: 0 12px;
+}
+
+:host ::ng-deep .dx-button[icon='export'] .dx-icon,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data'] .dx-icon {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .dx-button[icon='export'] .dx-button-text,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data'] .dx-button-text {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .dx-button[icon='export']:hover,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data']:hover {
+  background-color: #45a049 !important;
+  border-color: #45a049 !important;
+}
+
+:host ::ng-deep .dx-button[icon='export']:hover .dx-icon,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data']:hover .dx-icon {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .dx-button[icon='export']:hover .dx-button-text,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data']:hover .dx-button-text {
+  color: #ffffff !important;
+}
+
+/* Header Cell and Sort Icon Styles */
+.header-cell {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.header-text {
+  color: #333;
+  font-weight: 500;
+}
+
+.sort-icon {
+  color: #666;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.sort-icon:hover {
+  color: #333;
+}
+
+.sort-icon.active {
+  color: #1976d2;
+}
+
+/* Dropdown Styles */
+.custom-dropdown {
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  max-height: 300px;
+  min-width: 150px;
+  overflow-y: auto;
+  position: absolute;
+  z-index: 1000;
+}
+
+.column-chooser-dropdown {
+  right: 100px;
+  top: 50px;
+  width: 200px;
+}
+
+.export-options-dropdown {
+  right: 10px;
+  top: 50px;
+  width: 150px;
+}
+
+.dropdown-header {
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 12px;
+  position: relative;
+}
+
+.dropdown-item {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-size: 14px;
+  gap: 8px;
+  padding: 8px 12px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+  color: #1976d2;
+}
+
+.column-chooser-dropdown .dropdown-item label {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.column-chooser-dropdown .dropdown-item input[type='checkbox'] {
+  margin: 0;
+}
+
+/* Export Dropdown Button Styles */
+.export-options-dropdown .export-button {
+  align-items: center;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 8px;
+  padding: 0;
+  transition: color 0.2s ease;
+  width: 100%;
+}
+
+.export-options-dropdown .export-button:hover {
+  background: none;
+  color: #1976d2;
+}
+
+.export-options-dropdown .export-button .dx-icon {
+  color: #666;
+  font-size: 16px;
+  transition: color 0.2s ease;
+}
+
+.export-options-dropdown .export-button:hover .dx-icon {
+  color: #1976d2;
+}
+
+.export-options-dropdown .export-button.excel .dx-icon {
+  color: #4caf50;
+}
+
+.export-options-dropdown .export-button.excel:hover .dx-icon {
+  color: #45a049;
+}
+
+.export-options-dropdown .export-button.csv .dx-icon {
+  color: #2196f3;
+}
+
+.export-options-dropdown .export-button.csv:hover .dx-icon {
+  color: #1e88e5;
+}
+
+/* Export Message Styles */
+.export-message {
+  animation: fadeInOut 3s ease-in-out;
+  background-color: #4caf50;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  color: #ffffff;
+  font-size: 14px;
+  left: 50%;
+  padding: 8px 16px;
+  position: absolute;
+  top: 10px;
+  transform: translateX(-50%);
+  z-index: 1001;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+/* Close Button Styles */
+.close-button {
+  color: #666;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.close-button:hover {
+  color: #d32f2f;
+}

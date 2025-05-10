@@ -6,14 +6,17 @@ const routes: Routes = [
   {path: '', loadChildren: () =>
     import('./pipeline/pipeline.module').then(m => m.PipelineModule)
   },
+  { path: 'dashboard', loadChildren: () =>
+     import('./dashboard/dashboard.module').then(m => m.DashboardModule) 
+  },
 
-  
-  // {path: '',component:PipelinepageComponent},
-  // {path:'pipeline',component:PipelinepageComponent}
-  { path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule) },
+  { path: 'contact', loadChildren: () => 
+    import('./contacts/contacts.module').then(m => m.ContactsModule) 
+  },
+   
+
   {path: '**', component: PageNotFoundComponent},
-  // { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  // { path: '', redirectTo: 'pipeline', pathMatch: 'full' },
+  
 
 ];
 
