@@ -1,8 +1,13 @@
 <div class='table-container'>
+  <div class='header-row'>
+    <div class='contacts-header'>Contacts</div>
+    <div class='total-contacts'>Total Contacts: {{ totalContacts }}</div>
+  </div>
   <div class='export-message' *ngIf='showExportMessage'>{{ exportMessage }}</div>
 
   <app-table-outline>
     <dx-data-grid
+      #dataGrid
       [dataSource]='data'
       [columns]='headers'
       [allowColumnResizing]='true'
@@ -12,6 +17,7 @@
       [hoverStateEnabled]='true'
       [class]='classNames'
       (onSelectionChanged)='handleSelectionChanged($event)'
+      (onContentReady)='updateTotalContacts()'
     >
       <dxo-selection
         mode='multiple'
@@ -25,9 +31,11 @@
         [showInfo]='true'
         [showNavigationButtons]='true'
       ></dxo-pager>
-      <dxo-header-filter [visible]='true'></dxo-header-filter>
-      <dxo-filter-row [visible]='true'></dxo-filter-row>
-      <dxo-filter-panel [visible]='true'></dxo-filter-panel>
+      <dxo-sorting mode='multiple'></dxo-sorting>
+      <dxo-header-filter [visible]='showHeaderFilter'></dxo-header-filter>
+      <dxo-filter-row [visible]='showFilterRow'></dxo-filter-row>
+      <dxo-filter-panel [visible]='showFilterPanel'></dxo-filter-panel>
+      <dxo-search-panel [visible]='showSearchPanel'></dxo-search-panel>
       <dxo-column-chooser [enabled]='false'></dxo-column-chooser>
       <dxo-export
         [enabled]='true'
@@ -57,6 +65,7 @@
         <div class='header-cell'>
           <span class='header-text'>{{ header.column.caption }}</span>
           <span
+            *ngIf="header.column.allowSorting !== false"
             class='sort-icon'
             [ngClass]='getSortIconClass(header.column)'
             (click)='toggleSort(header.column)'

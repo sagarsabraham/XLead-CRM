@@ -14,6 +14,28 @@
   width: 100%;
 }
 
+/* Header Row Styles */
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 60px; /* Gap between header row and table below */
+}
+
+/* Contacts Header Styles */
+.contacts-header {
+  font-size: 25px;
+  font-weight: 800;
+  color: #333;
+}
+
+/* Total Contacts Styles */
+.total-contacts {
+  font-size: 25px;
+  font-weight: 800;
+  color: #333;
+}
+
 /* Owner Cell and Avatar Styles */
 .owner-cell {
   align-items: center;
@@ -118,6 +140,23 @@ dx-data-grid {
   background-color: #f9f9f9;
   border-top: 1px solid #e0e0e0;
   padding: 10px;
+}
+
+:host ::ng-deep .dx-datagrid-search-panel {
+  margin: 8px;
+  width: 300px !important;
+}
+
+:host ::ng-deep .dx-datagrid-search-panel input {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 6px;
+  font-size: 14px;
+}
+
+:host ::ng-deep .dx-datagrid-search-panel input:focus {
+  border-color: #1976d2;
+  outline: none;
 }
 
 :host ::ng-deep .dx-toolbar {

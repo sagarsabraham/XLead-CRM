@@ -8,6 +8,7 @@ interface GridColumn {
   caption: string;
   width?: number;
   allowSorting?: boolean;
+  allowFiltering?: boolean;
   alignment?: 'left' | 'right' | 'center';
   cellTemplate?: string;
   headerCellTemplate?: string;
@@ -42,10 +43,15 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   pageSize: number = 10;
   allowedPageSizes: number[] = [5, 10, 20];
   selectedRowKeys: string[] = [];
+  totalContacts: number = 0;
   showExportModal: boolean = false;
   showExportMessage: boolean = false;
   exportMessage: string = '';
   showCustomColumnChooser: boolean = false;
+  showFilterRow: boolean = true;
+  showHeaderFilter: boolean = true;
+  showFilterPanel: boolean = true;
+  showSearchPanel: boolean = true;
   columnVisibility: { [key: string]: boolean } = {};
   private clickedInsideDropdown: boolean = false;
 
@@ -65,6 +71,8 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
       ...header,
       headerCellTemplate: 'headerCellTemplate',
       visible: true,
+      allowSorting: header.allowSorting !== false,
+      allowFiltering: header.allowFiltering !== false,
     }));
   }
 
@@ -80,9 +88,20 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
         this.columnVisibility[header.dataField] = header.visible !== false;
       });
     }
+    this.updateTotalContacts();
   }
 
   ngOnDestroy(): void {}
+
+  /**
+   * Updates the total contacts count based on the visible rows after filtering.
+   */
+  updateTotalContacts(): void {
+    this.dataGrid.instance.getDataSource().store().totalCount({}).then((count: number) => {
+      this.totalContacts = count;
+      this.cdr.detectChanges();
+    });
+  }
 
   /**
    * Toggles the visibility of the column chooser dropdown.
@@ -112,6 +131,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     this.dataGrid.instance.columnOption(dataField, 'visible', this.columnVisibility[dataField]);
     localStorage.setItem('columnVisibility', JSON.stringify(this.columnVisibility));
     this.clickedInsideDropdown = true;
+    this.updateTotalContacts();
   };
 
   /**
@@ -129,7 +149,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
         this.positionDropdown(this.exportButton, this.exportOptionsDropdown);
       });
     } else {
-      this.closeDropdowns(event); // Use closeDropdowns instead of closeExportModal
+      this.closeDropdowns(event);
     }
 
     this.cdr.detectChanges();
@@ -224,6 +244,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   handleSelectionChanged = (event: any): void => {
     this.selectedRowKeys = event.selectedRowKeys;
     this.onSelectionChanged.emit(event);
+    this.updateTotalContacts();
   };
 
   /**
@@ -279,15 +300,19 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     if (!currentSortOrder || currentSortOrder === 'desc') {
       newSortOrder = 'asc';
     } else if (currentSortOrder === 'asc') {
-      newSortOrder = 'desc';
-    } else {
       newSortOrder = undefined;
+    } else {
+      newSortOrder = 'desc';
     }
 
+    column.sortOrder = newSortOrder;
     this.dataGrid.instance.clearSorting();
-    if (newSortOrder) {
-      this.dataGrid.instance.columnOption(column.dataField, 'sortOrder', newSortOrder);
-    }
+    this.headers.forEach((header) => {
+      if (header.sortOrder) {
+        this.dataGrid.instance.columnOption(header.dataField, 'sortOrder', header.sortOrder);
+      }
+    });
+    this.updateTotalContacts();
   };
 
   /**
@@ -320,7 +345,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
    * @param format - The format to export to ('excel' or 'csv').
    */
   exportData = (format: 'excel' | 'csv'): void => {
-    this.closeDropdowns(); // Use closeDropdowns instead of closeExportModal
+    this.closeDropdowns();
 
     const exportFormats: { [key: string]: ExportFormat } = {
       excel: { format: 'excel', fileType: 'xlsx', fileExtension: 'xlsx' },
