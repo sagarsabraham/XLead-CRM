@@ -12,14 +12,22 @@ export class AddDealModalComponent {
   @Output() onSubmit = new EventEmitter<any>();
 
   newDeal = {
+    salesperson: '',
+    amount: 0,
+    companyName: '',
     title: '',
-    amount: 0, 
-    date: null as Date | null, 
-    boName: '',
-    department: '',
-    probability: '',
+    account: '',
     region: '',
-    stage: ''
+    contactName: '',
+    domain: '',
+    stage: '',
+    revenueType: '',
+    department: '',
+    country: '',
+    date: null as Date | null,
+    description: '',
+    // doc: null as File[] | null, // Updated to handle file upload
+    probability: ''
   };
 
   handleClose() {
@@ -42,16 +50,29 @@ export class AddDealModalComponent {
       });
     }
 
-    
+    // // Handle the uploaded doc (store file name if a file is uploaded)
+    // const documentName = this.newDeal.doc && this.newDeal.doc.length > 0
+    //   ? this.newDeal.doc[0].name
+    //   : '';
+
+    // Create the deal object with formatted values
     const dealData = {
-      title: this.newDeal.title,
+      salesperson: this.newDeal.salesperson,
       amount: formattedAmount,
-      date: formattedDate,
-      boName: this.newDeal.boName,
-      department: this.newDeal.department,
-      probability: this.newDeal.probability,
+      companyName: this.newDeal.companyName,
+      title: this.newDeal.title,
+      account: this.newDeal.account,
       region: this.newDeal.region,
-      stage: this.newDeal.stage
+      contactName: this.newDeal.contactName,
+      domain: this.newDeal.domain,
+      stage: this.newDeal.stage,
+      revenueType: this.newDeal.revenueType,
+      department: this.newDeal.department,
+      country: this.newDeal.country,
+      date: formattedDate,
+      description: this.newDeal.description,
+      // doc: documentName, // Store the file name
+      probability: this.newDeal.probability
     };
 
     this.onSubmit.emit(dealData);
@@ -60,14 +81,22 @@ export class AddDealModalComponent {
 
   resetForm() {
     this.newDeal = {
-      title: '',
+      salesperson: '',
       amount: 0,
-      date: null,
-      boName: '',
-      department: '',
-      probability: '',
+      companyName: '',
+      title: '',
+      account: '',
       region: '',
-      stage: ''
+      contactName: '',
+      domain: '',
+      stage: '',
+      revenueType: '',
+      department: '',
+      country: '',
+      date: null,
+      description: '',
+      // doc: null, // Reset doc field
+      probability: ''
     };
   }
 }

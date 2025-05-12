@@ -8,8 +8,8 @@ import { Component } from '@angular/core';
 })
 export class PipelinepageComponent {
   topcardData = [
-    { amount: 120000, title: 'Total Return', isCurrency: true, icon: 'money' },
-    { amount: 14, title: 'Total Count of Deals', isCurrency: false, icon: 'sorted' },
+    { amount: 33300, title: 'Total Return', isCurrency: true, icon: 'money' },
+    { amount: 15, title: 'Total Count of Deals', isCurrency: false, icon: 'sorted' },
   ]; 
 
   dealButton = [
@@ -27,19 +27,35 @@ export class PipelinepageComponent {
           title: 'Display Screen',
           amount: '$50.00',
           date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'John Doe',
+          companyName: 'KniTT',
+          account: '(BAYADA Home Health)',
+          contactName: 'Jane Smith',
+          domain: 'Healthcare',
+          revenueType: 'Fixed Fee',
+          country: 'USA',
+          description: 'Screen for healthcare display',
+          doc: ''
         },
         {
           title: 'Harley Davidson Screen',
           amount: '$1,000.00',
           date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'John Doe',
+          companyName: 'Harley Davidson',
+          account: '',
+          contactName: 'Mike Johnson',
+          domain: 'Automotive',
+          revenueType: 'T and M',
+          country: 'USA',
+          description: 'Custom screen for Harley',
+          doc: ''
         }
       ]
     },
@@ -53,28 +69,52 @@ export class PipelinepageComponent {
           title: 'EV Vehicle Display',
           amount: '$1,000.00',
           date: '3 Jun 2025',
-          boName: 'Hitachi',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'Alice Brown',
+          companyName: 'Hitachi',
+          account: '',
+          contactName: 'Tom Wilson',
+          domain: 'Technology',
+          revenueType: 'Fixed Fee',
+          country: 'USA',
+          description: 'EV display solution',
+          doc: ''
         },
         {
           title: 'Harley Davidson Screen',
           amount: '$5,000.00',
           date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'John Doe',
+          companyName: 'Harley Davidson',
+          account: '',
+          contactName: 'Mike Johnson',
+          domain: 'Automotive',
+          revenueType: 'T and M',
+          country: 'USA',
+          description: 'Custom screen for Harley',
+          doc: ''
         },
         {
           title: 'Harley Davidson Screen',
           amount: '$50.00',
           date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'John Doe',
+          companyName: 'Harley Davidson',
+          account: '',
+          contactName: 'Mike Johnson',
+          domain: 'Automotive',
+          revenueType: 'Fixed Fee',
+          country: 'USA',
+          description: 'Custom screen for Harley',
+          doc: ''
         }
       ]
     },
@@ -88,19 +128,35 @@ export class PipelinepageComponent {
           title: 'Display Screen',
           amount: '$10,000.00',
           date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'John Doe',
+          companyName: 'BAYADA',
+          account: '',
+          contactName: 'Jane Smith',
+          domain: 'Healthcare',
+          revenueType: 'Fixed Fee',
+          country: 'USA',
+          description: 'Screen for healthcare display',
+          doc: ''
         },
         {
           title: 'Harley Davidson Screen',
           amount: '$50.00',
           date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'John Doe',
+          companyName: 'Harley Davidson',
+          account: '',
+          contactName: 'Mike Johnson',
+          domain: 'Automotive',
+          revenueType: 'Fixed Fee',
+          country: 'USA',
+          description: 'Custom screen for Harley',
+          doc: ''
         }
       ]
     },
@@ -111,37 +167,61 @@ export class PipelinepageComponent {
       hover: false,
       deals : [
         {
-          title: 'Display Screen',
+          title: 'Harley Davidson Screen',
           amount: '$50.00',
           date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'John Doe',
+          companyName: 'Harley Davidson',
+          account: '',
+          contactName: 'Mike Johnson',
+          domain: 'Automotive',
+          revenueType: 'Fixed Fee',
+          country: 'USA',
+          description: 'Custom screen for Harley',
+          doc: ''
         },
         {
-          title: 'Harley Davidson Screen',
+          title: 'Display Screen',
           amount: '$1,000.00',
           date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'John Doe',
+          companyName: 'Harley Davidson',
+          account: '',
+          contactName: 'Mike Johnson',
+          domain: 'Automotive',
+          revenueType: 'T and M',
+          country: 'USA',
+          description: 'Custom screen',
+          doc: ''
         },
         {
           title: 'Harley Davidson Screen',
           amount: '$2,000.00',
           date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'John Doe',
+          companyName: 'Harley Davidson',
+          account: '',
+          contactName: 'Mike Johnson',
+          domain: 'Automotive',
+          revenueType: 'Fixed Fee',
+          country: 'USA',
+          description: 'Custom screen for Harley',
+          doc: ''
         }
       ]
     },
     { 
       name: 'Closed Won', 
-      amount: '$ 10,050.00', 
+      amount: '$ 8,050.00', 
       collapsed: false,
       hover: false,
       deals : [
@@ -149,37 +229,52 @@ export class PipelinepageComponent {
           title: 'Display Screen',
           amount: '$50.00',
           date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'John Doe',
+          companyName: 'KniTT',
+          account: '(BAYADA Home Health)',
+          contactName: 'Jane Smith',
+          domain: 'Healthcare',
+          revenueType: 'Fixed Fee',
+          country: 'USA',
+          description: 'Screen for healthcare display',
+          doc: ''
         },
         {
           title: 'Harley Davidson Screen',
           amount: '$5,000.00',
           date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'John Doe',
+          companyName: 'Harley Davidson',
+          account: '',
+          contactName: 'Mike Johnson',
+          domain: 'Automotive',
+          revenueType: 'Fixed Fee',
+          country: 'USA',
+          description: 'Custom screen for Harley',
+          doc: ''
         },
         {
           title: 'Harley Davidson Screen',
           amount: '$3,000.00',
           date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
-        },
-        {
-          title: 'Harley Davidson Screen',
-          amount: '$2,000.00',
-          date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
-          department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'John Doe',
+          companyName: 'Harley Davidson',
+          account: '',
+          contactName: 'Mike Johnson',
+          domain: 'Automotive',
+          revenueType: 'Fixed Fee',
+          country: 'USA',
+          description: 'Custom screen for Harley',
+          doc: ''
         }
       ]
     },
@@ -193,19 +288,35 @@ export class PipelinepageComponent {
           title: 'Display Screen',
           amount: '$50.00',
           date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'John Doe',
+          companyName: 'KniTT',
+          account: '(BAYADA Home Health)',
+          contactName: 'Jane Smith',
+          domain: 'Healthcare',
+          revenueType: 'Fixed Fee',
+          country: 'USA',
+          description: 'Screen for healthcare display',
+          doc: ''
         },
         {
           title: 'Harley Davidson Screen',
           amount: '$5,000.00',
           date: '3 Jun 2025',
-          boName: 'KniTT (BAYADA Home Health)',
           department: 'DU-4',
-          probability: '50%',
-          region: 'US'
+          probability: '50',
+          region: 'US',
+          salesperson: 'John Doe',
+          companyName: 'Harley Davidson',
+          account: '',
+          contactName: 'Mike Johnson',
+          domain: 'Automotive',
+          revenueType: 'Fixed Fee',
+          country: 'USA',
+          description: 'Custom screen for Harley',
+          doc: ''
         }
       ]
     }
@@ -250,26 +361,43 @@ export class PipelinepageComponent {
   }
 
   onDealSubmit(newDeal: any) {
-    // Add the new deal to the selected stage
     const targetStage = this.stages.find(stage => stage.name === newDeal.stage);
     if (targetStage) {
       const dealData = {
         title: newDeal.title,
         amount: newDeal.amount,
         date: newDeal.date,
-        boName: newDeal.boName,
         department: newDeal.department,
         probability: newDeal.probability,
-        region: newDeal.region
+        region: newDeal.region,
+        salesperson: newDeal.salesperson,
+        companyName: newDeal.companyName,
+        account: newDeal.account,
+        contactName: newDeal.contactName,
+        domain: newDeal.domain,
+        revenueType: newDeal.revenueType,
+        country: newDeal.country,
+        description: newDeal.description,
+        doc: newDeal.doc
       };
       targetStage.deals.push(dealData);
-      // Update the stage amount (convert amount to number and sum)
       const totalAmount = targetStage.deals.reduce((sum, deal) => {
         const amount = parseFloat(deal.amount.replace('$', '').replace(',', ''));
         return sum + (isNaN(amount) ? 0 : amount);
       }, 0);
       targetStage.amount = `$ ${totalAmount.toFixed(2)}`;
+      // Update total return in topcardData (sum of all deal amounts across all stages)
+      const totalReturn = this.stages.reduce((total, stage) => {
+        const stageAmount = stage.deals.reduce((sum, deal) => {
+          const amount = parseFloat(deal.amount.replace('$', '').replace(',', ''));
+          return sum + (isNaN(amount) ? 0 : amount);
+        }, 0);
+        return total + stageAmount;
+      }, 0);
+      this.topcardData[0].amount = totalReturn;
+      // Update total count of deals
+      this.topcardData[1].amount = this.stages.reduce((total, stage) => total + stage.deals.length, 0);
     }
-    this.onModalClose(); // Close the modal after submission
+    this.onModalClose();
   }
 }
