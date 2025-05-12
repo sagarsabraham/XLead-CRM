@@ -237,8 +237,39 @@ export class PipelinepageComponent {
       currentDeals.splice(currentIndex, 0, movedItem);
     }
   }
+  isModalVisible: boolean = false;
+
+  stageNames: string[] = this.stages.map(s => s.name);
 
   onAddDeal() {
-    console.log('Add Deal clicked');
+    this.isModalVisible = true; 
+  }
+
+   onModalClose() {
+    this.isModalVisible = false; 
+  }
+
+  onDealSubmit(newDeal: any) {
+    // Add the new deal to the selected stage
+    const targetStage = this.stages.find(stage => stage.name === newDeal.stage);
+    if (targetStage) {
+      const dealData = {
+        title: newDeal.title,
+        amount: newDeal.amount,
+        date: newDeal.date,
+        boName: newDeal.boName,
+        department: newDeal.department,
+        probability: newDeal.probability,
+        region: newDeal.region
+      };
+      targetStage.deals.push(dealData);
+      // Update the stage amount (convert amount to number and sum)
+      const totalAmount = targetStage.deals.reduce((sum, deal) => {
+        const amount = parseFloat(deal.amount.replace('$', '').replace(',', ''));
+        return sum + (isNaN(amount) ? 0 : amount);
+      }, 0);
+      targetStage.amount = `$ ${totalAmount.toFixed(2)}`;
+    }
+    this.onModalClose(); // Close the modal after submission
   }
 }

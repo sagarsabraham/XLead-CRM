@@ -1,0 +1,80 @@
+<dx-popup
+  [visible]="isVisible"
+  title="Add New Deal"
+  [width]="500"
+  [height]="'auto'"
+  [showCloseButton]="true"
+  (onHidden)="handleClose()">
+  <div *dxTemplate="let data of 'content'" class="popup-content">
+    <div class="form-container">
+        <dx-form
+            [formData]="newDeal"
+            [colCount]="1">
+            <dxi-item dataField="stage" editorType="dxSelectBox" [editorOptions]="{ items: stages, placeholder: 'Select Stage' }">
+                <dxo-label text="Stage"></dxo-label>
+                <dxi-validation-rule type="required" message="Stage is required"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="title">
+                <dxo-label text="Deal Name"></dxo-label>
+                <dxi-validation-rule type="required" message="Title is required"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="amount" editorType="dxNumberBox">
+                <dxo-label text="Amount"></dxo-label>
+                <dxi-validation-rule type="required" message="Amount is required"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="date" editorType="dxDateBox">
+                <dxo-label text="Closing Date"></dxo-label>
+                <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="boName">
+                <dxo-label text="Business Owner Name"></dxo-label>
+                <dxi-validation-rule type="required" message="Business Owner Name is required"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="department">
+                <dxo-label text="Department"></dxo-label>
+                <dxi-validation-rule type="required" message="Department is required"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="probability">
+                <dxo-label text="Probability"></dxo-label>
+                <dxi-validation-rule type="required" message="Probability is required"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="region">
+                <dxo-label text="Region"></dxo-label>
+                <dxi-validation-rule type="required" message="Region is required"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="region">
+                <dxo-label text="Region"></dxo-label>
+                <dxi-validation-rule type="required" message="Region is required"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="region">
+                <dxo-label text="Region"></dxo-label>
+                <dxi-validation-rule type="required" message="Region is required"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="region">
+                <dxo-label text="Region"></dxo-label>
+                <dxi-validation-rule type="required" message="Region is required"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="region">
+                <dxo-label text="Region"></dxo-label>
+                <dxi-validation-rule type="required" message="Region is required"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="region">
+                <dxo-label text="Region"></dxo-label>
+                <dxi-validation-rule type="required" message="Region is required"></dxi-validation-rule>
+            </dxi-item>
+        </dx-form>
+    </div>
+    <div class="modal-buttons">
+      <dx-button
+        text="Cancel"
+        type="normal"
+        (onClick)="handleClose()">
+      </dx-button>
+      <dx-button
+        text="Submit"
+        type="success"
+        (onClick)="handleSubmit()">
+      </dx-button>
+    </div>
+  </div>
+</dx-popup>

@@ -41,6 +41,14 @@
         </div>
         </div>
     </div>
+
+    <!-- Add Deal Modal Component -->
+    <app-add-deal-modal
+        [isVisible]="isModalVisible"
+        [stages]="stageNames"
+        (onClose)="onModalClose()"
+        (onSubmit)="onDealSubmit($event)">
+    </app-add-deal-modal>
 </div>
 
 

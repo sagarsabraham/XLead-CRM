@@ -1,0 +1,52 @@
+:host {
+  display: block;
+}
+
+/* Use flexbox to stack form and buttons vertically */
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Container for the form to make it scrollable */
+.form-container {
+  flex: 1; /* Take up remaining space */
+  max-height: 400px; /* Adjust this height as needed */
+  overflow-y: auto;
+  padding-right: 10px; /* Add padding to prevent content from touching the scrollbar */
+  padding-bottom: 20px; /* Add padding to ensure last field is visible when scrolled to bottom */
+}
+
+/* Style for the buttons container */
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 10px;
+  border-top: 1px solid #e0e0e0; /* Optional: Separator line above the buttons */
+  background-color: #fff;
+}
+
+/* Optional: Improve the appearance of the scrollbar */
+.form-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.form-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.form-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.form-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Optional: Add spacing between form fields for better readability */
+:host ::ng-deep .form-container .dx-form .dx-field-item {
+  margin-bottom: 10px;
+}
