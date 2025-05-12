@@ -8,14 +8,24 @@ const routes: Routes = [
   {path: '', loadChildren: () =>
     import('./pipeline/pipeline.module').then(m => m.PipelineModule)
   },
+  { path: 'dashboard', loadChildren: () =>
+     import('./dashboard/dashboard.module').then(m => m.DashboardModule) 
+  },
+
+  { path: 'contact', loadChildren: () => 
+    import('./contacts/contacts.module').then(m => m.ContactsModule) 
+  },
+   
 
   {path: '**', component: PageNotFoundComponent},
+  
+
 ];
-const routes: Routes = [
-  { path: '', redirectTo: '/contact', pathMatch: 'full' },
-  { path: 'contact', component: ContactPageComponent },
-  { path: '**', redirectTo: '/contact' }
-];
+// const routes: Routes = [
+//   { path: '', redirectTo: '/contact', pathMatch: 'full' },
+//   { path: 'contact', component: ContactPageComponent },
+//   { path: '**', redirectTo: '/contact' }
+// ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

@@ -1,0 +1,27 @@
+:host{
+  display: flex;
+}
+
+.grid-container {
+    margin-top: 0px;
+    background-color: white;
+    padding: 1.5rem;
+    
+  }
+  .dashboard-grid{
+    margin: 60px;
+    display: inline-block;
+    justify-content: space-between;
+    width: 1200px;
+    margin-left: 100px;
+    font-family: 'poppins';
+    margin-top: 38px;
+    
+
+  }
+  .side-graph{
+      margin-left: 80px;
+
+  }
+ 
+  

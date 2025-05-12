@@ -4,21 +4,16 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-profile',
   // standalone: true,
-  imports: [CommonModule],
+  // imports: [CommonModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent {
-  @Input() data: { key: string; label: string }[] = [];
-  @Input() role: string = '';
+  @Input() data: { name: string; role: string } = { name: '', role: '' };
 
   get initials(): string {
-    // Find the object with key 'name'
-    const nameObj = this.data.find(item => item.key === 'name');
-    const name = nameObj ? nameObj.label : '';
-    
-    if (!name) return '';
-    const nameParts = name.trim().split(' ');
+    if (!this.data.name) return '';
+    const nameParts = this.data.name.trim().split(' ');
     if (nameParts.length === 1) {
       return nameParts[0].charAt(0).toUpperCase();
     }

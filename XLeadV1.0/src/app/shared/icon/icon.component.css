@@ -1,9 +1,10 @@
-.icon-container {
-  padding-bottom: 37px;
-}
-
 .icon-image {
   width: 30px;
   height: 30px;
   filter: brightness(1.2);
+}
+
+.dx-button{
+  background-color: transparent;
+  border: none;
 }

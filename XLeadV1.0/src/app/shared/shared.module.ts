@@ -7,12 +7,17 @@ import { SidenavComponent } from './sidenav/sidenav.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { CheckboxComponent } from './checkbox/checkbox.component';
 import { ContactsTableComponent } from './contacts-table/contacts-table.component';
-import { HeadersearchComponent } from './headersearch/headersearch.component';
 import { TableOutlineComponent } from './table-outline/table-outline.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { DxButtonModule } from 'devextreme-angular';
+import { DxButtonModule, DxChartModule, DxDataGridModule } from 'devextreme-angular';
 import { RouterModule } from '@angular/router';
 import { ButtonComponent } from './button/button.component';
+import { MetricCardComponent } from './metric-card/metric-card.component';
+import { MetricCardOutlineComponent } from './metric-card-outline/metric-card-outline.component';
+import { PipelineStageGraphComponent } from './pipeline-stage-graph/pipeline-stage-graph.component';
+import { DxoExportModule } from 'devextreme-angular/ui/nested';
+
+
 
 @NgModule({
   declarations: [
@@ -23,32 +28,42 @@ import { ButtonComponent } from './button/button.component';
     SidebarComponent,
     CheckboxComponent,
     ContactsTableComponent,
-    HeadersearchComponent,
     TableOutlineComponent,
     PageNotFoundComponent,
-    ButtonComponent
+    ButtonComponent,
+    MetricCardComponent,
+    MetricCardOutlineComponent,
+    PipelineStageGraphComponent,
+    ContactsTableComponent,TableOutlineComponent
   ],
   
   imports: [
     CommonModule,
     DxButtonModule,
-    RouterModule
-   
-  ],
+    RouterModule, 
+    DxChartModule,
+    DxoExportModule,DxDataGridModule
 
-  exports: [
+  ],
+  exports:[
+    ButtonComponent,
+    MetricCardComponent,
+    MetricCardOutlineComponent,
+    PipelineStageGraphComponent,
+    ContactsTableComponent,
+    TableOutlineComponent,
     IconComponent,
     IconTextComponent,
     ProfileComponent,
     SidenavComponent,
     SidebarComponent,
     CheckboxComponent,
-    ContactsTableComponent,
-    HeadersearchComponent,
-    TableOutlineComponent,
-    PageNotFoundComponent
-  ],
-// schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    PageNotFoundComponent,
+    ],
+
+   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
 export class SharedModule { }
+
+

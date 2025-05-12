@@ -2,25 +2,20 @@
   <div class="sidebar">
     <!-- Logo -->
     <div class="logo">
-      <span class="logo-x">X</span><span class="logo-lead">Lead</span>
-    </div>
-
-    <!-- Icons -->
-    <div class="icons">
-      <app-icon *ngFor="let icon of icons" [iconPath]="icon"></app-icon>
+      <img [src]="logoPath" alt="Logo" />
     </div>
 
     <!-- Navigation Icons -->
-    <div class="nav-items"
-     *ngFor="let icon of icons">
-        <app-icon-text
-          [iconPath]="icon"
-        ></app-icon-text>
+    <div class="icons">
+        <app-icon
+          *ngFor="let item of navItems"
+          [iconPath]="item.iconPath"
+        ></app-icon>
     </div>
 
     <!-- Profile -->
-    <div class="profile-section">
-      <app-profile [name]="profile.name" [role]="profile.role"></app-profile>
+    <div class="profile">
+      <div class="initials-badge">{{ initials }}</div>
     </div>
   </div>
 </dx-drawer>

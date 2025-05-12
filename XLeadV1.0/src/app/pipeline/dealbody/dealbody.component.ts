@@ -3,9 +3,8 @@ import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/
 
 @Component({
   selector: 'app-dealbody',
-  imports: [DealcardComponent, CommonModule, DragDropModule],
   templateUrl: './dealbody.component.html',
-  styleUrl: './dealbody.component.css'
+  styleUrls: ['./dealbody.component.css']
 })
 export class DealbodyComponent {
   @Input() deals: any[] = []; // Array of deals to be displayed in the deal body

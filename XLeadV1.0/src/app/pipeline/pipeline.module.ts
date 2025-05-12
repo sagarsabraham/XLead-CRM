@@ -9,14 +9,11 @@ import { PipelinepageComponent } from './pipelinepage/pipelinepage.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TopcardComponent } from './topcard/topcard.component';
 import { DxBoxModule, DxButtonModule } from 'devextreme-angular';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
-  declarations: [],
-
-  imports: [
-    CommonModule,
-    PipelineRoutingModule,
+  declarations: [
     DealbodyComponent,
     DealcardComponent,
     DealheaderComponent,
@@ -30,17 +27,12 @@ import { DxBoxModule, DxButtonModule } from 'devextreme-angular';
     DxButtonModule,
     DxBoxModule,
     DragDropModule,
-   
+    SharedModule
   ],
   exports: [
-    DealbodyComponent,
-    DealcardComponent,
-    DealheaderComponent,
-    DealfooterComponent,
-    PipelinepageComponent,
-    TopcardComponent
-   
     
+    PipelinepageComponent,  
   ]
+
 })
 export class PipelineModule { }

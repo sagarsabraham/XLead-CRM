@@ -1,0 +1,9 @@
+<div class="metric-outline">
+    <app-metric-card
+      *ngFor="let card of cards"
+      [title]="card.title"
+      [value]="card.value"
+      [percentage]="card.percentage"
+      [isPositive]="card.isPositive"
+    ></app-metric-card>
+  </div>

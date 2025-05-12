@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./contact-page.component.css']
 })
 export class ContactPageComponent {
-  tableHeaders = [
+   tableHeaders = [
     { dataField: 'name', caption: 'Name' },
     { dataField: 'company', caption: 'Company' },
     { dataField: 'email', caption: 'Email' },
@@ -66,18 +66,4 @@ export class ContactPageComponent {
     { name: 'Hannah Myers', company: 'Tech Corp', email: 'hannah@techcorp.com', phone: '901-234-5682', owner: 'Bob' },
     { name: 'Isaac Price', company: 'Innovate Inc', email: 'isaac@innovate.com', phone: '012-345-6793', owner: 'Charlie' }
   ];
-
-  icons = [
-    'assets/Pipeline.png',
-    'assets/Contact.png',
-    'assets/Company.png',
-    'assets/Dashboard.png',
-  ];
-
-  profile = [{name:'Subhash K Joseph', role: 'Salesperson'}]
-
-  onSearch(searchText: string) {
-    console.log('Search term from ContactPage:', searchText);
-    // Filtering will be implemented later
-  }
 }

@@ -1,20 +1,22 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-dealfooter',
-  imports: [MatIconModule, MatButtonModule, ExportComponent],
   templateUrl: './dealfooter.component.html',
-  styleUrl: './dealfooter.component.css'
+  styleUrls: ['./dealfooter.component.css']
 })
 export class DealfooterComponent {
+  @Input() buttons: { 
+    label: string, 
+    icon: string
+  }[] = [];
   @Output() collapse = new EventEmitter<void>();
 
   onCollapse() {
     this.collapse.emit();
   }
-}
 
-  onAddDeal() {
-    console.log('Add Deal clicked');
+  onButtonClick(label: string) {
+    console.log(`Button clicked: ${label}`);
   }
 }

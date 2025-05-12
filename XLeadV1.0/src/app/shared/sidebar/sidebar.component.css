@@ -1,7 +1,12 @@
+:host{
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+}
+
 .sidebar {
-    width: 76px;
+    width: 8.33vh; /* 8.33% of the viewport width */
     background-color: #000000;
-    color: #ffffff;
+    color: hsl(0, 0%, 100%);
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -14,10 +19,12 @@
   }
   
   .icons {
+    flex: 1;
     display: flex;
+    left: 45px;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 37px;
   }
   
   .initials-badge {
@@ -25,7 +32,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #ff0000;
+    background-color: #DC143C;
     color: #ffffff;
     display: flex;
     align-items: center;
@@ -44,4 +51,15 @@
     background-color: rgba(0, 0, 0, 0.4);
     z-index: 998;
   }
-  
+
+.logo{
+  top: 30px; /* Y-coordinate: 100px from the top */
+  left: 10px; /* X-coordinate: 50px from the left */
+  position: absolute; /* Positioning the logo */
+}
+
+.profile{
+  top: 700px;
+  left: 30px;
+  position: absolute;
+}

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HeadersearchComponent } from './headersearch.component';
+import { RevenueChartComponent } from './revenue-chart.component';
 
-describe('HeadersearchComponent', () => {
-  let component: HeadersearchComponent;
-  let fixture: ComponentFixture<HeadersearchComponent>;
+describe('RevenueChartComponent', () => {
+  let component: RevenueChartComponent;
+  let fixture: ComponentFixture<RevenueChartComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HeadersearchComponent ]
+      declarations: [ RevenueChartComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(HeadersearchComponent);
+    fixture = TestBed.createComponent(RevenueChartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

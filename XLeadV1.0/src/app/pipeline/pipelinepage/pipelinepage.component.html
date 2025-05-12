@@ -1,13 +1,13 @@
-
+<app-sidebar></app-sidebar>
 <div class="container">
     <div class="topbar">
         <h1>Pipelines</h1>
-        <!-- <app-export
-            [iconName]="'add'"
-            [buttonText]="'Deal'"
-            (click)="onAddDeal()"
-        ></app-export> -->
-        <button>deal</button>
+        <app-button
+            *ngFor="let button of dealButton"
+            [label]="button.label"
+            [icon]="button.icon"
+            (onClick)="onAddDeal()"
+        ></app-button>
     </div>
     <div class="topcard-container">
       <app-topcard 
@@ -36,7 +36,7 @@
           </div>
 
           <div *ngIf="stage.hover && !stage.collapsed">
-              <app-dealfooter></app-dealfooter>
+              <app-dealfooter [buttons]="dealButton"></app-dealfooter>
           </div>
       </div>
     </div>

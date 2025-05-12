@@ -1,3 +1,7 @@
+:host {
+    display: flex;
+}
+
 .card-container {
     display: flex; 
     gap: 10px; 
@@ -45,7 +49,7 @@ app-dealfooter {
 }
 
 .container {
-    margin-left: 5px;
+    margin-left: 8.33vh;
     overflow-x: auto;
     padding: 16px;
     font-family: 'poppins';
@@ -72,8 +76,7 @@ app-dealfooter {
     font-weight: bold;
 }
 
-/* app-export {
-    margin-right: 10px;
-    margin-top: 2px;
+app-button {
+    margin-top: 5px;
     padding: 8px 16px;
-} */
+}

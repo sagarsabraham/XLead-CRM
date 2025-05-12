@@ -1,0 +1,27 @@
+<div class="chart-card">
+ 
+  <dx-chart [dataSource]="revenueData"
+    title="Revenue Won by Month">
+    <dxi-series
+      valueField="amount"
+      argumentField="month"
+      type="bar"
+      color="#B71C3B">
+    </dxi-series>
+
+    <dxo-tooltip
+      [enabled]="true"
+      [customizeTooltip]="customizeTooltip">
+    </dxo-tooltip>
+
+    <dxo-value-axis title="Sum of Amount">
+      <dxo-grid [visible]="false"></dxo-grid> 
+    </dxo-value-axis>
+
+    <dxo-argument-axis title="Closing Date">
+      <dxo-grid [visible]="false"></dxo-grid> 
+    </dxo-argument-axis>
+
+    <dxo-legend [visible]="false"></dxo-legend>
+  </dx-chart>
+</div>

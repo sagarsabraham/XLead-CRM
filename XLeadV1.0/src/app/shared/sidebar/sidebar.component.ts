@@ -9,8 +9,40 @@ import { Component, Input } from '@angular/core';
 })
 export class SidebarComponent {
   @Input() icons: string[] = [];
-  @Input() navItems: { iconPath: string; text: string; route: string; isActive: boolean }[] = [];
-  @Input() profile: { name: string; role: string } = { name: '', role: '' };
+  logoPath = 'assets/logo.png';
+  navItems= [
+  {
+    iconPath: 'assets/Dashboard.png',
+    text: 'Dashboard',
+    route: '/dashboard',
+    isActive: true
+  },
+  {
+    iconPath: 'assets/Pipeline.png',
+    text: 'Pipeline',
+    route: '/pipeline',
+    isActive: false
+  },
+  {
+    iconPath: 'assets/Contact.png',
+    text: 'Contacts',
+    route: '/contacts',
+    isActive: false
+  },
+  {
+    iconPath: 'assets/Company.png',
+    text: 'Companies',
+    route: '/companies',
+    isActive: false
+  }
+];
+  
+  
+  profile =
+  {
+    name: 'Subash Joseph',
+    role: 'Admin'
+  }
 
   isSidebarOpen = false;
 
@@ -25,7 +57,7 @@ export class SidebarComponent {
     return `${firstInitial}${lastInitial}`;
   }
 
-  toggleSidebar() {
+toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 }
