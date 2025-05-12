@@ -22,15 +22,15 @@
   margin-bottom: 60px; /* Gap between header row and table below */
 }
 
-/* Contacts Header Styles */
-.contacts-header {
+/* Table Header Styles */
+.table-header {
   font-size: 25px;
   font-weight: 800;
   color: #333;
 }
 
-/* Total Contacts Styles */
-.total-contacts {
+/* Total Items Styles */
+.total-items {
   font-size: 25px;
   font-weight: 800;
   color: #333;
@@ -290,14 +290,14 @@ dx-data-grid {
 }
 
 .column-chooser-dropdown {
-  right: 100px;
-  top: 50px;
+  right: 180px;
+  top: 130px;
   width: 200px;
 }
 
 .export-options-dropdown {
-  right: 10px;
-  top: 50px;
+  right: 12px;
+  top: 145px;
   width: 150px;
 }
 

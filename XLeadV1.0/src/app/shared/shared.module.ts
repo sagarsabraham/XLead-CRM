@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DxDataGridModule, DxButtonModule } from 'devextreme-angular';
-import { ContactsTableComponent } from './contacts-table/contacts-table.component';
+import { TableComponent } from './table/table.component';
 import { TableOutlineComponent } from './table-outline/table-outline.component';
 
 @NgModule({
   declarations: [
-    ContactsTableComponent,
+    TableComponent,
     TableOutlineComponent
   ],
   imports: [
@@ -15,7 +15,7 @@ import { TableOutlineComponent } from './table-outline/table-outline.component';
     DxButtonModule
   ],
   exports: [
-    ContactsTableComponent,
+    TableComponent,
     TableOutlineComponent
   ]
 })

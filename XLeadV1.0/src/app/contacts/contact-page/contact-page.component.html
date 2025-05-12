@@ -2,10 +2,14 @@
   <!-- <app-sidebar></app-sidebar> -->
   <div class="content">
     <!-- <app-header [title]="'Contacts'" [count]="tableData.length"></app-header> -->
-    <app-contacts-table
+    <app-table
       [data]="tableData"
       [headers]="tableHeaders"
-      class="custom-table"
-    ></app-contacts-table>
+      [useOwnerTemplate]="true"
+      [tableTitle]="'Contacts'"
+      [totalItemsLabel]="'Total Contacts'"
+      [ownerField]="'owner'"
+      [exportFileName]="'Contacts'"
+    ></app-table>
   </div>
 </div>

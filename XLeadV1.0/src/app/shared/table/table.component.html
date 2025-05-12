@@ -1,7 +1,7 @@
 <div class='table-container'>
   <div class='header-row'>
-    <div class='contacts-header'>Contacts</div>
-    <div class='total-contacts'>Total Contacts: {{ totalContacts }}</div>
+    <div class='table-header'>{{ tableTitle }}</div>
+    <div class='total-items'>{{ totalItemsLabel }}: {{ totalItems }}</div>
   </div>
   <div class='export-message' *ngIf='showExportMessage'>{{ exportMessage }}</div>
 
@@ -17,7 +17,7 @@
       [hoverStateEnabled]='true'
       [class]='classNames'
       (onSelectionChanged)='handleSelectionChanged($event)'
-      (onContentReady)='updateTotalContacts()'
+      (onContentReady)='updateTotalItems()'
     >
       <dxo-selection
         mode='multiple'
@@ -73,13 +73,15 @@
         </div>
       </div>
       <div *dxTemplate="let cell of 'ownerCellTemplate'">
-        <div class='owner-cell'>
-          <div
-            class='owner-avatar'
-            [style.backgroundColor]='getOwnerColor(cell.data.owner)'
-          >{{ getOwnerInitial(cell.data.owner) }}</div>
-          <span class='owner-name'>{{ cell.data.owner }}</span>
-        </div>
+        <ng-container *ngIf="useOwnerTemplate">
+          <div class='owner-cell'>
+            <div
+              class='owner-avatar'
+              [style.backgroundColor]='getOwnerColor(cell.data[ownerField])'
+            >{{ getOwnerInitial(cell.data[ownerField]) }}</div>
+            <span class='owner-name'>{{ cell.data[ownerField] }}</span>
+          </div>
+        </ng-container>
       </div>
     </dx-data-grid>
   </app-table-outline>

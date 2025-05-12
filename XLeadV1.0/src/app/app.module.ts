@@ -4,7 +4,7 @@ import { DxButtonModule, DxDataGridModule } from 'devextreme-angular';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { TableOutlineComponent } from './shared/table-outline/table-outline.component';
-import { ContactsTableComponent } from './shared/contacts-table/contacts-table.component';
+import { TableComponent } from './shared/table/table.component';
 import { ContactPageComponent } from './contacts/contact-page/contact-page.component';
 
 // Define routes
@@ -19,7 +19,7 @@ const routes: Routes = [
     AppComponent,
     ContactPageComponent,
     TableOutlineComponent,
-    ContactsTableComponent
+    TableComponent
   ],
   imports: [
     BrowserModule,

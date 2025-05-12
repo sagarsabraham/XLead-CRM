@@ -23,14 +23,19 @@ interface ExportFormat {
 }
 
 @Component({
-  selector: 'app-contacts-table',
-  templateUrl: './contacts-table.component.html',
-  styleUrls: ['./contacts-table.component.css'],
+  selector: 'app-table',
+  templateUrl: './table.component.html',
+  styleUrls: ['./table.component.css'],
 })
-export class ContactsTableComponent implements AfterViewInit, OnDestroy {
+export class TableComponent implements AfterViewInit, OnDestroy {
   @Input() data: any[] = [];
   @Input() headers: GridColumn[] = [];
   @Input() classNames: string = '';
+  @Input() useOwnerTemplate: boolean = true;
+  @Input() tableTitle: string = 'Table Data';
+  @Input() totalItemsLabel: string = 'Total Items'; // Added for configurable label
+  @Input() ownerField: string = 'owner'; // Added for dynamic owner field
+  @Input() exportFileName: string = 'Data'; // Added for dynamic export file name
 
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter<any>();
 
@@ -43,7 +48,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   pageSize: number = 10;
   allowedPageSizes: number[] = [5, 10, 20];
   selectedRowKeys: string[] = [];
-  totalContacts: number = 0;
+  totalItems: number = 0;
   showExportModal: boolean = false;
   showExportMessage: boolean = false;
   exportMessage: string = '';
@@ -88,17 +93,17 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
         this.columnVisibility[header.dataField] = header.visible !== false;
       });
     }
-    this.updateTotalContacts();
+    this.updateTotalItems();
   }
 
   ngOnDestroy(): void {}
 
   /**
-   * Updates the total contacts count based on the visible rows after filtering.
+   * Updates the total items count based on the visible rows after filtering.
    */
-  updateTotalContacts(): void {
+  updateTotalItems(): void {
     this.dataGrid.instance.getDataSource().store().totalCount({}).then((count: number) => {
-      this.totalContacts = count;
+      this.totalItems = count;
       this.cdr.detectChanges();
     });
   }
@@ -131,7 +136,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     this.dataGrid.instance.columnOption(dataField, 'visible', this.columnVisibility[dataField]);
     localStorage.setItem('columnVisibility', JSON.stringify(this.columnVisibility));
     this.clickedInsideDropdown = true;
-    this.updateTotalContacts();
+    this.updateTotalItems();
   };
 
   /**
@@ -244,7 +249,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   handleSelectionChanged = (event: any): void => {
     this.selectedRowKeys = event.selectedRowKeys;
     this.onSelectionChanged.emit(event);
-    this.updateTotalContacts();
+    this.updateTotalItems();
   };
 
   /**
@@ -312,7 +317,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
         this.dataGrid.instance.columnOption(header.dataField, 'sortOrder', header.sortOrder);
       }
     });
-    this.updateTotalContacts();
+    this.updateTotalItems();
   };
 
   /**
@@ -385,9 +390,9 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
       worksheet['!cols'] = headerRow.map(() => ({ wpx: 120 }));
     }
 
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Contacts');
+    XLSX.utils.book_append_sheet(workbook, worksheet, this.exportFileName);
 
-    const fileName = `Contacts.${fileExtension}`;
+    const fileName = `${this.exportFileName}.${fileExtension}`;
     const excelBuffer = XLSX.write(workbook, { bookType: fileType, type: 'array' });
     const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(data, fileName);
