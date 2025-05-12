@@ -14,7 +14,7 @@ import { PipelineStageGraphComponent } from './pipeline-stage-graph/pipeline-sta
   declarations: [
     PageNotFoundComponent,
     ButtonComponent,
-     MetricCardComponent,
+    MetricCardComponent,
     MetricCardOutlineComponent,
     PipelineStageGraphComponent
   ],
@@ -26,7 +26,7 @@ import { PipelineStageGraphComponent } from './pipeline-stage-graph/pipeline-sta
     DxChartModule
 
   ],
-  exports:[ButtonComponent,MetricCardComponent,MetricCardOutlineComponent,PipelineStageGraphComponent],
+  exports:[ButtonComponent,MetricCardComponent,MetricCardOutlineComponent,PipelineStageGraphComponent, PageNotFoundComponent],
 
   
    schemas: [CUSTOM_ELEMENTS_SCHEMA]
