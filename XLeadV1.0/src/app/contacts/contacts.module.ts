@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
-   import { CommonModule } from '@angular/common';
-   import { ContactPageComponent } from './contact-page/contact-page.component';
-   import { SharedModule } from '../shared/shared.module';
+import { CommonModule } from '@angular/common';
 import { ContactsRoutingModule } from './contacts-routing.module';
+import { ContactPageComponent } from './contact-page/contact-page.component';
+import { SharedModule } from '../shared/shared.module';
 
-   @NgModule({
-     declarations: [
-       ContactPageComponent
-     ],
-     imports: [
-       CommonModule,
-       ContactsRoutingModule,
-       SharedModule // Import SharedModule to use TableComponent
-     ]
-   })
-   export class ContactsModule { }
+@NgModule({
+  declarations: [
+    ContactPageComponent
+  ],
+  imports: [
+    CommonModule,
+    ContactsRoutingModule,
+    SharedModule
+  ]
+})
+export class ContactsModule { }

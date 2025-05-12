@@ -1,0 +1,11 @@
+<div 
+    cdkDropList
+    [cdkDropListData]="deals"
+    [cdkDropListConnectedTo]="connectedTo"
+    [id]="stageName"
+    class="deal-body"
+    (cdkDropListDropped)="drop($event)">
+    <app-dealcard *ngFor="let deal of deals" [deal]="deal" cdkDrag></app-dealcard>
+
+</div>
+
