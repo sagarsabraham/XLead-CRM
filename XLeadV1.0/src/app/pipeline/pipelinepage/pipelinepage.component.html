@@ -1,4 +1,3 @@
-
 <div class="container">
     <div class="topbar">
         <h1>Pipelines</h1>
@@ -11,11 +10,12 @@
     </div>
     <div class="topcard-container">
       <app-topcard 
-        *ngFor="let card of topcardData"
+        *ngFor="let card of topcardData; let i = index"
         [amount]="card.amount" 
         [title]="card.title"
         [isCurrency]="card.isCurrency"
-        [icon]="card.icon">
+        [icon]="card.icon"
+        [iconColor]="getIconColor(i)">
       </app-topcard>
     </div>
     <div class="card-container" cdkDropListGroup>
@@ -41,4 +41,3 @@
       </div>
     </div>
 </div>
-

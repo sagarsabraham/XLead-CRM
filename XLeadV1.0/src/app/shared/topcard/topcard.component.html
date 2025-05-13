@@ -1,11 +1,9 @@
 <dx-box
   class="card"
-  [direction]="'row'"
-  [width]="550"
-  [height]="153.51">
+  [direction]="'row'">
   <dxi-item [ratio]="0">
     <div class="icon-container">
-      <div class="icon" [ngStyle]="{ 'background-color': isCurrency ? '#44C074' : '#896CC7' }">
+      <div class="icon" [ngStyle]="{'background-color': iconColor}">
         <i class="dx-icon-{{icon}}"></i>
       </div>
     </div>
@@ -18,3 +16,4 @@
       <p class="title">{{ title }}</p>
     </div>
   </dxi-item>
+</dx-box>

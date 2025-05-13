@@ -1,85 +1,80 @@
-<div class='table-container'>
-  <div class='header-row'>
-    <div class='table-header'>{{ tableTitle }}</div>
-    <div class='total-items'>{{ totalItemsLabel }}: {{ totalItems }}</div>
-  </div>
-  <div class='export-message' *ngIf='showExportMessage'>{{ exportMessage }}</div>
+<div class="table-container">
+  <div class="export-message" *ngIf="showExportMessage">{{ exportMessage }}</div>
 
   <app-table-outline>
     <dx-data-grid
       #dataGrid
-      [dataSource]='data'
-      [columns]='headers'
-      [allowColumnResizing]='true'
-      [columnAutoWidth]='true'
-      [showBorders]='true'
-      [rowAlternationEnabled]='true'
-      [hoverStateEnabled]='true'
-      [class]='classNames'
-      (onSelectionChanged)='handleSelectionChanged($event)'
-      (onContentReady)='updateTotalItems()'
+      [dataSource]="data"
+      [columns]="headers"
+      [allowColumnResizing]="true"
+      [columnAutoWidth]="true"
+      [showBorders]="true"
+      [rowAlternationEnabled]="true"
+      [hoverStateEnabled]="true"
+      [class]="classNames"
+      (onSelectionChanged)="handleSelectionChanged($event)"
     >
       <dxo-selection
-        mode='multiple'
-        selectAllMode='allPages'
-        showCheckBoxesMode='always'
+        mode="multiple"
+        selectAllMode="allPages"
+        showCheckBoxesMode="always"
       ></dxo-selection>
-      <dxo-paging [pageSize]='pageSize'></dxo-paging>
+      <dxo-paging [pageSize]="pageSize"></dxo-paging>
       <dxo-pager
-        [showPageSizeSelector]='true'
-        [allowedPageSizes]='allowedPageSizes'
-        [showInfo]='true'
-        [showNavigationButtons]='true'
+        [showPageSizeSelector]="true"
+        [allowedPageSizes]="allowedPageSizes"
+        [showInfo]="true"
+        [showNavigationButtons]="true"
       ></dxo-pager>
-      <dxo-sorting mode='multiple'></dxo-sorting>
-      <dxo-header-filter [visible]='showHeaderFilter'></dxo-header-filter>
-      <dxo-filter-row [visible]='showFilterRow'></dxo-filter-row>
-      <dxo-filter-panel [visible]='showFilterPanel'></dxo-filter-panel>
-      <dxo-search-panel [visible]='showSearchPanel'></dxo-search-panel>
-      <dxo-column-chooser [enabled]='false'></dxo-column-chooser>
+      <dxo-sorting mode="multiple"></dxo-sorting>
+      <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
+      <dxo-filter-row [visible]="showFilterRow"></dxo-filter-row>
+      <dxo-filter-panel [visible]="showFilterPanel"></dxo-filter-panel>
+      <dxo-search-panel [visible]="showSearchPanel"></dxo-search-panel>
+      <dxo-column-chooser [enabled]="false"></dxo-column-chooser>
       <dxo-export
-        [enabled]='true'
-        [allowExportSelectedData]='true'
-        (onExporting)='onExporting($event)'
+        [enabled]="true"
+        [allowExportSelectedData]="true"
+        (onExporting)="onExporting($event)"
       ></dxo-export>
       <dxo-toolbar>
-        <dxi-item location='after'>
+        <dxi-item location="after">
           <dx-button
-            icon='columnchooser'
-            hint='Show Column Chooser'
-            (onClick)='toggleColumnChooser($event)'
+            icon="columnchooser"
+            hint="Show Column Chooser"
+            (onClick)="toggleColumnChooser($event)"
             #columnChooserButton
           ></dx-button>
         </dxi-item>
-        <dxi-item location='after'>
+        <dxi-item location="after">
           <dx-button
-            icon='export'
-            text='Export'
-            hint='Export Data'
-            (onClick)='onExportButtonClick($event)'
+            icon="export"
+            text="Export"
+            hint="Export Data"
+            (onClick)="onExportButtonClick($event)"
             #exportButton
           ></dx-button>
         </dxi-item>
       </dxo-toolbar>
       <div *dxTemplate="let header of 'headerCellTemplate'">
-        <div class='header-cell'>
-          <span class='header-text'>{{ header.column.caption }}</span>
+        <div class="header-cell">
+          <span class="header-text">{{ header.column.caption }}</span>
           <span
             *ngIf="header.column.allowSorting !== false"
-            class='sort-icon'
-            [ngClass]='getSortIconClass(header.column)'
-            (click)='toggleSort(header.column)'
+            class="sort-icon"
+            [ngClass]="getSortIconClass(header.column)"
+            (click)="toggleSort(header.column)"
           >{{ getSortIcon(header.column) }}</span>
         </div>
       </div>
       <div *dxTemplate="let cell of 'ownerCellTemplate'">
         <ng-container *ngIf="useOwnerTemplate">
-          <div class='owner-cell'>
+          <div class="owner-cell">
             <div
-              class='owner-avatar'
-              [style.backgroundColor]='getOwnerColor(cell.data[ownerField])'
+              class="owner-avatar"
+              [style.backgroundColor]="getOwnerColor(cell.data[ownerField])"
             >{{ getOwnerInitial(cell.data[ownerField]) }}</div>
-            <span class='owner-name'>{{ cell.data[ownerField] }}</span>
+            <span class="owner-name">{{ cell.data[ownerField] }}</span>
           </div>
         </ng-container>
       </div>
@@ -87,21 +82,21 @@
   </app-table-outline>
 
   <div
-    class='custom-dropdown column-chooser-dropdown'
-    *ngIf='showCustomColumnChooser'
-    (click)='onColumnChooserDropdownClick($event)'
+    class="custom-dropdown column-chooser-dropdown"
+    *ngIf="showCustomColumnChooser"
+    (click)="onColumnChooserDropdownClick($event)"
     #columnChooserDropdown
   >
-    <div class='dropdown-header'>
+    <div class="dropdown-header">
       Choose Columns
-      <span class='close-button' (click)='closeDropdowns($event)'>×</span>
+      <span class="close-button" (click)="closeDropdowns($event)">×</span>
     </div>
-    <div class='dropdown-item' *ngFor='let header of headers'>
+    <div class="dropdown-item" *ngFor="let header of headers">
       <label>
         <input
-          type='checkbox'
-          [checked]='columnVisibility[header.dataField]'
-          (change)='toggleColumnVisibility(header.dataField)'
+          type="checkbox"
+          [checked]="columnVisibility[header.dataField]"
+          (change)="toggleColumnVisibility(header.dataField)"
         />
         {{ header.caption }}
       </label>
@@ -109,23 +104,23 @@
   </div>
 
   <div
-    class='custom-dropdown export-options-dropdown'
-    *ngIf='showExportModal'
-    (click)='onExportOptionsDropdownClick($event)'
+    class="custom-dropdown export-options-dropdown"
+    *ngIf="showExportModal"
+    (click)="onExportOptionsDropdownClick($event)"
     #exportOptionsDropdown
   >
-    <div class='dropdown-header'>
+    <div class="dropdown-header">
       Export Options
-      <span class='close-button' (click)='closeDropdowns($event)'>×</span>
+      <span class="close-button" (click)="closeDropdowns($event)">×</span>
     </div>
-    <div class='dropdown-item'>
-      <button class='export-button excel' (click)='exportData("excel")'>
-        <span class='dx-icon dx-icon-exportxlsx'></span> Export as XLSX
+    <div class="dropdown-item">
+      <button class="export-button excel" (click)="exportData('excel')">
+        <span class="dx-icon dx-icon-exportxlsx"></span> Export as XLSX
       </button>
     </div>
-    <div class='dropdown-item'>
-      <button class='export-button csv' (click)='exportData("csv")'>
-        <span class='dx-icon dx-icon-doc'></span> Export as CSV
+    <div class="dropdown-item">
+      <button class="export-button csv" (click)="exportData('csv')">
+        <span class="dx-icon dx-icon-doc"></span> Export as CSV
       </button>
     </div>
   </div>

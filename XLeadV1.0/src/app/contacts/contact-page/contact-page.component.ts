@@ -7,11 +7,11 @@ import { Component } from '@angular/core';
 })
 export class ContactPageComponent {
   tableHeaders = [
-    { dataField: 'name', caption: 'Name' },
-    { dataField: 'company', caption: 'Company' },
-    { dataField: 'email', caption: 'Email' },
-    { dataField: 'phone', caption: 'Phone' },
-    { dataField: 'owner', caption: 'Owner', cellTemplate: 'ownerCellTemplate' }
+    { dataField: 'name', caption: 'Name', visible: true },
+    { dataField: 'phone', caption: 'Phone', visible: true },
+    { dataField: 'email', caption: 'Email', visible: true },
+    { dataField: 'company', caption: 'Company', visible: false },
+    { dataField: 'owner', caption: 'Owner', visible: true, cellTemplate: 'ownerCellTemplate' }
   ];
 
   tableData = [
@@ -66,4 +66,6 @@ export class ContactPageComponent {
     { id: '49', name: 'Hannah Myers', company: 'Tech Corp', email: 'hannah@techcorp.com', phone: '901-234-5682', owner: 'Bob' },
     { id: '50', name: 'Isaac Price', company: 'Innovate Inc', email: 'isaac@innovate.com', phone: '012-345-6793', owner: 'Charlie' }
   ];
+
+  totalContacts = this.tableData.length;
 }

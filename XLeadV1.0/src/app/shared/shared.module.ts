@@ -7,6 +7,7 @@ import { MetricCardOutlineComponent } from './metric-card-outline/metric-card-ou
 import { PipelineStageGraphComponent } from './pipeline-stage-graph/pipeline-stage-graph.component';
 import { TableOutlineComponent } from './table-outline/table-outline.component';
 import { TableComponent } from './table/table.component';
+import { TopcardComponent } from './topcard/topcard.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { TableComponent } from './table/table.component';
     MetricCardOutlineComponent,
     PipelineStageGraphComponent,
     TableComponent,
-    TableOutlineComponent
+    TableOutlineComponent,
+    TopcardComponent
   ],
   imports: [
     CommonModule,
@@ -27,7 +29,8 @@ import { TableComponent } from './table/table.component';
     MetricCardOutlineComponent,
     PipelineStageGraphComponent,
     TableComponent,
-    TableOutlineComponent
+    TableOutlineComponent,
+    TopcardComponent
   ]
 })
 export class SharedModule { }

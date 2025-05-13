@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 
-
 @Component({
   selector: 'app-pipelinepage',
   templateUrl: './pipelinepage.component.html',
@@ -210,6 +209,18 @@ export class PipelinepageComponent {
       ]
     }
   ];
+
+  // Determine the icon color based on the card index
+  getIconColor(index: number): string {
+    switch (index) {
+      case 0: // First card (Total Return)
+        return '#8a2be2'; // Violet
+      case 1: // Second card (Total Count of Deals)
+        return '#28a745'; // Green
+      default:
+        return '#e0e0e0'; // Default gray
+    }
+  }
 
   get connectedDropLists(): string[] {
     return this.stages.map(stage => stage.name);

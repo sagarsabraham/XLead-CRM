@@ -14,28 +14,6 @@
   width: 100%;
 }
 
-/* Header Row Styles */
-.header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 60px; /* Gap between header row and table below */
-}
-
-/* Table Header Styles */
-.table-header {
-  font-size: 25px;
-  font-weight: 800;
-  color: #333;
-}
-
-/* Total Items Styles */
-.total-items {
-  font-size: 25px;
-  font-weight: 800;
-  color: #333;
-}
-
 /* Owner Cell and Avatar Styles */
 .owner-cell {
   align-items: center;
@@ -210,41 +188,41 @@ dx-data-grid {
   color: #333;
 }
 
-:host ::ng-deep .dx-button[aria-label='Show Column Chooser'] {
+:host ::ng-deep .dx-button[aria-label="Show Column Chooser"] {
   min-width: 32px;
   padding: 0 8px;
 }
 
-:host ::ng-deep .dx-button[icon='export'],
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data'] {
+:host ::ng-deep .dx-button[icon="export"],
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"] {
   background-color: #4caf50 !important;
   border-color: #4caf50 !important;
   padding: 0 12px;
 }
 
-:host ::ng-deep .dx-button[icon='export'] .dx-icon,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data'] .dx-icon {
+:host ::ng-deep .dx-button[icon="export"] .dx-icon,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"] .dx-icon {
   color: #ffffff !important;
 }
 
-:host ::ng-deep .dx-button[icon='export'] .dx-button-text,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data'] .dx-button-text {
+:host ::ng-deep .dx-button[icon="export"] .dx-button-text,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"] .dx-button-text {
   color: #ffffff !important;
 }
 
-:host ::ng-deep .dx-button[icon='export']:hover,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data']:hover {
+:host ::ng-deep .dx-button[icon="export"]:hover,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"]:hover {
   background-color: #45a049 !important;
   border-color: #45a049 !important;
 }
 
-:host ::ng-deep .dx-button[icon='export']:hover .dx-icon,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data']:hover .dx-icon {
+:host ::ng-deep .dx-button[icon="export"]:hover .dx-icon,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"]:hover .dx-icon {
   color: #ffffff !important;
 }
 
-:host ::ng-deep .dx-button[icon='export']:hover .dx-button-text,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data']:hover .dx-button-text {
+:host ::ng-deep .dx-button[icon="export"]:hover .dx-button-text,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"]:hover .dx-button-text {
   color: #ffffff !important;
 }
 
@@ -331,7 +309,7 @@ dx-data-grid {
   gap: 8px;
 }
 
-.column-chooser-dropdown .dropdown-item input[type='checkbox'] {
+.column-chooser-dropdown .dropdown-item input[type="checkbox"] {
   margin: 0;
 }
 

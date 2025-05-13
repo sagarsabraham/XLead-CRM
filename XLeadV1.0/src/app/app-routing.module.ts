@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'contact', loadChildren: () => 
     import('./contacts/contacts.module').then(m => m.ContactsModule) 
   },
+  { path: 'company', loadChildren: () => import('./company/company.module').then(m => m.CompanyModule) },
    
 
   {path: '**', component: PageNotFoundComponent},

@@ -1,6 +1,4 @@
-import { Component } from '@angular/core';
-import { Input} from '@angular/core';
-
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-topcard',
@@ -10,7 +8,7 @@ import { Input} from '@angular/core';
 export class TopcardComponent {
   @Input() amount: number = 0;
   @Input() title: string = '';
-  @Input() isCurrency: boolean = false;
   @Input() icon: string = '';
-
+  @Input() iconColor: string = '#000000';
+  @Input() isCurrency: boolean = false; // For Pipeline page compatibility
 }

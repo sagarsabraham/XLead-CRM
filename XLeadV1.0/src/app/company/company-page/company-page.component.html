@@ -1,0 +1,31 @@
+<div class="page-container">
+  <!-- Sidebar Component Placeholder: This is where the navigation sidebar will be placed. It should have a fixed width of 80px and provide navigation links for the app. -->
+  <!-- <app-sidebar></app-sidebar> -->
+  
+  <div class="container">
+    <div class="topbar">
+      <h1>Companies</h1>
+    </div>
+    <div class="metric-cards-section">
+      <div class="topcard-container">
+        <app-topcard
+          *ngFor="let card of topcardData; let i = index"
+          [amount]="card.amount"
+          [title]="card.title"
+          [icon]="card.icon"
+          [iconColor]="getIconColor(i)"
+         
+        ></app-topcard>
+      </div>
+    </div>
+    <div class="content">
+      <app-table
+        [data]="tableData"
+        [headers]="tableHeaders"
+        [useOwnerTemplate]="true"
+        [ownerField]="'owner'"
+        [exportFileName]="'Companies'"
+      ></app-table>
+    </div>
+  </div>
+</div>
