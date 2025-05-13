@@ -1,7 +1,19 @@
 <div class="deal-info-page">
     <app-deal-header [deal]="deal"></app-deal-header>
     <app-status-timeline
-    [currentStage]="deal?.stage"
-    (stageChange)="onStageChange($event)">
+        [currentStage]="deal?.stage"
+        (stageChange)="onStageChange($event)">
     </app-status-timeline>
+    <div class="content">
+        <div class="left-column">
+            <app-deal-info-card></app-deal-info-card>
+            <!-- <app-description 
+                [description]="deal?.description"
+                (descriptionChange)="onDescriptionChange($event)">
+            </app-description> -->
+        </div>
+        <div class="right-column">
+            <app-history-timeline [history]="history"></app-history-timeline>
+        </div>
+    </div>
 </div>
