@@ -1,5 +1,15 @@
 import { Component } from '@angular/core';
 
+// type Variant = 'default' | 'compact';
+
+// interface TopcardData {
+//   amount: number;
+//   title: string;
+//   isCurrency: boolean;
+//   icon: string;
+//   iconBackgroundColor: string;
+//   variant: Variant;
+// }
 
 @Component({
   selector: 'app-pipelinepage',
@@ -8,9 +18,23 @@ import { Component } from '@angular/core';
 })
 export class PipelinepageComponent {
   topcardData = [
-    { amount: 120000, title: 'Total Return', isCurrency: true, icon: 'money' },
-    { amount: 14, title: 'Total Count of Deals', isCurrency: false, icon: 'sorted' },
-  ]; 
+    {
+      amount: 120000,
+      title: 'Total Return',
+      isCurrency: true,
+      icon: 'money',
+      iconBackgroundColor: '#ECB985',
+      variant: 'default'
+    },
+    {
+      amount: 14,
+      title: 'Total Count of Deals',
+      isCurrency: false,
+      icon: 'sorted',
+      iconBackgroundColor: '#ECB985',
+      variant: 'default'
+    }
+  ];
 
   dealButton = [
     { label: 'Deal', icon: 'add'},

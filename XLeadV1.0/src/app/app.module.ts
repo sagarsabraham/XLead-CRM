@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
-import { DevExtremeModule } from 'devextreme-angular';
+
 
 
 
@@ -15,7 +15,7 @@ import { DevExtremeModule } from 'devextreme-angular';
     BrowserModule,
     AppRoutingModule,
     RouterModule, 
-    DevExtremeModule
+    
   ],
   providers: [],
   bootstrap: [AppComponent],

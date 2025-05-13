@@ -8,9 +8,11 @@ import { Input} from '@angular/core';
   styleUrls: ['./topcard.component.css']
 })
 export class TopcardComponent {
-  @Input() amount: number = 0;
+ 
+ @Input() amount: number = 0;
   @Input() title: string = '';
   @Input() isCurrency: boolean = false;
   @Input() icon: string = '';
+
 
 }

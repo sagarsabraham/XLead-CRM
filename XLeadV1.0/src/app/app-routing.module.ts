@@ -13,6 +13,9 @@ const routes: Routes = [
   { path: 'contact', loadChildren: () => 
     import('./contacts/contacts.module').then(m => m.ContactsModule) 
   },
+  { path: 'overview', loadChildren: () => 
+    import('./pipeline-overview/pipeline-overview.module').then(m => m.PipelineOverviewModule) 
+  },
    
 
   {path: '**', component: PageNotFoundComponent},
