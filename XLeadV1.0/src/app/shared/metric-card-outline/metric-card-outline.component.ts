@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
+import { DxResponsiveBoxModule } from 'devextreme-angular'; 
+
 
 @Component({
   selector: 'app-metric-card-outline',
   templateUrl: './metric-card-outline.component.html',
-  styleUrls: ['./metric-card-outline.component.css']
+  styleUrls: ['./metric-card-outline.component.css'],
+  
 })
 export class MetricCardOutlineComponent {
   cards = [

@@ -1,24 +1,23 @@
+:host {
+  display: block;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Poppins', sans-serif;
+}
 
-   .grid-container {
-    margin-top: 0px;
-    background-color: white;
-    padding: 1.5rem;
-    
+@media (max-width: 768px) {
+  :host {
+    padding: 0.5rem;
   }
-  .dashboard-grid{
-    margin: 60px;
-    display: inline-block;
-    justify-content: space-between;
-    width: 1200px;
-    margin-left: 100px;
-    font-family: 'poppins';
-    margin-top: 38px;
-    
+}
 
-  }
-  .side-graph{
-      margin-left: 80px;
+.chart-wrapper{
+  padding-left: 9.5%;
+}
 
+@media (max-width: 768px) {
+  .chart-wrapper {
+    padding-left: 0;
   }
- 
-  
+}

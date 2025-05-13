@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MetricCardComponent } from './metric-card/metric-card.component';
 import { MetricCardOutlineComponent } from './metric-card-outline/metric-card-outline.component';
 import { PipelineStageGraphComponent } from './pipeline-stage-graph/pipeline-stage-graph.component';
-import { DxButtonModule, DxChartModule } from 'devextreme-angular';
+import { DxButtonModule, DxChartModule, DxResponsiveBoxModule, DxScrollViewModule } from 'devextreme-angular';
 
 @NgModule({
   declarations: [
@@ -11,16 +11,28 @@ import { DxButtonModule, DxChartModule } from 'devextreme-angular';
     MetricCardOutlineComponent,
     PipelineStageGraphComponent
   ],
+
+
+
+
   imports: [
     CommonModule,
-    DxButtonModule,
-    DxChartModule
+    DxChartModule,
+    DxScrollViewModule,
+    DxResponsiveBoxModule,
+    DxButtonModule
+   
   ],
   exports: [
+    CommonModule,
+    DxChartModule,
+    DxScrollViewModule,
+    DxResponsiveBoxModule,
+  
     MetricCardComponent,
     MetricCardOutlineComponent,
     PipelineStageGraphComponent
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class SharedModule { }
