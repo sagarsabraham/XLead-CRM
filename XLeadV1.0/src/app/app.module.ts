@@ -8,6 +8,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { PipelineModule } from './pipeline/pipeline.module';
 import { SharedModule } from './shared/shared.module';
+import { DealInfoModule } from './deal-info/deal-info.module';
 
 
 
@@ -28,7 +29,8 @@ import { SharedModule } from './shared/shared.module';
     DxFormModule,
     DxNumberBoxModule,    
     DxSelectBoxModule,    
-    DxDateBoxModule
+    DxDateBoxModule,
+    DealInfoModule
 
    
     

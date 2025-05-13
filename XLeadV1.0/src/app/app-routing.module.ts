@@ -7,6 +7,10 @@ const routes: Routes = [
     import('./pipeline/pipeline.module').then(m => m.PipelineModule)
   },
 
+  {path: 'dealinfo', loadChildren: () =>
+    import('./deal-info/deal-info.module').then(m => m.DealInfoModule)
+  },
+
   { path: 'dashboard', loadChildren: () => 
     import('./dashboard/dashboard.module').then(m => m.DashboardModule) 
   },
