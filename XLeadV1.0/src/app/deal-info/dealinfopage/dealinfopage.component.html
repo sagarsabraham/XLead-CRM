@@ -1,3 +1,7 @@
 <div class="deal-info-page">
     <app-deal-header [deal]="deal"></app-deal-header>
+    <app-status-timeline
+    [currentStage]="deal?.stage"
+    (stageChange)="onStageChange($event)">
+    </app-status-timeline>
 </div>
