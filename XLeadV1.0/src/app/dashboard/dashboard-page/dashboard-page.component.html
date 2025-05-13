@@ -2,6 +2,7 @@
   <dxi-row [ratio]="1"></dxi-row>
   <dxi-row [ratio]="2"></dxi-row>
   <dxi-row [ratio]="1"></dxi-row>
+  <dxi-row [ratio]="1" ></dxi-row>
   <dxi-col [ratio]="1" screen="lg md"></dxi-col>
   <dxi-col [ratio]="3" screen="lg md"></dxi-col>
   <dxi-col [ratio]="1" screen="sm xs"></dxi-col>
@@ -33,6 +34,8 @@
   <dxi-item>
     <dxi-location [row]="2" [col]="0" [colspan]="4" screen="lg md"></dxi-location>
     <dxi-location [row]="3" [col]="0" [colspan]="1" screen="sm xs"></dxi-location>
+   
     <app-revenue-chart [revenueData]="revenueData"></app-revenue-chart>
+    
   </dxi-item>
 </dx-responsive-box>

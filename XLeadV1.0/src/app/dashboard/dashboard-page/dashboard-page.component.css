@@ -12,12 +12,22 @@
   }
 }
 
-.chart-wrapper{
-  padding-left: 9.5%;
+.chart-wrapper {
+  padding: 1rem;
+  padding-left: 7.5%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
   .chart-wrapper {
-    padding-left: 0;
+    padding: 0rem;
+    
+  }
+}
+
+@media (max-height: 480px) {
+  .chart-wrapper {
+    padding: 0rem;
   }
 }
