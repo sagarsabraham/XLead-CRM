@@ -1,8 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { IconComponent } from '../icon/icon.component';
-import { CommonModule, NgClass } from '@angular/common';
-import { DxListModule } from 'devextreme-angular';
 
 @Component({
   selector: 'app-icon-text',
