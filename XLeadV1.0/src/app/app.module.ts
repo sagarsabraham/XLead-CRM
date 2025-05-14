@@ -17,28 +17,14 @@ import { DealInfoModule } from './deal-info/deal-info.module';
 @NgModule({
   declarations: [
     AppComponent,
-    PageNotFoundComponent
+    
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    DevExtremeModule
+    // DevExtremeModule,
+      DxButtonModule,
     RouterModule,
-    DxButtonModule,
-    DxBoxModule,
-    DragDropModule, 
-    CommonModule,
-    PipelineModule ,
-    SharedModule,
-    DxFileUploaderModule,
-    DxPopupModule,
-    DxFormModule,
-    DxNumberBoxModule,    
-    DxSelectBoxModule,    
-    DxDateBoxModule,
-    DealInfoModule
-
-   
     
   ],
   providers: [],

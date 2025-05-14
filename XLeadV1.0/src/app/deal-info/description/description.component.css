@@ -21,29 +21,6 @@
   color: #666;
 }
 
-.edit-mode {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-}
-
-.dx-icon-check {
-  color: green;
-  cursor: pointer;
-  font-size: 20px;
-}
-
-.dx-icon-close {
-  color: red;
-  cursor: pointer;
-  font-size: 20px;
-}
-
 .dx-icon-edit {
   cursor: pointer;
   font-size: 16px;
@@ -80,7 +57,8 @@
 
 .description-container .description-header .edit-button .edit-icon {
   color: #555;
-  font-size: 1.1rem;
+  cursor: pointer;
+  font-size: 16px;
 }
 
 .description-container .description-header .edit-button:hover .edit-icon {
@@ -94,8 +72,36 @@
 }
 
 .description-container .description-content .description-text {
-  color: #555;
+  color: #666;
   font-size: 14px;
   margin: 0;
   line-height: 1.5;
+}
+
+.edit-mode {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+dx-text-box {
+    width: 500px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.dx-icon-check {
+  color: green;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.dx-icon-close {
+  color: red;
+  cursor: pointer;
+  font-size: 20px;
 }

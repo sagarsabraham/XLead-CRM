@@ -19,4 +19,9 @@ export class DealInfoCardComponent {
   ];
 
   dealDescription = 'This deal description represents the details given by a Salesperson about the deal as a preview.';
+  deal: any = null;
+
+  onDescriptionChange(newDescription: string) {
+     this.deal.description = newDescription;
+  }
 }

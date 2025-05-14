@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DevExtremeModule } from 'devextreme-angular';
+import { DevExtremeModule, DxBoxModule, DxButtonModule, DxDateBoxModule, DxFileUploaderModule, DxFormModule, DxNumberBoxModule, DxPopupModule, DxSelectBoxModule } from 'devextreme-angular';
 import { ButtonComponent } from './button/button.component';
 import { MetricCardComponent } from './metric-card/metric-card.component';
 import { MetricCardOutlineComponent } from './metric-card-outline/metric-card-outline.component';
@@ -8,6 +8,8 @@ import { PipelineStageGraphComponent } from './pipeline-stage-graph/pipeline-sta
 import { TableOutlineComponent } from './table-outline/table-outline.component';
 import { TableComponent } from './table/table.component';
 import { TopcardComponent } from './topcard/topcard.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+
 
 @NgModule({
   declarations: [
@@ -18,11 +20,22 @@ import { TopcardComponent } from './topcard/topcard.component';
     PipelineStageGraphComponent,
     TableComponent,
     TableOutlineComponent,
-    TopcardComponent
+    TopcardComponent,
+    PageNotFoundComponent
   ],
   imports: [
     CommonModule,
-    DevExtremeModule
+    DevExtremeModule,
+  
+    DxBoxModule,  
+    DxFileUploaderModule,
+    DxPopupModule,
+    DxFormModule,
+    DxNumberBoxModule,    
+    DxSelectBoxModule,    
+    DxDateBoxModule,
+
+
   ],
   exports: [
     ButtonComponent,
@@ -31,11 +44,9 @@ import { TopcardComponent } from './topcard/topcard.component';
     PipelineStageGraphComponent,
     TableComponent,
     TableOutlineComponent,
-    TopcardComponent
-  ]
-  exports:[ButtonComponent,MetricCardComponent,MetricCardOutlineComponent,PipelineStageGraphComponent, PageNotFoundComponent],
-
-  
+    TopcardComponent,
+    PageNotFoundComponent
+  ],
    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule { }

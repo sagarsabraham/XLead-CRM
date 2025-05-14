@@ -16,13 +16,8 @@ const routes: Routes = [
   { path: 'company', loadChildren: () => import('./company/company.module').then(m => m.CompanyModule) },
    
 
-
   {path: 'dealinfo', loadChildren: () =>
     import('./deal-info/deal-info.module').then(m => m.DealInfoModule)
-  },
-
-  { path: 'dashboard', loadChildren: () => 
-    import('./dashboard/dashboard.module').then(m => m.DashboardModule) 
   },
 
   {path: '**', component: PageNotFoundComponent},

@@ -12,8 +12,8 @@ export class StatusTimelineComponent {
   stages: string[] = [
     'Qualification',
     'Need Analysis',
-    'Negotiation',
-    'Proposal',
+    'Proposal/Price Quote',
+    'Negotiation/Review',
     'Closed Won',
     'Closed Lost'
   ];
