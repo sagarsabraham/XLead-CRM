@@ -1,4 +1,3 @@
-
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { DxDataGridComponent } from 'devextreme-angular';
 import * as XLSX from 'xlsx';
@@ -9,6 +8,7 @@ interface GridColumn {
   caption: string;
   width?: number;
   allowSorting?: boolean;
+  allowFiltering?: boolean;
   alignment?: 'left' | 'right' | 'center';
   cellTemplate?: string;
   headerCellTemplate?: string;
@@ -23,14 +23,17 @@ interface ExportFormat {
 }
 
 @Component({
-  selector: 'app-contacts-table',
-  templateUrl: './contacts-table.component.html',
-  styleUrls: ['./contacts-table.component.css']
+  selector: 'app-table',
+  templateUrl: './table.component.html',
+  styleUrls: ['./table.component.css'],
 })
-export class ContactsTableComponent implements AfterViewInit, OnDestroy {
+export class TableComponent implements AfterViewInit, OnDestroy {
   @Input() data: any[] = [];
   @Input() headers: GridColumn[] = [];
   @Input() classNames: string = '';
+  @Input() useOwnerTemplate: boolean = true;
+  @Input() ownerField: string = 'owner';
+  @Input() exportFileName: string = 'Data';
 
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter<any>();
 
@@ -47,6 +50,10 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   showExportMessage: boolean = false;
   exportMessage: string = '';
   showCustomColumnChooser: boolean = false;
+  showFilterRow: boolean = true;
+  showHeaderFilter: boolean = true;
+  showFilterPanel: boolean = true;
+  showSearchPanel: boolean = true;
   columnVisibility: { [key: string]: boolean } = {};
   private clickedInsideDropdown: boolean = false;
 
@@ -66,6 +73,8 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
       ...header,
       headerCellTemplate: 'headerCellTemplate',
       visible: true,
+      allowSorting: header.allowSorting !== false,
+      allowFiltering: header.allowFiltering !== false,
     }));
   }
 
@@ -85,10 +94,6 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {}
 
-  /**
-   * Toggles the visibility of the column chooser dropdown.
-   * @param event - The event object from the button click.
-   */
   toggleColumnChooser = (event: any): void => {
     this.stopEventPropagation(event);
     this.showCustomColumnChooser = !this.showCustomColumnChooser;
@@ -104,10 +109,6 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     this.cdr.detectChanges();
   };
 
-  /**
-   * Toggles the visibility of a column in the grid.
-   * @param dataField - The data field of the column to toggle.
-   */
   toggleColumnVisibility = (dataField: string): void => {
     this.columnVisibility[dataField] = !this.columnVisibility[dataField];
     this.dataGrid.instance.columnOption(dataField, 'visible', this.columnVisibility[dataField]);
@@ -115,10 +116,6 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     this.clickedInsideDropdown = true;
   };
 
-  /**
-   * Toggles the export options dropdown.
-   * @param event - The event object from the button click.
-   */
   onExportButtonClick = (event: any): void => {
     this.stopEventPropagation(event);
     this.showExportModal = !this.showExportModal;
@@ -130,17 +127,12 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
         this.positionDropdown(this.exportButton, this.exportOptionsDropdown);
       });
     } else {
-      this.closeDropdowns(event); // Use closeDropdowns instead of closeExportModal
+      this.closeDropdowns(event);
     }
 
     this.cdr.detectChanges();
   };
 
-  /**
-   * Positions a dropdown below its corresponding button.
-   * @param buttonRef - Reference to the button element.
-   * @param dropdownRef - Reference to the dropdown element.
-   */
   private positionDropdown = (buttonRef: ElementRef, dropdownRef: ElementRef): void => {
     if (!buttonRef || !dropdownRef) {
       return;
@@ -164,19 +156,11 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     dropdown.style.right = `${rightOffset}px`;
   };
 
-  /**
-   * Handles clicks inside the column chooser dropdown to prevent it from closing.
-   * @param event - The click event.
-   */
   onColumnChooserDropdownClick = (event: any): void => {
     this.stopEventPropagation(event);
     this.clickedInsideDropdown = true;
   };
 
-  /**
-   * Handles clicks inside the export options dropdown to prevent it from closing.
-   * @param event - The click event.
-   */
   onExportOptionsDropdownClick = (event: any): void => {
     this.stopEventPropagation(event);
     this.clickedInsideDropdown = true;
@@ -218,20 +202,11 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     }
   };
 
-  /**
-   * Emits the selection changed event when the grid selection changes.
-   * @param event - The selection changed event from the grid.
-   */
   handleSelectionChanged = (event: any): void => {
     this.selectedRowKeys = event.selectedRowKeys;
     this.onSelectionChanged.emit(event);
   };
 
-  /**
-   * Generates a hash from a string to consistently map owner names to colors.
-   * @param str - The string to hash (owner name).
-   * @returns A numeric hash value.
-   */
   private hashString = (str: string): number => {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -242,11 +217,6 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     return Math.abs(hash);
   };
 
-  /**
-   * Gets the background color for an owner's avatar based on their name.
-   * @param owner - The owner's name.
-   * @returns The hex color code for the avatar.
-   */
   getOwnerColor = (owner: string): string => {
     if (!owner || typeof owner !== 'string') {
       return this.ownerColors[0];
@@ -257,11 +227,6 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     return this.ownerColors[colorIndex];
   };
 
-  /**
-   * Gets the initial letter of the owner's name for display in the avatar.
-   * @param owner - The owner's name.
-   * @returns The uppercase initial letter, or an empty string if invalid.
-   */
   getOwnerInitial = (owner: string): string => {
     if (!owner || typeof owner !== 'string') {
       return '';
@@ -269,10 +234,6 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     return owner.charAt(0).toUpperCase();
   };
 
-  /**
-   * Toggles sorting on a column.
-   * @param column - The column to sort.
-   */
   toggleSort = (column: GridColumn): void => {
     const currentSortOrder = column.sortOrder;
     let newSortOrder: 'asc' | 'desc' | undefined;
@@ -280,22 +241,20 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     if (!currentSortOrder || currentSortOrder === 'desc') {
       newSortOrder = 'asc';
     } else if (currentSortOrder === 'asc') {
-      newSortOrder = 'desc';
-    } else {
       newSortOrder = undefined;
+    } else {
+      newSortOrder = 'desc';
     }
 
+    column.sortOrder = newSortOrder;
     this.dataGrid.instance.clearSorting();
-    if (newSortOrder) {
-      this.dataGrid.instance.columnOption(column.dataField, 'sortOrder', newSortOrder);
-    }
+    this.headers.forEach((header) => {
+      if (header.sortOrder) {
+        this.dataGrid.instance.columnOption(header.dataField, 'sortOrder', header.sortOrder);
+      }
+    });
   };
 
-  /**
-   * Gets the sort icon for a column based on its sort order.
-   * @param column - The column to get the sort icon for.
-   * @returns The sort icon character.
-   */
   getSortIcon = (column: GridColumn): string => {
     const sortOrder = column.sortOrder;
     if (sortOrder === 'asc') {
@@ -306,22 +265,13 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     return '↕';
   };
 
-  /**
-   * Gets the CSS class for the sort icon based on the column's sort order.
-   * @param column - The column to get the sort icon class for.
-   * @returns The CSS class for the sort icon.
-   */
   getSortIconClass = (column: GridColumn): string => {
     const sortOrder = column.sortOrder;
     return sortOrder ? 'sort-icon active' : 'sort-icon';
   };
 
-  /**
-   * Exports the grid data to the specified format (Excel or CSV).
-   * @param format - The format to export to ('excel' or 'csv').
-   */
   exportData = (format: 'excel' | 'csv'): void => {
-    this.closeDropdowns(); // Use closeDropdowns instead of closeExportModal
+    this.closeDropdowns();
 
     const exportFormats: { [key: string]: ExportFormat } = {
       excel: { format: 'excel', fileType: 'xlsx', fileExtension: 'xlsx' },
@@ -361,9 +311,9 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
       worksheet['!cols'] = headerRow.map(() => ({ wpx: 120 }));
     }
 
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Contacts');
+    XLSX.utils.book_append_sheet(workbook, worksheet, this.exportFileName);
 
-    const fileName = `Contacts.${fileExtension}`;
+    const fileName = `${this.exportFileName}.${fileExtension}`;
     const excelBuffer = XLSX.write(workbook, { bookType: fileType, type: 'array' });
     const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(data, fileName);
@@ -375,18 +325,10 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     }, 3000);
   };
 
-  /**
-   * Cancels the default DevExtreme export behavior.
-   * @param event - The exporting event.
-   */
   onExporting = (event: any): void => {
     event.cancel = true;
   };
 
-  /**
-   * Closes both the column chooser and export dropdowns.
-   * @param event - The event object (optional).
-   */
   closeDropdowns = (event?: any): void => {
     this.stopEventPropagation(event);
     this.showCustomColumnChooser = false;
@@ -395,10 +337,6 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     this.cdr.detectChanges();
   };
 
-  /**
-   * Stops event propagation for both standard DOM and DevExtreme events.
-   * @param event - The event object.
-   */
   private stopEventPropagation = (event: any): void => {
     if (event?.event) {
       event.event.stopPropagation();

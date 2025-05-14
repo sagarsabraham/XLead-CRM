@@ -1,7 +1,5 @@
 .metric-outline {
-    display: flex;
-    gap: 15px;
-    /* width: 300px; */
-    margin-left: 100px;
-    margin-top: 80px;
-  }
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}

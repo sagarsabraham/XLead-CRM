@@ -1,11 +1,22 @@
-<div class="page-layout">
+<div class="page-container">
+
   <!-- <app-sidebar></app-sidebar> -->
-  <div class="content">
-    <!-- <app-header [title]="'Contacts'" [count]="tableData.length"></app-header> -->
-    <app-contacts-table
-      [data]="tableData"
-      [headers]="tableHeaders"
-      class="custom-table"
-    ></app-contacts-table>
+
+  <div class="container">
+    <div class="topbar">
+      <h1>Contacts</h1>
+      <div class="total-count">
+        Total Contacts: {{ totalContacts }}
+      </div>
+    </div>
+    <div class="content">
+      <app-table
+        [data]="tableData"
+        [headers]="tableHeaders"
+        [useOwnerTemplate]="true"
+        [ownerField]="'owner'"
+        [exportFileName]="'Contacts'"
+      ></app-table>
+    </div>
   </div>
 </div>

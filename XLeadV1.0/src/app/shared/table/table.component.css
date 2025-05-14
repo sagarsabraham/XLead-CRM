@@ -120,6 +120,23 @@ dx-data-grid {
   padding: 10px;
 }
 
+:host ::ng-deep .dx-datagrid-search-panel {
+  margin: 8px;
+  width: 300px !important;
+}
+
+:host ::ng-deep .dx-datagrid-search-panel input {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 6px;
+  font-size: 14px;
+}
+
+:host ::ng-deep .dx-datagrid-search-panel input:focus {
+  border-color: #1976d2;
+  outline: none;
+}
+
 :host ::ng-deep .dx-toolbar {
   background-color: #f5f5f5;
   border-bottom: 1px solid #e0e0e0;
@@ -171,41 +188,41 @@ dx-data-grid {
   color: #333;
 }
 
-:host ::ng-deep .dx-button[aria-label='Show Column Chooser'] {
+:host ::ng-deep .dx-button[aria-label="Show Column Chooser"] {
   min-width: 32px;
   padding: 0 8px;
 }
 
-:host ::ng-deep .dx-button[icon='export'],
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data'] {
+:host ::ng-deep .dx-button[icon="export"],
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"] {
   background-color: #4caf50 !important;
   border-color: #4caf50 !important;
   padding: 0 12px;
 }
 
-:host ::ng-deep .dx-button[icon='export'] .dx-icon,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data'] .dx-icon {
+:host ::ng-deep .dx-button[icon="export"] .dx-icon,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"] .dx-icon {
   color: #ffffff !important;
 }
 
-:host ::ng-deep .dx-button[icon='export'] .dx-button-text,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data'] .dx-button-text {
+:host ::ng-deep .dx-button[icon="export"] .dx-button-text,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"] .dx-button-text {
   color: #ffffff !important;
 }
 
-:host ::ng-deep .dx-button[icon='export']:hover,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data']:hover {
+:host ::ng-deep .dx-button[icon="export"]:hover,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"]:hover {
   background-color: #45a049 !important;
   border-color: #45a049 !important;
 }
 
-:host ::ng-deep .dx-button[icon='export']:hover .dx-icon,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data']:hover .dx-icon {
+:host ::ng-deep .dx-button[icon="export"]:hover .dx-icon,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"]:hover .dx-icon {
   color: #ffffff !important;
 }
 
-:host ::ng-deep .dx-button[icon='export']:hover .dx-button-text,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label='Export Data']:hover .dx-button-text {
+:host ::ng-deep .dx-button[icon="export"]:hover .dx-button-text,
+:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"]:hover .dx-button-text {
   color: #ffffff !important;
 }
 
@@ -251,14 +268,14 @@ dx-data-grid {
 }
 
 .column-chooser-dropdown {
-  right: 100px;
-  top: 50px;
+  right: 180px;
+  top: 130px;
   width: 200px;
 }
 
 .export-options-dropdown {
-  right: 10px;
-  top: 50px;
+  right: 12px;
+  top: 145px;
   width: 150px;
 }
 
@@ -292,7 +309,7 @@ dx-data-grid {
   gap: 8px;
 }
 
-.column-chooser-dropdown .dropdown-item input[type='checkbox'] {
+.column-chooser-dropdown .dropdown-item input[type="checkbox"] {
   margin: 0;
 }
 

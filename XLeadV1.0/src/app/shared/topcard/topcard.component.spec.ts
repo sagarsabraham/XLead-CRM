@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ExportComponent } from 'src/app/export/export.component';
 
-import { TopcardComponent } from './topcard.component';
+// import { ExportComponent } from './export.component';
 
-describe('TopcardComponent', () => {
-  let component: TopcardComponent;
-  let fixture: ComponentFixture<TopcardComponent>;
+describe('ExportComponent', () => {
+  let component: ExportComponent;
+  let fixture: ComponentFixture<ExportComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TopcardComponent ]
+      declarations: [ ExportComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TopcardComponent);
+    fixture = TestBed.createComponent(ExportComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -21,3 +22,11 @@ describe('TopcardComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+function beforeEach(arg0: () => Promise<void>) {
+  throw new Error('Function not implemented.');
+}
+
+function expect(component: ExportComponent) {
+  throw new Error('Function not implemented.');
+}
+

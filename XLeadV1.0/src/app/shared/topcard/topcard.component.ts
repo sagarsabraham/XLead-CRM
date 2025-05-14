@@ -1,18 +1,17 @@
-import { Component } from '@angular/core';
-import { Input} from '@angular/core';
-
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-topcard',
   templateUrl: './topcard.component.html',
-  styleUrls: ['./topcard.component.css']
+  styleUrls: ['./topcard.component.css'],
+    // encapsulation: ViewEncapsulation.None
 })
 export class TopcardComponent {
- 
+ @Input() variant: 'default' | 'compact' = 'default';
+
  @Input() amount: number = 0;
   @Input() title: string = '';
-  @Input() isCurrency: boolean = false;
   @Input() icon: string = '';
-
-
+  @Input() iconColor: string = '#000000';
+  @Input() isCurrency: boolean = false; // For Pipeline page compatibility
 }

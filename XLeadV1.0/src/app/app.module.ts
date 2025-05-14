@@ -10,7 +10,10 @@ import { RouterModule } from '@angular/router';
 
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -18,7 +21,6 @@ import { RouterModule } from '@angular/router';
     
   ],
   providers: [],
-  bootstrap: [AppComponent],
- 
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
