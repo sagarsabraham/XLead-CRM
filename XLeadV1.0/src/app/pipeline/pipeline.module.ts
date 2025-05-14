@@ -9,6 +9,9 @@ import { PipelinepageComponent } from './pipelinepage/pipelinepage.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TopcardComponent } from './topcard/topcard.component';
 import { DxBoxModule, DxButtonModule, DxDateBoxModule, DxFileUploaderModule, DxFormModule, DxNumberBoxModule, DxPopupModule, DxSelectBoxModule } from 'devextreme-angular';
+import { TopcardComponent } from '../shared/topcard/topcard.component';
+import { DxBoxModule, DxButtonModule } from 'devextreme-angular';
+import { ButtonComponent } from '../shared/button/button.component';
 import { SharedModule } from '../shared/shared.module';
 import { AddDealModalComponent } from './add-deal-modal/add-deal-modal.component';
 
@@ -22,6 +25,7 @@ import { AddDealModalComponent } from './add-deal-modal/add-deal-modal.component
     PipelinepageComponent,
     TopcardComponent,
     AddDealModalComponent
+   
   ],
   imports: [
     CommonModule,
@@ -39,6 +43,8 @@ import { AddDealModalComponent } from './add-deal-modal/add-deal-modal.component
   ],
   exports: [
     PipelinepageComponent
+    
+    PipelinepageComponent,  
   ]
 
 })

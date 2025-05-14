@@ -1,36 +1,41 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { DxButtonModule, DxChartModule } from 'devextreme-angular';
-import { RouterModule } from '@angular/router';
+import { DevExtremeModule } from 'devextreme-angular';
 import { ButtonComponent } from './button/button.component';
 import { MetricCardComponent } from './metric-card/metric-card.component';
 import { MetricCardOutlineComponent } from './metric-card-outline/metric-card-outline.component';
 import { PipelineStageGraphComponent } from './pipeline-stage-graph/pipeline-stage-graph.component';
-
-
+import { TableOutlineComponent } from './table-outline/table-outline.component';
+import { TableComponent } from './table/table.component';
+import { TopcardComponent } from './topcard/topcard.component';
 
 @NgModule({
   declarations: [
-    PageNotFoundComponent,
     ButtonComponent,
     MetricCardComponent,
+    MetricCardComponent,
     MetricCardOutlineComponent,
-    PipelineStageGraphComponent
+    PipelineStageGraphComponent,
+    TableComponent,
+    TableOutlineComponent,
+    TopcardComponent
   ],
   imports: [
     CommonModule,
-    DxButtonModule,
-    RouterModule,
-  
-    DxChartModule
-
+    DevExtremeModule
   ],
+  exports: [
+    ButtonComponent,
+    MetricCardComponent,
+    MetricCardOutlineComponent,
+    PipelineStageGraphComponent,
+    TableComponent,
+    TableOutlineComponent,
+    TopcardComponent
+  ]
   exports:[ButtonComponent,MetricCardComponent,MetricCardOutlineComponent,PipelineStageGraphComponent, PageNotFoundComponent],
 
   
    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule { }
-
-

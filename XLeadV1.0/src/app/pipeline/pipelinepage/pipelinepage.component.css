@@ -55,13 +55,24 @@ app-dealfooter {
     font-family: 'poppins';
 }
 .topcard-container {
-    padding-left: 16px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 60px;
-}
-
-
+    gap: 20px;
+    flex-wrap: nowrap; /* Ensure cards stay in a single row */
+    width: 100%;
+    justify-content: space-between; /* Distribute cards evenly */
+  }
+  
+  .topcard-container app-topcard {
+    flex: 1; /* Ensure each card takes equal space */
+    min-width: 300px; /* Minimum width for readability */
+    /* Removed max-width to allow cards to stretch */
+  }
+  
+  .topcard-container app-topcard dx-box {
+    height: 150px; /* Consistent height to fit the larger icon and text */
+    align-items: center; /* Center content vertically */
+  }
+  
 .topbar {
     display: flex;
     justify-content: space-between;

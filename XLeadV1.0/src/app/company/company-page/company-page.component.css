@@ -1,0 +1,120 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.page-container {
+  display: flex;
+  width: 100%;
+}
+
+app-sidebar {
+  width: 80px; /* Fixed width for the sidebar */
+  height: 100vh; /* Full height of the viewport */
+  position: fixed; /* Fixed position to stay on the left */
+  top: 0;
+  left: 0;
+  background-color: #f5f5f5; /* Placeholder background color */
+}
+
+.container {
+  padding: 20px;
+  margin-left: 100px; /* 80px sidebar width + 20px gap */
+  width: calc(100% - 100px); /* Adjust width to account for sidebar and gap */
+}
+
+.topbar {
+  display: flex;
+  justify-content: flex-start; /* Align header to the left */
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 32px; /* Increased font size */
+  font-weight: 700; /* Bolder font weight */
+  color: #333;
+  text-align: left;
+}
+
+.metric-cards-section {
+  margin-bottom: 20px;
+}
+
+.topcard-container {
+  display: flex;
+  gap: 20px;
+}
+
+.topcard-container app-topcard {
+  flex: 1; /* Ensure each card takes equal space */
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1230px;
+}
+
+.owner-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between avatar and name */
+}
+
+.owner-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.owner-name {
+  font-size: 14px;
+  color: #333;
+}
+
+dx-data-grid {
+  width: 100%;
+  max-width: 1230px;
+}
+
+/* Row styles */
+:host ::ng-deep .dx-datagrid-rowsview .dx-row {
+  font-size: 14px;
+  height: 48px; /* Consistent row height */
+}
+
+/* Hover effect on rows */
+:host ::ng-deep .dx-datagrid-rowsview .dx-row:hover {
+  background-color: #f0f0f0;
+}
+
+/* Checkbox column alignment */
+:host ::ng-deep .dx-datagrid-rowsview .dx-selection .dx-checkbox {
+  margin: 0 auto;
+}
+
+/* Ensure consistent cell padding */
+:host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
+  padding: 10px;
+}
+
+/* Pager styles */
+:host ::ng-deep .dx-datagrid-pager {
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-top: 1px solid #e0e0e0;
+}

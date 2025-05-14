@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
+import { DevExtremeModule } from 'devextreme-angular';
 import { AppComponent } from './app.component';
+import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 import { RouterModule } from '@angular/router';
 import { DxButtonModule, DxBoxModule, DxFileUploaderModule, DxPopupModule, DxFormModule, DxDateBoxModule, DxNumberBoxModule, DxSelectBoxModule } from 'devextreme-angular';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -13,10 +15,14 @@ import { DealInfoModule } from './deal-info/deal-info.module';
 
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    PageNotFoundComponent
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    DevExtremeModule
     RouterModule,
     DxButtonModule,
     DxBoxModule,
@@ -36,7 +42,6 @@ import { DealInfoModule } from './deal-info/deal-info.module';
     
   ],
   providers: [],
-  bootstrap: [AppComponent],
- 
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
