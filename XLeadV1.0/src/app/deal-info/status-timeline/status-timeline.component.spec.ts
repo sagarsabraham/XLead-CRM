@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TopcardComponent } from './topcard.component';
+import { StatusTimelineComponent } from './status-timeline.component';
 
-describe('TopcardComponent', () => {
-  let component: TopcardComponent;
-  let fixture: ComponentFixture<TopcardComponent>;
+describe('StatusTimelineComponent', () => {
+  let component: StatusTimelineComponent;
+  let fixture: ComponentFixture<StatusTimelineComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TopcardComponent ]
+      declarations: [ StatusTimelineComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TopcardComponent);
+    fixture = TestBed.createComponent(StatusTimelineComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
