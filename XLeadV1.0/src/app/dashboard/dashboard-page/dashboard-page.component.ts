@@ -24,6 +24,8 @@ export class DashboardPageComponent {
     { Account: 'Java Co', revenue: 2000 },
     { Account: 'Java Co', revenue: 2000 },
     { Account: 'Java Co', revenue: 2000 },
+    { Account: 'Java Co', revenue: 2000 },
+    
   ];
 
   stages = [

@@ -11,11 +11,11 @@
   box-sizing: border-box;
 }
 
-/* @media (min-width: 769px) {
+@media (min-width: 769px) {
   .metric-card {
     max-width: 255px;
   }
-} */
+}
 
 .metric-card:hover {
   transform: translateY(-3px);

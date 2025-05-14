@@ -1,20 +1,20 @@
 .chart-card {
   background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  padding: 20px;
-  margin-bottom: 20px;
-  border: 1px solid #e0e0e0;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  border: 0.0625rem solid #e0e0e0;
   width: 100%;
   margin-left: 0;
   max-width: 100%;
 }
 
 .chart-title {
-  font-size: 18px;
+  font-size: 1.125rem; /* 18px */
   font-weight: 500;
   margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: 1rem; /* 16px */
   color: #333;
 }
 
@@ -22,10 +22,10 @@
 /* Customize the tooltip appearance */
 :root .dx-tooltip-wrapper .dx-overlay-content {
   background-color: white;
-  border-radius: 4px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  padding: 8px 12px;
-  font-size: 14px;
+  border-radius: 0.25rem;
+  box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.2);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem; /* 14px */
 }
 
 :root .dx-series-elements .dx-bar {
@@ -35,57 +35,57 @@
 /* Customize axis labels */
 :root .dx-chart text {
   font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-  font-size: 12px;
+  font-size: 0.75rem; /* 12px */
 }
 
 /* Customize axis titles */
 :root .dx-chart-title text {
   font-weight: 500;
-  font-size: 13px;
+  font-size: 0.8125rem; /* 13px */
 }
 
 /* Responsive Styles */
-@media (max-width: 768px) {
+@media (max-width: 48rem) { /* 768px */
   .chart-card {
     margin-left: 0;
-    padding: 15px;
+    padding: 1rem; /* 16px */
   }
 
   .dx-chart {
-    height: 250px !important; /* Reduce chart height on smaller screens */
+    height: 15.625rem !important; /* 250px */
   }
 
   .chart-title {
-    font-size: 16px !important;
+    font-size: 1rem !important; /* 16px */
   }
 
   :root .dx-chart-title text {
-    font-size: 14px;
+    font-size: 0.875rem; /* 14px */
   }
 
   :root .dx-chart text {
-    font-size: 10px !important;
+    font-size: 0.625rem !important; /* 10px */
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 30rem) { /* 480px */
   .chart-card {
-    padding: 10px;
+    padding: 0.625rem; /* 10px */
   }
 
   .dx-chart {
-    height: 220px !important; /* Further reduce chart height for very small screens */
+    height: 13.75rem !important; /* 220px */
   }
 
   .chart-title {
-    font-size: 14px !important;
+    font-size: 0.875rem !important; /* 14px */
   }
 
   :root .dx-chart-title text {
-    font-size: 12px;
+    font-size: 0.75rem; /* 12px */
   }
 
   :root .dx-chart text {
-    font-size: 8px !important;
+    font-size: 0.5rem !important; /* 8px */
   }
 }

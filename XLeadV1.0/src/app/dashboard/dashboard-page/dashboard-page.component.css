@@ -4,30 +4,52 @@
   max-width: 1200px;
   margin: 0 auto;
   font-family: 'Poppins', sans-serif;
+  padding-left: calc(1rem + 64px); /* Sidebar width */
+  padding-top: calc(1rem + 64px); /* Topbar height */
+  box-sizing: border-box;
 }
 
-@media (max-width: 768px) {
-  :host {
-    padding: 0.5rem;
-  }
+.metric-wrapper {
+  padding: 1rem 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .chart-wrapper {
-  padding: 1rem;
-  padding-left: 7.5%;
+  padding: 1rem 0;
   width: 100%;
   box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
+  :host {
+    padding: 0.5rem;
+    padding-left: 0.5rem; /* No sidebar on mobile */
+    padding-top: calc(0.5rem + 64px); /* Keep topbar spacing */
+  }
+
+  .metric-wrapper {
+    padding: 0;
+  }
+
   .chart-wrapper {
-    padding: 0rem;
-    
+    padding: 0.5rem 0;
   }
 }
 
-@media (max-height: 480px) {
-  .chart-wrapper {
-    padding: 0rem;
+@media (max-width: 480px) {
+  :host {
+    padding: 0.25rem;
+    padding-top: calc(0.25rem + 64px);
   }
+
+  /* .chart-wrapper {
+    padding: 0.25rem 0;
+  } */
+}
+
+.top-company-wrapper {
+  padding: 1rem  0;
+  width: 100%;
+  box-sizing: border-box;
 }
