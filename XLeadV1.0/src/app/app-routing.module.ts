@@ -19,6 +19,10 @@ const routes: Routes = [
   },
    
 
+  {path: 'dealinfo', loadChildren: () =>
+    import('./deal-info/deal-info.module').then(m => m.DealInfoModule)
+  },
+
   {path: '**', component: PageNotFoundComponent},
   
 

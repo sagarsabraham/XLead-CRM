@@ -1,0 +1,41 @@
+<!-- <div class="description dx-card">
+  <div class="header">
+    <h4>Description</h4>
+    <i class="dx-icon-edit" (click)="startEditing()" *ngIf="!isEditing"></i>
+  </div>
+  <div class="content" *ngIf="!isEditing">
+    <p>{{ description || 'No description available' }}</p>
+  </div>
+  <div class="edit-mode" *ngIf="isEditing">
+    <dx-text-box
+      [(value)]="editedDescription"
+      placeholder="Enter description">
+    </dx-text-box>
+    <div class="actions">
+      <i class="dx-icon-check" (click)="saveDescription()"></i>
+      <i class="dx-icon-close" (click)="cancelEditing()"></i>
+    </div>
+  </div>
+</div> -->
+
+<div class="description-container">
+  <div class="description-header">
+    <h3 class="description-title">Description</h3>
+    <button class="edit-button" type="button">
+      <i class="dx-icon-edit edit-icon" (click)="startEditing()" *ngIf="!isEditing"></i>
+    </button>
+  </div>
+  <div class="description-content" *ngIf="!isEditing">
+    <p class="description-text">{{ description || 'No description available' }}</p>
+  </div>
+  <div class="edit-mode" *ngIf="isEditing">
+    <dx-text-box
+      [(value)]="editedDescription"
+      placeholder="Enter description">
+    </dx-text-box>
+    <div class="actions">
+      <i class="dx-icon-check" (click)="saveDescription()"></i>
+      <i class="dx-icon-close" (click)="cancelEditing()"></i>
+    </div>
+  </div>
+</div>

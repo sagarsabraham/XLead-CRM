@@ -1,0 +1,21 @@
+.deal-info-page {
+  padding: 10px;
+  font-family: 'Poppins';
+}
+
+.content {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.left-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.right-column {
+  flex: 1;
+}

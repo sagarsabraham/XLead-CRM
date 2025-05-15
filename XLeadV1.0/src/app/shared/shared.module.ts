@@ -1,8 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DevExtremeModule } from 'devextreme-angular';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { DxBoxModule, DxButtonModule, DxChartModule, DxDataGridModule } from 'devextreme-angular';
+import { DevExtremeModule, DxBoxModule, DxButtonModule, DxDateBoxModule, DxFileUploaderModule, DxFormModule, DxNumberBoxModule, DxPopupModule, DxSelectBoxModule } from 'devextreme-angular';
+import {  DxChartModule, DxDataGridModule } from 'devextreme-angular';
 import { ButtonComponent } from './button/button.component';
 import { MetricCardComponent } from './metric-card/metric-card.component';
 import { MetricCardOutlineComponent } from './metric-card-outline/metric-card-outline.component';
@@ -11,6 +10,8 @@ import { TableOutlineComponent } from './table-outline/table-outline.component';
 import { TableComponent } from './table/table.component';
 import { DxoExportModule } from 'devextreme-angular/ui/nested';
 import { TopcardComponent } from './topcard/topcard.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+
 
 
 
@@ -21,19 +22,27 @@ import { TopcardComponent } from './topcard/topcard.component';
     PageNotFoundComponent,
     ButtonComponent,
     MetricCardComponent,
+    MetricCardComponent,
     MetricCardOutlineComponent,
     PipelineStageGraphComponent,
     TableComponent,
     TableOutlineComponent,
-    TopcardComponent
+    TopcardComponent,
+    PageNotFoundComponent
   ],
   imports: [
     CommonModule,
     DevExtremeModule,
+    DxBoxModule,  
+    DxFileUploaderModule,
+    DxPopupModule,
+    DxFormModule,
+    DxNumberBoxModule,    
+    DxSelectBoxModule,    
+    DxDateBoxModule, 
     DxButtonModule,
     // RouterModule, 
-    DxChartModule,
-    DxBoxModule,
+    DxChartModule,  
     DxoExportModule,DxDataGridModule
 
   ],
@@ -45,10 +54,9 @@ import { TopcardComponent } from './topcard/topcard.component';
     TableComponent,
     TableOutlineComponent,
     TopcardComponent,
-  
+    PageNotFoundComponent
   ],
- 
-  
    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+ 
 })
 export class SharedModule { }
