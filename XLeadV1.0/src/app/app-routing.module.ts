@@ -14,6 +14,9 @@ const routes: Routes = [
     import('./contacts/contacts.module').then(m => m.ContactsModule) 
   },
   { path: 'company', loadChildren: () => import('./company/company.module').then(m => m.CompanyModule) },
+  { path: 'overview', loadChildren: () => 
+    import('./pipeline-overview/pipeline-overview.module').then(m => m.PipelineOverviewModule) 
+  },
    
 
   {path: 'dealinfo', loadChildren: () =>

@@ -1,18 +1,19 @@
 <dx-box
   class="card"
+  [ngClass]="{'compact-card': variant === 'compact'}"
   [direction]="'row'">
+  
   <dxi-item [ratio]="0">
-    <div class="icon-container">
-      <div class="icon" [ngStyle]="{'background-color': iconColor}">
-        <i class="dx-icon-{{icon}}"></i>
+    <div class="icon-container" [ngClass]="{'compact-icon-container': variant === 'compact'}">
+      <div class="icon" [ngClass]="{'compact-icon': variant === 'compact'}" [ngStyle]="{'background-color': iconColor}">
+        <i class="dx-icon-{{icon}}"  [ngClass]="{ 'compact-icon-i': variant === 'compact' }"></i>
       </div>
     </div>
   </dxi-item>
+
   <dxi-item [ratio]="1">
-    <div class="details">
-      <h3 class="amount">
-        {{ isCurrency ? (amount | currency:'INR':'symbol':'1.2-2':'en-IN') : amount }}
-      </h3>
+    <div class="details" [ngClass]="{'compact-details': variant === 'compact'}">
+      <h3 class="amount">{{ isCurrency ? (amount | currency:'INR':'symbol':'1.2-2':'en-IN') : amount }}</h3>
       <p class="title">{{ title }}</p>
     </div>
   </dxi-item>

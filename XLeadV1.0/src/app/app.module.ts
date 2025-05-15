@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
-import { DevExtremeModule } from 'devextreme-angular';
 import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 import { RouterModule } from '@angular/router';
@@ -13,10 +12,17 @@ import { SharedModule } from './shared/shared.module';
 import { DealInfoModule } from './deal-info/deal-info.module';
 
 
+import { RouterModule } from '@angular/router';
+
+
+
+
+
 
 @NgModule({
   declarations: [
     AppComponent,
+    
     
   ],
   imports: [
@@ -25,6 +31,8 @@ import { DealInfoModule } from './deal-info/deal-info.module';
     // DevExtremeModule,
       DxButtonModule,
     RouterModule,
+    
+    RouterModule, 
     
   ],
   providers: [],

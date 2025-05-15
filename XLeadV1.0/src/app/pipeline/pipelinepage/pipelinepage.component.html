@@ -8,7 +8,7 @@
             (onClick)="onAddDeal()"
         ></app-button>
     </div>
-    <div class="topcard-container">
+ <div class="topcard-container">
       <app-topcard 
         *ngFor="let card of topcardData; let i = index"
         [amount]="card.amount" 
@@ -18,6 +18,8 @@
         [iconColor]="getIconColor(i)">
       </app-topcard>
     </div>
+
+
     <div class="card-container" cdkDropListGroup>
       <div
           *ngFor="let stage of stages; let i = index;"

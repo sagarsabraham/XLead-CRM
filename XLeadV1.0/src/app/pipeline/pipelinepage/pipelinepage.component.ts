@@ -10,6 +10,23 @@ export class PipelinepageComponent {
     { amount: 33300, title: 'Total Return', isCurrency: true, icon: 'money' },
     { amount: 15, title: 'Total Count of Deals', isCurrency: false, icon: 'sorted' },
   ]; 
+    {
+      amount: 120000,
+      title: 'Total Return',
+      isCurrency: true,
+      icon: 'money',
+      iconBackgroundColor: '#ECB985',
+      variant: 'default'
+    },
+    {
+      amount: 14,
+      title: 'Total Count of Deals',
+      isCurrency: false,
+      icon: 'sorted',
+      iconBackgroundColor: '#ECB985',
+      variant: 'default'
+    }
+  ];
 
   dealButton = [
     { label: 'Deal', icon: 'add'},

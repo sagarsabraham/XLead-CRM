@@ -12,6 +12,7 @@
 .icon-container {
   margin-right: 1px;
   padding-top: 20px;
+
 }
 
 .icon {
@@ -47,4 +48,35 @@
 .details {
   padding-left: 80px;
   margin-left: 20px;
+}
+/* Compact Mode */
+.compact-card {
+  width: 200px !important;
+  height: 100px !important;
+  border-radius: 35px !important;
+  margin-right: 5px;
+}
+::ng-deep .compact-icon-i {
+  font-size: 28px !important;
+}
+
+/* This targets the icon's inner div */
+::ng-deep .compact-icon {
+  padding: 15px !important;
+  
+  min-width: 50px !important;
+  height: 50px !important;
+}
+
+::ng-deep .compact-details .amount {
+  font-size: 30px !important;
+   margin-left: -35px !important;
+
+}
+
+::ng-deep .compact-details .title {
+  font-size: 14px !important;
+  margin-top: 4px !important;
+
+  margin-left: -35px !important;
 }
