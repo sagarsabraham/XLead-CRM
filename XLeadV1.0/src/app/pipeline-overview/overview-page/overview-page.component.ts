@@ -42,7 +42,7 @@ tableHeaders = [
 ];
 
  topcardData = [
-  { amount: 14, title: 'Qualification', icon: 'bullseye' },
+  { amount: 14, title: 'Qualification', icon: 'plus' },
   { amount: 5, title: 'Need Analysis', icon: 'doc' },
   { amount: 4, title: 'Proposal', icon: 'money' },
   { amount: 14, title: 'Negotiation', icon: 'overflow' },
