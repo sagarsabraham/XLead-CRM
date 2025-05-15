@@ -7,11 +7,8 @@ import { Component } from '@angular/core';
 })
 export class PipelinepageComponent {
   topcardData = [
-    { amount: 33300, title: 'Total Return', isCurrency: true, icon: 'money' },
-    { amount: 15, title: 'Total Count of Deals', isCurrency: false, icon: 'sorted' },
-  ]; 
     {
-      amount: 120000,
+      amount: 33300,
       title: 'Total Return',
       isCurrency: true,
       icon: 'money',
@@ -19,14 +16,14 @@ export class PipelinepageComponent {
       variant: 'default'
     },
     {
-      amount: 14,
+      amount: 15,
       title: 'Total Count of Deals',
       isCurrency: false,
       icon: 'sorted',
       iconBackgroundColor: '#ECB985',
       variant: 'default'
     }
-  ];
+  ]; 
 
   dealButton = [
     { label: 'Deal', icon: 'add'},
@@ -337,7 +334,7 @@ export class PipelinepageComponent {
       ]
     }
   ];
-
+  
   // Determine the icon color based on the card index
   getIconColor(index: number): string {
     switch (index) {

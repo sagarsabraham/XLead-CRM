@@ -12,27 +12,17 @@ import { SharedModule } from './shared/shared.module';
 import { DealInfoModule } from './deal-info/deal-info.module';
 
 
-import { RouterModule } from '@angular/router';
-
-
-
-
-
-
 @NgModule({
   declarations: [
     AppComponent,
-    
-    
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     // DevExtremeModule,
       DxButtonModule,
-    RouterModule,
-    
     RouterModule, 
+    DealInfoModule
     
   ],
   providers: [],
