@@ -1,22 +1,18 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
+import { DxResponsiveBoxModule } from 'devextreme-angular'; 
+
 
 @Component({
   selector: 'app-metric-card-outline',
   templateUrl: './metric-card-outline.component.html',
-  styleUrls: ['./metric-card-outline.component.css']
+  styleUrls: ['./metric-card-outline.component.css'],
+  
 })
 export class MetricCardOutlineComponent {
-  @Input() cards: { title?: string, value: string | number, percentage: number, isPositive: boolean }[] = [
-    { title: 'Open Pipelines - This Month', value: 120, percentage: 5, isPositive: true },
-    { title: 'Pipelines Won - This Month', value: 80, percentage: 8, isPositive: true },
-    { title: 'Pipelines Lost - This Month', value: 40, percentage: -3, isPositive: false },
-    { title: 'Revenue Won - This Month', value: 200000, percentage: 12, isPositive: true }
-  ];
-
-  @Input() labels: string[] = [
-    'Open Pipelines - This Month',
-    'Pipelines Won - This Month',
-    'Pipelines Lost - This Month',
-    'Revenue Won - This Month'
+  cards = [
+    { title: 'Open Pipelines - This Month', value: '0', percentage: 100, isPositive: false },
+    { title: 'Pipeline Won - This Month', value: '2', percentage: 100, isPositive: true },
+    { title: 'Pipeline Lost - This Month', value: '1', percentage: 100, isPositive: false },
+    { title: 'Revenue Won - This Month', value: '$5000.00', percentage: 100, isPositive: true }
   ];
 }

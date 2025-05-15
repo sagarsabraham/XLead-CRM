@@ -4,15 +4,14 @@
   <div class="metric-trend" [ngClass]="{'positive': isPositive, 'negative': !isPositive}">
     <span>{{ percentage }}%</span>
     <span
-    class="icons-for-trend"
-  [ngClass]="{
-    'dx-icon': true,
-    'dx-icon-spinup': isPositive,
-    'dx-icon-spindown': !isPositive,
-    'positive-icon': isPositive,
-    'negative-icon': !isPositive
-  }">
-</span>
-
+      class="icons-for-trend"
+      [ngClass]="{
+        'dx-icon': true,
+        'dx-icon-spinup': isPositive,
+        'dx-icon-spindown': !isPositive,
+        'positive-icon': isPositive,
+        'negative-icon': !isPositive
+      }"
+    ></span>
   </div>
 </div>

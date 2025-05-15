@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DevExtremeModule, DxBoxModule, DxButtonModule, DxDateBoxModule, DxFileUploaderModule, DxFormModule, DxNumberBoxModule, DxPopupModule, DxSelectBoxModule } from 'devextreme-angular';
+import { DevExtremeModule, DxBoxModule, DxButtonModule, DxChartModule, DxDateBoxModule, DxFileUploaderModule, DxFormModule, DxNumberBoxModule, DxPopupModule, DxResponsiveBoxModule, DxScrollViewModule, DxSelectBoxModule } from 'devextreme-angular';
 import { ButtonComponent } from './button/button.component';
 import { MetricCardComponent } from './metric-card/metric-card.component';
 import { MetricCardOutlineComponent } from './metric-card-outline/metric-card-outline.component';
@@ -26,7 +26,6 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
   imports: [
     CommonModule,
     DevExtremeModule,
-  
     DxBoxModule,  
     DxFileUploaderModule,
     DxPopupModule,
@@ -34,8 +33,10 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     DxNumberBoxModule,    
     DxSelectBoxModule,    
     DxDateBoxModule,
-
-
+    DxChartModule,
+    DxScrollViewModule,
+    DxResponsiveBoxModule,
+    DxButtonModule
   ],
   exports: [
     ButtonComponent,
