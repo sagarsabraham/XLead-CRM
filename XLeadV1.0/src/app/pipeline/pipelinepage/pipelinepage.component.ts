@@ -334,7 +334,7 @@ export class PipelinepageComponent {
       ]
     }
   ];
-  
+
   // Determine the icon color based on the card index
   getIconColor(index: number): string {
     switch (index) {
@@ -371,6 +371,7 @@ export class PipelinepageComponent {
     if (previousDeals && currentDeals) {
       const [movedItem] = previousDeals.splice(previousIndex, 1);
       currentDeals.splice(currentIndex, 0, movedItem);
+      // console.log('After move:', JSON.stringify(this.stages, null, 2));
     }
   }
   isModalVisible: boolean = false;

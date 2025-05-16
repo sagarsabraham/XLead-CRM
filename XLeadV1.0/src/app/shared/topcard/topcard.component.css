@@ -1,82 +1,121 @@
-.card {
+:host {
+  display: block;
+  padding: var(--space-2);
+}
+
+.topcard {
   display: flex;
-  flex-direction: row;
-  padding: 16px;
-  border-radius: 35px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  margin: 16px 0;
+  align-items: center;
   background-color: white;
-  border: 1px solid #e0e0e0;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  height: 100%;
 }
 
-.icon-container {
-  margin-right: 1px;
-  padding-top: 20px;
-
+.topcard:hover {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+              0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-.icon {
+.topcard.compact {
+  padding: 0.75rem;
+}
+
+.topcard-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
   display: flex;
-  border-radius: 50%;
-  padding: 25px;
-  color: white;
   align-items: center;
   justify-content: center;
-  min-width: 80px;
-  height: 80px;
-  background-color: #e0e0e0; /* Default, overridden by Company page */
+  margin-right: 1rem;
+  flex-shrink: 0;
 }
 
-.icon i {
-  font-size: 58px;
+.compact .topcard-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-right: 0.75rem;
 }
 
-.amount {
-  font-family: 'Poppins', sans-serif;
+.topcard-icon i {
+  color: white;
+  font-size: 1.5rem;
+}
+
+.compact .topcard-icon i {
+  font-size: 1.25rem;
+}
+
+.topcard-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.topcard-amount {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.2;
+}
+
+.compact .topcard-amount {
+  font-size: 1.5rem;
+}
+
+.topcard-title {
+  font-size: 0.875rem;
+  color: #6b7280; 
   margin: 0;
-  font-size: 36px;
-  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.title {
-  font-family: 'Poppins', sans-serif;
-  margin-top: 20px;
-  font-size: 20px;
-  color: #333333;
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .topcard-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-right: 0.75rem;
+  }
+
+  .topcard-amount {
+    font-size: 1.5rem;
+  }
+
+  .topcard-title {
+    font-size: 0.75rem;
+  }
+
+  .compact .topcard-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .compact .topcard-amount {
+    font-size: 1.25rem;
+  }
 }
 
-.details {
-  padding-left: 80px;
-  margin-left: 20px;
-}
-/* Compact Mode */
-.compact-card {
-  width: 200px !important;
-  height: 100px !important;
-  border-radius: 35px !important;
-  margin-right: 5px;
-}
-::ng-deep .compact-icon-i {
-  font-size: 28px !important;
-}
+@media (max-width: 576px) {
+  .topcard {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.75rem;
+  }
 
-/* This targets the icon's inner div */
-::ng-deep .compact-icon {
-  padding: 15px !important;
-  
-  min-width: 50px !important;
-  height: 50px !important;
-}
+  .topcard-icon {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
 
-::ng-deep .compact-details .amount {
-  font-size: 30px !important;
-   margin-left: -35px !important;
-
-}
-
-::ng-deep .compact-details .title {
-  font-size: 14px !important;
-  margin-top: 4px !important;
-
-  margin-left: -35px !important;
+  .compact .topcard-icon {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
 }

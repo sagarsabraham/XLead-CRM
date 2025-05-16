@@ -19,7 +19,7 @@ export class StatusTimelineComponent {
   ];
 
   onStageClick(stage: string) {
-    this.currentStage = stage; // optional: visually reflect change inside component too
+    // this.currentStage = stage; // optional: visually reflect change inside component too
     this.stageChange.emit(stage);
   }
 }
