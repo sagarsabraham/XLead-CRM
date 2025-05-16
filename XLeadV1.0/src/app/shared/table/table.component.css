@@ -1,44 +1,81 @@
-/* Component Host Styles */
 :host {
   display: block;
   position: relative;
   width: 100%;
 }
 
-/* Table Container Styles */
+/* Table Container */
 .table-container {
   display: flex;
   flex-direction: column;
   max-width: 1230px;
   position: relative;
   width: 100%;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  overflow: hidden;
 }
 
-/* Owner Cell and Avatar Styles */
-.owner-cell {
-  align-items: center;
+/* Toolbar */
+.table-toolbar {
   display: flex;
-  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f9fafb;
 }
 
-.owner-avatar {
-  align-items: center;
-  border-radius: 50%;
-  color: white;
+/* Title */
+.table-title h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Buttons */
+.table-actions {
   display: flex;
-  font-size: 14px;
+  gap: 0.5rem;
+  /* align-items: right; */
+  margin-left: auto;
+}
+
+.export-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  height: 32px;
-  justify-content: center;
-  width: 32px;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease;
+  background-color: #10b981; /* green-500 */
+  color: white;
 }
 
-.owner-name {
-  color: #333;
-  font-size: 14px;
+.export-button i {
+  font-size: 1rem;
 }
 
-/* DevExtreme Grid Overrides */
+.export-button:hover {
+  background-color: #059669; /* green-600 */
+}
+
+.export-button.secondary {
+  background-color: #e5e7eb; /* gray-200 */
+  color: #111827; /* gray-900 */
+}
+
+.export-button.secondary:hover {
+  background-color: #d1d5db; /* gray-300 */
+}
+
+/* Data Grid */
 dx-data-grid {
   max-width: 1230px;
   width: 100%;
@@ -61,6 +98,10 @@ dx-data-grid {
   padding: 10px;
 }
 
+:host ::ng-deep .dx-datagrid-rowsview .dx-row.dx-row-alt {
+  background-color: #f3f4f6;
+}
+
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td {
   background-color: #f5f5f5;
   color: #333;
@@ -68,6 +109,12 @@ dx-data-grid {
   padding: 10px;
 }
 
+:host ::ng-deep .dx-datagrid-headers .dx-datagrid-text-content {
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Filters */
 :host ::ng-deep .dx-header-filter {
   color: #666 !important;
   font-size: 16px !important;
@@ -94,6 +141,7 @@ dx-data-grid {
   outline: none;
 }
 
+/* Filter Panel */
 :host ::ng-deep .dx-datagrid-filter-panel {
   background-color: #f9f9f9;
   border-top: 1px solid #e0e0e0;
@@ -114,147 +162,38 @@ dx-data-grid {
   color: #0d47a1;
 }
 
+/* Pager */
 :host ::ng-deep .dx-datagrid-pager {
   background-color: #f9f9f9;
   border-top: 1px solid #e0e0e0;
   padding: 10px;
 }
 
-:host ::ng-deep .dx-datagrid-search-panel {
-  margin: 8px;
-  width: 300px !important;
-}
-
-:host ::ng-deep .dx-datagrid-search-panel input {
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  padding: 6px;
-  font-size: 14px;
-}
-
-:host ::ng-deep .dx-datagrid-search-panel input:focus {
-  border-color: #1976d2;
-  outline: none;
-}
-
-:host ::ng-deep .dx-toolbar {
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #e0e0e0;
-  padding: 8px 12px;
-}
-
-:host ::ng-deep .dx-toolbar-items-container {
+/* Avatar + Owner Cell */
+.owner-cell {
   display: flex;
-  justify-content: flex-end;
-}
-
-:host ::ng-deep .dx-toolbar-after {
   align-items: center;
-  display: flex;
   gap: 8px;
 }
 
-:host ::ng-deep .dx-button {
-  align-items: center;
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  display: flex;
+.owner-avatar {
+  width: 32px;
   height: 32px;
-  justify-content: center;
-  transition: background-color 0.2s, border-color 0.2s;
-}
-
-:host ::ng-deep .dx-button:hover {
-  background-color: #f0f0f0;
-  border-color: #d0d0d0;
-}
-
-:host ::ng-deep .dx-button .dx-icon {
-  color: #666;
-  font-size: 16px;
-}
-
-:host ::ng-deep .dx-button:hover .dx-icon {
-  color: #333;
-}
-
-:host ::ng-deep .dx-button .dx-button-text {
-  font-size: 14px;
-  margin-left: 4px;
-}
-
-:host ::ng-deep .dx-button:hover .dx-button-text {
-  color: #333;
-}
-
-:host ::ng-deep .dx-button[aria-label="Show Column Chooser"] {
-  min-width: 32px;
-  padding: 0 8px;
-}
-
-:host ::ng-deep .dx-button[icon="export"],
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"] {
-  background-color: #4caf50 !important;
-  border-color: #4caf50 !important;
-  padding: 0 12px;
-}
-
-:host ::ng-deep .dx-button[icon="export"] .dx-icon,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"] .dx-icon {
-  color: #ffffff !important;
-}
-
-:host ::ng-deep .dx-button[icon="export"] .dx-button-text,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"] .dx-button-text {
-  color: #ffffff !important;
-}
-
-:host ::ng-deep .dx-button[icon="export"]:hover,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"]:hover {
-  background-color: #45a049 !important;
-  border-color: #45a049 !important;
-}
-
-:host ::ng-deep .dx-button[icon="export"]:hover .dx-icon,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"]:hover .dx-icon {
-  color: #ffffff !important;
-}
-
-:host ::ng-deep .dx-button[icon="export"]:hover .dx-button-text,
-:host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"]:hover .dx-button-text {
-  color: #ffffff !important;
-}
-
-/* Header Cell and Sort Icon Styles */
-.header-cell {
-  align-items: center;
+  border-radius: 50%;
   display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.header-text {
-  color: #333;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
   font-weight: 500;
 }
 
-.sort-icon {
-  color: #666;
-  cursor: pointer;
-  display: inline-block;
-  font-size: 16px;
+.owner-name {
+  font-size: 14px;
+  color: #1f2937;
 }
 
-.sort-icon:hover {
-  color: #333;
-}
-
-.sort-icon.active {
-  color: #1976d2;
-}
-
-/* Dropdown Styles */
+/* Dropdown */
 .custom-dropdown {
   background: #ffffff;
   border: 1px solid #d0d0d0;
@@ -304,8 +243,8 @@ dx-data-grid {
 }
 
 .column-chooser-dropdown .dropdown-item label {
-  align-items: center;
   display: flex;
+  align-items: center;
   gap: 8px;
 }
 
@@ -313,30 +252,28 @@ dx-data-grid {
   margin: 0;
 }
 
-/* Export Dropdown Button Styles */
+/* Export dropdown button (inside dropdown) */
 .export-options-dropdown .export-button {
-  align-items: center;
   background: none;
   border: none;
   color: #333;
   cursor: pointer;
   display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 14px;
   font-weight: 500;
-  gap: 8px;
   padding: 0;
-  transition: color 0.2s ease;
   width: 100%;
 }
 
 .export-options-dropdown .export-button:hover {
-  background: none;
   color: #1976d2;
 }
 
 .export-options-dropdown .export-button .dx-icon {
-  color: #666;
   font-size: 16px;
+  color: #666;
   transition: color 0.2s ease;
 }
 
@@ -360,48 +297,12 @@ dx-data-grid {
   color: #1e88e5;
 }
 
-/* Export Message Styles */
-.export-message {
-  animation: fadeInOut 3s ease-in-out;
-  background-color: #4caf50;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  color: #ffffff;
-  font-size: 14px;
-  left: 50%;
-  padding: 8px 16px;
-  position: absolute;
-  top: 10px;
-  transform: translateX(-50%);
-  z-index: 1001;
-}
-
-@keyframes fadeInOut {
-  0% {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-10px);
-  }
-  10% {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-  90% {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-10px);
-  }
-}
-
-/* Close Button Styles */
+/* Close Button */
 .close-button {
   color: #666;
   cursor: pointer;
   font-size: 18px;
   font-weight: bold;
-  line-height: 1;
   position: absolute;
   right: 12px;
   top: 50%;
@@ -410,4 +311,49 @@ dx-data-grid {
 
 .close-button:hover {
   color: #d32f2f;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  :host ::ng-deep .dx-datagrid-pager .dx-page,
+  :host ::ng-deep .dx-datagrid-pager .dx-page-size {
+    min-width: 2.75rem;
+    height: 2.75rem;
+    line-height: 2.75rem;
+  }
+
+  .export-button {
+    padding: 0.75rem;
+  }
+
+  .export-button span {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .table-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .table-actions {
+    align-self: flex-end;
+  }
+
+  :host ::ng-deep .dx-datagrid-headers .dx-header-row > td,
+  :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
+    padding: 0.5rem;
+  }
+
+  .owner-cell {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .owner-avatar {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
 }
