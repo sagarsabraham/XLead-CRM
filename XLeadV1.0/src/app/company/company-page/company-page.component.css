@@ -3,118 +3,204 @@
   width: 100%;
 }
 
+/* Layout */
 .page-container {
   display: flex;
   width: 100%;
+  position: relative;
 }
 
-app-sidebar {
-  width: 80px; /* Fixed width for the sidebar */
-  height: 100vh; /* Full height of the viewport */
-  position: fixed; /* Fixed position to stay on the left */
-  top: 0;
-  left: 0;
-  background-color: #f5f5f5; /* Placeholder background color */
+.sidebar-space {
+  width: 0.5rem; /* 80px */
+  /* flex-shrink: 0; */
+  display: none;
 }
 
+/* Main Content */
+.content-container,
 .container {
-  padding: 20px;
-  margin-left: 100px; /* 80px sidebar width + 20px gap */
-  width: calc(100% - 100px); /* Adjust width to account for sidebar and gap */
+  flex: 1;
+  padding: 1.5rem;
+  /* margin-left: 6.25rem; 5rem sidebar + 1.25rem gap */
+  width: 100%;
+  transition: all 0.3s ease;
 }
 
+/* Topbar */
 .topbar {
   display: flex;
-  justify-content: flex-start; /* Align header to the left */
-  align-items: center;
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  animation: fadeIn 0.5s ease;
 }
 
 .topbar h1 {
   margin: 0;
-  font-size: 32px; /* Increased font size */
-  font-weight: 700; /* Bolder font weight */
-  color: #333;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
   text-align: left;
 }
 
+/* Metric Cards Section */
 .metric-cards-section {
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
+  animation: fadeIn 0.6s ease;
 }
 
 .topcard-container {
-  display: flex;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1rem;
 }
 
 .topcard-container app-topcard {
-  flex: 1; /* Ensure each card takes equal space */
-}
-
-.content {
   flex: 1;
-  overflow-y: auto;
 }
 
+/* Table Wrapper */
+.table-wrapper,
 .table-container {
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  animation: fadeIn 0.7s ease;
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1230px;
+  max-width: 76.875rem; /* 1230px */
 }
 
+/* Owner Cell */
 .owner-cell {
   display: flex;
   align-items: center;
-  gap: 8px; /* Space between avatar and name */
+  gap: 0.5rem;
 }
 
 .owner-avatar {
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
 }
 
 .owner-name {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #333;
 }
 
+/* DevExtreme Grid Overrides */
 dx-data-grid {
   width: 100%;
-  max-width: 1230px;
+  max-width: 76.875rem;
 }
 
-/* Row styles */
 :host ::ng-deep .dx-datagrid-rowsview .dx-row {
-  font-size: 14px;
-  height: 48px; /* Consistent row height */
+  font-size: 0.875rem;
+  height: 3rem;
 }
 
-/* Hover effect on rows */
 :host ::ng-deep .dx-datagrid-rowsview .dx-row:hover {
   background-color: #f0f0f0;
 }
 
-/* Checkbox column alignment */
 :host ::ng-deep .dx-datagrid-rowsview .dx-selection .dx-checkbox {
   margin: 0 auto;
 }
 
-/* Ensure consistent cell padding */
 :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
-  padding: 10px;
+  padding: 0.625rem;
 }
 
-/* Pager styles */
+:host ::ng-deep .dx-datagrid-headers .dx-header-row > td {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  color: #374151;
+  padding: 0.625rem;
+}
+
+/* Pager */
 :host ::ng-deep .dx-datagrid-pager {
-  padding: 10px;
   background-color: #f9f9f9;
   border-top: 1px solid #e0e0e0;
+  padding: 0.625rem;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.625rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Breakpoints */
+@media (min-width: 48rem) {
+  .sidebar-space {
+    display: block;
+  }
+
+  .topbar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .topbar h1 {
+    font-size: 2.25rem;
+  }
+   .content-container,
+  .container {
+    margin-left: 6.25rem;
+    width: calc(100% - 6.25rem);
+  }
+
+}
+
+@media (min-width: 62rem) {
+  .content-container,
+  .container {
+    padding: 2rem;
+  }
+
+  .topcard-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 36rem) {
+  .content-container,
+  .container {
+    padding: 1rem;
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .topbar {
+    margin-bottom: 1rem;
+  }
+
+  .metric-cards-section {
+    margin-bottom: 1rem;
+  }
+
+  .topcard-container {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-space {
+    display: none;
+  }
 }

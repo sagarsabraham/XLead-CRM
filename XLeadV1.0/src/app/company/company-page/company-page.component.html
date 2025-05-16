@@ -1,11 +1,11 @@
 <div class="page-container">
-  <!-- Sidebar Component Placeholder: This is where the navigation sidebar will be placed. It should have a fixed width of 80px and provide navigation links for the app. -->
-  <!-- <app-sidebar></app-sidebar> -->
+  <div class="sidebar-space"></div>
   
-  <div class="container">
+  <div class="content-container">
     <div class="topbar">
       <h1>Companies</h1>
     </div>
+    
     <div class="metric-cards-section">
       <div class="topcard-container">
         <app-topcard
@@ -14,11 +14,11 @@
           [title]="card.title"
           [icon]="card.icon"
           [iconColor]="getIconColor(i)"
-         
         ></app-topcard>
       </div>
     </div>
-    <div class="content">
+    
+    <div class="table-wrapper">
       <app-table
         [data]="tableData"
         [headers]="tableHeaders"
