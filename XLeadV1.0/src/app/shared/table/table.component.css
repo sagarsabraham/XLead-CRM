@@ -5,43 +5,86 @@
   width: 100%;
 }
 
-/* Table Container Styles */
-.table-container {
-  display: flex;
-  flex-direction: column;
-  max-width: 1230px;
+.table-scroll-container {
   position: relative;
   width: 100%;
+  overflow-x: hidden;
 }
 
-/* Owner Cell and Avatar Styles */
-.owner-cell {
-  align-items: center;
-  display: flex;
-  gap: 8px;
-}
-
-.owner-avatar {
-  align-items: center;
-  border-radius: 50%;
-  color: white;
-  display: flex;
-  font-size: 14px;
-  font-weight: 500;
-  height: 32px;
-  justify-content: center;
-  width: 32px;
-}
-
-.owner-name {
-  color: #333;
-  font-size: 14px;
+.table-wrapper {
+  width: 100%;
+  min-width: 100%;
 }
 
 /* DevExtreme Grid Overrides */
-dx-data-grid {
-  max-width: 1230px;
-  width: 100%;
+:host ::ng-deep dx-data-grid {
+  width: 100% !important;
+  min-width: 100%;
+  display: block;
+}
+
+/* Fix the header and filter row */
+:host ::ng-deep .dx-datagrid-headers,
+:host ::ng-deep .dx-datagrid-filter-row,
+:host ::ng-deep .dx-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #f5f5f5;
+}
+
+/* Ensure the filter row stays below the toolbar */
+:host ::ng-deep .dx-datagrid-filter-row {
+  top: 48px;
+}
+
+/* Make only the rows view scrollable */
+:host ::ng-deep .dx-datagrid-rowsview {
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  position: relative;
+}
+
+/* Remove scrollbar from the main content area */
+:host ::ng-deep .dx-datagrid-content {
+  overflow-x: hidden !important;
+}
+
+/* Remove scrollbar from the main scrollable container */
+:host ::ng-deep .dx-scrollable {
+  overflow-x: hidden !important;
+}
+
+/* Ensure the scrollable content respects the rows view */
+:host ::ng-deep .dx-scrollable-content {
+  width: 100% !important;
+  min-width: fit-content !important;
+}
+
+/* Style the sticky (fixed) column */
+:host ::ng-deep .dx-datagrid .dx-column-fixed {
+  background-color: #fafafa;
+  z-index: 1;
+}
+
+/* Style the cells in the sticky column */
+:host ::ng-deep .dx-datagrid-headers .dx-header-row > td[role="columnheader"].dx-column-fixed,
+:host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td.dx-column-fixed {
+  border-right: 1px solid #e0e0e0;
+  padding: 10px;
+}
+
+/* Remove hardcoded column widths */
+:host ::ng-deep .dx-datagrid-headers .dx-header-row > td,
+:host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
+  padding: 10px;
+}
+
+/* Center the checkbox */
+:host ::ng-deep .dx-datagrid-headers .dx-header-row > td.dx-selection,
+:host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td.dx-selection {
+  padding: 10px;
+  text-align: center;
 }
 
 :host ::ng-deep .dx-datagrid-rowsview .dx-row {
@@ -57,15 +100,10 @@ dx-data-grid {
   margin: 0 auto;
 }
 
-:host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
-  padding: 10px;
-}
-
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td {
   background-color: #f5f5f5;
   color: #333;
   font-weight: 500;
-  padding: 10px;
 }
 
 :host ::ng-deep .dx-header-filter {
@@ -145,7 +183,8 @@ dx-data-grid {
 
 :host ::ng-deep .dx-toolbar-items-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
 }
 
 :host ::ng-deep .dx-toolbar-after {
@@ -269,13 +308,13 @@ dx-data-grid {
 
 .column-chooser-dropdown {
   right: 180px;
-  top: 130px;
+  top: 50px;
   width: 200px;
 }
 
 .export-options-dropdown {
   right: 12px;
-  top: 145px;
+  top: 50px;
   width: 150px;
 }
 
@@ -303,6 +342,13 @@ dx-data-grid {
   color: #1976d2;
 }
 
+/* Style for Select All item */
+.select-all-item {
+  border-bottom: 1px solid #e0e0e0; /* Separator between Select All and other items */
+  font-weight: 500; /* Slightly bolder to distinguish */
+}
+
+/* Style for checkboxes in column chooser */
 .column-chooser-dropdown .dropdown-item label {
   align-items: center;
   display: flex;
@@ -311,6 +357,12 @@ dx-data-grid {
 
 .column-chooser-dropdown .dropdown-item input[type="checkbox"] {
   margin: 0;
+}
+
+/* Style for indeterminate state */
+.column-chooser-dropdown .dropdown-item input[type="checkbox"]:indeterminate {
+  background-color: #1976d2; /* Blue fill for indeterminate state */
+  border-color: #1976d2;
 }
 
 /* Export Dropdown Button Styles */
@@ -410,4 +462,36 @@ dx-data-grid {
 
 .close-button:hover {
   color: #d32f2f;
+}
+
+/* Selection Info Styles */
+.selection-info {
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+  line-height: 32px;
+}
+
+/* Owner Cell and Avatar Styles */
+.owner-cell {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.owner-avatar {
+  align-items: center;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  height: 32px;
+  justify-content: center;
+  width: 32px;
+}
+
+.owner-name {
+  color: #333;
+  font-size: 14px;
 }
