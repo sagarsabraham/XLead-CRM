@@ -1,21 +1,20 @@
-<dx-drawer [opened]="isSidebarOpen" [minSize]="0" [maxSize]="240" position="left">
-  <div class="sidebar">
-    <!-- Logo -->
-    <div class="logo">
-      <img [src]="logoPath" alt="Logo" />
-    </div>
-
-    <!-- Navigation Icons -->
-    <div class="icons">
-        <app-icon
-          *ngFor="let item of navItems"
-          [iconPath]="item.iconPath"
-        ></app-icon>
-    </div>
-
-    <!-- Profile -->
-    <div class="profile">
-      <div class="initials-badge">{{ initials }}</div>
-    </div>
+<div class="sidebar">
+  <div class="logo">
+    <img [src]="logoPath" alt="Logo" />
   </div>
-</dx-drawer>
+  <div class="icons" *ngFor="let item of navItems">
+    <app-icon
+      [iconPath]="item.iconPath"
+      [isActive]="item.isActive"
+      [ngClass]="{
+        'active-icon': item.isActive,
+        'hover-icon': !item.isActive
+      }"
+      (onClick)="navigate(item.route)"
+    ></app-icon>
+    <span class="icon-label">{{ item.text }}</span>
+  </div>
+  <div class="profile">
+    <div class="initials-badge">{{ initials }}</div>
+  </div>
+</div>

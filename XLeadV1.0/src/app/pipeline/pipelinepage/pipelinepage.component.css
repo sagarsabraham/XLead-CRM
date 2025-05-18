@@ -46,7 +46,7 @@ app-dealfooter {
 }
 
 .container {
-    margin-left: 8.33vh;
+    margin-left: 10vh;
     overflow-x: auto;
     padding: 16px;
     font-family: 'poppins';
@@ -55,7 +55,7 @@ app-dealfooter {
     display: flex;
     gap: 30px;
     flex-wrap: nowrap; 
-    /* width: 100%; */
+    width: 100%;
     justify-content: space-between; 
     padding-left: 16px;
   }

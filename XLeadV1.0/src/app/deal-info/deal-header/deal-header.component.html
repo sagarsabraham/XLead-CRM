@@ -1,11 +1,11 @@
-<div class="deal-header">
+<div class="deal-header" *ngIf="deal">
   <div class="deal-left">
-    <h2>Display Screen</h2>
-    <p>Amount: $50,000.00</p>
+    <h2>{{ deal.deal_name }}</h2>
+    <p>Amount: {{ deal.amount | currency:'USD' : 'symbol' : '1.2-2' : 'en-US'}}</p>
   </div>
   <div class="deal-right">
-    <p><i class="dx-icon-group"></i> KniTT</p>
-    <p>Closing Date : 3 Jun 2025</p>
+    <p><i class="dx-icon-group"></i>{{ deal.company_name }}</p>
+    <p>Closing Date : {{deal.closing_date | date:'d MMM y'}}</p>
   </div>
 </div>
 

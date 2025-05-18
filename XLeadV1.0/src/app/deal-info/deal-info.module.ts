@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { DealInfoRoutingModule } from './deal-info-routing.module';
 import { DealinfopageComponent } from './dealinfopage/dealinfopage.component';
 import { DealHeaderComponent } from './deal-header/deal-header.component';
@@ -10,6 +9,7 @@ import { RelatedInfoComponent } from './related-info/related-info.component';
 import { DescriptionComponent } from './description/description.component';
 import { HistoryTimelineComponent } from './history-timeline/history-timeline.component';
 import { DealInfoCardComponent } from './deal-info-card/deal-info-card.component';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -23,6 +23,7 @@ import { DealInfoCardComponent } from './deal-info-card/deal-info-card.component
     DealInfoCardComponent
   ],
   imports: [
+    SharedModule,
     CommonModule,
     DealInfoRoutingModule,
     DxButtonModule,

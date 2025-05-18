@@ -1,14 +1,15 @@
+<app-sidebar></app-sidebar>
 <div class="deal-info-page">
-    <app-deal-header [deal]="deal"></app-deal-header>
+    <app-deal-header [deal]="dealInfo[1]"></app-deal-header>
     <app-status-timeline
         [currentStage]="deal?.stage"
         (stageChange)="onStageChange($event)">
     </app-status-timeline>
     <div class="content">
         <div class="left-column">
-            <app-deal-info-card></app-deal-info-card>
+            <app-deal-info-card [dealInfo]="dealInfo[1]"></app-deal-info-card>
             <!-- <app-description 
-                [description]="deal?.description"
+                [descrisption]="deal?.description"
                 (descriptionChange)="onDescriptionChange($event)">
             </app-description> -->
         </div>

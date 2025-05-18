@@ -1,65 +1,60 @@
-:host{
+:host {
   border-top-right-radius: 30px;
   border-bottom-right-radius: 30px;
 }
 
 .sidebar {
-    width: 8.33vh; /* 8.33% of the viewport width */
-    background-color: #000000;
-    color: hsl(0, 0%, 100%);
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    padding: 16px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    align-items: center;
-    padding-top: 242px;
-  }
-  
-  .icons {
-    flex: 1;
-    display: flex;
-    left: 45px;
-    flex-direction: column;
-    align-items: center;
-    gap: 37px;
-  }
-  
-  .initials-badge {
-    margin-top: auto;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #DC143C;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    font-weight: bold;
-  }
-  
-  .sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    backdrop-filter: blur(5px);
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 998;
-  }
-
-.logo{
-  top: 30px; /* Y-coordinate: 100px from the top */
-  left: 10px; /* X-coordinate: 50px from the left */
-  position: absolute; /* Positioning the logo */
+  width: 9vh;
+  z-index: 11;
+  background-color: #000000;
+  color: hsl(0, 0%, 100%);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  align-items: center;
+  padding-top: 180px;
 }
 
-.profile{
-  top: 700px;
-  left: 30px;
+.icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 37px;
+}
+
+.initials-badge {
+  margin-top: auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #dc143c;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.logo {
+  top: 3vh;
+  left: 0.7vh;
   position: absolute;
+}
+
+.profile {
+  top: 93vh;
+  position: absolute;
+}
+
+.active-icon {
+  filter: brightness(1.2);
+}
+
+.hover-icon:hover {
+  filter: brightness(1.5);
 }

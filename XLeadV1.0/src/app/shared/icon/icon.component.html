@@ -1,3 +1,16 @@
-  <dx-button class="icon-container">
+  <!-- <dx-button >
     <img [src]="iconPath" alt="Icon" class="icon-image" />
-  </dx-button>
+  </dx-button> -->
+
+
+  <dx-button
+  class="icon-container"
+  [ngClass]="{
+    'active-button': isActive,
+    'hover-button': !isActive
+  }"
+  (onClick)="onClick.emit()"
+  stylingMode="text"
+>
+  <img [src]="iconPath" alt="Icon" class="icon-image" />
+</dx-button>
