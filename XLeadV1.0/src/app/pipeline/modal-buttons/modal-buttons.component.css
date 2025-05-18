@@ -1,0 +1,19 @@
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+   
+  padding-top: 10px;
+}
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #fff;
+}
+.customize-fields {
+  display: flex;
+  align-items: center;
+}
