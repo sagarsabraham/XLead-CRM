@@ -11,15 +11,6 @@ export class AddDealModalComponent {
   @Output() onClose = new EventEmitter<void>();
   @Output() onSubmit = new EventEmitter<any>();
 
-  companies: string[] = ['BAYADA', 'Harley Davidson', 'KniTT', 'Hitachi'];
-  filteredCompanies: string[] = [...this.companies];
- 
-  contacts: string[]=['Abhiram','John','Anna'];
-   filteredContacts: string[] = [...this.contacts];
- 
-  isDropdownOpen: boolean = false;
-  isCompanyModalVisible: boolean = false;
-  isContactModalVisible: boolean = false;
 
   companyData = {
     companyName: '',
@@ -49,6 +40,22 @@ export class AddDealModalComponent {
     { dataField: 'phoneNo', label: 'Phone Number', required: true }
    
   ];
+ 
+ 
+  isDropdownOpen: boolean = false;
+  isCompanyModalVisible: boolean = false;
+  isContactModalVisible: boolean = false;
+companies: string[] = ['BAYADA', 'Harley Davidson', 'KniTT', 'Hitachi'];
+companyContactMap: { [company: string]: string[] } = {
+  'BAYADA': ['Abhiram'],
+  'Harley Davidson': ['John'],
+  'KniTT': [],
+  'Hitachi': ['Anna']
+};
+
+filteredCompanies: string[] = [...this.companies];
+filteredContacts: string[] = [];
+
   newDeal = {
     salesperson: '',
     amount: 0,
@@ -137,9 +144,14 @@ export class AddDealModalComponent {
       doc: null
     };
     this.filteredCompanies = [...this.companies];
-    this.filteredContacts = [...this.contacts];
+    this.filteredContacts = [];
     this.isDropdownOpen = false;
   }
+  onCompanyChange(company: string) {
+  this.newDeal.companyName = company;
+  this.filteredContacts = this.companyContactMap[company] || [];
+}
+
 
   openQuickCreateCompanyModal() {
     this.isCompanyModalVisible = true;
@@ -154,13 +166,21 @@ export class AddDealModalComponent {
   }
 
   addNewCompany(newCompany: any) {
-    if (newCompany.companyName && !this.companies.includes(newCompany.companyName)) {
-      this.companies.push(newCompany.companyName);
-      this.filteredCompanies = [...this.companies];
-      this.newDeal.companyName = newCompany.companyName;
-    }
-    this.closeQuickCreateCompanyModal();
+  if (newCompany.companyName && !this.companies.includes(newCompany.companyName)) {
+    this.companies.push(newCompany.companyName);
+    this.filteredCompanies = [...this.companies];
   }
+
+  if (!this.companyContactMap[newCompany.companyName]) {
+    this.companyContactMap[newCompany.companyName] = [];
+  }
+
+  this.newDeal.companyName = newCompany.companyName;
+  this.filteredContacts = this.companyContactMap[newCompany.companyName];
+
+  this.closeQuickCreateCompanyModal();
+}
+
   openQuickCreateContactModal() {
     this.isContactModalVisible = true;
     this.isDropdownOpen = false;
@@ -175,19 +195,33 @@ export class AddDealModalComponent {
 
 addNewContact(newContact: any) {
   const fullName = `${newContact.FirstName} ${newContact.LastName}`.trim();
-  if (fullName && !this.contacts.includes(fullName)) {
-    this.contacts.push(fullName);
+  const company = newContact.companyName;
+
+  if (company) {
+    // Add company if not present
+    if (!this.companies.includes(company)) {
+      this.companies.push(company);
+      this.filteredCompanies = [...this.companies];
+    }
+
+    // Initialize contact array for the company if not existing
+    if (!this.companyContactMap[company]) {
+      this.companyContactMap[company] = [];
+    }
+
+    // Add contact to companyContactMap if not present
+    if (!this.companyContactMap[company].includes(fullName)) {
+      this.companyContactMap[company].push(fullName);
+    }
+
+    this.filteredContacts = [...this.companyContactMap[company]];
   }
+
+  this.newDeal.companyName = company;
   this.newDeal.contactName = fullName;
-  if (newContact.companyName && !this.companies.includes(newContact.companyName)) {
-    this.companies.push(newContact.companyName);
-    this.filteredCompanies = [...this.companies];
-  }
-  this.newDeal.companyName = newContact.companyName;
+
   this.closeQuickCreateContactModal();
 }
-
-
 
   
 }

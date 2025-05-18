@@ -5,7 +5,7 @@
   [height]="'auto'"
   [showCloseButton]="true"
   (onHidden)="handleClose()">
-  
+ 
  
   <div *dxTemplate="let data of 'content'" class="popup-content">
     <div class="form-container">
@@ -24,21 +24,23 @@
         <dxi-item>
           <dxo-label text="Company Name" cssClass="bold-label"></dxo-label>
           <div class="company-name-container">
-             <dx-select-box
-            [(value)]="newDeal.companyName"
-            [dataSource]="companies"
-            [searchEnabled]="true"
-            placeholder="Select or search a company">
-         
-          </dx-select-box>
-          <dx-button
+            <dx-select-box
+              [(value)]="newDeal.companyName"
+              [dataSource]="filteredCompanies"
+              [searchEnabled]="true"
+              placeholder="Select or search a company"
+              (onValueChanged)="onCompanyChange($event.value)">
+            </dx-select-box>
+
+            <dx-button
               text="Add New Company"
               type="normal"
               (onClick)="openQuickCreateCompanyModal()">
-          </dx-button>
+            </dx-button>
           </div>
           <dxi-validation-rule type="required" message="Company Name is required"></dxi-validation-rule>
         </dxi-item>
+
         
         <dxi-item dataField="title">
           <dxo-label text="Deal Name" cssClass="bold-label"></dxo-label>
@@ -51,24 +53,25 @@
           <dxo-label text="Region" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Region is required"></dxi-validation-rule>
         </dxi-item>
-        <dxi-item dataField="contactName">
-          <dxo-label text="Contact Name" cssClass="bold-label"></dxo-label>
-          <div class="company-name-container">
-             <dx-select-box
+       <dxi-item dataField="contactName">
+        <dxo-label text="Contact Name" cssClass="bold-label"></dxo-label>
+        <div class="company-name-container">
+          <dx-select-box
             [(value)]="newDeal.contactName"
-            [dataSource]="contacts"
+            [dataSource]="filteredContacts"
             [searchEnabled]="true"
             placeholder="Select or search a contact">
-         
           </dx-select-box>
+
           <dx-button
-              text="Add New Contact"
-              type="normal"
-              (onClick)="openQuickCreateContactModal()">
+            text="Add New Contact"
+            type="normal"
+            (onClick)="openQuickCreateContactModal()">
           </dx-button>
-          </div>
-          <dxi-validation-rule type="required" message="Contact Name is required"></dxi-validation-rule>
-        </dxi-item>
+        </div>
+        <dxi-validation-rule type="required" message="Contact Name is required"></dxi-validation-rule>
+      </dxi-item>
+
         <dxi-item dataField="domain">
           <dxo-label text="Domain" cssClass="bold-label"></dxo-label>
         </dxi-item>
@@ -98,9 +101,7 @@
           <dxo-label text="Probability"></dxo-label>
           <dxi-validation-rule type="required" message="Probability is required"></dxi-validation-rule>
         </dxi-item>
-        <!-- <dxi-item dataField="doc" editorType="dxFileUploader" [editorOptions]="{ uploadMode: 'useForm', accept: 'application/pdf', selectButtonText: 'Upload Document', placeholder: 'Upload document related to deal', showFileList: true, multiple: true }">
-          <dxo-label text="Upload Document" cssClass="bold-label"></dxo-label>
-        </dxi-item> -->
+      
       </dx-form>
     </div>
     

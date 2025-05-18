@@ -18,7 +18,6 @@ export class ModalButtonsComponent {
   handleCancel() {
     this.onCancel.emit();
   }
-
   handleSave() {
     this.onSave.emit();
   }
