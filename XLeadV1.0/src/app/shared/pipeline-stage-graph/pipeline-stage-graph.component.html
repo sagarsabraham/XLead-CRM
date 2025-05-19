@@ -19,11 +19,8 @@
       <dxo-value-axis
         title="Sum of Amount"
         [visualRange]="valueAxisRange"
-       
       >
-        <dxo-label
-         
-        ></dxo-label>
+        <dxo-label></dxo-label>
       </dxo-value-axis>
       <dxo-tooltip
         [enabled]="true"
@@ -44,6 +41,7 @@
     title="Open Pipelines Amount by Stage"
     [rotated]="true"
     [size]="chartSize"
+    [animation]="{ enabled: true, duration: 1000 }"
   >
     <dxi-series
       valueField="amount"
@@ -58,11 +56,8 @@
     <dxo-value-axis
       title="Sum of Amount"
       [visualRange]="valueAxisRange"
-      
     >
-      <dxo-label
-      
-      ></dxo-label>
+      <dxo-label></dxo-label>
     </dxo-value-axis>
     <dxo-tooltip
       [enabled]="true"

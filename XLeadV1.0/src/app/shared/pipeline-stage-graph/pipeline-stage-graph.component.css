@@ -7,6 +7,12 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.chart-container:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
 }
 
 :host ::ng-deep .dxc-series rect {
@@ -15,6 +21,12 @@
 
 :host ::ng-deep .dxc-series rect:hover {
   opacity: 0.8;
+}
+
+:host ::ng-deep .dxc-title {
+  font-weight: 600 !important;
+  color: #111827 !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 
 @media (max-width: 1024px) {
