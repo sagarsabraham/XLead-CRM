@@ -45,7 +45,6 @@ import { TopbarComponent } from './topbar/topbar.component';
     PageNotFoundComponent,
     ButtonComponent,
     MetricCardComponent,
-    MetricCardComponent,
     MetricCardOutlineComponent,
     PipelineStageGraphComponent,
     TableComponent,
@@ -60,6 +59,7 @@ import { TopbarComponent } from './topbar/topbar.component';
     HttpClientModule,
     CommonModule,
     DevExtremeModule,
+    DxBoxModule,  
     DxBoxModule,  
     DxFileUploaderModule,
     DxPopupModule,
@@ -94,6 +94,7 @@ import { TopbarComponent } from './topbar/topbar.component';
   ],
 
    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+ 
 })
 
 export class SharedModule { }
