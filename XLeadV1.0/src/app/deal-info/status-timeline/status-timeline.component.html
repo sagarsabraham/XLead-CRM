@@ -1,14 +1,3 @@
-<!-- <div class="status-timeline">
-  <div class="stage" *ngFor="let stage of stages; let i = index">
-    <dx-button
-      [text]="stage"
-      [type]="currentStage === stage ? 'success' : 'default'"
-      (onClick)="onStageClick(stage)">
-    </dx-button>
-    <div class="connector" *ngIf="i < stages.length - 1"></div>
-  </div>
-</div> -->
-
 <div class="status-timeline">
   <ng-container *ngFor="let stage of stages; let i = index">
     <div class="stage" (click)="onStageClick(stage)">
