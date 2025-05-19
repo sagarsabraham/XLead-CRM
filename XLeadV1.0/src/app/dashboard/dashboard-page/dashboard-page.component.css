@@ -1,47 +1,67 @@
-.container {
-  margin-left: 8.33vh;
-  overflow-x: auto;
-  padding: 16px;
-  font-family: 'poppins';
+:host {
+  display: block;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Poppins', sans-serif;
+  padding-left: calc(1rem + 64px); /* Sidebar width */
+  box-sizing: border-box;
+}
 
+.metric-wrapper {
+  padding: 1rem 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.chart-wrapper {
+  padding: 1rem 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  :host {
+    padding: 0.5rem;
+    padding-left: 0.5rem; /* No sidebar on mobile */
+    /* padding-top: calc(0.5rem + 64px); Keep topbar spacing */
+  }
+
+  .metric-wrapper {
+    padding: 0;
+  }
+
+  .chart-wrapper {
+    padding: 0.5rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  :host {
+    padding: 0.25rem;
+    /* padding-top: calc(0.25rem + 64px); */
+  }
+
+  /* .chart-wrapper {
+    padding: 0.25rem 0;
+  } */
+}
+
+.top-company-wrapper {
+  padding: 1rem  0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
 }
 
 .topbar h1 {
   font-size: 24px;
   margin: 0;
-  padding: 16px;
   font-weight: bold;
 }
-
-.metric-section{
-  margin-left: 15px;
-}
-   
-.grid-container {
-  margin-top: 0px;
-  background-color: white;
-  padding: 1.5rem;
-  margin-left: -88px;
-}
-.dashboard-grid{
-  margin: 60px;
-  display: inline-block;
-  justify-content: space-between;
-  width: 1200px;
-  margin-left: 15px;
-  font-family: 'poppins';
-  margin-top: 38px;
-  
-
-}
-.side-graph{
-  margin-left: 10px;
-}
- 

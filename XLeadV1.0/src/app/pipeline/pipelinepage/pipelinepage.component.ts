@@ -7,8 +7,22 @@ import { Component } from '@angular/core';
 })
 export class PipelinepageComponent {
   topcardData = [
-    { amount: 33300, title: 'Total Return', isCurrency: true, icon: 'money' },
-    { amount: 15, title: 'Total Count of Deals', isCurrency: false, icon: 'sorted' },
+    {
+      amount: 33300,
+      title: 'Total Return',
+      isCurrency: true,
+      icon: 'money',
+      iconBackgroundColor: '#ECB985',
+      variant: 'default'
+    },
+    {
+      amount: 15,
+      title: 'Total Count of Deals',
+      isCurrency: false,
+      icon: 'sorted',
+      iconBackgroundColor: '#ECB985',
+      variant: 'default'
+    }
   ]; 
 
   dealButton = [
@@ -357,6 +371,7 @@ export class PipelinepageComponent {
     if (previousDeals && currentDeals) {
       const [movedItem] = previousDeals.splice(previousIndex, 1);
       currentDeals.splice(currentIndex, 0, movedItem);
+      // console.log('After move:', JSON.stringify(this.stages, null, 2));
     }
   }
   isModalVisible: boolean = false;

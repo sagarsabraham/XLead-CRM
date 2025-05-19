@@ -52,9 +52,11 @@
 }
 
 .active-icon {
-  filter: brightness(1.2);
+  background-color: white;
+  border-radius: 7px;
 }
 
 .hover-icon:hover {
-  filter: brightness(1.5);
+  background-color: grey;
+  border-radius: 15px;
 }

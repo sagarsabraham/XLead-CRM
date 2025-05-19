@@ -1,6 +1,18 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DevExtremeModule, DxBoxModule, DxDateBoxModule, DxFileUploaderModule, DxFormModule, DxNumberBoxModule, DxPopupModule, DxSelectBoxModule } from 'devextreme-angular';
+import { DevExtremeModule,
+         DxBoxModule,
+         DxDateBoxModule, 
+         DxFileUploaderModule, 
+         DxFormModule, 
+         DxNumberBoxModule, 
+         DxPopupModule, 
+         DxSelectBoxModule, 
+         DxDataGridModule, 
+         DxButtonModule, 
+         DxChartModule, 
+         DxResponsiveBoxModule, 
+         DxScrollViewModule } from 'devextreme-angular';
 import { IconComponent } from './icon/icon.component';
 import { IconTextComponent } from './icon-text/icon-text.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -13,10 +25,11 @@ import { MetricCardComponent } from './metric-card/metric-card.component';
 import { MetricCardOutlineComponent } from './metric-card-outline/metric-card-outline.component';
 import { PipelineStageGraphComponent } from './pipeline-stage-graph/pipeline-stage-graph.component';
 import { TableComponent } from './table/table.component';
+import { DxoExportModule } from 'devextreme-angular/ui/nested';
 import { TopcardComponent } from './topcard/topcard.component';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-
+import { TopbarComponent } from './topbar/topbar.component';
 
 
 @NgModule({
@@ -28,6 +41,8 @@ import { HttpClientModule } from '@angular/common/http';
     CheckboxComponent,
     TableOutlineComponent,
     PageNotFoundComponent,
+    TopcardComponent,
+    PageNotFoundComponent,
     ButtonComponent,
     MetricCardComponent,
     MetricCardComponent,
@@ -37,10 +52,12 @@ import { HttpClientModule } from '@angular/common/http';
     TableOutlineComponent,
     TopcardComponent,
     PageNotFoundComponent,
-    TableComponent
+    TableComponent,
+    TopbarComponent
   ],
   
   imports: [
+    HttpClientModule,
     CommonModule,
     DevExtremeModule,
     DxBoxModule,  
@@ -50,7 +67,14 @@ import { HttpClientModule } from '@angular/common/http';
     DxNumberBoxModule,    
     DxSelectBoxModule,    
     DxDateBoxModule,
-    RouterModule
+    RouterModule,
+    DxChartModule,
+    DxScrollViewModule,
+    DxResponsiveBoxModule,
+    DxButtonModule,
+    DxBoxModule,
+    DxoExportModule,
+    DxDataGridModule
 
   ],
   exports: [
@@ -68,6 +92,7 @@ import { HttpClientModule } from '@angular/common/http';
     SidebarComponent,
     CheckboxComponent
   ],
+
    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

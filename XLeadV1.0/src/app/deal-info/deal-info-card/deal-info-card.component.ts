@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-deal-info-card',
@@ -6,45 +6,33 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./deal-info-card.component.css']
 })
 export class DealInfoCardComponent {
-  
-  @Input() dealInfo: any;
 
+  @Input() deal: any;
+  @Output() descriptionChange = new EventEmitter<string>();
+  
   get contactItems() {
+    if (!this.deal) return [];
     return [
-      { icon: 'user', text: this.dealInfo.contact_name, isLink: false },
-      { icon: 'email', text: this.dealInfo.contact_email, isLink: true },
-      { icon: 'tel', text: this.dealInfo.contact_phno, isPhone: true }
+      { icon: 'user', text: this.deal.contactName || 'N/A', isLink: false },
+      { icon: 'email', text: this.deal.contactEmail || 'N/A', isLink: true },
+      { icon: 'tel', text: this.deal.contactPhone || 'N/A', isPhone: true }
     ];
   }
 
   get companyItems() {
+    if (!this.deal) return [];
     return [
-      { icon: 'home', text: this.dealInfo.company_name, isLink: false },
-      { icon: 'globe', text: this.dealInfo.company_website, isLink: true },
-      { icon: 'tel', text: this.dealInfo.company_phno, isPhone: true }
+      { icon: 'home', text: this.deal.companyName || 'N/A', isLink: false },
+      { icon: 'globe', text: this.deal.companyWebsite ? this.deal.companyWebsite.replace('info@', '').replace('.com', '') + '.com' : 'N/A', isLink: true },
+      { icon: 'tel', text: this.deal.companyPhone || 'N/A', isPhone: true }
     ];
   }
 
-  get dealDescription(): string {
-    return this.dealInfo.description;
+  get dealDescription() {
+    return this.deal?.description || 'No description available.';
   }
 
-  // contactItems = [
-  //   { icon: 'user', text: 'Ted Watson', isLink: false },
-  //   { icon: 'email', text: 'tedwatson@gmail.com', isLink: true },
-  //   { icon: 'tel', text: '+1 5643523447', isPhone: true }
-  // ];
-
-  // companyItems = [
-  //   { icon: 'home', text: 'Bayoda', isLink: false },
-  //   { icon: 'globe', text: 'Bayoda.com', isLink: true },
-  //   { icon: 'tel', text: '+1 23456789', isPhone: true }
-  // ];
-
-  // dealDescription = 'This deal description represents the details given by a Salesperson about the deal as a preview.';
-  deal: any = null;
-
   onDescriptionChange(newDescription: string) {
-     this.deal.description = newDescription;
+    this.descriptionChange.emit(newDescription);
   }
 }

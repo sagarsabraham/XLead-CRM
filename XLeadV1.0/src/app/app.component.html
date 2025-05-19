@@ -1,41 +1,4 @@
-<div class="app-container">
-  <app-sidebar></app-sidebar>
-  <!-- <dx-drawer
-    [opened]="isSidenavOpen"
-    [minSize]="0"
-    [maxSize]="240"
-    position="left"
-    revealMode="slide"
-    [closeOnOutsideClick]="true"
-    [shading]="true"
-    (onOptionChanged)="isSidenavOpen = $event.value"
-  >
-    <div class="sidenav-panel">
-      <div class="logo">
-        <span class="logo-x">X</span><span class="logo-lead">Lead</span>
-      </div>
-      <dx-list [items]="navItems" class="nav-items">
-        <div *dxTemplate="let item of 'item'">
-          <dx-button
-            [text]="item.text"
-            [ngClass]="{
-              'active-button': item.isActive,
-              'hover-button': !item.isActive
-            }"
-            (onClick)="navigate(item.route)"
-            stylingMode="text"
-            width="100%"
-          >
-            <img [src]="item.iconPath" class="button-icon" />
-          </dx-button>
-        </div>
-      </dx-list>
-      <div class="profile-section">
-        <app-profile [data]="profile"></app-profile>
-      </div>
-    </div>
-    <div class="content"> -->
-      <router-outlet></router-outlet>
-    </div>
-  <!-- </dx-drawer>
-</div> -->
+<app-sidebar></app-sidebar>
+<div class="top-and-body">
+<router-outlet></router-outlet>
+</div>

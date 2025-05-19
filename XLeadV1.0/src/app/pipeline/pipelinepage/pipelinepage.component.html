@@ -8,7 +8,7 @@
             (onClick)="onAddDeal()"
         ></app-button>
     </div>
-    <div class="topcard-container">
+ <div class="topcard-container">
       <app-topcard 
         *ngFor="let card of topcardData; let i = index"
         [amount]="card.amount" 
