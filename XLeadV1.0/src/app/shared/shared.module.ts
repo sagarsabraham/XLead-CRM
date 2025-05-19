@@ -1,5 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DevExtremeModule, DxBoxModule, DxButtonModule, DxDateBoxModule, DxFileUploaderModule, DxFormModule, DxNumberBoxModule, DxPopupModule, DxSelectBoxModule } from 'devextreme-angular';
+import {  DxChartModule, DxDataGridModule } from 'devextreme-angular';
 import { DevExtremeModule, DxDataGridModule, DxBoxModule, DxButtonModule, DxChartModule, DxDateBoxModule, DxFileUploaderModule, DxFormModule, DxNumberBoxModule, DxPopupModule, DxResponsiveBoxModule, DxScrollViewModule, DxSelectBoxModule } from 'devextreme-angular';
 import { ButtonComponent } from './button/button.component';
 import { MetricCardComponent } from './metric-card/metric-card.component';
@@ -28,17 +30,21 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
   imports: [
     CommonModule,
     DevExtremeModule,
+    DxBoxModule,  
     DxFileUploaderModule,
     DxPopupModule,
     DxFormModule,
     DxNumberBoxModule,    
     DxSelectBoxModule,    
+    DxDateBoxModule, 
     DxDateBoxModule,
     DxChartModule,
     DxScrollViewModule,
     DxResponsiveBoxModule,
     DxButtonModule,
     // RouterModule, 
+    DxChartModule,  
+    DxoExportModule,DxDataGridModule
     DxBoxModule,
     DxoExportModule,
     DxDataGridModule
@@ -56,5 +62,6 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
   ],
 
    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+ 
 })
 export class SharedModule { }
