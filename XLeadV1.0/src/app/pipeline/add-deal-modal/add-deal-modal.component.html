@@ -1,7 +1,7 @@
 <dx-popup
   [visible]="isVisible"
   [title]="'Create Deal'"
-  [width]="500"
+  [width]="popupWidth"
   [height]="'auto'"
   [showCloseButton]="true"
   (onHidden)="handleClose()">
@@ -12,7 +12,8 @@
       <app-modal-header title="Deal Information" [showOwner]="true"></app-modal-header>
       <dx-form
         [formData]="newDeal"
-        [colCount]="1">
+        [colCountByScreen]="{ xs: 1, sm: 1, md: 2, lg: 1 }">
+
         <dxi-item dataField="salesperson">
           <dxo-label text="SalesPerson" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="SalesPerson Name is required"></dxi-validation-rule>
@@ -33,8 +34,8 @@
             </dx-select-box>
 
             <dx-button
-              text="Add New Company"
-              type="normal"
+              text="+"
+              type="default"
               (onClick)="openQuickCreateCompanyModal()">
             </dx-button>
           </div>
@@ -64,8 +65,8 @@
           </dx-select-box>
 
           <dx-button
-            text="Add New Contact"
-            type="normal"
+            text="+"
+            type="default"
             (onClick)="openQuickCreateContactModal()">
           </dx-button>
         </div>

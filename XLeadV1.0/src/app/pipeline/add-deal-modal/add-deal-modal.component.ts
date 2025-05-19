@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-add-deal-modal',
@@ -10,6 +10,12 @@ export class AddDealModalComponent {
   @Input() stages: string[] = [];
   @Output() onClose = new EventEmitter<void>();
   @Output() onSubmit = new EventEmitter<any>();
+popupWidth = window.innerWidth < 600 ? '90%' : 500;
+
+@HostListener('window:resize', ['$event'])
+onResize(event: any) {
+  this.popupWidth = event.target.innerWidth < 600 ? '90%' : 500;
+}
 
 
   companyData = {
@@ -198,18 +204,16 @@ addNewContact(newContact: any) {
   const company = newContact.companyName;
 
   if (company) {
-    // Add company if not present
+
     if (!this.companies.includes(company)) {
       this.companies.push(company);
       this.filteredCompanies = [...this.companies];
     }
 
-    // Initialize contact array for the company if not existing
     if (!this.companyContactMap[company]) {
       this.companyContactMap[company] = [];
     }
 
-    // Add contact to companyContactMap if not present
     if (!this.companyContactMap[company].includes(fullName)) {
       this.companyContactMap[company].push(fullName);
     }

@@ -6,30 +6,12 @@
 
 .form-container {
   flex: 1;
-  max-height: 400px;
+  max-height: 70vh;
   overflow-y: auto;
   padding-right: 10px;
   padding-bottom: 20px;
 }
 
-/* .buttons {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 10px;
-  border-top: 1px solid #e0e0e0;
-  background-color: #fff;
-} */
-
-/* .modal-buttons {
-  display: flex;
-  gap: 10px;
-} */
-
-/* .customize-fields {
-  display: flex;
-  align-items: center;
-} */
 
 .form-container::-webkit-scrollbar {
   width: 8px;
@@ -68,3 +50,4 @@
 .company-name-container dx-button {
   flex-shrink: 0; /* Button doesn't shrink */
 }
+
