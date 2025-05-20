@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RelatedInfoService } from 'src/app/shared/services/related-info.service';
 
 @Component({
   selector: 'app-dealinfopage',

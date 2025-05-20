@@ -1,6 +1,6 @@
 .history-timeline {
   padding: 15px;
-  height: 400px; /* Fixed height to enable scrolling */
+  height: 65vh; /* Fixed height to enable scrolling */
   display: flex;
   flex-direction: column;
   background-color: #ffffff;

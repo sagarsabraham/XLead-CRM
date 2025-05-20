@@ -1,6 +1,6 @@
 
 .container {
-  margin-left: 5px;
+  margin-left: 10vh;
   padding: 16px;
   font-family: 'poppins';
   overflow-x: hidden;
@@ -36,6 +36,10 @@
   min-width: 280px;
 }
 
+
+:host {
+    display: flex;
+}
 
 .card-container {
   display: flex;
@@ -107,6 +111,19 @@ app-button {
 
   .stage-card {
     min-width: 240px;
+.container {
+    margin-left: 10vh;
+    overflow-x: auto;
+    padding: 16px;
+    font-family: 'poppins';
+}
+.topcard-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: nowrap; 
+    width: 100%;
+    justify-content: space-between; 
+    padding-left: 16px;
   }
 }
 
@@ -142,4 +159,5 @@ app-button {
   .stage-card {
     min-width: 180px;
   }
+}
 }

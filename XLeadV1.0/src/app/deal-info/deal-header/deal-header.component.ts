@@ -7,4 +7,5 @@ import { Component, Input } from '@angular/core';
 })
 export class DealHeaderComponent {
   @Input() deal: any;
+
 }

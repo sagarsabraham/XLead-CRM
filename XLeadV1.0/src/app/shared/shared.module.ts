@@ -1,18 +1,46 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DevExtremeModule, DxDataGridModule, DxBoxModule, DxButtonModule, DxChartModule, DxDateBoxModule, DxFileUploaderModule, DxFormModule, DxNumberBoxModule, DxPopupModule, DxResponsiveBoxModule, DxScrollViewModule, DxSelectBoxModule } from 'devextreme-angular';
+import { DevExtremeModule,
+         DxBoxModule,
+         DxDateBoxModule, 
+         DxFileUploaderModule, 
+         DxFormModule, 
+         DxNumberBoxModule, 
+         DxPopupModule, 
+         DxSelectBoxModule, 
+         DxDataGridModule, 
+         DxButtonModule, 
+         DxChartModule, 
+         DxResponsiveBoxModule, 
+         DxScrollViewModule } from 'devextreme-angular';
+import { IconComponent } from './icon/icon.component';
+import { IconTextComponent } from './icon-text/icon-text.component';
+import { ProfileComponent } from './profile/profile.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { CheckboxComponent } from './checkbox/checkbox.component';
+import { TableOutlineComponent } from './table-outline/table-outline.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ButtonComponent } from './button/button.component';
 import { MetricCardComponent } from './metric-card/metric-card.component';
 import { MetricCardOutlineComponent } from './metric-card-outline/metric-card-outline.component';
 import { PipelineStageGraphComponent } from './pipeline-stage-graph/pipeline-stage-graph.component';
-import { TableOutlineComponent } from './table-outline/table-outline.component';
 import { TableComponent } from './table/table.component';
 import { DxoExportModule } from 'devextreme-angular/ui/nested';
 import { TopcardComponent } from './topcard/topcard.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { TopbarComponent } from './topbar/topbar.component';
+
 
 @NgModule({
   declarations: [
+    IconComponent,
+    IconTextComponent,
+    ProfileComponent,
+    SidebarComponent,
+    CheckboxComponent,
+    TableOutlineComponent,
+    PageNotFoundComponent,
     TopcardComponent,
     PageNotFoundComponent,
     ButtonComponent,
@@ -22,11 +50,16 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     TableComponent,
     TableOutlineComponent,
     TopcardComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    TableComponent,
+    TopbarComponent
   ],
+  
   imports: [
+    HttpClientModule,
     CommonModule,
     DevExtremeModule,
+    DxBoxModule,  
     DxBoxModule,  
     DxFileUploaderModule,
     DxPopupModule,
@@ -34,13 +67,14 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     DxNumberBoxModule,    
     DxSelectBoxModule,    
     DxDateBoxModule,
+    RouterModule,
+    DxChartModule,
     DxScrollViewModule,
     DxResponsiveBoxModule,
     DxButtonModule,
-    // RouterModule, 
-    DxChartModule,  
-    DxDataGridModule,
-    DxoExportModule
+    DxBoxModule,
+    DxoExportModule,
+    DxDataGridModule
 
   ],
   exports: [
@@ -51,10 +85,18 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     TableComponent,
     TableOutlineComponent,
     TopcardComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    IconComponent,
+    IconTextComponent,
+    ProfileComponent,
+    SidebarComponent,
+    CheckboxComponent
   ],
 
    schemas: [CUSTOM_ELEMENTS_SCHEMA]
  
 })
+
 export class SharedModule { }
+
+

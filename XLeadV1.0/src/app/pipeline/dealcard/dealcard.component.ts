@@ -14,6 +14,6 @@ export class DealcardComponent {
 
   onCardClick() {
     const dealId = this.deal.title.replace(/\s+/g, '-').toLowerCase();
-    this.router.navigate([`/deal-info/${dealId}`], { state: { deal: this.deal } });
+    this.router.navigate([`/dealinfo`], { state: { deal: this.deal } });
   }
 }
