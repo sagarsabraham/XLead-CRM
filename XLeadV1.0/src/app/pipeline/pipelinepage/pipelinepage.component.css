@@ -64,6 +64,10 @@
   cursor: pointer;
 }
 
+.stage-card.dx-card {
+  box-shadow: none;
+}
+
 
 .stage-card.collapsed {
   flex: 0 0 50px !important;
