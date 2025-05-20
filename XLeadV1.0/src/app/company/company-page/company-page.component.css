@@ -13,10 +13,11 @@
 } */
 
 .container {
-  padding: 5vh;
-
-  margin-left: 8.33vh;
-  /* width: calc(100vh - 8.33vh); Adjust width to account for sidebar and gap */
+  padding: 20px;
+  margin-left: 100px; /* 80px sidebar width + 20px gap */
+  width: calc(100% - 100px); /* Adjust width to account for sidebar and gap */
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .topbar {
@@ -50,6 +51,7 @@
 .content {
   flex: 1;
   overflow-y: auto;
+  padding-top: 35px;
 }
 
 .table-container {
