@@ -16,3 +16,4 @@ export class MetricCardOutlineComponent {
     { title: 'Revenue Won - This Month', value: '$5000.00', percentage: 100, isPositive: true }
   ];
 }
+
