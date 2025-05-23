@@ -10,10 +10,10 @@ import { DxResponsiveBoxModule } from 'devextreme-angular';
 })
 export class MetricCardOutlineComponent {
   cards = [
-    { title: 'Open Pipelines - This Month', value: '0', percentage: 100, isPositive: false },
-    { title: 'Pipeline Won - This Month', value: '2', percentage: 100, isPositive: true },
-    { title: 'Pipeline Lost - This Month', value: '1', percentage: 100, isPositive: false },
-    { title: 'Revenue Won - This Month', value: '$5000.00', percentage: 100, isPositive: true }
+    { title: 'Open Pipelines - This Month', value: '31', percentage: 54, isPositive: false },
+    { title: 'Pipeline Won - This Month', value: '8', percentage: 67, isPositive: true },
+    { title: 'Pipeline Lost - This Month', value: '3', percentage: 12, isPositive: false },
+    { title: 'Revenue Won - This Month', value: '$12750.00', percentage: 29, isPositive: true }
   ];
 }
 
