@@ -32,7 +32,7 @@
           </div>
 
             <div *ngIf="!stage.collapsed">
-                <app-dealbody [deals]="stage.deals" [connectedTo]="connectedDropLists" [stageName]="stage.name" (dealDropped)="onDealDropped($event)"></app-dealbody>
+                <app-dealbody [deals]="stage.deals" [connectedTo]="connectedDropLists" [stageName]="stage.name" (dealDropped)="onDealDropped($event)" (onEdit)="onEditDeal($event, stage.name)"></app-dealbody>
             </div>
 
           <div *ngIf="stage.hover && !stage.collapsed">
@@ -44,6 +44,8 @@
     <app-add-deal-modal
         [isVisible]="isModalVisible"
         [stages]="stageNames"
+        [dealToEdit]="selectedDeal"
+        [mode]="isEditMode ? 'edit' : 'add'"
         (onClose)="onModalClose()"
         (onSubmit)="onDealSubmit($event)">
     </app-add-deal-modal>

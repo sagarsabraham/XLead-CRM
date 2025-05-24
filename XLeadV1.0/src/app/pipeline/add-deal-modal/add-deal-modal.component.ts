@@ -1,3 +1,4 @@
+import { getSupportedInputTypes } from '@angular/cdk/platform';
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 
 @Component({
@@ -8,6 +9,8 @@ import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, Output
 export class AddDealModalComponent {
   @Input() isVisible: boolean = false;
   @Input() stages: string[] = [];
+  @Input() dealToEdit: any = null;
+  @Input() mode: 'add' | 'edit' = 'add';
   @Output() onClose = new EventEmitter<void>();
   @Output() onSubmit = new EventEmitter<any>();
 popupWidth = window.innerWidth < 600 ? '90%' : 500;
@@ -75,7 +78,8 @@ filteredContacts: string[] = [];
     revenueType: '',
     department: '',
     country: '',
-    date: null as Date | null,
+    startDate: null as Date | null, // New field for Starting Date
+    closeDate: null as Date | null, // New field for Closing Date
     description: '',
     probability: '',
     doc: null as File[] | null
@@ -83,20 +87,70 @@ filteredContacts: string[] = [];
 
   constructor(private cdr: ChangeDetectorRef) {}
 
+  // When dealToEdit changes, prefill the form
+  ngOnChanges() {
+    if (this.dealToEdit && this.mode === 'edit') {
+      this.prefillForm();
+    }
+  }
+
+  prefillForm() {
+    const startDateParts = this.dealToEdit.startDate?.split(' ') || [];
+    const startDate = startDateParts.length === 3
+    ? new Date(`${startDateParts[1]} ${startDateParts[0]}, ${startDateParts[2]}`)
+    : null;
+
+    const closeDateParts = this.dealToEdit.closeDate?.split(' ') || [];
+    const closeDate = closeDateParts.length === 3
+    ? new Date(`${closeDateParts[1]} ${closeDateParts[0]}, ${closeDateParts[2]}`)
+    : null;
+
+    this.newDeal = {
+      salesperson: this.dealToEdit.salesperson || '',
+      amount: this.dealToEdit.amount || 0,
+      companyName: this.dealToEdit.companyName || '',
+      title: this.dealToEdit.title || '',
+      account: this.dealToEdit.account || '',
+      region: this.dealToEdit.region || '',
+      contactName: this.dealToEdit.contactName || '',
+      domain: this.dealToEdit.domain || '',
+      stage: this.dealToEdit.stage || '',
+      revenueType: this.dealToEdit.revenueType || '',
+      department: this.dealToEdit.department || '',
+      country: this.dealToEdit.country || '',
+      startDate: startDate,
+      closeDate: closeDate,
+      description: this.dealToEdit.description || '',
+      probability: this.dealToEdit.probability || '',
+      doc: this.dealToEdit.doc ? [new File([], this.dealToEdit.doc)] : null
+    };
+
+    this.onCompanyChange(this.newDeal.companyName); // Update contacts dropdown
+  }
+
+  // Dynamically set the modal title
+  get modalTitle(): string {
+    return this.mode === 'edit' ? 'Edit Deal' : 'Create Deal';
+  }
+
   handleClose() {
     this.onClose.emit();
     this.resetForm();
   }
 
   handleSubmit() {
-    const formattedAmount = `$ ${this.newDeal.amount.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    })}`;
+    let formattedCloseDate = '';
+    if (this.newDeal.closeDate) {
+      formattedCloseDate = this.newDeal.closeDate.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
 
-    let formattedDate = '';
-    if (this.newDeal.date) {
-      formattedDate = this.newDeal.date.toLocaleDateString('en-GB', {
+    let formattedStartDate = '';
+    if (this.newDeal.startDate) {
+      formattedStartDate = this.newDeal.startDate.toLocaleDateString('en-GB', {
         day: 'numeric',
         month: 'short',
         year: 'numeric'
@@ -109,7 +163,7 @@ filteredContacts: string[] = [];
 
     const dealData = {
       salesperson: this.newDeal.salesperson,
-      amount: formattedAmount,
+      amount: this.newDeal.amount,
       companyName: this.newDeal.companyName,
       title: this.newDeal.title,
       account: this.newDeal.account,
@@ -120,7 +174,8 @@ filteredContacts: string[] = [];
       revenueType: this.newDeal.revenueType,
       department: this.newDeal.department,
       country: this.newDeal.country,
-      date: formattedDate,
+      startDate: formattedStartDate, // Use formatted start date
+      closeDate: formattedCloseDate, // Use formatted close date
       description: this.newDeal.description,
       doc: documentName,
       probability: this.newDeal.probability
@@ -144,7 +199,8 @@ filteredContacts: string[] = [];
       revenueType: '',
       department: '',
       country: '',
-      date: null,
+      startDate: null,
+      closeDate: null,
       description: '',
       probability: '',
       doc: null

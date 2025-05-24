@@ -1,6 +1,6 @@
 <dx-popup
   [visible]="isVisible"
-  [title]="'Create Deal'"
+  [title]="modalTitle"
   [width]="popupWidth"
   [height]="'auto'"
   [showCloseButton]="true"
@@ -47,10 +47,10 @@
           <dxo-label text="Deal Name" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Deal Name is required"></dxi-validation-rule>
         </dxi-item>
-        <dxi-item dataField="account">
+        <dxi-item dataField="account" editorType="dxSelectBox" [editorOptions]="{ items: ['KniTT', 'Salesforce', 'HubSpot', 'Catalant ', 'Toptal'], placeholder: 'Select Account' }">
           <dxo-label text="Account" cssClass="bold-label"></dxo-label>
         </dxi-item>
-        <dxi-item dataField="region">
+        <dxi-item dataField="region" editorType="dxSelectBox" [editorOptions]="{ items: ['Australia', 'US', 'Japan', 'West Coast'], placeholder: 'Select Region' }">
           <dxo-label text="Region" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Region is required"></dxi-validation-rule>
         </dxi-item>
@@ -73,7 +73,7 @@
         <dxi-validation-rule type="required" message="Contact Name is required"></dxi-validation-rule>
       </dxi-item>
 
-        <dxi-item dataField="domain">
+        <dxi-item dataField="domain" editorType="dxSelectBox" [editorOptions]="{ items: ['Banking and Financial Services', 'Insurance', 'Retail and E-Commerce', 'Transportation and Logistics', 'Engineering and Construction', 'Healthcare', 'Automotive', 'Edtech'], placeholder: 'Select Domain' }">
           <dxo-label text="Domain" cssClass="bold-label"></dxo-label>
         </dxi-item>
         <dxi-item dataField="stage" editorType="dxSelectBox" [editorOptions]="{ items: stages, placeholder: 'Select Stage' }">
@@ -83,14 +83,18 @@
         <dxi-item dataField="revenueType" editorType="dxSelectBox" [editorOptions]="{ items: ['T and M', 'Fixed Fee'], placeholder: 'Select Revenue Type' }">
           <dxo-label text="Revenue Type" cssClass="bold-label"></dxo-label>
         </dxi-item>
-        <dxi-item dataField="department">
+        <dxi-item dataField="department" editorType="dxSelectBox" [editorOptions]="{ items: ['DU-1', 'DU-2', 'DU-3', 'DU-4', 'DU-5', 'DU-6', 'DU-7', 'DU-8'], placeholder: 'Select DU' }">
           <dxo-label text="DU" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Department is required"></dxi-validation-rule>
         </dxi-item>
-        <dxi-item dataField="country">
+        <dxi-item dataField="country" editorType="dxSelectBox" [editorOptions]="{ items: ['India', 'USA', 'Japan', 'South Korea', 'Canada', 'France'], placeholder: 'Select Country' }">
           <dxo-label text="Country" cssClass="bold-label"></dxo-label>
         </dxi-item>
-        <dxi-item dataField="date" editorType="dxDateBox">
+        <dxi-item dataField="startDate" editorType="dxDateBox">
+          <dxo-label text="Starting Date" cssClass="bold-label"></dxo-label>
+          <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
+        </dxi-item>
+        <dxi-item dataField="closeDate" editorType="dxDateBox">
           <dxo-label text="Closing Date" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
         </dxi-item>
