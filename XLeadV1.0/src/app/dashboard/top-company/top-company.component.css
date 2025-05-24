@@ -15,32 +15,38 @@
 
 .top-card-header h4 {
   font-size: 0.85rem;
-  /* font-weight: 500; */
+ 
   font-weight: bold;
-  /* color: #64748b; */
+  
   margin-bottom: 0.9rem;
 }
 
 .top-card-content {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.75rem;
 }
 
 .company-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0.1rem 0;
+   border-radius: 8px; 
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
-
+.company-row:hover {
+  background-color: #f1f5f9; 
+  transform: scale(1.02); 
+}
 .company-name {
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.75rem;
+  font-weight: 600;
   
 }
 
 .company-value {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
