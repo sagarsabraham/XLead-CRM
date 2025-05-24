@@ -12,6 +12,9 @@ import { SharedModule } from '../shared/shared.module';
     CommonModule,
     ContactsRoutingModule,
     SharedModule
+  ],
+  exports: [
+    ContactPageComponent
   ]
 })
 export class ContactsModule { }

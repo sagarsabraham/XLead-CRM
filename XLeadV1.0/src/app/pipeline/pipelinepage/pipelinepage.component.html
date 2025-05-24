@@ -8,7 +8,7 @@
             (onClick)="onAddDeal()"
         ></app-button>
     </div>
-    <div class="topcard-container">
+ <div class="topcard-container">
       <app-topcard 
         *ngFor="let card of topcardData; let i = index"
         [amount]="card.amount" 
@@ -31,13 +31,20 @@
               <app-dealheader [stageName]="stage.name" [amount]="stage.amount" [dealCount]="stage.deals.length" [collapsed]="stage.collapsed"></app-dealheader>
           </div>
 
-          <div *ngIf="!stage.collapsed">
-              <app-dealbody [deals]="stage.deals" [connectedTo]="connectedDropLists" [stageName]="stage.name" (dealDropped)="onDealDropped($event)"></app-dealbody>
-          </div>
+            <div *ngIf="!stage.collapsed">
+                <app-dealbody [deals]="stage.deals" [connectedTo]="connectedDropLists" [stageName]="stage.name" (dealDropped)="onDealDropped($event)"></app-dealbody>
+            </div>
 
           <div *ngIf="stage.hover && !stage.collapsed">
               <app-dealfooter [buttons]="dealButton"></app-dealfooter>
           </div>
       </div>
     </div>
+     <!-- Add Deal Modal Component -->
+    <app-add-deal-modal
+        [isVisible]="isModalVisible"
+        [stages]="stageNames"
+        (onClose)="onModalClose()"
+        (onSubmit)="onDealSubmit($event)">
+    </app-add-deal-modal>
 </div>

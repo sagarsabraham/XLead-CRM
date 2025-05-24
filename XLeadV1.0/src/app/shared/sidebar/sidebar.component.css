@@ -1,0 +1,62 @@
+:host {
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+}
+
+.sidebar {
+  width: 9vh;
+  z-index: 11;
+  background-color: #000000;
+  color: hsl(0, 0%, 100%);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  align-items: center;
+  padding-top: 180px;
+}
+
+.icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 37px;
+}
+
+.initials-badge {
+  margin-top: auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #dc143c;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.logo {
+  top: 3vh;
+  left: 0.7vh;
+  position: absolute;
+}
+
+.profile {
+  top: 93vh;
+  position: absolute;
+}
+
+.active-icon {
+  background-color: white;
+  border-radius: 7px;
+}
+
+.hover-icon:hover {
+  background-color: grey;
+  border-radius: 15px;
+}

@@ -1,0 +1,25 @@
+<dx-popup
+  [visible]="isVisible"
+  [width]="400"
+  [title]="title"
+  [height]="'auto'"
+  [showCloseButton]="true"
+  (onHidden)="handleClose()"
+>
+  <div *dxTemplate="let data of 'content'">
+    <dx-form [formData]="formData">
+      <dxi-item *ngFor="let field of fields" [dataField]="field.dataField">
+        <dxo-label [text]="field.label"></dxo-label>
+        <dxi-validation-rule *ngIf="field.required" type="required"></dxi-validation-rule>
+      </dxi-item>
+    </dx-form>
+
+    <app-modal-buttons
+      [showCustomize]="false"
+      [cancelText]="'Cancel'"
+      [saveText]="'Save'"
+      (onCancel)="handleClose()"
+      (onSave)="handleSubmit()">
+    </app-modal-buttons>
+  </div>
+</dx-popup>

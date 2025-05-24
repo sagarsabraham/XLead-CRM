@@ -1,7 +1,9 @@
-<div class="chart-card">
- 
-  <dx-chart [dataSource]="revenueData"
-    title="Revenue Won by Month">
+<div class="chart-container">
+  <dx-chart 
+    [dataSource]="revenueData" 
+    [height]="350"
+    title="Revenue Won by Month"
+  >
     <dxi-series
       valueField="amount"
       argumentField="month"

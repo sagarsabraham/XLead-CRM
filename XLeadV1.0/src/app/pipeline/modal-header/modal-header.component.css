@@ -1,0 +1,60 @@
+ .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .form-header h5 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .owner-info {
+      text-align: right;
+    }
+    .owner-info h5 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .owner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 5px;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 5px;
+      border-radius: 36px;
+    }
+    .owner img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .owner span {
+      font-size: 14px;
+      color: black;
+    }
+    @media (max-width: 600px) {
+  .form-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .owner-info {
+    text-align: left;
+    width: 100%;
+  }
+
+  .owner {
+    margin-top: 5px;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .owner-info h5{
+      display: none;
+  }
+}
