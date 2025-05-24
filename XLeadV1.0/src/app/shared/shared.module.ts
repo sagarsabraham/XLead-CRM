@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DevExtremeModule } from 'devextreme-angular';
 import { ButtonComponent } from './button/button.component';
+import { FormsModule } from '@angular/forms';
 import { MetricCardComponent } from './metric-card/metric-card.component';
 import { MetricCardOutlineComponent } from './metric-card-outline/metric-card-outline.component';
 import { PipelineStageGraphComponent } from './pipeline-stage-graph/pipeline-stage-graph.component';
@@ -21,7 +22,8 @@ import { TopcardComponent } from './topcard/topcard.component';
   ],
   imports: [
     CommonModule,
-    DevExtremeModule
+    DevExtremeModule,
+    FormsModule
   ],
   exports: [
     ButtonComponent,

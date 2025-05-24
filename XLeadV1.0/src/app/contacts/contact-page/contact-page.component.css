@@ -6,6 +6,26 @@
 .page-container {
   display: flex;
   width: 100%;
+  min-height: 100vh; /* Ensure full viewport height */
+}
+
+.hamburger-menu {
+  display: none; /* Hidden by default, shown on mobile */
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: #1976d2;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.hamburger-menu:hover {
+  background: #1565c0;
 }
 
 app-sidebar {
@@ -15,12 +35,22 @@ app-sidebar {
   top: 0;
   left: 0;
   background-color: #f5f5f5; /* Placeholder background color */
+  transition: transform 0.3s ease; /* Smooth transition for hiding/showing */
+}
+
+app-sidebar.sidebar-hidden {
+  transform: translateX(-100%); /* Slide out to the left */
+}
+
+app-sidebar.sidebar-visible {
+  transform: translateX(0); /* Slide in */
 }
 
 .container {
   padding: 20px;
   margin-left: 100px; /* 80px sidebar width + 20px gap */
   width: calc(100% - 100px); /* Adjust width to account for sidebar and gap */
+  box-sizing: border-box;
 }
 
 .topbar {
@@ -48,6 +78,7 @@ app-sidebar {
 .content {
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
 .table-container {
@@ -111,4 +142,84 @@ dx-data-grid {
   padding: 10px;
   background-color: #f9f9f9;
   border-top: 1px solid #e0e0e0;
+}
+
+/* Mobile Styles */
+@media (max-width: 576px) {
+  .page-container.mobile-view {
+    flex-direction: column;
+  }
+
+  .hamburger-menu {
+    display: block; /* Show hamburger menu on mobile */
+  }
+
+  app-sidebar {
+    width: 200px; /* Wider sidebar on mobile when visible */
+    z-index: 999; /* Ensure sidebar is above content */
+  }
+
+  .container {
+    margin-left: 0; /* Remove sidebar offset on mobile */
+    width: 100%; /* Full width */
+    padding: 10px; /* Reduced padding */
+  }
+
+  .topbar {
+    flex-direction: column; /* Stack vertically on mobile */
+    align-items: flex-start;
+    gap: 8px; /* Space between title and total count */
+    margin-bottom: 10px;
+  }
+
+  .topbar h1 {
+    font-size: 24px; /* Smaller heading on mobile */
+  }
+
+  .total-count {
+    font-size: 16px; /* Smaller font size */
+    text-align: left; /* Align left for consistency */
+  }
+
+  .content {
+    padding-top: 40px; /* Space for hamburger menu */
+  }
+
+  .table-container {
+    max-width: 100%; /* Full width on mobile */
+  }
+
+  dx-data-grid {
+    max-width: 100%; /* Full width on mobile */
+  }
+
+  /* Adjust owner cell for mobile */
+  .owner-cell {
+    gap: 6px;
+  }
+
+  .owner-avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .owner-name {
+    font-size: 12px;
+  }
+
+  /* Adjust row height and font size for mobile */
+  :host ::ng-deep .dx-datagrid-rowsview .dx-row {
+    font-size: 12px;
+    height: 40px;
+  }
+
+  :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
+    padding: 8px;
+  }
+
+  :host ::ng-deep .dx-datagrid-pager {
+    padding: 8px;
+    font-size: 12px;
+  }
 }

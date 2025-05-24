@@ -1,113 +1,212 @@
-<div class="table-scroll-container">
-  <div class="table-wrapper">
-    <app-table-outline>
-      <dx-data-grid
-        #dataGrid
-        [dataSource]="data"
-        [columns]="headers"
-        [keyExpr]="'id'"
-        [allowColumnResizing]="true"
-        [showBorders]="true"
-        [rowAlternationEnabled]="true"
-        [hoverStateEnabled]="true"
-        [class]="classNames"
-        (onSelectionChanged)="handleSelectionChanged($event)"
-        [columnAutoWidth]="true"
-        [wordWrapEnabled]="false"
-      >
-        <dxo-selection
-          mode="multiple"
-          selectAllMode="page"
-          showCheckBoxesMode="always"
-        ></dxo-selection>
-        <dxo-paging [pageSize]="pageSize"></dxo-paging>
-        <dxo-pager
-          [showPageSizeSelector]="true"
-          [allowedPageSizes]="allowedPageSizes"
-          [showInfo]="true"
-          [showNavigationButtons]="true"
-        ></dxo-pager>
-        <dxo-sorting mode="multiple"></dxo-sorting>
-        <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
-        <dxo-filter-row [visible]="showFilterRow"></dxo-filter-row>
-        <dxo-filter-panel [visible]="showFilterPanel"></dxo-filter-panel>
-        <dxo-search-panel [visible]="showSearchPanel"></dxo-search-panel>
-        <dxo-column-chooser [enabled]="false"></dxo-column-chooser>
-        <dxo-export
-          [enabled]="true"
-          [allowExportSelectedData]="true"
-          (onExporting)="onExporting($event)"
-        ></dxo-export>
-        <dxo-scrolling
-          mode="standard"
-          showScrollbar="always"
-          useNative="true"
-          scrollByContent="true"
-          scrollByThumb="true"
-        ></dxo-scrolling>
-        <dxo-toolbar>
-          <dxi-item location="before" template="selectionInfoTemplate"></dxi-item>
-          <dxi-item location="after">
-            <dx-button
-              icon="columnchooser"
-              hint="Show Column Chooser"
-              (click)="toggleColumnChooser($event)"
-              #columnChooserButton
-            ></dx-button>
-          </dxi-item>
-          <dxi-item location="after">
-            <dx-button
-              icon="export"
-              text="Export"
-              hint="Export Data"
-              (click)="onExportButtonClick($event)"
-              #exportButton
-            ></dx-button>
-          </dxi-item>
-        </dxo-toolbar>
-        <div *dxTemplate="let data of 'selectionInfoTemplate'">
-          <ng-container *ngIf="selectedRowKeys.length > 0">
-            <div class="selection-info">
-              {{ selectedRowKeys.length }} row(s) selected
+<div class="table-container">
+  <!-- Desktop View -->
+  <div *ngIf="!isMobile" class="desktop-view">
+    <div class="table-scroll-container">
+      <div class="table-wrapper">
+        <app-table-outline>
+          <dx-data-grid
+            #dataGrid
+            [dataSource]="data"
+            [columns]="headers"
+            [keyExpr]="'id'"
+            [allowColumnResizing]="true"
+            [showBorders]="true"
+            [rowAlternationEnabled]="true"
+            [hoverStateEnabled]="true"
+            [class]="classNames"
+            (onSelectionChanged)="handleSelectionChanged($event)"
+            [columnAutoWidth]="true"
+            [wordWrapEnabled]="false"
+          >
+            <dxo-selection
+              mode="multiple"
+              selectAllMode="page"
+              showCheckBoxesMode="always"
+            ></dxo-selection>
+            <dxo-paging [pageSize]="pageSize"></dxo-paging>
+            <dxo-pager
+              [showPageSizeSelector]="true"
+              [allowedPageSizes]="allowedPageSizes"
+              [showInfo]="true"
+              [showNavigationButtons]="true"
+            ></dxo-pager>
+            <dxo-sorting mode="multiple"></dxo-sorting>
+            <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
+            <dxo-filter-row [visible]="showFilterRow"></dxo-filter-row>
+            <dxo-filter-panel [visible]="showFilterPanel"></dxo-filter-panel>
+            <dxo-search-panel [visible]="showSearchPanel"></dxo-search-panel>
+            <dxo-column-chooser [enabled]="false"></dxo-column-chooser>
+            <dxo-export
+              [enabled]="true"
+              [allowExportSelectedData]="true"
+              (onExporting)="onExporting($event)"
+            ></dxo-export>
+            <dxo-scrolling
+              mode="standard"
+              showScrollbar="always"
+              useNative="true"
+              scrollByContent="true"
+              scrollByThumb="true"
+            ></dxo-scrolling>
+            <dxo-toolbar>
+              <dxi-item location="before" template="selectionInfoTemplate"></dxi-item>
+              <dxi-item location="after">
+                <dx-button
+                  icon="columnchooser"
+                  hint="Show Column Chooser"
+                  (click)="toggleColumnChooser($event)"
+                  #columnChooserButton
+                ></dx-button>
+              </dxi-item>
+              <dxi-item location="after">
+                <dx-button
+                  icon="export"
+                  text="Export"
+                  hint="Export Data"
+                  (click)="onExportButtonClick($event)"
+                  #exportButton
+                ></dx-button>
+              </dxi-item>
+            </dxo-toolbar>
+            <div *dxTemplate="let data of 'selectionInfoTemplate'">
+              <ng-container *ngIf="selectedRowKeys.length > 0">
+                <div class="selection-info">
+                  {{ selectedRowKeys.length }} row(s) selected
+                </div>
+              </ng-container>
             </div>
-          </ng-container>
-        </div>
-        <div *dxTemplate="let header of 'headerCellTemplate'">
-          <div class="header-cell">
-            <span class="header-text">{{ header.column.caption }}</span>
-            <span
-              *ngIf="header.column.allowSorting !== false"
-              class="sort-icon"
-              [ngClass]="getSortIconClass(header.column)"
-              (click)="toggleSort(header.column)"
-            >{{ getSortIcon(header.column) }}</span>
-          </div>
-        </div>
-        <div *dxTemplate="let cell of 'ownerCellTemplate'">
-          <ng-container *ngIf="useOwnerTemplate">
-            <div class="owner-cell">
-              <div
-                class="owner-avatar"
-                [style.backgroundColor]="getOwnerColor(cell.data[ownerField])"
-              >{{ getOwnerInitial(cell.data[ownerField]) }}</div>
-              <span class="owner-name">{{ cell.data[ownerField] }}</span>
+            <div *dxTemplate="let header of 'headerCellTemplate'">
+              <div class="header-cell">
+                <span class="header-text">{{ header.column.caption }}</span>
+                <span
+                  *ngIf="header.column.allowSorting !== false"
+                  class="sort-icon"
+                  [ngClass]="getSortIconClass(header.column)"
+                  (click)="toggleSort(header.column)"
+                >{{ getSortIcon(header.column) }}</span>
+              </div>
             </div>
-          </ng-container>
-        </div>
-      </dx-data-grid>
+            <div *dxTemplate="let cell of 'ownerCellTemplate'">
+              <ng-container *ngIf="useOwnerTemplate">
+                <div class="owner-cell">
+                  <div
+                    class="owner-avatar"
+                    [style.backgroundColor]="getOwnerColor(cell.data[ownerField])"
+                  >{{ getOwnerInitial(cell.data[ownerField]) }}</div>
+                  <span class="owner-name">{{ cell.data[ownerField] }}</span>
+                </div>
+              </ng-container>
+            </div>
+          </dx-data-grid>
 
-      <!-- Column Chooser Dropdown -->
-      <div
-        class="custom-dropdown column-chooser-dropdown"
-        *ngIf="showCustomColumnChooser"
-        (click)="onColumnChooserDropdownClick($event)"
-        #columnChooserDropdown
-      >
-        <div class="dropdown-header">
-          Choose Columns
-          <span class="close-button" (click)="closeDropdowns()">×</span>
-        </div>
-        <div class="dropdown-item select-all-item">
+          <!-- Column Chooser Dropdown -->
+          <div
+            class="custom-dropdown column-chooser-dropdown"
+            *ngIf="showCustomColumnChooser"
+            (click)="onColumnChooserDropdownClick($event)"
+            #columnChooserDropdown
+          >
+            <div class="dropdown-header">
+              Choose Columns
+              <span class="close-button" (click)="closeDropdowns()">×</span>
+            </div>
+            <div class="dropdown-item select-all-item">
+              <label>
+                <input
+                  type="checkbox"
+                  [checked]="areAllColumnsSelected()"
+                  [indeterminate]="areSomeColumnsSelected()"
+                  (change)="toggleAllColumns()"
+                />
+                Select All
+              </label>
+            </div>
+            <div class="dropdown-item" *ngFor="let header of headers">
+              <label>
+                <input
+                  type="checkbox"
+                  [checked]="columnVisibility[header.dataField]"
+                  (change)="toggleColumnVisibility(header.dataField)"
+                />
+                {{ header.caption }}
+              </label>
+            </div>
+          </div>
+
+          <!-- Export Options Dropdown -->
+          <div
+            class="custom-dropdown export-options-dropdown"
+            *ngIf="showExportModal"
+            (click)="onExportOptionsDropdownClick($event)"
+            #exportOptionsDropdown
+          >
+            <div class="dropdown-header">
+              Export Options
+              <span class="close-button" (click)="closeDropdowns()">×</span>
+            </div>
+            <div class="dropdown-item">
+              <button class="export-button excel" (click)="exportData('excel')">
+                <span class="dx-icon dx-icon-exportxlsx"></span> Export as XLSX
+              </button>
+            </div>
+            <div class="dropdown-item">
+              <button class="export-button csv" (click)="exportData('csv')">
+                <span class="dx-icon dx-icon-doc"></span> Export as CSV
+              </button>
+            </div>
+          </div>
+        </app-table-outline>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile View -->
+  <div *ngIf="isMobile" class="mobile-view">
+    <!-- Mobile Toolbar -->
+    <div class="mobile-toolbar">
+      <div class="mobile-selection">
+        <label class="select-all-label">
+          <input
+            type="checkbox"
+            [checked]="areAllOnPageSelected()"
+            [indeterminate]="areSomeOnPageSelected()"
+            (change)="toggleSelectAllOnPage()"
+          />
+          Select All
+        </label>
+        <span *ngIf="selectedRowKeys.length > 0" class="selection-info">
+          {{ selectedRowKeys.length }} selected
+        </span>
+      </div>
+      <div class="search-container">
+        <input 
+          type="text" 
+          placeholder="Search contacts..." 
+          (input)="searchMobile($event)"
+          class="mobile-search"
+        >
+      </div>
+      <div class="mobile-actions">
+        <button class="mobile-action-btn" (click)="toggleColumnChooserMobile()">
+          <i class="fas fa-columns"></i> Columns
+        </button>
+        <button class="mobile-action-btn sort-btn" (click)="showSortOptions = !showSortOptions">
+          <i class="fas fa-sort"></i> Sort
+        </button>
+        <button class="mobile-action-btn" (click)="toggleMobileExportOptions()">
+          <i class="fas fa-download"></i> Export
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile Column Chooser -->
+    <div *ngIf="showColumnChooserMobile" class="mobile-column-chooser">
+      <div class="column-chooser-header">
+        <div class="column-chooser-title">Choose Fields</div>
+        <button class="column-chooser-close" (click)="toggleColumnChooserMobile()">×</button>
+      </div>
+      <div class="column-chooser-actions">
+        <div class="column-chooser-item select-all-item">
           <label>
             <input
               type="checkbox"
@@ -118,7 +217,7 @@
             Select All
           </label>
         </div>
-        <div class="dropdown-item" *ngFor="let header of headers">
+        <div class="column-chooser-item" *ngFor="let header of headers">
           <label>
             <input
               type="checkbox"
@@ -129,34 +228,127 @@
           </label>
         </div>
       </div>
+    </div>
+    
+    <!-- Mobile Sort Options -->
+    <div *ngIf="showSortOptions" class="mobile-sort-options">
+      <div class="sort-header">Sort by:</div>
+      <div class="sort-options">
+        <ng-container *ngFor="let header of headers">
+          <div *ngIf="columnVisibility[header.dataField] && header.allowSorting !== false" 
+               class="sort-option" 
+               (click)="toggleSortMobile(header.dataField)">
+            {{ header.caption }} <span class="sort-indicator">{{ getSortIndicator(header.dataField) }}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    
+    <!-- Mobile Export Options -->
+    <div *ngIf="showMobileExportOptions" class="mobile-export-options">
+      <div class="export-header">
+        <div class="export-title">Export Options</div>
+        <button class="export-close" (click)="toggleMobileExportOptions()">×</button>
+      </div>
+      <div class="export-actions">
+        <button class="export-button excel" (click)="exportMobile('excel')">
+          <i class="fas fa-file-excel"></i> Export as Excel
+        </button>
+        <button class="export-button csv" (click)="exportMobile('csv')">
+          <i class="fas fa-file-csv"></i> Export as CSV
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile Card List -->
+    <div class="mobile-card-list">
+      <div *ngFor="let item of paginatedData" class="contact-card" (click)="openDetailsModal(item)">
+        <div class="card-selection" (click)="$event.stopPropagation()">
+          <input type="checkbox" 
+                 [checked]="selectedRowKeys.includes(item.id)"
+                 (change)="toggleSelection(item.id)"
+          >
+        </div>
+        <div class="card-content">
+          <div *ngIf="columnVisibility['name']" class="card-primary">{{ item.name }}</div>
+          <div *ngIf="columnVisibility['phone']" class="card-secondary">{{ item.phone }}</div>
+          <div *ngIf="columnVisibility['email']" class="card-tertiary">{{ item.email }}</div>
+          <div *ngIf="useOwnerTemplate && columnVisibility[ownerField]" class="card-owner">
+            <div class="owner-avatar small" [style.backgroundColor]="getOwnerColor(item[ownerField])">
+              {{ getOwnerInitial(item[ownerField]) }}
+            </div>
+            <span class="owner-name">{{ item[ownerField] }}</span>
+          </div>
+        </div>
+        <div class="card-chevron">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mobile Pagination -->
+    <div class="mobile-pagination">
+      <div class="pagination-controls">
+        <button class="pagination-btn" [disabled]="currentPage === 1" (click)="goToPreviousPage()">
+          <i class="fas fa-chevron-left"></i> Prev
+        </button>
+        <span class="pagination-info">{{ currentPage }} of {{ totalPages }}</span>
+        <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="goToNextPage()">
+          Next <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+      <div class="page-size-selector">
+        <label class="page-size-label">Items per page:</label>
+        <select [(ngModel)]="mobilePageSize" (ngModelChange)="setPageSize($event)">
+          <option *ngFor="let size of mobileAllowedPageSizes" [value]="size">{{ size }}</option>
+        </select>
+      </div>
+    </div>
 
-      <!-- Export Options Dropdown -->
-      <div
-        class="custom-dropdown export-options-dropdown"
-        *ngIf="showExportModal"
-        (click)="onExportOptionsDropdownClick($event)"
-        #exportOptionsDropdown
-      >
-        <div class="dropdown-header">
-          Export Options
-          <span class="close-button" (click)="closeDropdowns()">×</span>
+    <!-- Mobile Details Modal -->
+    <div *ngIf="isDetailsModalOpen" class="mobile-details-modal">
+      <div class="modal-overlay" (click)="closeDetailsModal()"></div>
+      <div class="modal-container">
+        <div class="modal-header">
+          <h2>Contact Details</h2>
+          <button class="close-modal-btn" (click)="closeDetailsModal()">×</button>
         </div>
-        <div class="dropdown-item">
-          <button class="export-button excel" (click)="exportData('excel')">
-            <span class="dx-icon dx-icon-exportxlsx"></span> Export as XLSX
+        <div class="modal-body">
+          <div *ngFor="let header of headers" class="detail-item" [hidden]="!columnVisibility[header.dataField]">
+            <div class="detail-label">{{ header.caption }}</div>
+            <div class="detail-value">
+              <ng-container *ngIf="header.cellTemplate !== 'ownerCellTemplate'">
+                {{ selectedContact[header.dataField] }}
+              </ng-container>
+              <div *ngIf="header.cellTemplate === 'ownerCellTemplate' && useOwnerTemplate" class="owner-cell">
+                <div class="owner-avatar" [style.backgroundColor]="getOwnerColor(selectedContact[ownerField])">
+                  {{ getOwnerInitial(selectedContact[ownerField]) }}
+                </div>
+                <span class="owner-name">{{ selectedContact[ownerField] }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="modal-action-btn">
+            <i class="fas fa-edit"></i> Edit
           </button>
-        </div>
-        <div class="dropdown-item">
-          <button class="export-button csv" (click)="exportData('csv')">
-            <span class="dx-icon dx-icon-doc"></span> Export as CSV
+          <button class="modal-action-btn">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+          <button class="modal-action-btn">
+            <i class="fas fa-phone"></i> Call
+          </button>
+          <button class="modal-action-btn">
+            <i class="fas fa-envelope"></i> Email
           </button>
         </div>
       </div>
-    </app-table-outline>
+    </div>
   </div>
-</div>
 
-<!-- Export Message -->
-<div class="export-message" *ngIf="showExportMessage">
-  {{ exportMessage }}
+  <!-- Export Message -->
+  <div class="export-message" *ngIf="showExportMessage">
+    {{ exportMessage }}
+  </div>
 </div>

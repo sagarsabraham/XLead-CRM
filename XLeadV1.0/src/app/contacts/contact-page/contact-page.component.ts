@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-contact-page',
@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./contact-page.component.css']
 })
 export class ContactPageComponent {
+  
   tableHeaders = [
     { dataField: 'name', caption: 'Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
@@ -68,4 +69,29 @@ export class ContactPageComponent {
   ];
 
   totalContacts = this.tableData.length;
+  isMobile: boolean = false; // Track if the screen is mobile-sized
+  isSidebarVisible: boolean = false; // Track sidebar visibility on mobile
+
+  constructor() {
+    this.checkIfMobile(); // Initialize mobile state
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.checkIfMobile();
+  }
+
+  // Check if the screen is mobile-sized (≤ 576px)
+  private checkIfMobile(): void {
+    this.isMobile = window.innerWidth <= 576;
+    if (this.isMobile) {
+      this.isSidebarVisible = false; // Hide sidebar on mobile by default
+    } else {
+      this.isSidebarVisible = true; // Show sidebar on desktop by default
+    }
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarVisible = !this.isSidebarVisible;
+  }
 }

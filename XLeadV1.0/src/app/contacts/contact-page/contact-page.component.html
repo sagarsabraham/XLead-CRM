@@ -1,6 +1,11 @@
-<div class="page-container">
+<div class="page-container" [ngClass]="{'mobile-view': isMobile}">
+  <!-- Hamburger menu for mobile -->
+  <button *ngIf="isMobile" class="hamburger-menu" (click)="toggleSidebar()">
+    ☰
+  </button>
 
-  <!-- <app-sidebar></app-sidebar> -->
+  <!-- Sidebar (uncomment if needed) -->
+  <!-- <app-sidebar [ngClass]="{'sidebar-hidden': !isSidebarVisible, 'sidebar-visible': isSidebarVisible}"></app-sidebar> -->
 
   <div class="container">
     <div class="topbar">
