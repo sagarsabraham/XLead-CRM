@@ -58,6 +58,7 @@ app-sidebar {
 .content {
   flex: 1;
   overflow-y: auto;
+  padding-top: 35px;
 }
 
 /* Table */

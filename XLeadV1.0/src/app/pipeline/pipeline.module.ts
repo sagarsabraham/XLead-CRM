@@ -14,6 +14,7 @@ import { ModalHeaderComponent } from './modal-header/modal-header.component'
 import { FormsModule } from '@angular/forms';
 import { FormModalComponent } from './form-modal/form-modal.component';
 import { ModalButtonsComponent } from './modal-buttons/modal-buttons.component';
+import { DealInfoModule } from '../deal-info/deal-info.module';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { ModalButtonsComponent } from './modal-buttons/modal-buttons.component';
     DxFormModule,
     DxNumberBoxModule,
     DxDateBoxModule,
-    DxFileUploaderModule
+    DxFileUploaderModule,
+    DealInfoModule
   ],
   exports: [
     PipelinepageComponent 
