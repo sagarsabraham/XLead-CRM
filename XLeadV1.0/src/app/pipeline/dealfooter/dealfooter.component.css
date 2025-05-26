@@ -1,0 +1,10 @@
+.footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 8px;
+    background-color: white;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    transition: opacity 0.3s ease;
+    border-top: 1px solid #ccc;
+}

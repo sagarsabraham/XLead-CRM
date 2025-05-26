@@ -1,0 +1,17 @@
+<div class="sidebar">
+  <div class="logo">
+    <img [src]="logoPath" alt="Logo" />
+  </div>
+  <div class="icons" *ngFor="let item of navItems">
+    <app-icon
+      [iconPath]="item.iconPath"
+      [isActive]="item.isActive"
+      [ngClass]="{
+        'active-icon': item.isActive,
+        'hover-icon': !item.isActive
+      }"
+      (onClick)="navigate(item.route)"
+    ></app-icon>
+    <span class="icon-label">{{ item.text }}</span>
+  </div>
+</div>

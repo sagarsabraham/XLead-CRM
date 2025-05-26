@@ -1,0 +1,19 @@
+<div class="page-container">
+  <div class="container">
+    <div class="topbar">
+      <h1>Contacts</h1>
+      <div class="total-count">
+        Total Contacts: {{ totalContacts }}
+      </div>
+    </div>
+    <div class="content">
+      <app-table
+        [data]="tableData"
+        [headers]="tableHeaders"
+        [useOwnerTemplate]="true"
+        [ownerField]="'owner'"
+        [exportFileName]="'Contacts'"
+      ></app-table>
+    </div>
+  </div>
+</div>

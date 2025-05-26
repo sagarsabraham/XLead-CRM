@@ -1,0 +1,11 @@
+<div class="dx-card top-card">
+  <div class="top-card-header">
+    <h4>Top Companies - Pipelines Won</h4>
+  </div>
+  <div class="top-card-content">
+    <div *ngFor="let company of companyData" class="company-row">
+      <span class="company-name">{{ company.Account }}</span>
+      <span class="company-value" [style.color]="'#22c55e'">{{ formatCurrency(company.revenue) }}</span>
+    </div>
+  </div>
+</div>
