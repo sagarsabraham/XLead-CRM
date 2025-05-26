@@ -466,4 +466,6 @@ export class PipelinepageComponent {
 
     this.topcardData[1].amount = this.stages.reduce((total, stage) => total + stage.deals.length, 0);
   }
+
+  
 }

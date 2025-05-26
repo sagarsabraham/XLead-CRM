@@ -9,7 +9,8 @@ export class FormModalComponent {
   @Input() isVisible: boolean = false;
   @Input() title: string = '';
   @Input() formData: any = {};
-  @Input() fields: { dataField: string; label: string; type?: string; required?: boolean }[] = [];
+  @Input() fields: { dataField: string; label: string; type?: string; required?: boolean; editorType?: string; editorOptions?: any; }[] = [];
+
 
   @Output() onClose = new EventEmitter<void>();
   @Output() onSubmit = new EventEmitter<any>();
@@ -31,7 +32,13 @@ export class FormModalComponent {
   }
 
   resetForm() {
-    this.fields.forEach(field => this.formData[field.dataField] = '');
+    this.fields.forEach(field => {
+      if (field.editorType === 'dxSelectBox' && field.editorOptions?.items) {
+        // Default to the first item in the dropdown if available
+        this.formData[field.dataField] = field.editorOptions.items[0] || '';
+      } else {
+        this.formData[field.dataField] = '';
+      }
+    });
   }
-
 }
