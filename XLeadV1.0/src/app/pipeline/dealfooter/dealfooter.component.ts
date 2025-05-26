@@ -11,6 +11,7 @@ export class DealfooterComponent {
     icon: string
   }[] = [];
   @Output() collapse = new EventEmitter<void>();
+  
 
   onCollapse() {
     this.collapse.emit();

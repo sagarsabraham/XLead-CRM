@@ -37,8 +37,8 @@
                 <app-dealbody [deals]="stage.deals" [connectedTo]="connectedDropLists" [stageName]="stage.name" (dealDropped)="onDealDropped($event)"></app-dealbody>
             </div>
 
-          <div *ngIf="stage.hover && !stage.collapsed">
-              <app-dealfooter [buttons]="dealButton"></app-dealfooter>
+          <div *ngIf="stage.hover && !stage.collapsed">              
+            <app-dealfooter [buttons]="dealButton"></app-dealfooter>
           </div>
       </div>
     </div>

@@ -16,6 +16,8 @@ import { FormsModule } from '@angular/forms';
 
 import { FormModalComponent } from './form-modal/form-modal.component';
 import { ModalButtonsComponent } from './modal-buttons/modal-buttons.component';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+
 
 
 @NgModule({
@@ -40,7 +42,8 @@ import { ModalButtonsComponent } from './modal-buttons/modal-buttons.component';
     PipelineRoutingModule,
     DxButtonModule,
     // DxBoxModule,
-    
+    HttpClientModule,
+  
     FormsModule,
     DragDropModule,
     SharedModule,

@@ -10,7 +10,6 @@ export class FormModalComponent {
   @Input() title: string = '';
   @Input() formData: any = {};
   @Input() fields: { dataField: string; label: string; type?: string; required?: boolean }[] = [];
-
   @Output() onClose = new EventEmitter<void>();
   @Output() onSubmit = new EventEmitter<any>();
 

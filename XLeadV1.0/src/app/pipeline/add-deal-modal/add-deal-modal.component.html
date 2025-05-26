@@ -5,36 +5,37 @@
   [height]="'auto'"
   [showCloseButton]="true"
   (onHidden)="handleClose()">
- 
- 
   <div *dxTemplate="let data of 'content'" class="popup-content">
     <div class="form-container">
       <app-modal-header title="Deal Information" [showOwner]="true"></app-modal-header>
+
       <dx-form
         [formData]="newDeal"
-        [colCountByScreen]="{ xs: 1, sm: 1, md: 2, lg: 1 }">
+        [colCountByScreen]="{ xs: 1, sm: 1, md: 1, lg: 1 }">
 
         <dxi-item dataField="salesperson">
           <dxo-label text="SalesPerson" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="SalesPerson Name is required"></dxi-validation-rule>
         </dxi-item>
+
         <dxi-item dataField="amount" editorType="dxNumberBox">
           <dxo-label text="Amount" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Amount is required"></dxi-validation-rule>
         </dxi-item>
+
         <dxi-item>
           <dxo-label text="Company Name" cssClass="bold-label"></dxo-label>
           <div class="company-name-container">
             <dx-select-box
+              id="companySelect"
               [(value)]="newDeal.companyName"
               [dataSource]="filteredCompanies"
               [searchEnabled]="true"
               placeholder="Select or search a company"
               (onValueChanged)="onCompanyChange($event.value)">
             </dx-select-box>
-
             <dx-button
-              text="+"
+              text="+" 
               type="default"
               (onClick)="openQuickCreateCompanyModal()">
             </dx-button>
@@ -42,83 +43,109 @@
           <dxi-validation-rule type="required" message="Company Name is required"></dxi-validation-rule>
         </dxi-item>
 
-        
         <dxi-item dataField="title">
           <dxo-label text="Deal Name" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Deal Name is required"></dxi-validation-rule>
         </dxi-item>
+
         <dxi-item dataField="account">
           <dxo-label text="Account" cssClass="bold-label"></dxo-label>
         </dxi-item>
+
         <dxi-item dataField="region">
           <dxo-label text="Region" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Region is required"></dxi-validation-rule>
         </dxi-item>
-       <dxi-item dataField="contactName">
-        <dxo-label text="Contact Name" cssClass="bold-label"></dxo-label>
-        <div class="company-name-container">
-          <dx-select-box
-            [(value)]="newDeal.contactName"
-            [dataSource]="filteredContacts"
-            [searchEnabled]="true"
-            placeholder="Select or search a contact">
-          </dx-select-box>
 
-          <dx-button
-            text="+"
-            type="default"
-            (onClick)="openQuickCreateContactModal()">
-          </dx-button>
-        </div>
-        <dxi-validation-rule type="required" message="Contact Name is required"></dxi-validation-rule>
-      </dxi-item>
+        <dxi-item dataField="contactName">
+          <dxo-label text="Contact Name" cssClass="bold-label"></dxo-label>
+          <div class="company-name-container">
+            <!-- <dx-select-box
+              id="contactSelect"
+              [(value)]="newDeal.contactName"
+              [dataSource]="filteredContacts"
+              [searchEnabled]="true"
+              placeholder="Select or search a contact">
+            </dx-select-box> -->
+            <dx-select-box
+              id="contactSelect"
+              [(value)]="newDeal.contactName"
+              [dataSource]="filteredContacts"
+              [searchEnabled]="true"
+              placeholder="Select or search a contact"
+              (onValueChanged)="onContactChange($event.value)"
+              displayExpr="this"
+              valueExpr="this">
+            </dx-select-box>
+            <dx-button
+              text="+" 
+              type="default"
+              (onClick)="openQuickCreateContactModal()">
+            </dx-button>
+          </div>
+          <dxi-validation-rule type="required" message="Contact Name is required"></dxi-validation-rule>
+        </dxi-item>
 
         <dxi-item dataField="domain">
           <dxo-label text="Domain" cssClass="bold-label"></dxo-label>
         </dxi-item>
-        <dxi-item dataField="stage" editorType="dxSelectBox" [editorOptions]="{ items: stages, placeholder: 'Select Stage' }">
+
+        <dxi-item
+          dataField="stage"
+          editorType="dxSelectBox"
+          [editorOptions]="{ items: stages, placeholder: 'Select Stage' }">
           <dxo-label text="Stage" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Stage is required"></dxi-validation-rule>
         </dxi-item>
-        <dxi-item dataField="revenueType" editorType="dxSelectBox" [editorOptions]="{ items: ['T and M', 'Fixed Fee'], placeholder: 'Select Revenue Type' }">
+
+        <dxi-item
+          dataField="revenueType"
+          editorType="dxSelectBox"
+          [editorOptions]="{ items: ['T and M', 'Fixed Fee'], placeholder: 'Select Revenue Type' }">
           <dxo-label text="Revenue Type" cssClass="bold-label"></dxo-label>
         </dxi-item>
+
         <dxi-item dataField="department">
           <dxo-label text="DU" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Department is required"></dxi-validation-rule>
         </dxi-item>
+
         <dxi-item dataField="country">
           <dxo-label text="Country" cssClass="bold-label"></dxo-label>
         </dxi-item>
+
         <dxi-item dataField="date" editorType="dxDateBox">
           <dxo-label text="Closing Date" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
         </dxi-item>
-        <dxi-item dataField="description" [editorOptions]="{ placeholder: 'A few words about this deal' }">
+
+        <dxi-item
+          dataField="description"
+          [editorOptions]="{ placeholder: 'A few words about this deal' }">
           <dxo-label text="Description" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Description is required"></dxi-validation-rule>
         </dxi-item>
+
         <dxi-item dataField="probability">
-          <dxo-label text="Probability"></dxo-label>
+          <dxo-label text="Probability" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Probability is required"></dxi-validation-rule>
         </dxi-item>
-      
+
       </dx-form>
     </div>
-    
-      <app-modal-buttons
-       [showCustomize]="true"
+
+    <app-modal-buttons
+      [showCustomize]="true"
       [customize]="'Customize Fields'"
       [cancelText]="'Cancel'"
       [saveText]="'Save'"
       (onCancel)="handleClose()"
       (onSave)="handleSubmit()">
-      </app-modal-buttons>
-    
+    </app-modal-buttons>
   </div>
 </dx-popup>
 
-
+<!-- Company Creation Modal -->
 <app-form-modal
   *ngIf="isCompanyModalVisible"
   [isVisible]="isCompanyModalVisible"
@@ -129,6 +156,7 @@
   (onSubmit)="addNewCompany($event)">
 </app-form-modal>
 
+<!-- Contact Creation Modal -->
 <app-form-modal
   *ngIf="isContactModalVisible"
   [isVisible]="isContactModalVisible"

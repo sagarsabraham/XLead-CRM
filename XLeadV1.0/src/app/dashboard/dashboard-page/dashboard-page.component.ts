@@ -11,8 +11,8 @@ export class DashboardPageComponent {
   revenueData = [
     { month: 'April 2024', amount: 34567 },
     { month: 'April 2025', amount: 123457 },
-    { month: 'May 2025', amount: 456786 },
-    { month: 'June 2025', amount: 567190 }
+    // { month: 'May 2025', amount: 456786 },
+    // { month: 'June 2025', amount: 567190 }
     
   ];
   companyData=[
