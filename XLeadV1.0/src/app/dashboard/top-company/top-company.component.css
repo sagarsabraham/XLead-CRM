@@ -1,65 +1,62 @@
-.dx-card.top-card {
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  padding: 1rem;
+.top-card {
   background-color: white;
-  width: 100%;
-  max-width: 255px; /* Match metric card width */
-  height: auto;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
   box-sizing: border-box;
+  height: 100%;
 }
 
-.top-card .top-card-header {
-  margin-bottom: 1.25rem;
+.top-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
 }
 
-.top-card .top-card-header h4 {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  margin: 0;
-  color: #111827;
+.top-card-header h4 {
+  font-size: 0.85rem;
+  /* font-weight: 500; */
+  font-weight: bold;
+  /* color: #64748b; */
+  margin-bottom: 0.9rem;
 }
 
-.top-card .top-card-content .company-row {
+.top-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.company-row {
   display: flex;
   justify-content: space-between;
-  padding: 0.71rem 0;
+  align-items: center;
 }
 
-.top-card .top-card-content .company-row:last-child {
-  border-bottom: none;
+.company-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  
 }
 
-.top-card .top-card-content .company-row .company-name {
-  font-weight: 900;
-  color: #111827;
-  font-size: 0.9375rem;
-}
-
-.top-card .top-card-content .company-row .company-value {
+.company-value {
+  font-size: 0.875rem;
   font-weight: 600;
-  font-size: 0.9375rem;
 }
 
+/* Mobile adjustments */
 @media (max-width: 768px) {
-  .dx-card.top-card {
-    max-width: 100%;
+  .top-card {
+    padding: 1rem;
   }
-
-  .top-card .top-card-header h4 {
-    font-size: 0.875rem;
-  }
-
-  .top-card .top-card-content .company-row .company-name,
-  .top-card .top-card-content .company-row .company-value {
-    font-size: 0.875rem;
+  
+  .top-card-header h4 {
+    font-size: 0.8rem;
   }
 }
 
 @media (max-width: 480px) {
-  .dx-card.top-card {
-    padding: 0.75rem;
-    max-width: 100%;
+  .company-name, .company-value {
+    font-size: 0.8125rem;
   }
 }

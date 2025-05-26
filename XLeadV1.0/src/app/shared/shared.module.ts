@@ -90,7 +90,8 @@ import { TopbarComponent } from './topbar/topbar.component';
     IconTextComponent,
     ProfileComponent,
     SidebarComponent,
-    CheckboxComponent
+    CheckboxComponent,
+    TopbarComponent
   ],
 
    schemas: [CUSTOM_ELEMENTS_SCHEMA]

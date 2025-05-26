@@ -4,7 +4,7 @@
 }
 
 .sidebar {
-  width: 9vh;
+  width: 13vh;
   z-index: 11;
   background-color: #000000;
   color: hsl(0, 0%, 100%);
@@ -44,6 +44,14 @@
   top: 3vh;
   left: 0.7vh;
   position: absolute;
+
+  .logo-x {
+  color: #ff0000;
+}
+
+  .logo-lead {
+  color: #ffffff;
+}
 }
 
 .profile {

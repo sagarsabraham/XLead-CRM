@@ -37,6 +37,7 @@ export class DealinfopageComponent implements OnInit{
     }
 
     this.deal = dealData;
+    // this.deal.amount=dealData.amount.toString();
     this.deal.contactEmail = `${this.deal.contactName.replace(/\s+/g, '.').toLowerCase()}@example.com`;
     this.deal.contactPhone = '+919847908657';
     this.deal.companyWebsite = `info@${this.deal.companyName.toLowerCase()}.com`;

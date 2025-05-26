@@ -1,8 +1,7 @@
 <div class="page-container">
-  <div class="container">
-    <div class="topbar">
-      <h1>Companies</h1>
-    </div>
+  <div class="sidebar-space"></div>
+  
+  <div class="content-container">
     <div class="metric-cards-section">
       <div class="topcard-container">
         <app-topcard
@@ -11,11 +10,11 @@
           [title]="card.title"
           [icon]="card.icon"
           [iconColor]="getIconColor(i)"
-         
         ></app-topcard>
       </div>
     </div>
-    <div class="content">
+    
+    <div class="table-wrapper">
       <app-table
         [data]="tableData"
         [headers]="tableHeaders"

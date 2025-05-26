@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
@@ -9,7 +9,6 @@ import { filter } from 'rxjs/operators';
 })
 export class SidebarComponent implements OnInit {
   @Input() icons: string[] = [];
-  @Output() toggleDrawer = new EventEmitter<void>();
   logoPath = 'assets/logo.png';
 
   navItems = [
@@ -56,18 +55,6 @@ export class SidebarComponent implements OnInit {
       }));
     });
   }
-
-  get initials(): string {
-    if (!this.profile.name) return '';
-    const nameParts = this.profile.name.trim().split(' ');
-    if (nameParts.length === 1) {
-      return nameParts[0].charAt(0).toUpperCase();
-    }
-    const firstInitial = nameParts[0].charAt(0).toUpperCase();
-    const lastInitial = nameParts[nameParts.length - 1].charAt(0).toUpperCase();
-    return `${firstInitial}${lastInitial}`;
-  }
-
 
     navigate(route: string) {
     this.router.navigate([route]);
