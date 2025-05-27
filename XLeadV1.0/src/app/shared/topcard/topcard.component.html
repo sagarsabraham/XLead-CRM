@@ -6,7 +6,14 @@
   <dxi-item [ratio]="0">
     <div class="icon-container" [ngClass]="{'compact-icon-container': variant === 'compact'}">
       <div class="icon" [ngClass]="{'compact-icon': variant === 'compact'}" [ngStyle]="{'background-color': iconColor}">
-        <i class="dx-icon-{{icon}}"  [ngClass]="{ 'compact-icon-i': variant === 'compact' }"></i>
+        <img
+  *ngIf="icon"
+  [src]="icon"
+  alt="{{ title }} icon"
+  class="svg-icon"
+  [ngClass]="{ 'compact-icon-img': variant === 'compact' }"
+/>
+
       </div>
     </div>
   </dxi-item>

@@ -9,6 +9,7 @@ import { Component, Input } from '@angular/core';
 export class TopcardComponent {
  @Input() variant: 'default' | 'compact' = 'default';
 
+
  @Input() amount: number = 0;
   @Input() title: string = '';
   @Input() icon: string = '';
