@@ -4,21 +4,20 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-// Define an interface for the Deal data structure expected by the backend
-// This should match your DealCreateDto.cs
+// Define an interface for the Deal data structure expected by the backend (DealCreateDto.cs)
 export interface DealCreatePayload {
   title: string;
   amount: number;
   companyName: string;
   contactFullName: string;
-  // salespersonName: string;
-  accountId?: number | null; // Optional fields are nullable
-  regionId: number; // Assuming required based on DTO
+  salespersonName?: string | null; // Optional as per previous change
+  accountId?: number | null;
+  regionId: number;
   domainId?: number | null;
-  dealStageId: number; // Assuming required
-  revenueTypeId: number; // Assuming required
-  duId: number; // Assuming required
-  countryId: number; // Assuming required
+  dealStageId: number;
+  revenueTypeId: number;
+  duId: number;
+  countryId: number;
   description: string;
   probability?: number | null;
   startingDate: string; // ISO string format
@@ -26,13 +25,12 @@ export interface DealCreatePayload {
   createdBy: number;
 }
 
-// Define an interface for the Deal data structure returned by the backend
-// This should match your DealReadDto.cs
+// Define an interface for the Deal data structure returned by the backend (DealReadDto.cs)
 export interface DealRead {
   id: number;
-  dealName: string;
-  dealAmount: number;
-  
+  dealName: string; // Maps to PipelineDeal.title
+  dealAmount: number; // Maps to PipelineDeal.amount
+  salespersonName?: string | null; // <<<--- ADDED/CORRECTED (make optional if backend can omit it)
   accountId?: number | null;
   accountName?: string | null;
   regionId?: number | null;
@@ -42,149 +40,75 @@ export interface DealRead {
   revenueTypeId?: number | null;
   revenueTypeName?: string | null;
   duId?: number | null;
-  duName?: string | null; // Corrected from DUName to duName to match typical JS/TS casing
+  duName?: string | null; // Should be duName to match casing, not DUName
   countryId?: number | null;
   countryName?: string | null;
   description?: string | null;
   probability?: number | null;
   dealStageId?: number | null;
-  stageName?: string | null;
-  contactId: number;
+  stageName?: string | null; // Used to assign deal to a pipeline stage
+  contactId: number; // Assuming contact is always present
   contactName?: string | null;
-  startingDate?: string | null; // ISO string
-  closingDate?: string | null; // ISO string
+  startingDate?: string | null; // ISO string from backend
+  closingDate?: string | null;  // <<<--- CORRECTED CASING (if it was 'closeDate' before) / ENSURE PRESENT
   createdBy: number;
   createdAt: string; // ISO string
+  // This field was an error, it belongs to PipelineDeal not DealRead
+  // originalData?: DealRead; // REMOVE THIS IF IT WAS HERE
+  companyName?: string; // If your DealReadDto has a direct companyName field from a join
 }
 
 
 @Injectable({
-  providedIn: 'root' // Registers the service at the root level
+  providedIn: 'root'
 })
 export class DealService {
-  // Adjust the apiUrl to your backend's base URL
-  private apiUrl = 'https://localhost:7297/api/Deals'; // Example: Update with your actual backend URL
-
-  private httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-      // Add other headers like Authorization if needed:
-      // 'Authorization': 'Bearer YOUR_TOKEN_HERE'
-    })
-  };
+  private apiUrl = 'https://localhost:7297/api/deals'; // Example: Update
+  private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * Creates a new deal.
-   * @param dealData The data for the new deal.
-   * @returns An Observable of the created deal.
-   */
   createDeal(dealData: DealCreatePayload): Observable<DealRead> {
     return this.http.post<DealRead>(this.apiUrl, JSON.stringify(dealData), this.httpOptions)
-      .pipe(
-        map(response => {
-          // You can transform the response here if needed
-          // e.g., convert date strings to Date objects if your components expect them
-          return {
-            ...response,
-            // Example: Convert date strings from backend to Date objects
-            // startingDate: response.startingDate ? new Date(response.startingDate) : null,
-            // closingDate: response.closingDate ? new Date(response.closingDate) : null,
-            // createdAt: new Date(response.createdAt),
-          };
-        }),
-        catchError(this.handleError)
-      );
+      .pipe(catchError(this.handleError));
   }
 
-  /**
-   * Gets a deal by its ID.
-   * @param id The ID of the deal.
-   * @returns An Observable of the deal.
-   */
   getDealById(id: number): Observable<DealRead> {
     const url = `${this.apiUrl}/${id}`;
     return this.http.get<DealRead>(url, this.httpOptions)
-      .pipe(
-        map(response => {
-          // Optional: transform dates from ISO strings to Date objects
-          return {
-            ...response,
-            // startingDate: response.startingDate ? new Date(response.startingDate) : null,
-            // closingDate: response.closingDate ? new Date(response.closingDate) : null,
-            // createdAt: new Date(response.createdAt),
-          };
-        }),
-        catchError(this.handleError)
-      );
+      .pipe(catchError(this.handleError));
   }
 
-  /**
-   * Gets all deals.
-   * @returns An Observable array of deals.
-   */
   getAllDeals(): Observable<DealRead[]> {
     return this.http.get<DealRead[]>(this.apiUrl, this.httpOptions)
-      .pipe(
-        map(deals => deals.map(deal => {
-          // Optional: transform dates for each deal
-          return {
-            ...deal,
-            // startingDate: deal.startingDate ? new Date(deal.startingDate) : null,
-            // closingDate: deal.closingDate ? new Date(deal.closingDate) : null,
-            // createdAt: new Date(deal.createdAt),
-          };
-        })),
-        catchError(this.handleError)
-      );
+      .pipe(catchError(this.handleError));
   }
-
 
   // Basic error handling
   private handleError(error: HttpErrorResponse) {
+    // ... (your existing handleError logic) ...
     let errorMessage = 'An unknown error occurred!';
     if (error.error instanceof ErrorEvent) {
-      // Client-side or network error
       errorMessage = `Error: ${error.error.message}`;
     } else {
-      // Backend returned an unsuccessful response code
-      // The response body may contain clues as to what went wrong
-      console.error(
-        `Backend returned code ${error.status}, ` +
-        `body was: `, error.error); // Log the full error object
-
+      console.error(`Backend returned code ${error.status}, body was: `, error.error);
       if (error.status === 400 && error.error && typeof error.error === 'object') {
-        // Handle validation errors from ASP.NET Core
-        const validationErrors = error.error.errors || error.error; // ASP.NET Core validation errors structure
+        const validationErrors = error.error.errors || error.error;
         let messages = [];
         for (const key in validationErrors) {
-          if (validationErrors.hasOwnProperty(key)) {
-            messages.push(...validationErrors[key]);
-          }
+          if (validationErrors.hasOwnProperty(key)) { messages.push(...validationErrors[key]); }
         }
         errorMessage = `Validation Errors: ${messages.join(', ')}`;
-        if (messages.length === 0 && error.error.title) { // Fallback for general 400
-             errorMessage = error.error.title;
-        }
-         if (messages.length === 0 && typeof error.error === 'string') {
-            errorMessage = error.error;
-        }
-
-
+        if (messages.length === 0 && error.error.title) { errorMessage = error.error.title; }
+        if (messages.length === 0 && typeof error.error === 'string') { errorMessage = error.error; }
       } else if (error.status === 0) {
-          errorMessage = 'Could not connect to the server. Please check your network connection or if the server is running.';
-      }
-      else {
-          errorMessage = `Server error: ${error.status} - ${error.message || error.statusText}`;
-          if (error.error && typeof error.error === 'string') {
-              errorMessage += ` Details: ${error.error}`;
-          } else if (error.error && error.error.detail) { // For ProblemDetails
-              errorMessage += ` Details: ${error.error.detail}`;
-          }
+        errorMessage = 'Could not connect to the server. Please check your network connection or if the server is running.';
+      } else {
+        errorMessage = `Server error: ${error.status} - ${error.message || error.statusText}`;
+        if (error.error && typeof error.error === 'string') { errorMessage += ` Details: ${error.error}`; }
+        else if (error.error && error.error.detail) { errorMessage += ` Details: ${error.error.detail}`; }
       }
     }
-    // Return an observable with a user-facing error message
     return throwError(() => new Error(errorMessage));
   }
 }

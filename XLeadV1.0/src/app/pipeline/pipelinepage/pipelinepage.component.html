@@ -8,7 +8,7 @@
             (onClick)="onAddDeal()"
         ></app-button>
     </div>
- <div class="topcard-container">
+    <div class="topcard-container">
       <app-topcard 
         *ngFor="let card of topcardData; let i = index"
         [amount]="card.amount" 
@@ -18,7 +18,15 @@
         [iconColor]="getIconColor(i)">
       </app-topcard>
     </div>
-    <div class="card-container" cdkDropListGroup>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoadingDeals" class="loading-spinner-overlay">
+      <!-- Replace with your preferred spinner, e.g., <mat-spinner></mat-spinner> -->
+      <div class="spinner"></div> 
+      <p>Loading Deals...</p>
+    </div>
+
+    <div class="card-container" cdkDropListGroup [class.content-loading]="isLoadingDeals">
       <div
           *ngFor="let stage of stages; let i = index;"
           class="stage-card dx-card" 
@@ -31,22 +39,31 @@
               <app-dealheader [stageName]="stage.name" [amount]="stage.amount" [dealCount]="stage.deals.length" [collapsed]="stage.collapsed"></app-dealheader>
           </div>
 
-            <div *ngIf="!stage.collapsed">
-                <app-dealbody [deals]="stage.deals" [connectedTo]="connectedDropLists" [stageName]="stage.name" (dealDropped)="onDealDropped($event)" (onEdit)="onEditDeal($event, stage.name)"></app-dealbody>
-            </div>
+          <div *ngIf="!stage.collapsed">
+              <!-- $event from onEdit here is the PipelineDeal object from dealcard -->
+              <app-dealbody 
+                  [deals]="stage.deals" 
+                  [connectedTo]="connectedDropLists" 
+                  [stageName]="stage.name" 
+                  (dealDropped)="onDealDropped($event)" 
+                  (onEdit)="onEditDeal($event, stage.name)">
+              </app-dealbody>
+          </div>
 
           <div *ngIf="stage.hover && !stage.collapsed">
-              <app-dealfooter [buttons]="dealButton"></app-dealfooter>
+              <!-- Assuming dealButton is for adding a new deal within the stage footer, adjust if needed -->
+              <app-dealfooter [buttons]="dealButton" (buttonClick)="onAddDeal()"></app-dealfooter> 
           </div>
       </div>
     </div>
-     <!-- Add Deal Modal Component -->
+
+    <!-- Add Deal Modal Component -->
     <app-add-deal-modal
         [isVisible]="isModalVisible"
-       
-        [dealToEdit]="selectedDeal"
+        [dealToEdit]="selectedDealForModal()" 
         [mode]="isEditMode ? 'edit' : 'add'"
         (onClose)="onModalClose()"
-        (onSubmit)="onDealSubmit($event)">
+        (onSubmitSuccess)="onDealSubmitSuccess($event)" 
+        (onSubmitError)="onDealSubmitError($event)">  
     </app-add-deal-modal>
 </div>
