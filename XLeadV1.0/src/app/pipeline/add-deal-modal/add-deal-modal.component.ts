@@ -8,6 +8,11 @@ import { AccountService } from '../../services/account.service';
 import { RegionService } from '../../services/region.service';
 import { DomainService } from '../../services/domain.service';
 import { DealstageService } from 'src/app/services/dealstage.service';
+import { CompanyContactService } from 'src/app/services/company-contact.service';
+import { finalize, switchMap } from 'rxjs';
+import { Contact } from '../company-contact.model';
+
+
  
 @Component({
   selector: 'app-add-deal-modal',
@@ -27,6 +32,7 @@ popupWidth = window.innerWidth < 600 ? '90%' : 500;
 onResize(event: any) {
   this.popupWidth = event.target.innerWidth < 600 ? '90%' : 500;
 }
+
  
  
   companyData = {
@@ -84,16 +90,18 @@ onResize(event: any) {
     }
   ];
 
-companies: string[] = ['BAYADA', 'Harley Davidson', 'KniTT', 'Hitachi'];
-companyContactMap: { [company: string]: string[] } = {
-  'BAYADA': ['Abhiram'],
-  'Harley Davidson': ['John'],
-  'KniTT': [],
-  'Hitachi': ['Anna']
-};
- 
-filteredCompanies: string[] = [...this.companies];
-filteredContacts: string[] = [];
+// companies: string[] = ['BAYADA', 'Harley Davidson', 'KniTT', 'Hitachi'];
+// companyContactMap: { [company: string]: string[] } = {
+//   'BAYADA': ['Abhiram'],
+//   'Harley Davidson': ['John'],
+//   'KniTT': [],
+//   'Hitachi': ['Anna']
+// };
+   companies: string[] = [];
+  companyContactMap: { [company: string]: string[] } = {};
+  filteredCompanies: string[] = [];
+  filteredContacts: string[] = [];
+
  
   newDeal = {
     salesperson: '',
@@ -132,7 +140,8 @@ constructor(
   private dealStageService: DealstageService,
   private countryService: CountryService,
   private duService: DuService,
-  private revenuetypeService: RevenuetypeService
+  private revenuetypeService: RevenuetypeService,
+  private companyContactService: CompanyContactService
 ) {}
  
  
@@ -144,6 +153,7 @@ ngOnInit() {
   this.loadDus();
   this.loadRevenueTypes();
   this.loadCountries();
+  this.loadCompanyContactData();
 }
  
 //Method to load dus from API
@@ -232,6 +242,16 @@ loadStages() {
     }
   });
 }
+
+loadCompanyContactData() {
+    this.companyContactService.getCompanyContactMap().subscribe(data => {
+      this.companyContactMap = data;
+      this.companies = Object.keys(data);
+      this.filteredCompanies = [...this.companies];
+      this.filteredContacts = this.companyContactMap[this.newDeal.companyName] || [];
+      this.cdr.detectChanges();
+    });
+  }
  
  
  
@@ -375,23 +395,49 @@ loadStages() {
     this.cdr.detectChanges();
   }
  
-  addNewCompany(newCompany: any) {
-  if (newCompany.companyName && !this.companies.includes(newCompany.companyName)) {
-    this.companies.push(newCompany.companyName);
-    this.filteredCompanies = [...this.companies];
-  }
- 
-  if (!this.companyContactMap[newCompany.companyName]) {
-    this.companyContactMap[newCompany.companyName] = [];
-  }
- 
-  this.newDeal.companyName = newCompany.companyName;
-  this.filteredContacts = this.companyContactMap[newCompany.companyName];
- 
-  this.closeQuickCreateCompanyModal();
+ addNewCompany(newCompany: any) {
+  const payload = {
+    companyName: newCompany.companyName,
+    website: newCompany.website,
+    companyPhoneNumber: newCompany.phoneNo,
+    createdBy: 1
+  };
+
+  this.companyContactService.addCompany(payload).subscribe({
+    next: () => {
+      this.companyContactService.getCompanyContactMap().subscribe(data => {
+        this.companyContactMap = data;
+        this.companies = Object.keys(data);
+        this.filteredCompanies = [...this.companies];
+        this.newDeal.companyName = payload.companyName;
+        this.newDeal.contactName = '';
+        this.filteredContacts = [];
+        this.closeQuickCreateCompanyModal();
+        this.cdr.detectChanges();
+        setTimeout(() => {
+          const companyField = document.getElementById('companySelect');
+          companyField?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          companyField?.focus();
+        }, 100);
+      });
+    },
+    error: error => {
+      console.error('Company creation failed:', error);
+      alert('Failed to create company. Check console for details.');
+    }
+  });
 }
+
  
-  openQuickCreateContactModal() {
+openQuickCreateContactModal() {
+    this.contactData = {
+      FirstName: '',
+      LastName: '',
+      companyName: this.newDeal.companyName || '',
+      Email: '',
+      phoneNo: ''
+    };
+
     this.isContactModalVisible = true;
     this.isDropdownOpen = false;
     this.cdr.detectChanges();
@@ -402,33 +448,80 @@ loadStages() {
     this.isContactModalVisible = false;
     this.cdr.detectChanges();
   }
- 
-addNewContact(newContact: any) {
-  const fullName = `${newContact.FirstName} ${newContact.LastName}`.trim();
-  const company = newContact.companyName;
- 
-  if (company) {
- 
-    if (!this.companies.includes(company)) {
-      this.companies.push(company);
-      this.filteredCompanies = [...this.companies];
+    onContactChange(contactName: string) {
+  this.newDeal.contactName = contactName;
     }
+addNewContact(newContact: Contact) {
+  const payload = {
+    firstName: newContact.FirstName,
+    lastName: newContact.LastName,
+    email: newContact.Email,
+    phoneNumber: newContact.phoneNo,
+    companyName: newContact.companyName,
+    createdBy: 1
+  };
  
-    if (!this.companyContactMap[company]) {
-      this.companyContactMap[company] = [];
+    const fullContactName = `${newContact.FirstName} ${newContact.LastName}`.trim();
+
+  this.companyContactService.addContact(payload).pipe(
+    switchMap(() => this.companyContactService.getCompanyContactMap()),
+    finalize(() => {
+      this.closeQuickCreateContactModal();
+    })
+  ).subscribe({
+    next: (data) => {
+      // Update the data structures
+      this.companyContactMap = data;
+      this.filteredCompanies = Object.keys(data);
+      
+      // Ensure we're working with the correct company
+      const targetCompany = payload.companyName;
+      this.filteredContacts = data[targetCompany] || [];
+
+      // Set the company and contact in the deal form
+      this.newDeal.companyName = targetCompany;
+      this.newDeal.contactName = fullContactName;
+
+      // Force immediate change detection
+      this.cdr.detectChanges();
+
+      // Enhanced UI interaction after data update
+      setTimeout(() => {
+        // Focus and highlight the contact dropdown
+        const contactSelectBox = document.querySelector('#contactSelect .dx-selectbox-input') as HTMLElement;
+        const contactContainer = document.querySelector('#contactSelect') as HTMLElement;
+        
+        if (contactContainer) {
+          // Scroll the container into view
+          contactContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          // Add a temporary highlight effect
+          contactContainer.style.border = '2px solid #007acc';
+          contactContainer.style.transition = 'border 0.3s ease';
+          
+          // Remove highlight after 2 seconds
+          setTimeout(() => {
+            contactContainer.style.border = '';
+          }, 2000);
+        }
+
+        if (contactSelectBox) {
+          // Focus the input to show the selected value
+          contactSelectBox.focus();
+        }
+
+        // Verify the contact exists in the filtered list
+        if (!this.filteredContacts.includes(fullContactName)) {
+          console.warn('New contact not found in filtered list, refreshing data...');
+          this.loadCompanyContactData();
+        }
+      }, 200);
+    },
+    error: err => {
+      console.error('Error after saving contact:', err);
+      alert('Contact creation failed. Please try again.');
     }
- 
-    if (!this.companyContactMap[company].includes(fullName)) {
-      this.companyContactMap[company].push(fullName);
-    }
- 
-    this.filteredContacts = [...this.companyContactMap[company]];
-  }
- 
-  this.newDeal.companyName = company;
-  this.newDeal.contactName = fullName;
- 
-  this.closeQuickCreateContactModal();
+  });
 }
 
 // Methods for Customize Field Modal
@@ -456,5 +549,6 @@ addNewContact(newContact: any) {
     this.closeCustomizeFieldModal();
   }
  
- 
 }
+
+
