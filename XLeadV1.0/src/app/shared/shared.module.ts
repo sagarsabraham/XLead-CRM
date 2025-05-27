@@ -12,7 +12,7 @@ import { DevExtremeModule,
          DxButtonModule, 
          DxChartModule, 
          DxResponsiveBoxModule, 
-         DxScrollViewModule } from 'devextreme-angular';
+         DxScrollViewModule  } from 'devextreme-angular';
 import { IconComponent } from './icon/icon.component';
 import { IconTextComponent } from './icon-text/icon-text.component';
 import { ProfileComponent } from './profile/profile.component';
