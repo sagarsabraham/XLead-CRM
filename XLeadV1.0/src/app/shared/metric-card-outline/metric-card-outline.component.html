@@ -1,9 +1,18 @@
-<div class="metric-outline">
-  <app-metric-card
-    *ngFor="let card of cards; let i = index"
-    [title]="card.title || labels[i] || 'Metric ' + (i + 1)"
-    [value]="card.value"
-    [percentage]="card.percentage"
-    [isPositive]="card.isPositive"
-  ></app-metric-card>
+<div class="metric-outline fade-in">
+  <dx-responsive-box>
+    <dxi-row [ratio]="1"></dxi-row>
+    <dxi-col [ratio]="1"></dxi-col>
+    <dxi-item>
+      <dxi-location [row]="0" [col]="0" screen="lg md sm xs"></dxi-location>
+      <div class="cards-container">
+        <app-metric-card
+          *ngFor="let card of cards"
+          [title]="card.title"
+          [value]="card.value"
+          [percentage]="card.percentage"
+          [isPositive]="card.isPositive"
+        ></app-metric-card>
+      </div>
+    </dxi-item>
+  </dx-responsive-box>
 </div>

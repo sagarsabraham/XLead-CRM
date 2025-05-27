@@ -14,12 +14,16 @@ export class ModalButtonsComponent {
 
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<void>();
+  @Output() onCustomize = new EventEmitter<void>();
 
   handleCancel() {
     this.onCancel.emit();
   }
   handleSave() {
     this.onSave.emit();
+  }
+  handleCustomize() {
+    this.onCustomize.emit(); // Emit the customize event
   }
 }
 

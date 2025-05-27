@@ -1,6 +1,6 @@
 <dx-popup
   [visible]="isVisible"
-  [title]="'Create Deal'"
+  [title]="modalTitle"
   [width]="popupWidth"
   [height]="'auto'"
   [showCloseButton]="true"
@@ -12,7 +12,7 @@
       <dx-form
         [formData]="newDeal"
         [colCountByScreen]="{ xs: 1, sm: 1, md: 1, lg: 1 }">
-
+ 
         <dxi-item dataField="salesperson">
           <dxo-label text="SalesPerson" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="SalesPerson Name is required"></dxi-validation-rule>
@@ -34,6 +34,7 @@
               placeholder="Select or search a company"
               (onValueChanged)="onCompanyChange($event.value)">
             </dx-select-box>
+ 
             <dx-button
               text="+" 
               type="default"
@@ -42,79 +43,134 @@
           </div>
           <dxi-validation-rule type="required" message="Company Name is required"></dxi-validation-rule>
         </dxi-item>
-
+ 
+       
         <dxi-item dataField="title">
           <dxo-label text="Deal Name" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Deal Name is required"></dxi-validation-rule>
         </dxi-item>
+     <!-- Replace the existing account dropdown in add-deal-modal.component.html -->
+      <dxi-item dataField="account">
+        <dxo-label text="Account" cssClass="bold-label"></dxo-label>
+        <dx-select-box
+          [(value)]="newDeal.account"
+          [dataSource]="accounts"
+          displayExpr="accountName"
+          valueExpr="id"
+          [searchEnabled]="true"
+          placeholder="Select Account (Optional)">
+        </dx-select-box>
+      </dxi-item>
+            <!-- Replace the existing region dropdown in add-deal-modal.component.html -->
+      <dxi-item dataField="region">
+        <dxo-label text="Region" cssClass="bold-label"></dxo-label>
+        <dx-select-box
+          [(value)]="newDeal.region"
+          [dataSource]="regions"
+          displayExpr="regionName"
+          valueExpr="id"
+          [searchEnabled]="true"
+          placeholder="Select Region">
+        </dx-select-box>
+        <dxi-validation-rule type="required" message="Region is required"></dxi-validation-rule>
+      </dxi-item>
+       <dxi-item dataField="contactName">
+        <dxo-label text="Contact Name" cssClass="bold-label"></dxo-label>
+        <div class="company-name-container">
+          <dx-select-box
+            [(value)]="newDeal.contactName"
+            [dataSource]="filteredContacts"
+            [searchEnabled]="true"
+            placeholder="Select or search a contact">
+          </dx-select-box>
+ 
+          <dx-button
+            text="+"
+            type="default"
+            (onClick)="openQuickCreateContactModal()">
+          </dx-button>
+        </div>
+        <dxi-validation-rule type="required" message="Contact Name is required"></dxi-validation-rule>
+      </dxi-item>
+ 
+      <dxi-item dataField="domain">
+        <dxo-label text="Domain" cssClass="bold-label"></dxo-label>
+        <dx-select-box
+          [(value)]="newDeal.domain"
+          [dataSource]="domains"
+          displayExpr="domainName"
+          valueExpr="id"
+          [searchEnabled]="true"
+          placeholder="Select Domain">
+        </dx-select-box>
+      </dxi-item>
+      <dxi-item dataField="stage">
+        <dxo-label text="Stage" cssClass="bold-label"></dxo-label>
+        <dx-select-box
+          [(value)]="newDeal.stage"
+          [dataSource]="dealStages"
+          displayExpr="displayName"
+          valueExpr="id"
+          [searchEnabled]="true"
+          placeholder="Select Stage">
+        </dx-select-box>
+        <dxi-validation-rule type="required" message="Stage is required"></dxi-validation-rule>
+      </dxi-item>
 
-        <dxi-item dataField="account">
-          <dxo-label text="Account" cssClass="bold-label"></dxo-label>
-        </dxi-item>
-
-        <dxi-item dataField="region">
-          <dxo-label text="Region" cssClass="bold-label"></dxo-label>
-          <dxi-validation-rule type="required" message="Region is required"></dxi-validation-rule>
-        </dxi-item>
-
-        <dxi-item dataField="contactName">
-          <dxo-label text="Contact Name" cssClass="bold-label"></dxo-label>
-          <div class="company-name-container">
-            <!-- <dx-select-box
-              id="contactSelect"
-              [(value)]="newDeal.contactName"
-              [dataSource]="filteredContacts"
-              [searchEnabled]="true"
-              placeholder="Select or search a contact">
-            </dx-select-box> -->
-            <dx-select-box
-              id="contactSelect"
-              [(value)]="newDeal.contactName"
-              [dataSource]="filteredContacts"
-              [searchEnabled]="true"
-              placeholder="Select or search a contact"
-              (onValueChanged)="onContactChange($event.value)"
-              displayExpr="this"
-              valueExpr="this">
-            </dx-select-box>
-            <dx-button
-              text="+" 
-              type="default"
-              (onClick)="openQuickCreateContactModal()">
-            </dx-button>
-          </div>
-          <dxi-validation-rule type="required" message="Contact Name is required"></dxi-validation-rule>
-        </dxi-item>
-
-        <dxi-item dataField="domain">
-          <dxo-label text="Domain" cssClass="bold-label"></dxo-label>
-        </dxi-item>
-
-        <dxi-item
-          dataField="stage"
-          editorType="dxSelectBox"
-          [editorOptions]="{ items: stages, placeholder: 'Select Stage' }">
+      <!-- <dxi-item dataField="stage" editorType="dxSelectBox" [editorOptions]="{ items: stages, placeholder: 'Select Stage' }">
           <dxo-label text="Stage" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Stage is required"></dxi-validation-rule>
-        </dxi-item>
-
-        <dxi-item
-          dataField="revenueType"
-          editorType="dxSelectBox"
-          [editorOptions]="{ items: ['T and M', 'Fixed Fee'], placeholder: 'Select Revenue Type' }">
-          <dxo-label text="Revenue Type" cssClass="bold-label"></dxo-label>
-        </dxi-item>
+      </dxi-item> -->
+        <dxi-item dataField="revenueType">
+  <dxo-label text="Revenue Type" cssClass="bold-label"></dxo-label>
+  <dx-select-box
+    [(value)]="newDeal.revenueType"
+    [dataSource]="revenueTypes"
+    displayExpr="revenueTypeName"
+    valueExpr="id"
+    [searchEnabled]="true"
+    placeholder="Select Revenue Type">
+  </dx-select-box>
+  <dxi-validation-rule type="required" message="Revenue Type is required"></dxi-validation-rule>
+</dxi-item>
 
         <dxi-item dataField="department">
           <dxo-label text="DU" cssClass="bold-label"></dxo-label>
-          <dxi-validation-rule type="required" message="Department is required"></dxi-validation-rule>
+          <dx-select-box
+            [(value)]="newDeal.department"
+            [dataSource]="dus"
+            displayExpr="duName"
+            valueExpr="id"
+            [searchEnabled]="true"
+            placeholder="Select DU">
+          </dx-select-box>
+          <dxi-validation-rule type="required" message="Du is required"></dxi-validation-rule>
         </dxi-item>
 
         <dxi-item dataField="country">
           <dxo-label text="Country" cssClass="bold-label"></dxo-label>
+          <dx-select-box
+            [(value)]="newDeal.country"
+            [dataSource]="countries"
+            displayExpr="countryName"
+            valueExpr="id"
+            [searchEnabled]="true"
+            placeholder="Select Country">
+          </dx-select-box>
+          <dxi-validation-rule type="required" message="Country is required"></dxi-validation-rule>
         </dxi-item>
-
-        <dxi-item dataField="date" editorType="dxDateBox">
+        <!-- <dxi-item dataField="department" editorType="dxSelectBox" [editorOptions]="{ items: ['DU-1', 'DU-2', 'DU-3', 'DU-4', 'DU-5', 'DU-6', 'DU-7', 'DU-8'], placeholder: 'Select DU' }">
+          <dxo-label text="DU" cssClass="bold-label"></dxo-label>
+          <dxi-validation-rule type="required" message="Department is required"></dxi-validation-rule>
+        </dxi-item> -->
+        <!-- <dxi-item dataField="country" editorType="dxSelectBox" [editorOptions]="{ items: ['India', 'USA', 'Japan', 'South Korea', 'Canada', 'France'], placeholder: 'Select Country' }">
+          <dxo-label text="Country" cssClass="bold-label"></dxo-label>
+        </dxi-item> -->
+        <dxi-item dataField="startDate" editorType="dxDateBox">
+          <dxo-label text="Starting Date" cssClass="bold-label"></dxo-label>
+          <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
+        </dxi-item>
+        <dxi-item dataField="closeDate" editorType="dxDateBox">
           <dxo-label text="Closing Date" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
         </dxi-item>
@@ -130,22 +186,24 @@
           <dxo-label text="Probability" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Probability is required"></dxi-validation-rule>
         </dxi-item>
-
+     
       </dx-form>
     </div>
-
-    <app-modal-buttons
-      [showCustomize]="true"
+   
+      <app-modal-buttons
+       [showCustomize]="true"
       [customize]="'Customize Fields'"
       [cancelText]="'Cancel'"
       [saveText]="'Save'"
       (onCancel)="handleClose()"
-      (onSave)="handleSubmit()">
-    </app-modal-buttons>
+      (onSave)="handleSubmit()"
+      (onCustomize)="openCustomizeFieldModal()">
+      </app-modal-buttons>
+   
   </div>
 </dx-popup>
-
-<!-- Company Creation Modal -->
+ 
+ 
 <app-form-modal
   *ngIf="isCompanyModalVisible"
   [isVisible]="isCompanyModalVisible"
@@ -155,8 +213,7 @@
   (onClose)="closeQuickCreateCompanyModal()"
   (onSubmit)="addNewCompany($event)">
 </app-form-modal>
-
-<!-- Contact Creation Modal -->
+ 
 <app-form-modal
   *ngIf="isContactModalVisible"
   [isVisible]="isContactModalVisible"
@@ -165,4 +222,15 @@
   [fields]="contactFields"
   (onClose)="closeQuickCreateContactModal()"
   (onSubmit)="addNewContact($event)">
+</app-form-modal>
+
+<!-- Customize Field Modal -->
+<app-form-modal
+  *ngIf="isCustomizeFieldModalVisible"
+  [isVisible]="isCustomizeFieldModalVisible"
+  [title]="'Customize Field'"
+  [formData]="customizeFieldFormData"
+  [fields]="customizeFieldModalFields"
+  (onClose)="closeCustomizeFieldModal()"
+  (onSubmit)="addCustomField($event)">
 </app-form-modal>

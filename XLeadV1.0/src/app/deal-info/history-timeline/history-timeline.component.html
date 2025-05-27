@@ -4,7 +4,7 @@
     <div class="entry" *ngFor="let item of history">
       <div class="timestamp">{{ item.timestamp }}</div>
       <div class="details">
-        <span>{{ item.editedBy }}</span> changed stage from <strong>{{ item.fromStage }}</strong> to <strong>{{ item.toStage }}</strong>
+        <span><strong>{{ item.editedBy }}</strong></span> changed stage from <strong>{{ item.fromStage }}</strong> to <strong>{{ item.toStage }}</strong>
       </div>
     </div>
     <div class="no-history" *ngIf="!history.length">

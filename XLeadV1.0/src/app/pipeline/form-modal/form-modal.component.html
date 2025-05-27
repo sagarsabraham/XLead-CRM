@@ -8,9 +8,17 @@
 >
   <div *dxTemplate="let data of 'content'">
     <dx-form [formData]="formData">
-      <dxi-item *ngFor="let field of fields" [dataField]="field.dataField">
+      <dxi-item 
+        *ngFor="let field of fields" 
+        [dataField]="field.dataField"
+        [editorType]="field.editorType || 'dxTextBox'"
+        [editorOptions]="field.editorOptions">
         <dxo-label [text]="field.label"></dxo-label>
-        <dxi-validation-rule *ngIf="field.required" type="required"></dxi-validation-rule>
+        <dxi-validation-rule 
+          *ngIf="field.required" 
+          type="required"
+          [message]="field.label + ' is required'">
+        </dxi-validation-rule>
       </dxi-item>
     </dx-form>
 

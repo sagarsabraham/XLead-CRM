@@ -6,7 +6,10 @@
     </app-status-timeline>
     <div class="content">
         <div class="left-column">
-            <app-deal-info-card></app-deal-info-card>
+            <app-deal-info-card 
+                [deal]="deal"
+                (descriptionChange)="onDescriptionChange($event)">
+            </app-deal-info-card>
             <!-- <app-description 
                 [description]="deal?.description"
                 (descriptionChange)="onDescriptionChange($event)">

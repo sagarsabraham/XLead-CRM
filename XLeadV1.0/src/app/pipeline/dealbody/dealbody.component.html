@@ -6,6 +6,5 @@
     [id]="stageName"
     class="deal-body"
     (cdkDropListDropped)="drop($event)">
-    <app-dealcard *ngFor="let deal of deals" [deal]="deal" cdkDrag></app-dealcard>
-
+    <app-dealcard *ngFor="let deal of deals" [deal]="deal" cdkDrag (onEdit)="onEditDeal($event)"></app-dealcard>
 </div>
