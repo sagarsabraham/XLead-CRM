@@ -424,27 +424,28 @@ export class PipelinepageComponent {
   }
 
   onDealSubmit(newDeal: any) {
-    if (this.isEditMode) {
-      const originalStage = this.stages.find(s => s.name === this.selectedStageName);
-      const newStage = this.stages.find(s => s.name === newDeal.stage);
-      if (originalStage && this.selectedDealIndex >= 0) {
-        const [dealToMove] = originalStage.deals.splice(this.selectedDealIndex, 1);
-        Object.assign(dealToMove, newDeal);
-        if (newStage) {
-          newStage.deals.push(dealToMove);
-        } else {
-          originalStage.deals.push(dealToMove);
-        }
-      }
-    } else {
-      const targetStage = this.stages.find(stage => stage.name === newDeal.stage);
-      if (targetStage) {
-        targetStage.deals.push(newDeal);
+  if (this.isEditMode) {
+    const originalStage = this.stages.find(s => s.name === this.selectedStageName);
+    const newStage = this.stages.find(s => s.name === newDeal.stage);
+
+    if (originalStage && this.selectedDealIndex >= 0) {
+      const [dealToMove] = originalStage.deals.splice(this.selectedDealIndex, 1);
+      Object.assign(dealToMove, newDeal); // This now includes custom fields
+      if (newStage) {
+        newStage.deals.push(dealToMove);
+      } else {
+        originalStage.deals.push(dealToMove);
       }
     }
-    this.updateStageAmounts();
-    this.onModalClose();
+  } else {
+    const targetStage = this.stages.find(stage => stage.name === newDeal.stage);
+    if (targetStage) {
+      targetStage.deals.push(newDeal); // This now includes custom fields
+    }
   }
+  this.updateStageAmounts();
+  this.onModalClose();
+}
 
   updateStageAmounts() {
     this.stages.forEach(stage => {
