@@ -192,4 +192,8 @@ export class TableComponent implements AfterViewInit {
   handleSelectionChanged(event: any) {
     this.selectedRowKeys = event.selectedRowKeys;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> e487256fd5190cb47dbd610bdd8489de7ef1c118

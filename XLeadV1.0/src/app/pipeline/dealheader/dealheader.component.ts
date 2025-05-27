@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
 })
 export class DealheaderComponent {
   @Input() stageName: string = '';
-  @Input() amount: string = '';
+  @Input() amount: number = 0;
   @Input() dealCount: number = 0;
   @Input() collapsed: boolean = false;
 }

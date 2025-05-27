@@ -1,0 +1,10 @@
+.icon-image {
+  width: 25px;
+  height: 25px;
+  filter: brightness(1.2);
+}
+
+.dx-button {
+  background-color: transparent;
+  border: none;
+}

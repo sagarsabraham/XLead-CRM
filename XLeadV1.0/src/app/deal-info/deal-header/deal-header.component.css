@@ -1,0 +1,67 @@
+.deal-header {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  /* background-color: #f5f5f5; */
+  padding: 16px 24px;
+  /* border: 1px solid #ddd; */
+  border-radius: 6px;
+  font-family: 'Poppins';
+  color: #333;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.back-button:hover {
+  background-color: #e0e0e0;
+}
+
+.dx-icon-back {
+  font-size: 18px;
+}
+
+.deal-left {
+  padding-left: 20px;
+}
+
+.deal-left h2 {
+  font-size: 24px;
+  margin: 0;
+  font-weight: bold;
+}
+
+.deal-left p {
+  margin: 8px 0 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.deal-right {
+  margin-left: auto;
+  text-align: right;
+}
+
+.deal-right p {
+  margin: 4px 0;
+  padding-bottom: 8px;
+  font-size: 16px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.dx-icon-group {
+  font-size: 18px;
+}

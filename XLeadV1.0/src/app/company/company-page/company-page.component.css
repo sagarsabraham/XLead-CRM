@@ -3,6 +3,7 @@
   width: 100%;
 }
 
+<<<<<<< HEAD
 /* Layout */
 .page-container {
   display: flex;
@@ -15,15 +16,33 @@
   /* flex-shrink: 0; */
   display: none;
 }
+=======
+/* app-sidebar {
+  width: 80px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #f5f5f5;
+} */
+>>>>>>> e487256fd5190cb47dbd610bdd8489de7ef1c118
 
 /* Main Content */
 .content-container,
 .container {
+<<<<<<< HEAD
   flex: 1;
   padding: 1.5rem;
   /* margin-left: 6.25rem; 5rem sidebar + 1.25rem gap */
   width: 100%;
   transition: all 0.3s ease;
+=======
+  padding: 20px;
+  margin-left: 100px; /* 80px sidebar width + 20px gap */
+  width: calc(100% - 100px); /* Adjust width to account for sidebar and gap */
+  overflow-x: hidden;
+  box-sizing: border-box;
+>>>>>>> e487256fd5190cb47dbd610bdd8489de7ef1c118
 }
 
 /* Topbar */
@@ -57,6 +76,11 @@
 
 .topcard-container app-topcard {
   flex: 1;
+<<<<<<< HEAD
+=======
+  overflow-y: auto;
+  padding-top: 35px;
+>>>>>>> e487256fd5190cb47dbd610bdd8489de7ef1c118
 }
 
 /* Table Wrapper */

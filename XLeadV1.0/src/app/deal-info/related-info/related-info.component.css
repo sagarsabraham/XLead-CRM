@@ -1,0 +1,41 @@
+.related-info-container {
+  margin-bottom: 1rem;
+}
+
+.related-info-title {
+    color: #2e51d2;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-left: 0.5rem;
+}
+
+.related-info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.related-info-item {
+    display: flex;
+    align-items: center;
+    padding-left: 0.5rem;
+}
+
+.related-info-item .related-info-icon  {
+    color: #555;
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.related-info-item .related-info-text {
+    color: #333;
+    font-size: 14px;
+    margin: 0;
+    text-decoration: none;
+}
+ 
+.related-info-item .related-info-text:hover {
+    text-decoration: underline;
+}
+    

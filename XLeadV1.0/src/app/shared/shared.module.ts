@@ -1,22 +1,46 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DevExtremeModule } from 'devextreme-angular';
+import { DevExtremeModule,
+         DxBoxModule,
+         DxDateBoxModule, 
+         DxFileUploaderModule, 
+         DxFormModule, 
+         DxNumberBoxModule, 
+         DxPopupModule, 
+         DxSelectBoxModule, 
+         DxDataGridModule, 
+         DxButtonModule, 
+         DxChartModule, 
+         DxResponsiveBoxModule, 
+         DxScrollViewModule } from 'devextreme-angular';
+import { IconComponent } from './icon/icon.component';
+import { IconTextComponent } from './icon-text/icon-text.component';
+import { ProfileComponent } from './profile/profile.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { CheckboxComponent } from './checkbox/checkbox.component';
+import { TableOutlineComponent } from './table-outline/table-outline.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { DxBoxModule, DxButtonModule, DxChartModule, DxDataGridModule } from 'devextreme-angular';
 import { ButtonComponent } from './button/button.component';
 import { MetricCardComponent } from './metric-card/metric-card.component';
 import { MetricCardOutlineComponent } from './metric-card-outline/metric-card-outline.component';
 import { PipelineStageGraphComponent } from './pipeline-stage-graph/pipeline-stage-graph.component';
-import { TableOutlineComponent } from './table-outline/table-outline.component';
 import { TableComponent } from './table/table.component';
 import { DxoExportModule } from 'devextreme-angular/ui/nested';
 import { TopcardComponent } from './topcard/topcard.component';
-
-
+import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { TopbarComponent } from './topbar/topbar.component';
 
 
 @NgModule({
   declarations: [
+    IconComponent,
+    IconTextComponent,
+    ProfileComponent,
+    SidebarComponent,
+    CheckboxComponent,
+    TableOutlineComponent,
+    PageNotFoundComponent,
     TopcardComponent,
     PageNotFoundComponent,
     ButtonComponent,
@@ -25,16 +49,32 @@ import { TopcardComponent } from './topcard/topcard.component';
     PipelineStageGraphComponent,
     TableComponent,
     TableOutlineComponent,
-    TopcardComponent
+    TopcardComponent,
+    PageNotFoundComponent,
+    TableComponent,
+    TopbarComponent
   ],
+  
   imports: [
+    HttpClientModule,
     CommonModule,
     DevExtremeModule,
-    DxButtonModule,
-    // RouterModule, 
+    DxBoxModule,  
+    DxBoxModule,  
+    DxFileUploaderModule,
+    DxPopupModule,
+    DxFormModule,
+    DxNumberBoxModule,    
+    DxSelectBoxModule,    
+    DxDateBoxModule,
+    RouterModule,
     DxChartModule,
+    DxScrollViewModule,
+    DxResponsiveBoxModule,
+    DxButtonModule,
     DxBoxModule,
-    DxoExportModule,DxDataGridModule
+    DxoExportModule,
+    DxDataGridModule
 
   ],
   exports: [
@@ -45,10 +85,18 @@ import { TopcardComponent } from './topcard/topcard.component';
     TableComponent,
     TableOutlineComponent,
     TopcardComponent,
-  
+    PageNotFoundComponent,
+    IconComponent,
+    IconTextComponent,
+    ProfileComponent,
+    SidebarComponent,
+    CheckboxComponent
   ],
- 
-  
+
    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+ 
 })
+
 export class SharedModule { }
+
+
