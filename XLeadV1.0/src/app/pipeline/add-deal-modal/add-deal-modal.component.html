@@ -1,6 +1,6 @@
 <dx-popup
   [visible]="isVisible"
-  [title]="'Create Deal'"
+  [title]="modalTitle"
   [width]="popupWidth"
   [height]="'auto'"
   [showCloseButton]="true"
@@ -47,13 +47,31 @@
           <dxo-label text="Deal Name" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Deal Name is required"></dxi-validation-rule>
         </dxi-item>
-        <dxi-item dataField="account">
-          <dxo-label text="Account" cssClass="bold-label"></dxo-label>
-        </dxi-item>
-        <dxi-item dataField="region">
-          <dxo-label text="Region" cssClass="bold-label"></dxo-label>
-          <dxi-validation-rule type="required" message="Region is required"></dxi-validation-rule>
-        </dxi-item>
+     <!-- Replace the existing account dropdown in add-deal-modal.component.html -->
+<dxi-item dataField="account">
+  <dxo-label text="Account" cssClass="bold-label"></dxo-label>
+  <dx-select-box
+    [(value)]="newDeal.account"
+    [dataSource]="accounts"
+    displayExpr="accountName"
+    valueExpr="id"
+    [searchEnabled]="true"
+    placeholder="Select Account (Optional)">
+  </dx-select-box>
+</dxi-item>
+       <!-- Replace the existing region dropdown in add-deal-modal.component.html -->
+<dxi-item dataField="region">
+  <dxo-label text="Region" cssClass="bold-label"></dxo-label>
+  <dx-select-box
+    [(value)]="newDeal.region"
+    [dataSource]="regions"
+    displayExpr="regionName"
+    valueExpr="id"
+    [searchEnabled]="true"
+    placeholder="Select Region">
+  </dx-select-box>
+  <dxi-validation-rule type="required" message="Region is required"></dxi-validation-rule>
+</dxi-item>
        <dxi-item dataField="contactName">
         <dxo-label text="Contact Name" cssClass="bold-label"></dxo-label>
         <div class="company-name-container">
@@ -73,24 +91,44 @@
         <dxi-validation-rule type="required" message="Contact Name is required"></dxi-validation-rule>
       </dxi-item>
 
-        <dxi-item dataField="domain">
-          <dxo-label text="Domain" cssClass="bold-label"></dxo-label>
-        </dxi-item>
-        <dxi-item dataField="stage" editorType="dxSelectBox" [editorOptions]="{ items: stages, placeholder: 'Select Stage' }">
-          <dxo-label text="Stage" cssClass="bold-label"></dxo-label>
-          <dxi-validation-rule type="required" message="Stage is required"></dxi-validation-rule>
-        </dxi-item>
+      <dxi-item dataField="domain">
+  <dxo-label text="Domain" cssClass="bold-label"></dxo-label>
+  <dx-select-box
+    [(value)]="newDeal.domain"
+    [dataSource]="domains"
+    displayExpr="domainName"
+    valueExpr="id"
+    [searchEnabled]="true"
+    placeholder="Select Domain">
+  </dx-select-box>
+</dxi-item>
+    <dxi-item dataField="stage">
+  <dxo-label text="Stage" cssClass="bold-label"></dxo-label>
+  <dx-select-box
+    [(value)]="newDeal.stage"
+    [dataSource]="dealStages"
+    displayExpr="displayName"
+    valueExpr="id"
+    [searchEnabled]="true"
+    placeholder="Select Stage">
+  </dx-select-box>
+  <dxi-validation-rule type="required" message="Stage is required"></dxi-validation-rule>
+</dxi-item> 
         <dxi-item dataField="revenueType" editorType="dxSelectBox" [editorOptions]="{ items: ['T and M', 'Fixed Fee'], placeholder: 'Select Revenue Type' }">
           <dxo-label text="Revenue Type" cssClass="bold-label"></dxo-label>
         </dxi-item>
-        <dxi-item dataField="department">
+        <dxi-item dataField="department" editorType="dxSelectBox" [editorOptions]="{ items: ['DU-1', 'DU-2', 'DU-3', 'DU-4', 'DU-5', 'DU-6', 'DU-7', 'DU-8'], placeholder: 'Select DU' }">
           <dxo-label text="DU" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Department is required"></dxi-validation-rule>
         </dxi-item>
-        <dxi-item dataField="country">
+        <dxi-item dataField="country" editorType="dxSelectBox" [editorOptions]="{ items: ['India', 'USA', 'Japan', 'South Korea', 'Canada', 'France'], placeholder: 'Select Country' }">
           <dxo-label text="Country" cssClass="bold-label"></dxo-label>
         </dxi-item>
-        <dxi-item dataField="date" editorType="dxDateBox">
+        <dxi-item dataField="startDate" editorType="dxDateBox">
+          <dxo-label text="Starting Date" cssClass="bold-label"></dxo-label>
+          <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
+        </dxi-item>
+        <dxi-item dataField="closeDate" editorType="dxDateBox">
           <dxo-label text="Closing Date" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
         </dxi-item>

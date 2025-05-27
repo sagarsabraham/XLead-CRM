@@ -1,8 +1,12 @@
 :host {
-  border-top-right-radius: 30px;
-  border-bottom-right-radius: 30px;
+  display: block;
 }
 
+.sidebar-container {
+  position: relative;
+}
+
+/* Keep your original sidebar styling for desktop - UNCHANGED */
 .sidebar {
   width: 9vh;
   z-index: 11;
@@ -17,6 +21,13 @@
   left: 0;
   align-items: center;
   padding-top: 180px;
+  transition: transform 0.3s ease;
+}
+
+.nav-items {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .icons {
@@ -24,6 +35,7 @@
   flex-direction: column;
   align-items: center;
   padding-bottom: 37px;
+  cursor: pointer;
 }
 
 .initials-badge {
@@ -59,4 +71,125 @@
 .hover-icon:hover {
   background-color: grey;
   border-radius: 15px;
+}
+
+/* Improved Mobile Menu - Only affects mobile view */
+/* Hamburger Button */
+.hamburger-button {
+  display: none; /* Hidden on desktop */
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 12;
+  background: #000000;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.hamburger-button span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  margin: 5px 0;
+  background-color: #fff;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.close-button {
+  display: none; /* Hidden on desktop */
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Mobile Overlay */
+.sidebar-overlay {
+  display: none; /* Hidden on desktop */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+/* Mobile-specific styles - Don't affect desktop */
+@media (max-width: 768px) {
+  .hamburger-button {
+    display: block; /* Show on mobile */
+  }
+  
+  .sidebar {
+    transform: translateX(-100%); /* Hide sidebar by default on mobile */
+    width: 250px; /* Wider for mobile */
+    padding-top: 60px; /* Less padding on top for mobile */
+    align-items: flex-start; /* Left align content on mobile */
+  }
+  
+  .sidebar.mobile-open {
+    transform: translateX(0); /* Show sidebar when mobile-open class is added */
+  }
+  
+  .close-button {
+    display: block; /* Show on mobile */
+  }
+  
+  .logo {
+    position: relative; /* Adjust logo position for mobile */
+    top: 0;
+    left: 0;
+    margin-bottom: 20px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .icons {
+    flex-direction: row; /* Horizontal layout on mobile */
+    padding: 12px 15px;
+    width: 100%;
+    align-items: center; /* Center items vertically */
+  }
+  
+  .icon-label {
+    margin-left: 15px; /* Add space between icon and label */
+    display: inline-block; /* Show labels on mobile */
+  }
+  
+  .sidebar-overlay {
+    display: block; /* Show overlay on mobile when menu is open */
+  }
+  
+  .profile {
+    position: static; /* Remove absolute positioning on mobile */
+    margin-top: auto;
+    margin-bottom: 20px;
+    display: flex;
+    padding: 15px;
+  }
+
+  /* Mobile menu animation */
+  .mobile-open ~ .hamburger-button span:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+  }
+  
+  .mobile-open ~ .hamburger-button span:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .mobile-open ~ .hamburger-button span:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+  }
+}
+
+/* Additional breakpoint for very small screens */
+@media (max-width: 480px) {
+  .sidebar {
+    width: 85%; /* Use percentage width on smaller screens */
+  }
 }

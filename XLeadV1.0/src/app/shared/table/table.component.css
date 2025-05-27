@@ -23,19 +23,41 @@
   display: block;
 }
 
-/* Fix the header and filter row */
-:host ::ng-deep .dx-datagrid-headers,
-:host ::ng-deep .dx-datagrid-filter-row,
+:host ::ng-deep .dx-datagrid-headers {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background-color: #f5f5f5;
+  width: 100% !important;
+}
+
 :host ::ng-deep .dx-toolbar {
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 3;
   background-color: #f5f5f5;
+  width: 100% !important;
 }
 
-/* Ensure the filter row stays below the toolbar */
 :host ::ng-deep .dx-datagrid-filter-row {
-  top: 48px;
+  position: sticky;
+  top: var(--header-height, 36px); 
+  z-index: 2;
+  background-color: #f5f5f5;
+  width: 100% !important;
+}
+
+/* Fix for column alignment */
+:host ::ng-deep .dx-datagrid-headers .dx-datagrid-table,
+:host ::ng-deep .dx-datagrid-filter-row .dx-datagrid-table {
+  width: 100% !important;
+  table-layout: fixed;
+}
+
+/* Ensure filter cells align with header cells */
+:host ::ng-deep .dx-datagrid-filter-row td {
+  box-sizing: border-box;
+  overflow: visible;
 }
 
 /* Make only the rows view scrollable */
@@ -105,14 +127,15 @@
   color: #333;
   font-weight: 500;
 }
-
+  
 :host ::ng-deep .dx-header-filter {
   color: #666 !important;
   font-size: 16px !important;
 }
 
 :host ::ng-deep .dx-header-filter:hover {
-  color: #333 !important;
+  color: #222 !important;
+  font-size: 22px !important;
 }
 
 :host ::ng-deep .dx-datagrid-filter-row .dx-editor-cell {
@@ -176,15 +199,16 @@
 }
 
 :host ::ng-deep .dx-toolbar {
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0 !important;
+  background: #f5f5f5 !important;
   padding: 8px 12px;
 }
 
 :host ::ng-deep .dx-toolbar-items-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
 }
 
 :host ::ng-deep .dx-toolbar-after {
@@ -232,6 +256,22 @@
   padding: 0 8px;
 }
 
+:host ::ng-deep .dx-button[icon="edit"] {
+  background-color: #1976d2 !important;
+  border-color: #1976d2 !important;
+  padding: 0 12px;
+}
+
+:host ::ng-deep .dx-button[icon="edit"] .dx-icon,
+:host ::ng-deep .dx-button[icon="edit"] .dx-button-text {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .dx-button[icon="edit"]:hover {
+  background-color: #1565c0 !important;
+  border-color: #1565c0 !important;
+}
+
 :host ::ng-deep .dx-button[icon="export"],
 :host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"] {
   background-color: #4caf50 !important;
@@ -263,6 +303,54 @@
 :host ::ng-deep .dx-button[icon="export"]:hover .dx-button-text,
 :host ::ng-deep .dx-toolbar-after .dx-button[aria-label="Export Data"]:hover .dx-button-text {
   color: #ffffff !important;
+}
+
+/* Force vertical lines between all data/header cells */
+:host ::ng-deep .dx-datagrid-headers .dx-header-row > td,
+:host ::ng-deep .dx-datagrid-rowsview .dx-row > td {
+  border-right: 1px solid #e0e0e0;
+}
+
+:host ::ng-deep .dx-datagrid-headers .dx-header-row > td:last-child,
+:host ::ng-deep .dx-datagrid-rowsview .dx-row > td:last-child {
+  border-right: none !important;
+}
+
+:host ::ng-deep .dx-toolbar-before {
+  align-items: center;
+  display: flex;
+  min-width: 200px;
+}
+
+:host ::ng-deep .selection-info {
+  padding-left: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #222;
+  line-height: 40px;
+}
+
+:host ::ng-deep .dx-datagrid-header-panel {
+  width: 100% !important;
+  box-sizing: border-box;
+  padding: 0 !important;
+}
+
+:host ::ng-deep .dx-toolbar.dx-widget.dx-visibility-change-handler.dx-collection {
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box;
+  padding: 0 0.5rem;
+  margin: 0 auto !important;
+  max-width: 100% !important;
+  display: flex !important;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  :host ::ng-deep .dx-toolbar.dx-widget.dx-visibility-change-handler.dx-collection {
+    padding: 0 6px;
+  }
 }
 
 /* Header Cell and Sort Icon Styles */
@@ -344,8 +432,8 @@
 
 /* Style for Select All item */
 .select-all-item {
-  border-bottom: 1px solid #e0e0e0; /* Separator between Select All and other items */
-  font-weight: 500; /* Slightly bolder to distinguish */
+  border-bottom: 1px solid #e0e0e0;
+  font-weight: 500;
 }
 
 /* Style for checkboxes in column chooser */
@@ -361,7 +449,7 @@
 
 /* Style for indeterminate state */
 .column-chooser-dropdown .dropdown-item input[type="checkbox"]:indeterminate {
-  background-color: #1976d2; /* Blue fill for indeterminate state */
+  background-color: #1976d2;
   border-color: #1976d2;
 }
 
@@ -495,8 +583,6 @@
   color: #333;
   font-size: 14px;
 }
-
-/* Add these styles to table.component.css */
 
 /* Mobile View Styles */
 .mobile-view {
@@ -1038,4 +1124,129 @@
   .export-options-dropdown {
     width: 180px;
   }
+}
+
+/* Ensure the width of scrollable matches headers */
+:host ::ng-deep .dx-scrollable-container,
+:host ::ng-deep .dx-scrollable-content,
+:host ::ng-deep .dx-datagrid-rowsview .dx-datagrid-table {
+  width: 100% !important;
+  min-width: 100%;
+  table-layout: fixed;
+}
+
+:host ::ng-deep .dx-datagrid-rowsview .dx-datagrid-content {
+  width: auto !important;
+}
+
+/* Maintain column alignment between header and filter */
+:host ::ng-deep .dx-datagrid-headers .dx-datagrid-table .dx-row > td,
+:host ::ng-deep .dx-datagrid-filter-row > td {
+  width: auto !important;
+  min-width: 100px;
+  overflow: visible;
+}
+
+.detail-input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.detail-input:focus {
+  border-color: #1976d2;
+  outline: none;
+}
+
+.detail-input.dx-invalid {
+  border-color: #dc3545;
+}
+
+.validation-message {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.modal-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-action-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.modal-action-btn.save-btn {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+}
+
+.modal-action-btn.save-btn:hover {
+  background-color: #1565c0;
+}
+
+.modal-action-btn.cancel-btn {
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+}
+
+.modal-action-btn.cancel-btn:hover {
+  background-color: #c62828;
+}
+
+/* Style for DevExtreme Edit Inputs */
+:host ::ng-deep .dx-texteditor-input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+  font-size: 14px;
+}
+
+:host ::ng-deep .dx-texteditor-input:focus {
+  border-color: #1976d2;
+  outline: none;
+}
+
+:host ::ng-deep .dx-invalid .dx-texteditor-input {
+  border-color: #dc3545;
+}
+
+:host ::ng-deep .dx-validator.dx-validity-invalid .dx-texteditor {
+  position: relative;
+}
+
+:host ::ng-deep .dx-invalid-message {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Ensure edit icons are styled consistently */
+:host ::ng-deep .dx-datagrid-edit-button,
+:host ::ng-deep .dx-datagrid-save-button,
+:host ::ng-deep .dx-datagrid-cancel-button {
+  color: #666;
+  font-size: 16px;
+}
+
+:host ::ng-deep .dx-datagrid-save-button {
+  color: #1976d2;
+}
+
+:host ::ng-deep .dx-datagrid-cancel-button {
+  color: #d32f2f;
 }

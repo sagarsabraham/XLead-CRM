@@ -1,0 +1,25 @@
+// src/app/services/region.service.ts
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+interface Region {
+  id: number;
+  regionName: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class RegionService {
+  private apiUrl = environment.apiUrl;
+
+  constructor(private http: HttpClient) { }
+
+  getRegions(): Observable<Region[]> {
+    const url = `${this.apiUrl}/api/Region`;
+    console.log('Calling Region API at:', url);
+    return this.http.get<Region[]>(url);
+  }
+}

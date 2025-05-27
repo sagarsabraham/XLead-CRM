@@ -1,16 +1,20 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, HostListener, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
   @Input() icons: string[] = [];
   @Output() toggleDrawer = new EventEmitter<void>();
   logoPath = 'assets/logo.png';
+  isMobileMenuOpen = false;
+  isMobileView = false;
+  private routerSubscription: Subscription | null = null;
 
   navItems = [
     {
@@ -44,17 +48,70 @@ export class SidebarComponent implements OnInit {
     role: 'Admin',
   };
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    this.checkScreenSize();
+  }
 
   ngOnInit() {
-    this.router.events.pipe(
+    // Set initial active route
+    this.updateActiveRoute(this.router.url);
+    
+    // Subscribe to route changes
+    this.routerSubscription = this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      this.navItems = this.navItems.map(item => ({
-        ...item,
-        isActive: event.urlAfterRedirects === item.route,
-      }));
+      this.updateActiveRoute(event.urlAfterRedirects);
     });
+    
+    // Check screen size on init
+    this.checkScreenSize();
+  }
+  
+  ngOnDestroy() {
+    // Clean up subscription
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+  }
+
+  updateActiveRoute(url: string) {
+    this.navItems = this.navItems.map(item => ({
+      ...item,
+      isActive: url === item.route || url.startsWith(item.route + '/'),
+    }));
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  checkScreenSize() {
+    const prevMobileView = this.isMobileView;
+    this.isMobileView = window.innerWidth <= 768;
+    
+    // Close mobile menu when transitioning from mobile to desktop
+    if (prevMobileView && !this.isMobileView) {
+      this.isMobileMenuOpen = false;
+    }
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    
+    // Prevent scrolling on body when menu is open
+    if (this.isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
+  closeMobileMenuIfOpen() {
+    if (this.isMobileView && this.isMobileMenuOpen) {
+      this.isMobileMenuOpen = false;
+      document.body.style.overflow = '';
+    }
   }
 
   get initials(): string {
@@ -68,8 +125,7 @@ export class SidebarComponent implements OnInit {
     return `${firstInitial}${lastInitial}`;
   }
 
-
-    navigate(route: string) {
+  navigate(route: string) {
     this.router.navigate([route]);
   }
 }

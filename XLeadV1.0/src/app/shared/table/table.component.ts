@@ -17,6 +17,7 @@ export class TableComponent implements AfterViewInit {
   @Input() ownerField: string = 'owner';
   @Input() exportFileName: string = 'Data';
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onRowUpdating: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild(DxDataGridComponent) dataGrid!: DxDataGridComponent;
   @ViewChild('columnChooserButton', { static: false }) columnChooserButton!: ElementRef;
@@ -61,21 +62,46 @@ export class TableComponent implements AfterViewInit {
   currentPage: number = 1;
   mobilePageSize: number = 10;
   mobileAllowedPageSizes: number[] = [5, 10, 20];
-  paginatedData: any[] = []; // Now a regular class property
+  paginatedData: any[] = [];
 
   constructor(private cdr: ChangeDetectorRef) {
     this.initializeHeaders();
   }
 
+  private adjustFilterRowPosition(): void {
+    if (!this.dataGrid?.instance) return;
+    
+    setTimeout(() => {
+      const headerElement = document.querySelector('.dx-datagrid-headers') as HTMLElement;
+      if (headerElement) {
+        const headerHeight = headerElement.offsetHeight;
+        document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+      }
+    }, 100);
+  }
+
+
+  
+
   ngOnInit() {
     this.checkIfMobile();
+    // Reset selection when data changes
+    this.selectedRowKeys = [];
   }
 
   ngAfterViewInit(): void {
     this.initializeColumnVisibility();
     if (!this.isMobile && this.dataGrid?.instance) {
       this.configureDataGrid();
+      this.adjustFilterRowPosition();
     }
+    
+    // Debug logging
+    console.log('=== TABLE COMPONENT INIT ===');
+    console.log('Data sample:', this.data.slice(0, 2));
+    console.log('Export filename:', this.exportFileName);
+    console.log('Data IDs:', this.data.slice(0, 5).map(item => ({ id: item.id, type: typeof item.id })));
+    console.log('============================');
   }
 
   @HostListener('window:resize')
@@ -85,8 +111,28 @@ export class TableComponent implements AfterViewInit {
     this.cdr.detectChanges();
   }
 
+  validationRules: { [key: string]: any[] } = {
+    name: [{ type: 'required', message: 'Name is required' }],
+    companyName: [{ type: 'required', message: 'Company Name is required' }],
+    email: [
+      { type: 'required', message: 'Email is required' },
+      { type: 'email', message: 'Invalid email format' }
+    ],
+    phone: [{ type: 'pattern', pattern: /^[0-9-+\s()]*$/, message: 'Invalid phone number' }]
+  };
+
+
+
   private checkIfMobile(): void {
+    const wasMobile = this.isMobile;
     this.isMobile = window.innerWidth <= 576;
+    
+    // Reset selection when switching between mobile/desktop
+    if (wasMobile !== this.isMobile) {
+      this.selectedRowKeys = [];
+      this.emitSelectionChange();
+    }
+    
     if (!this.isMobile) {
       this.showSortOptions = false;
       this.showColumnChooserMobile = false;
@@ -101,6 +147,26 @@ export class TableComponent implements AfterViewInit {
     const startIndex = (this.currentPage - 1) * this.mobilePageSize;
     const endIndex = startIndex + this.mobilePageSize;
     this.paginatedData = this.filteredData.slice(startIndex, endIndex);
+  }
+
+  // FIXED: Centralized selection change emission
+  private emitSelectionChange(): void {
+    const selectedRowsData = this.data.filter(row => 
+      this.selectedRowKeys.includes(String(row.id))
+    );
+    
+    const event = {
+      selectedRowKeys: [...this.selectedRowKeys],
+      selectedRowsData: selectedRowsData
+    };
+    
+    console.log('=== SELECTION CHANGE EMITTED ===');
+    console.log('Selected keys:', event.selectedRowKeys);
+    console.log('Selected data count:', event.selectedRowsData.length);
+    console.log('Export filename:', this.exportFileName);
+    console.log('================================');
+    
+    this.onSelectionChanged.emit(event);
   }
 
   openDetailsModal(contact: any): void {
@@ -190,48 +256,53 @@ export class TableComponent implements AfterViewInit {
     }
   }
 
+  // FIXED: Mobile select all functionality
   toggleSelectAllOnPage(): void {
     const currentPageItems = this.paginatedData;
-    const allSelected = currentPageItems.every(item => this.selectedRowKeys.includes(item.id));
+    const currentPageIds = currentPageItems.map(item => String(item.id));
+    const allSelected = currentPageIds.every(id => this.selectedRowKeys.includes(id));
 
     if (allSelected) {
-      this.selectedRowKeys = this.selectedRowKeys.filter(id => !currentPageItems.some(item => item.id === id));
+      // Deselect all on current page
+      this.selectedRowKeys = this.selectedRowKeys.filter(id => !currentPageIds.includes(id));
     } else {
-      currentPageItems.forEach(item => {
-        if (!this.selectedRowKeys.includes(item.id)) {
-          this.selectedRowKeys.push(item.id);
+      // Select all on current page
+      currentPageIds.forEach(id => {
+        if (!this.selectedRowKeys.includes(id)) {
+          this.selectedRowKeys.push(id);
         }
       });
     }
 
-    this.onSelectionChanged.emit({
-      selectedRowKeys: this.selectedRowKeys
-    });
+    this.emitSelectionChange();
     this.cdr.detectChanges();
   }
 
   areAllOnPageSelected(): boolean {
     const currentPageItems = this.paginatedData;
-    return currentPageItems.length > 0 && currentPageItems.every(item => this.selectedRowKeys.includes(item.id));
+    const currentPageIds = currentPageItems.map(item => String(item.id));
+    return currentPageIds.length > 0 && currentPageIds.every(id => this.selectedRowKeys.includes(id));
   }
 
   areSomeOnPageSelected(): boolean {
     const currentPageItems = this.paginatedData;
-    const selectedCount = currentPageItems.filter(item => this.selectedRowKeys.includes(item.id)).length;
-    return selectedCount > 0 && selectedCount < currentPageItems.length;
+    const currentPageIds = currentPageItems.map(item => String(item.id));
+    const selectedCount = currentPageIds.filter(id => this.selectedRowKeys.includes(id)).length;
+    return selectedCount > 0 && selectedCount < currentPageIds.length;
   }
 
+  // FIXED: Mobile individual selection
   toggleSelection(id: string): void {
-    const index = this.selectedRowKeys.indexOf(id);
+    const stringId = String(id);
+    const index = this.selectedRowKeys.indexOf(stringId);
+    
     if (index === -1) {
-      this.selectedRowKeys.push(id);
+      this.selectedRowKeys.push(stringId);
     } else {
       this.selectedRowKeys.splice(index, 1);
     }
 
-    this.onSelectionChanged.emit({
-      selectedRowKeys: this.selectedRowKeys
-    });
+    this.emitSelectionChange();
     this.cdr.detectChanges();
   }
 
@@ -273,19 +344,10 @@ export class TableComponent implements AfterViewInit {
   }
 
   private initializeColumnVisibility(): void {
-    const savedVisibility = localStorage.getItem('columnVisibility');
-    if (savedVisibility) {
-      this.columnVisibility = JSON.parse(savedVisibility);
-      if (!this.isMobile && this.dataGrid?.instance) {
-        this.headers.forEach((header) => {
-          this.dataGrid.instance.columnOption(header.dataField, 'visible', this.columnVisibility[header.dataField]);
-        });
-      }
-    } else {
-      this.headers.forEach((header) => {
-        this.columnVisibility[header.dataField] = header.visible !== false;
-      });
-    }
+    // Remove localStorage usage as per instructions
+    this.headers.forEach((header) => {
+      this.columnVisibility[header.dataField] = header.visible !== false;
+    });
   }
 
   toggleColumnChooser(event: Event): void {
@@ -306,7 +368,6 @@ export class TableComponent implements AfterViewInit {
     if (!this.isMobile && this.dataGrid?.instance) {
       this.dataGrid.instance.columnOption(dataField, 'visible', this.columnVisibility[dataField]);
     }
-    localStorage.setItem('columnVisibility', JSON.stringify(this.columnVisibility));
     this.clickedInsideDropdown = true;
     this.cdr.detectChanges();
   }
@@ -328,7 +389,6 @@ export class TableComponent implements AfterViewInit {
         this.dataGrid.instance.columnOption(header.dataField, 'visible', !allSelected);
       }
     });
-    localStorage.setItem('columnVisibility', JSON.stringify(this.columnVisibility));
     this.clickedInsideDropdown = true;
     this.cdr.detectChanges();
   }
@@ -393,9 +453,20 @@ export class TableComponent implements AfterViewInit {
     }
   }
 
+  // FIXED: Desktop selection handler
   handleSelectionChanged(event: any): void {
-    this.selectedRowKeys = event.selectedRowKeys || [];
-    this.onSelectionChanged.emit(event);
+    console.log('=== DESKTOP SELECTION EVENT ===');
+    console.log('DevExtreme event:', event);
+    console.log('Selected keys from DevExtreme:', event.selectedRowKeys);
+    
+    // Ensure all keys are strings for consistency
+    this.selectedRowKeys = (event.selectedRowKeys || []).map((key: any) => String(key));
+    
+    console.log('Normalized selected keys:', this.selectedRowKeys);
+    console.log('Export filename:', this.exportFileName);
+    console.log('==============================');
+    
+    this.emitSelectionChange();
     this.cdr.detectChanges();
   }
 
@@ -440,7 +511,7 @@ export class TableComponent implements AfterViewInit {
 
     let rowsToExport = this.data;
     if (this.selectedRowKeys.length > 0) {
-      rowsToExport = this.data.filter((row) => this.selectedRowKeys.includes(row.id));
+      rowsToExport = this.data.filter((row) => this.selectedRowKeys.includes(String(row.id)));
     }
 
     rowsToExport.forEach((row) => {
@@ -533,38 +604,32 @@ export class TableComponent implements AfterViewInit {
     const button = buttonRef.nativeElement as HTMLElement;
     const dropdown = dropdownRef.nativeElement as HTMLElement;
     const rect = button.getBoundingClientRect();
-    const dropdownWidth = dropdown.offsetWidth || 150; // Fallback to CSS width if not rendered
+    const dropdownWidth = dropdown.offsetWidth || 150;
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
-    const dropdownHeight = dropdown.offsetHeight || 300; // Fallback to CSS max-height if not rendered
+    const dropdownHeight = dropdown.offsetHeight || 300;
 
-    // Position below the button using `left`
     let left = rect.left + window.scrollX;
-    const top = rect.bottom + window.scrollY + 5; // 5px gap below the button
+    const top = rect.bottom + window.scrollY + 5;
 
-    // Prevent overflow on the right
     if (left + dropdownWidth > viewportWidth) {
       left = rect.right + window.scrollX - dropdownWidth;
     }
 
-    // Prevent overflow on the left
     if (left < 0) {
       left = 0;
     }
 
-    // Check if dropdown overflows at the bottom
     if (top + dropdownHeight > viewportHeight + window.scrollY) {
-      // Position above the button if it overflows
       const topAbove = rect.top + window.scrollY - dropdownHeight - 5;
       dropdown.style.top = `${topAbove}px`;
     } else {
       dropdown.style.top = `${top}px`;
     }
 
-    // Apply styles
     dropdown.style.position = 'absolute';
     dropdown.style.left = `${left}px`;
-    dropdown.style.right = ''; // Override the static `right` from CSS
+    dropdown.style.right = '';
   }
 
   closeDropdowns(): void {
@@ -604,5 +669,8 @@ export class TableComponent implements AfterViewInit {
 
     this.dataGrid.instance.option('width', '100%');
     this.dataGrid.instance.refresh();
+
+
+
   }
 }
