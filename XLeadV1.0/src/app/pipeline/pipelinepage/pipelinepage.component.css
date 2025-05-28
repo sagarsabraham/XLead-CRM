@@ -1,9 +1,10 @@
-
 .container {
   margin-left: 11.5vh;
   padding: 16px;
   font-family: 'poppins';
   overflow-x: hidden;
+  margin-left: 100px; /* 80px sidebar width + 20px gap */
+  width: calc(100% - 100px); /* Adjust width to account for sidebar and gap */
 }
 
 
@@ -16,7 +17,7 @@
 }
 
 .topbar h1 {
-  font-size: 24px;
+  font-size: 32px;
   margin: 0;
   padding: 8px 0;
   font-weight: bold;
@@ -62,6 +63,10 @@
   scroll-snap-align: start;
   transition: all 0.3s;
   cursor: pointer;
+}
+
+.stage-card.dx-card {
+  box-shadow: none;
 }
 
 

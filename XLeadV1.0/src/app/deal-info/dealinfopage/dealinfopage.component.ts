@@ -69,4 +69,15 @@ export class DealinfopageComponent implements OnInit{
     console.log('Updated description:', newDescription); // Log the updated description
     this.deal.description = newDescription;
   }
+
+  tabs = [
+    { text: 'History', id: 'history' },
+    { text: 'Documents', id: 'documents' }
+  ];
+
+  selectedTabId = 'history';
+
+  onTabSelect(e: any) {
+    this.selectedTabId = e.itemData.id;
+  }
 }

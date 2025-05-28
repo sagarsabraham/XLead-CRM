@@ -1,9 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
-import { ContactPageComponent } from './contacts/contact-page/contact-page.component';
-import { Title } from '@angular/platform-browser';
-
 
 const routes: Routes = [
   {path: 'pipeline', loadChildren: () =>
@@ -14,7 +11,6 @@ const routes: Routes = [
      import('./dashboard/dashboard.module').then(m => m.DashboardModule),
      data : {title : 'Pipeline Analytics'}
   },
-
   { path: 'contacts', loadChildren: () => 
     import('./contacts/contacts.module').then(m => m.ContactsModule),
     data : {title : 'Contacts'}

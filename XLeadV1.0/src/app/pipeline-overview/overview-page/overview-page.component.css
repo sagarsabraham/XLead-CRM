@@ -35,7 +35,7 @@ app-sidebar {
 
 .topbar h1 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 32px;
   font-weight: 700;
   color: #1f2937;
   text-align: left;
@@ -58,6 +58,7 @@ app-sidebar {
 .content {
   flex: 1;
   overflow-y: auto;
+  padding-top: 35px;
 }
 
 /* Table */

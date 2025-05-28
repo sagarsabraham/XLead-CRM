@@ -3,13 +3,22 @@ import { CommonModule } from '@angular/common';
 import { DealInfoRoutingModule } from './deal-info-routing.module';
 import { DealinfopageComponent } from './dealinfopage/dealinfopage.component';
 import { DealHeaderComponent } from './deal-header/deal-header.component';
-import { DxButtonModule, DxFormModule, DxPopupModule, DxSelectBoxModule, DxDateBoxModule, DxFileUploaderModule, DxListModule, DxTextBoxModule } from 'devextreme-angular';
+import { DxButtonModule,
+         DxFormModule, 
+         DxPopupModule, 
+         DxSelectBoxModule, 
+         DxDateBoxModule, 
+         DxFileUploaderModule, 
+         DxListModule, 
+         DxTextBoxModule, 
+         DxTabsModule } from 'devextreme-angular';
 import { StatusTimelineComponent } from './status-timeline/status-timeline.component';
 import { RelatedInfoComponent } from './related-info/related-info.component';
 import { DescriptionComponent } from './description/description.component';
 import { HistoryTimelineComponent } from './history-timeline/history-timeline.component';
 import { DealInfoCardComponent } from './deal-info-card/deal-info-card.component';
 import { SharedModule } from '../shared/shared.module';
+import { DocUploadComponent } from './doc-upload/doc-upload.component';
 
 
 @NgModule({
@@ -20,7 +29,8 @@ import { SharedModule } from '../shared/shared.module';
     RelatedInfoComponent,
     DescriptionComponent,
     HistoryTimelineComponent,
-    DealInfoCardComponent
+    DealInfoCardComponent,
+    DocUploadComponent
   ],
   imports: [
     SharedModule,
@@ -33,7 +43,8 @@ import { SharedModule } from '../shared/shared.module';
     DxDateBoxModule,
     DxFileUploaderModule,
     DxListModule,
-    DxTextBoxModule
+    DxTextBoxModule,
+    DxTabsModule
   ]
 })
 export class DealInfoModule { }

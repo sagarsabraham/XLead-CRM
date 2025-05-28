@@ -19,8 +19,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardPageComponent },
   { path: 'pipeline', component: PipelinepageComponent },
   { path: 'contacts', component: ContactPageComponent },
-  { path: 'companies', component: CompanyPageComponent },
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: 'companies', component: CompanyPageComponent }
 ];
 
 

@@ -26,7 +26,7 @@
   transition: all 0.3s ease;
 }
 
-/* Topbar */
+Topbar
 .topbar {
   display: flex;
   flex-direction: column;

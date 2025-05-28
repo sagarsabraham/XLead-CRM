@@ -1,14 +1,23 @@
-<div class="history-timeline dx-card">
-  <h4>History Timeline</h4>
-  <div class="timeline">
-    <div class="entry" *ngFor="let item of history">
-      <div class="timestamp">{{ item.timestamp }}</div>
-      <div class="details">
-        <span><strong>{{ item.editedBy }}</strong></span> changed stage from <strong>{{ item.fromStage }}</strong> to <strong>{{ item.toStage }}</strong>
-      </div>
-    </div>
-    <div class="no-history" *ngIf="!history.length">
-      No history available
-    </div>
-  </div>
-</div>
+<div class="history-timeline dx-card"> 
+  <div *ngIf="history.length; else noHistory" class="timeline"> 
+    <div *ngFor="let item of reversedHistory; let i = index" class="timeline-entry"> 
+        <div class="timeline-time">{{ getTimeOnly(item.timestamp) }}</div> 
+        <div class="timeline-dot"> 
+        <div class="dot" [class.active]="i === 0"></div> 
+        <div class="line" *ngIf="i < reversedHistory.length - 1"></div> 
+        </div> 
+      <div class="timeline-content"> 
+        <div class="user-action"> 
+          <strong>Stage updated by {{ item.editedBy }}</strong> 
+        </div> 
+        <div class="stage-change"> 
+          {{ item.fromStage }} to {{ item.toStage }} 
+        </div> 
+      </div> 
+    </div> 
+  </div> 
+
+  <ng-template #noHistory> 
+    <div class="no-history">No stage history available.</div> 
+  </ng-template> 
+</div> 

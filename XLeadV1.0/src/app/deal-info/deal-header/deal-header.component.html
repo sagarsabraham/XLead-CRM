@@ -1,11 +1,15 @@
 <div class="deal-header">
+  <button class="back-button" (click)="goBack()">
+      <i class="dx-icon-back"></i>
+  </button>
   <div class="deal-left">
+    
     <h2>{{ deal.title }}</h2>
     <p>Amount: {{ deal.amount | currency:'USD':'symbol':'1.2-2':'en-US'}}</p>
   </div>
   <div class="deal-right">
-    <p><i class="dx-icon-group"></i> {{ deal.companyName }}</p>
-    <p>Closing Date : {{ deal.date | date: 'd MMM y' }}</p>
+    <p><i class="dx-ic  on-group"></i> {{ deal.companyName }}</p>
+    <p>Closing Date : {{ deal.closeDate | date: 'd MMM y' }}</p>
   </div>
   
 </div>

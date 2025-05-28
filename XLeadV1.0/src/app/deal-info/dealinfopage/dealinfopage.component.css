@@ -1,6 +1,16 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
 .deal-info-page {
   margin-left: 12vh;
   font-family: 'Poppins';
+  overflow-x: hidden;
+  margin-left: 100px;
+  width: calc(100% - 100px);
+  box-sizing: border-box;
 }
 
 .content {
@@ -17,4 +27,27 @@
 
 .right-column {
   flex: 1;
+  margin-right: 40px;
+}
+
+.left-column, .right-column {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.dx-tabs {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  width: 28%;
+}
+
+:host ::ng-deep .dx-tab {
+  border-radius: 15px;
+  background: transparent;
+}
+
+:host ::ng-deep .dx-tab:hover {
+  background: #f8fafc;
+  border-bottom-color: #cbd5e1;
 }

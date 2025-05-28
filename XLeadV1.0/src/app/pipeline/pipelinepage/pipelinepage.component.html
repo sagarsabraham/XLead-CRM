@@ -25,15 +25,29 @@
           (click)="toggleCollapse(i)"
       >
           <div>
-              <app-dealheader [stageName]="stage.name" [amount]="stage.amount" [dealCount]="stage.deals.length" [collapsed]="stage.collapsed"></app-dealheader>
+              <app-dealheader 
+              [stageName]="stage.name"
+              [amount]="stage.amount" 
+              [dealCount]="stage.deals.length" 
+              [collapsed]="stage.collapsed">
+              </app-dealheader>
           </div>
 
             <div *ngIf="!stage.collapsed">
-                <app-dealbody [deals]="stage.deals" [connectedTo]="connectedDropLists" [stageName]="stage.name" (dealDropped)="onDealDropped($event)"></app-dealbody>
+                <app-dealbody 
+                [deals]="stage.deals" 
+                [connectedTo]="connectedDropLists" 
+                [stageName]="stage.name" 
+                (dealDropped)="onDealDropped($event)" 
+                (onEdit)="onEditDeal($event, stage.name)">
+                </app-dealbody>
             </div>
 
           <div *ngIf="stage.hover && !stage.collapsed">
-              <app-dealfooter [buttons]="dealButton"></app-dealfooter>
+              <app-dealfooter 
+                    [buttons]="dealButton" 
+                    (buttonClick)="onAddDealToStage(stage.name)">
+              </app-dealfooter>
           </div>
       </div>
     </div>
@@ -41,6 +55,9 @@
     <app-add-deal-modal
         [isVisible]="isModalVisible"
         [stages]="stageNames"
+        [dealToEdit]="selectedDeal"
+        [mode]="isEditMode ? 'edit' : 'add'"
+        [selectedStage]="selectedStageName"
         (onClose)="onModalClose()"
         (onSubmit)="onDealSubmit($event)">
     </app-add-deal-modal>

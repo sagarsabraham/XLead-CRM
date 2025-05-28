@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-deal-header',
@@ -7,5 +8,11 @@ import { Component, Input } from '@angular/core';
 })
 export class DealHeaderComponent {
   @Input() deal: any;
+
+  constructor(private router: Router) {}
+
+  goBack(): void {
+    this.router.navigate(['/pipeline']);
+  }
 
 }

@@ -2,14 +2,14 @@
     <div class="content">
       <div class="dealname">{{deal.title}}</div>
       <div class="deal-details">
-        <div>{{deal.amount}}</div>
-        <div>{{deal.date}}</div>
+        <div>{{deal.amount | currency:'USD':'symbol':'1.2-2':'en-US'}}</div>
+        <div>{{deal.closeDate | date: 'd MMM y' }}</div>
       </div>
-      <div class="deal-content">{{deal.companyName}} {{deal.account}}</div>
+      <div class="deal-content">{{deal.account}} {{(deal.companyName)}}</div>
       <div class="deal-content">{{deal.department}}</div>
       <div class="deal-content">{{deal.probability}}%</div>
       <div class="deal-content">{{deal.region}}</div>
       <!-- <div class="deal-content">{{deal.doc}}</div> -->
     </div>
-    <span class="dx-icon-edit edit-icon" *ngIf="hover"></span>
+    <span class="dx-icon-edit edit-icon" *ngIf="hover" (click)="onEditClick($event)"></span>
 </div>
