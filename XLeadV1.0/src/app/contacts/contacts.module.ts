@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ContactsRoutingModule } from './contacts-routing.module';
 import { ContactPageComponent } from './contact-page/contact-page.component';
 import { SharedModule } from '../shared/shared.module';
-
+import { DxLoadIndicatorModule } from 'devextreme-angular';
 @NgModule({
   declarations: [
     ContactPageComponent
@@ -11,7 +11,8 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     CommonModule,
     ContactsRoutingModule,
-    SharedModule
+    SharedModule,
+    DxLoadIndicatorModule
   ],
   exports: [
     ContactPageComponent

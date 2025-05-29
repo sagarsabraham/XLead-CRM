@@ -11,13 +11,13 @@ export class DealfooterComponent {
     icon: string
   }[] = [];
   @Output() collapse = new EventEmitter<void>();
-  
+  @Output() buttonClick = new EventEmitter<string>(); // Add this line
 
   onCollapse() {
     this.collapse.emit();
   }
 
   onButtonClick(label: string) {
-    console.log(`Button clicked: ${label}`);
+    this.buttonClick.emit(label); // Modify this to emit the event
   }
 }

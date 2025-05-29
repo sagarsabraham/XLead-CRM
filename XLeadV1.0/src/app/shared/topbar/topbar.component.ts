@@ -1,23 +1,38 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { filter, map } from 'rxjs';
 
 @Component({
   selector: 'app-topbar',
   templateUrl: './topbar.component.html',
   styleUrls: ['./topbar.component.css']
 })
-export class TopbarComponent {
+export class TopbarComponent implements OnInit{
   profile = {
     name: 'Subash Joseph',
     role: 'Admin',
   };
-  get initials(): string {
-    if (!this.profile.name) return '';
-    const nameParts = this.profile.name.trim().split(' ');
-    if (nameParts.length === 1) {
-      return nameParts[0].charAt(0).toUpperCase();
+
+  pageTitle: string = '';
+
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(() => this.getRouteTitle(this.activatedRoute))
+      )
+      .subscribe(title => {
+        this.pageTitle = title || '';
+      });
+  }
+
+  private getRouteTitle(route: ActivatedRoute): string | undefined {
+    let currentRoute = route;
+    while (currentRoute.firstChild) {
+      currentRoute = currentRoute.firstChild;
     }
-    const firstInitial = nameParts[0].charAt(0).toUpperCase();
-    const lastInitial = nameParts[nameParts.length - 1].charAt(0).toUpperCase();
-    return `${firstInitial}${lastInitial}`;
+    return currentRoute.snapshot.data['title'];
   }
 }

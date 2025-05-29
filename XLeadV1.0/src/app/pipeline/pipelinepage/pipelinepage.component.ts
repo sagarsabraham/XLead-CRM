@@ -1,362 +1,152 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { DealRead, DealService } from 'src/app/services/dealcreation.service';
+ // Adjust path as needed
+
+// Interface for deals within this component's local 'stages' structure
+export interface PipelineDeal {
+  id: number; 
+  title: string;
+  amount: number;
+  startDate: string; 
+  closeDate: string; 
+  department: string; 
+  probability: string; 
+  region: string; 
+  salesperson?: string | null;
+  companyName: string; 
+  account: string; 
+  contactName: string;
+  domain: string; 
+  revenueType: string; 
+  country: string; 
+  description: string;
+  doc: string; 
+  originalData: DealRead; // Stores the raw DealRead object for this PipelineDeal
+}
+
+export interface PipelineStage {
+  name: string;
+  amount: number;
+  collapsed: boolean;
+  hover: boolean;
+  deals: PipelineDeal[];
+  id?: number; 
+}
 
 @Component({
   selector: 'app-pipelinepage',
   templateUrl: './pipelinepage.component.html',
   styleUrls: ['./pipelinepage.component.css']
 })
-export class PipelinepageComponent {
+export class PipelinepageComponent implements OnInit {
   topcardData = [
-    {
-      amount: 33300,
-      title: 'Total Return',
-      isCurrency: true,
-      icon: 'money',
-      iconBackgroundColor: '#ECB985',
-      variant: 'default'
-    },
-    {
-      amount: 15,
-      title: 'Total Count of Deals',
-      isCurrency: false,
-      icon: 'sorted',
-      iconBackgroundColor: '#ECB985',
-      variant: 'default'
-    }
-  ]; 
-
-  dealButton = [
-    { label: 'Deal', icon: 'add'},
+    { amount: 0, title: 'Total Return', isCurrency: true, icon: 'money', iconBackgroundColor: '#ECB985', variant: 'default' },
+    { amount: 0, title: 'Total Count of Deals', isCurrency: false, icon: 'sorted', iconBackgroundColor: '#ECB985', variant: 'default' }
   ];
+  dealButton = [{ label: 'Deal', icon: 'add' }];
 
-  stages = [
-    { 
-      name: 'Qualification', 
-      amount: 1050, 
-      collapsed: false,
-      hover: false,
-      deals : [
-        {
-          title: 'Display Screen',
-          amount: 50,
-          startDate: '1 Jun 2025', 
-          closeDate: '3 Jun 2025', 
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'John Doe',
-          companyName: 'BAYADA',
-          account: 'KniTT',
-          contactName: 'Jane Smith',
-          domain: 'Healthcare',
-          revenueType: 'Fixed Fee',
-          country: 'USA',
-          description: 'Screen for healthcare display',
-          doc: ''
-        },
-        {
-          title: 'Harley Davidson Screen',
-          amount: 1000,
-          startDate: '1 Jul 2025',
-          closeDate: '3 Jul 2025',
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'Amily Smith',
-          companyName: 'Harley Davidson',
-          account: '',
-          contactName: 'Mike Johnson',
-          domain: 'Automotive',
-          revenueType: 'T and M',
-          country: 'USA',
-          description: 'Custom screen for Harley',
-          doc: ''
-        }
-      ]
-    },
-    { 
-      name: 'Need Analysis', 
-      amount: 6050, 
-      collapsed: false,
-      hover: false,
-      deals : [
-        {
-          title: 'EV Vehicle Display',
-          amount: 1000,
-          startDate: '2 Oct 2025',
-          closeDate: '5 Oct 2025',
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'Alice Brown',
-          companyName: 'Hitachi',
-          account: '',
-          contactName: 'Tom Wilson',
-          domain: 'Technology',
-          revenueType: 'Fixed Fee',
-          country: 'USA',
-          description: 'EV display solution',
-          doc: ''
-        },
-        {
-          title: 'Harley Davidson Screen',
-          amount: 5000,
-          startDate: '20 Jul 2025',
-          closeDate: '23 Jul 2025',
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'Shankar Vinay',
-          companyName: 'Harley Davidson',
-          account: '',
-          contactName: 'Mike Johnson',
-          domain: 'Automotive',
-          revenueType: 'T and M',
-          country: 'USA',
-          description: 'Custom screen for Harley',
-          doc: ''
-        },
-        {
-          title: 'Harley Davidson Screen',
-          amount: 50,
-          startDate: '6 Aug 2025',
-          closeDate: '9 Aug 2025',
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'Vinayak Dev',
-          companyName: 'Harley Davidson',
-          account: '',
-          contactName: 'Mike Johnson',
-          domain: 'Automotive',
-          revenueType: 'Fixed Fee',
-          country: 'USA',
-          description: 'Custom screen for Harley',
-          doc: ''
-        }
-      ]
-    },
-    { 
-      name: 'Proposal/Price Quote', 
-      amount: 10050, 
-      collapsed: false,
-      hover: false,
-      deals : [
-        {
-          title: 'Display Screen',
-          amount: 10000,
-          startDate: '1 Nov 2025',
-          closeDate: '3 Nov 2025',
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'Mishal',
-          companyName: 'BAYADA',
-          account: '',
-          contactName: 'Jane Smith',
-          domain: 'Healthcare',
-          revenueType: 'Fixed Fee',
-          country: 'USA',
-          description: 'Screen for healthcare display',
-          doc: ''
-        },
-        {
-          title: 'Harley Davidson Screen',
-          amount: 50,
-          startDate: '5 Jul 2025',
-          closeDate: '7 Jul 2025',
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'Sam Smith',
-          companyName: 'Harley Davidson',
-          account: '',
-          contactName: 'Mike Johnson',
-          domain: 'Automotive',
-          revenueType: 'Fixed Fee',
-          country: 'USA',
-          description: 'Custom screen for Harley',
-          doc: ''
-        }
-      ]
-    },
-    { 
-      name: 'Negotiation/Review', 
-      amount: 3050, 
-      collapsed: false,
-      hover: false,
-      deals : [
-        {
-          title: 'Harley Davidson Screen',
-          amount: 50,
-          startDate: '7 Aug 2025',
-          closeDate: '9 Aug 2025',
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'Vishal Maah',
-          companyName: 'Harley Davidson',
-          account: '',
-          contactName: 'Mike Johnson',
-          domain: 'Automotive',
-          revenueType: 'Fixed Fee',
-          country: 'USA',
-          description: 'Custom screen for Harley',
-          doc: ''
-        },
-        {
-          title: 'Display Screen',
-          amount: 1000,
-          startDate: '19 Jun 2025',
-          closeDate: '21 Jun 2025',
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'Elizabeth Ann',
-          companyName: 'Harley Davidson',
-          account: '',
-          contactName: 'Mike Johnson',
-          domain: 'Automotive',
-          revenueType: 'T and M',
-          country: 'USA',
-          description: 'Custom screen',
-          doc: ''
-        },
-        {
-          title: 'Harley Davidson Screen',
-          amount: 2000,
-          startDate: '28 Jun 2025',
-          closeDate: '30 Jun 2025',
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'Ann Mary',
-          companyName: 'Harley Davidson',
-          account: '',
-          contactName: 'Mike Johnson',
-          domain: 'Automotive',
-          revenueType: 'Fixed Fee',
-          country: 'USA',
-          description: 'Custom screen for Harley',
-          doc: ''
-        }
-      ]
-    },
-    { 
-      name: 'Closed Won', 
-      amount: 8050, 
-      collapsed: false,
-      hover: false,
-      deals : [
-        {
-          title: 'Display Screen',
-          amount: 50,
-          startDate: '21 Oct 2025',
-          closeDate: '23 Oct 2025',
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'Keziya Kuriyan',
-          companyName: 'KniTT',
-          account: '(BAYADA Home Health)',
-          contactName: 'Jane Smith',
-          domain: 'Healthcare',
-          revenueType: 'Fixed Fee',
-          country: 'USA',
-          description: 'Screen for healthcare display',
-          doc: ''
-        },
-        {
-          title: 'Harley Davidson Screen',
-          amount: 5000,
-          startDate: '1 Jul 2025',
-          closeDate: '3 Jul 2025',
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'James Hault',
-          companyName: 'Harley Davidson',
-          account: '',
-          contactName: 'Mike Johnson',
-          domain: 'Automotive',
-          revenueType: 'Fixed Fee',
-          country: 'USA',
-          description: 'Custom screen for Harley',
-          doc: ''
-        },
-        {
-          title: 'Harley Davidson Screen',
-          amount: 3000,
-          startDate: '1 Oct 2025',
-          closeDate: '3 Oct 2025',
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'Samual Stephan',
-          companyName: 'Harley Davidson',
-          account: '',
-          contactName: 'Mike Johnson',
-          domain: 'Automotive',
-          revenueType: 'Fixed Fee',
-          country: 'USA',
-          description: 'Custom screen for Harley',
-          doc: ''
-        }
-      ]
-    },
-    { 
-      name: 'Closed Lost', 
-      amount: 5050, 
-      collapsed: false,
-      hover: false,
-      deals : [
-        {
-          title: 'Display Screen',
-          amount: 50,
-          startDate: '1 Jun 2024',
-          closeDate: '3 Jun 2024',
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'Agustin Varghese',
-          companyName: 'KniTT',
-          account: '(BAYADA Home Health)',
-          contactName: 'Jane Smith',
-          domain: 'Healthcare',
-          revenueType: 'Fixed Fee',
-          country: 'USA',
-          description: 'Screen for healthcare display',
-          doc: ''
-        },
-        {
-          title: 'Harley Davidson Screen',
-          amount: 5000,
-          startDate: '21 May 2025',
-          closeDate: '23 May 2025',
-          department: 'DU-4',
-          probability: '50',
-          region: 'US',
-          salesperson: 'Iric James',
-          companyName: 'Harley Davidson',
-          account: '',
-          contactName: 'Mike Johnson',
-          domain: 'Automotive',
-          revenueType: 'Fixed Fee',
-          country: 'USA',
-          description: 'Custom screen for Harley',
-          doc: ''
-        }
-      ]
-    }
+  stages: PipelineStage[] = [
+    { name: 'Qualification', amount: 0, collapsed: false, hover: false, deals: [] },
+    { name: 'Need Analysis', amount: 0, collapsed: false, hover: false, deals: [] },
+    { name: 'Proposal/Price Quote', amount: 0, collapsed: false, hover: false, deals: [] },
+    { name: 'Negotiation/Review', amount: 0, collapsed: false, hover: false, deals: [] },
+    { name: 'Closed Won', amount: 0, collapsed: false, hover: false, deals: [] },
+    { name: 'Closed Lost', amount: 0, collapsed: false, hover: false, deals: [] }
   ];
+  stageNames: string[] = this.stages.map(s => s.name);
 
-  // Determine the icon color based on the card index
+  isLoadingDeals: boolean = false;
+  isModalVisible: boolean = false;
+  isEditMode: boolean = false;
+  selectedStage : number = 1;
+  _selectedDealForModalInput: DealRead | null = null; 
+  _currentlyEditingPipelineDeal: PipelineDeal | null = null; 
+  _originalStageNameOfEditingDeal: string = '';
+
+  constructor(
+    private dealService: DealService,
+    private cdr: ChangeDetectorRef 
+  ) {}
+
+  ngOnInit(): void {
+    this.loadDeals();
+  }
+
+  loadDeals(): void {
+    this.isLoadingDeals = true;
+    this.stages.forEach(stage => stage.deals = []); 
+
+    this.dealService.getAllDeals().subscribe({
+      next: (fetchedDeals: DealRead[]) => {
+        this.processFetchedDeals(fetchedDeals);
+        this.updateStageAmountsAndTopCards();
+        this.isLoadingDeals = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error fetching deals:', err);
+        alert('Failed to load deals. Please try again.');
+        this.isLoadingDeals = false;
+      }
+    });
+  }
+
+  processFetchedDeals(fetchedDeals: DealRead[]): void {
+    fetchedDeals.forEach(backendDeal => {
+      const targetStage = this.stages.find(s => s.name === backendDeal.stageName);
+      if (targetStage) {
+        const pipelineDeal: PipelineDeal = {
+          id: backendDeal.id,
+          title: backendDeal.dealName,
+          amount: backendDeal.dealAmount,
+          startDate: this.formatDateForDisplay(backendDeal.startingDate),
+          closeDate: this.formatDateForDisplay(backendDeal.closingDate),
+          department: backendDeal.duName || 'N/A',
+          probability: backendDeal.probability?.toString() + '%' || '0%',
+          region: backendDeal.regionName || 'N/A',
+          salesperson: backendDeal.salespersonName,
+          companyName: backendDeal.companyName || this.extractCompanyNameFallback(backendDeal),
+          account: backendDeal.accountName || 'N/A',
+          contactName: backendDeal.contactName || 'N/A',
+          domain: backendDeal.domainName || 'N/A',
+          revenueType: backendDeal.revenueTypeName || 'N/A',
+          country: backendDeal.countryName || 'N/A',
+          description: backendDeal.description || '',
+          doc: '', 
+          originalData: backendDeal,
+        };
+        targetStage.deals.push(pipelineDeal);
+      } else {
+        console.warn(`Deal "${backendDeal.dealName}" (ID: ${backendDeal.id}) has an unknown stage: "${backendDeal.stageName}"`);
+      }
+    });
+  }
+
+  extractCompanyNameFallback(deal: DealRead): string {
+    const match = deal.contactName?.match(/\(([^)]+)\)$/);
+    return match ? match[1] : 'Unknown Co.';
+  }
+
+  formatDateForDisplay(dateInput: string | Date | null | undefined): string {
+    if (!dateInput) return 'N/A';
+    try {
+      const date = new Date(dateInput);
+      return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    } catch (e) {
+      return typeof dateInput === 'string' ? dateInput : 'Invalid Date';
+    }
+  }
+
+  // --- RESTORED METHOD IMPLEMENTATIONS ---
   getIconColor(index: number): string {
+    // This logic was from your original component code.
+    // Ensure it matches the purpose of your topcardData.
+    // Assuming first card is 'Total Return', second is 'Total Count of Deals'.
     switch (index) {
-      case 0: // First card (Total Return)
-        return '#8a2be2'; // Violet
-      case 1: // Second card (Total Count of Deals)
-        return '#28a745'; // Green
+      case 0: // First card
+        return '#8a2be2'; // Violet (example, use your original color)
+      case 1: // Second card
+        return '#28a745'; // Green (example, use your original color)
       default:
         return '#e0e0e0'; // Default gray
     }
@@ -365,108 +155,197 @@ export class PipelinepageComponent {
   get connectedDropLists(): string[] {
     return this.stages.map(stage => stage.name);
   }
+  // --- END OF RESTORED METHODS ---
 
-  toggleCollapse(index: number) {
+  toggleCollapse(index: number): void { 
     this.stages[index].collapsed = !this.stages[index].collapsed;
   }
-
-  onMouseEnter(index: number) {
-    this.stages[index].hover = true;
+  onMouseEnter(index: number): void { 
+    this.stages[index].hover = true; 
   }
-
-  onMouseLeave(index: number) {
-    this.stages[index].hover = false;
+  onMouseLeave(index: number): void { 
+    this.stages[index].hover = false; 
   }
+  
+  onDealDropped(event: { previousStageName: string, currentStageName: string, deal: PipelineDeal, previousIndex: number, currentIndex: number }): void { 
+    const { previousStageName, currentStageName, deal, currentIndex } = event;
+    const previousStage = this.stages.find(s => s.name === previousStageName);
+    const currentStage = this.stages.find(s => s.name === currentStageName);
 
-  onDealDropped(event: { previousStage: string, currentStage: string, previousIndex: number, currentIndex: number }) {
-    const { previousStage, currentStage, previousIndex, currentIndex } = event;
-    const previousDeals = this.stages.find(s => s.name === previousStage)?.deals;
-    const currentDeals = this.stages.find(s => s.name === currentStage)?.deals;
-
-    if (previousDeals && currentDeals) {
-      const [movedItem] = previousDeals.splice(previousIndex, 1);
-      currentDeals.splice(currentIndex, 0, movedItem);
-      // console.log('After move:', JSON.stringify(this.stages, null, 2));
-      this.updateStageAmounts();
-    }
-  }
-  isModalVisible: boolean = false;
-  isEditMode: boolean = false;
-  selectedDeal: any = null;
-  selectedDealIndex: number = -1;
-  selectedStageName: string = '';
-  stageNames: string[] = this.stages.map(s => s.name);
-
-  onAddDeal() {
-    this.isModalVisible = true; 
-    this.isEditMode = false;
-    this.selectedDeal = null;
-  }
-
-  onEditDeal(deal: any, stageName: string) {
-    const stage = this.stages.find(s => s.name === stageName);
-    if (stage) {
-      const index = stage.deals.indexOf(deal);
-      this.selectedDeal = deal;
-      this.selectedDealIndex = index;
-      this.selectedStageName = stageName;
-      this.isEditMode = true;
-      this.isModalVisible = true;
-    }
-  }
-
-   onModalClose() {
-    this.isModalVisible = false; 
-    this.isEditMode = false;
-    this.selectedDeal = null;
-    this.selectedDealIndex = -1;
-    this.selectedStageName = '';
-  }
-
-  onDealSubmit(newDeal: any) {
-  if (this.isEditMode) {
-    const originalStage = this.stages.find(s => s.name === this.selectedStageName);
-    const newStage = this.stages.find(s => s.name === newDeal.stage);
-
-    if (originalStage && this.selectedDealIndex >= 0) {
-      const [dealToMove] = originalStage.deals.splice(this.selectedDealIndex, 1);
-      Object.assign(dealToMove, newDeal); // This now includes custom fields
-      if (newStage) {
-        newStage.deals.push(dealToMove);
-      } else {
-        originalStage.deals.push(dealToMove);
+    if (previousStage && currentStage && deal && deal.id) {
+      const dealIndexInPrev = previousStage.deals.findIndex(d => d.id === deal.id);
+      if (dealIndexInPrev > -1) {
+        const [movedDeal] = previousStage.deals.splice(dealIndexInPrev, 1);
+        currentStage.deals.splice(currentIndex, 0, movedDeal);
+        
+        console.log(`Deal "${movedDeal.title}" (ID: ${movedDeal.id}) moved to stage "${currentStageName}". Backend update needed.`);
+        // TODO: API Call: this.dealService.updateDealStage(movedDeal.id, currentStage.name /* or currentStage.id */).subscribe(...);
+        
+        this.updateStageAmountsAndTopCards();
       }
     }
-  } else {
-    const targetStage = this.stages.find(stage => stage.name === newDeal.stage);
-    if (targetStage) {
-      targetStage.deals.push(newDeal); // This now includes custom fields
-    }
   }
-  this.updateStageAmounts();
-  this.onModalClose();
-}
 
-  updateStageAmounts() {
+  onAddDeal(): void {
+    this.isEditMode = false;
+    this._selectedDealForModalInput = null;
+    this._currentlyEditingPipelineDeal = null;
+    this.isModalVisible = true;
+  }
+
+  onEditDeal(dealFromCard: PipelineDeal, stageName: string): void {
+    this.isEditMode = true;
+    this._currentlyEditingPipelineDeal = dealFromCard; 
+    this._originalStageNameOfEditingDeal = stageName;
+
+    if (dealFromCard.originalData) {
+        this._selectedDealForModalInput = { ...dealFromCard.originalData };
+    } else {
+        console.error("CRITICAL: Original backend data (originalData) is missing from PipelineDeal for editing.", dealFromCard);
+        this._selectedDealForModalInput = this.transformPipelineDealToModalInputFallback(dealFromCard);
+    }
+    this.isModalVisible = true;
+  }
+  
+  selectedDealForModal(): DealRead | null {
+      return this._selectedDealForModalInput;
+  }
+
+  transformPipelineDealToModalInputFallback(pipelineDeal: PipelineDeal): DealRead {
+      console.warn("Executing transformPipelineDealToModalInputFallback. Data accuracy for edit might be reduced.");
+      return {
+          id: pipelineDeal.id,
+          dealName: pipelineDeal.title,
+          dealAmount: pipelineDeal.amount,
+          salespersonName: pipelineDeal.salesperson,
+          startingDate: pipelineDeal.originalData?.startingDate || new Date(pipelineDeal.startDate).toISOString(),
+          closingDate: pipelineDeal.originalData?.closingDate || new Date(pipelineDeal.closeDate).toISOString(),
+          description: pipelineDeal.description,
+          probability: parseFloat(pipelineDeal.probability.replace('%','')),
+          stageName: pipelineDeal.originalData?.stageName, 
+          duName: pipelineDeal.department,
+          regionName: pipelineDeal.region,
+          accountName: pipelineDeal.account,
+          contactName: pipelineDeal.contactName,
+          domainName: pipelineDeal.domain,
+          revenueTypeName: pipelineDeal.revenueType,
+          countryName: pipelineDeal.country,
+          companyName: pipelineDeal.companyName, 
+          accountId: pipelineDeal.originalData?.accountId,
+          regionId: pipelineDeal.originalData?.regionId,
+          domainId: pipelineDeal.originalData?.domainId,
+          revenueTypeId: pipelineDeal.originalData?.revenueTypeId,
+          duId: pipelineDeal.originalData?.duId,
+          countryId: pipelineDeal.originalData?.countryId,
+          dealStageId: pipelineDeal.originalData?.dealStageId,
+          createdAt: pipelineDeal.originalData?.createdAt || new Date().toISOString(),
+          createdBy: pipelineDeal.originalData?.createdBy || 1, 
+          contactId: pipelineDeal.originalData?.contactId || 0, 
+      };
+  }
+
+  onModalClose(): void { 
+    this.isModalVisible = false;
+    this.isEditMode = false;
+    this._selectedDealForModalInput = null;
+    this._currentlyEditingPipelineDeal = null;
+    this._originalStageNameOfEditingDeal = '';
+  }
+
+  onDealSubmitSuccess(updatedBackendDeal: DealRead): void { 
+    if (this.isEditMode && this._currentlyEditingPipelineDeal && this._currentlyEditingPipelineDeal.id === updatedBackendDeal.id) {
+      const updatedPipelineDeal: PipelineDeal = {
+        id: updatedBackendDeal.id,
+        title: updatedBackendDeal.dealName,
+        amount: updatedBackendDeal.dealAmount,
+        startDate: this.formatDateForDisplay(updatedBackendDeal.startingDate),
+        closeDate: this.formatDateForDisplay(updatedBackendDeal.closingDate),
+        department: updatedBackendDeal.duName || 'N/A',
+        probability: updatedBackendDeal.probability?.toString() + '%' || '0%',
+        region: updatedBackendDeal.regionName || 'N/A',
+        salesperson: updatedBackendDeal.salespersonName,
+        companyName: updatedBackendDeal.companyName || this.extractCompanyNameFallback(updatedBackendDeal),
+        account: updatedBackendDeal.accountName || 'N/A',
+        contactName: updatedBackendDeal.contactName || 'N/A',
+        domain: updatedBackendDeal.domainName || 'N/A',
+        revenueType: updatedBackendDeal.revenueTypeName || 'N/A',
+        country: updatedBackendDeal.countryName || 'N/A',
+        description: updatedBackendDeal.description || '',
+        doc: this._currentlyEditingPipelineDeal.doc, 
+        originalData: updatedBackendDeal,
+      };
+
+      const originalStage = this.stages.find(s => s.name === this._originalStageNameOfEditingDeal);
+      const newTargetStage = this.stages.find(s => s.name === updatedBackendDeal.stageName);
+
+      if (originalStage && newTargetStage) {
+        const indexInOriginal = originalStage.deals.findIndex(d => d.id === updatedPipelineDeal.id);
+        if (indexInOriginal > -1) {
+          originalStage.deals.splice(indexInOriginal, 1);
+        }
+        newTargetStage.deals.push(updatedPipelineDeal); 
+        newTargetStage.deals.sort((a,b) => 
+            new Date(a.originalData.closingDate!).getTime() - new Date(b.originalData.closingDate!).getTime()
+        );
+      } else {
+        this.loadDeals(); 
+      }
+    } else { 
+      const newPipelineDeal: PipelineDeal = {
+        id: updatedBackendDeal.id,
+        title: updatedBackendDeal.dealName,
+        amount: updatedBackendDeal.dealAmount,
+        startDate: this.formatDateForDisplay(updatedBackendDeal.startingDate),
+        closeDate: this.formatDateForDisplay(updatedBackendDeal.closingDate),
+        department: updatedBackendDeal.duName || 'N/A',
+        probability: updatedBackendDeal.probability?.toString() + '%' || '0%',
+        region: updatedBackendDeal.regionName || 'N/A',
+        salesperson: updatedBackendDeal.salespersonName,
+        companyName: updatedBackendDeal.companyName || this.extractCompanyNameFallback(updatedBackendDeal),
+        account: updatedBackendDeal.accountName || 'N/A',
+        contactName: updatedBackendDeal.contactName || 'N/A',
+        domain: updatedBackendDeal.domainName || 'N/A',
+        revenueType: updatedBackendDeal.revenueTypeName || 'N/A',
+        country: updatedBackendDeal.countryName || 'N/A',
+        description: updatedBackendDeal.description || '',
+        doc: '', 
+        originalData: updatedBackendDeal,
+      };
+      const targetStage = this.stages.find(s => s.name === newPipelineDeal.originalData.stageName);
+      if (targetStage) {
+        targetStage.deals.push(newPipelineDeal);
+        targetStage.deals.sort((a,b) => 
+            new Date(a.originalData.closingDate!).getTime() - new Date(b.originalData.closingDate!).getTime()
+        );
+      } else {
+        this.loadDeals(); 
+      }
+    }
+
+    this.updateStageAmountsAndTopCards();
+    this.onModalClose();
+    this.cdr.detectChanges();
+  }
+
+  onDealSubmitError(errorMessage: string): void { 
+    console.error('Error from deal modal:', errorMessage);
+    alert(`Deal operation failed: ${errorMessage}`);
+  }
+
+  updateStageAmountsAndTopCards(): void { 
+    let grandTotalReturn = 0;
+    let grandTotalDeals = 0;
+
     this.stages.forEach(stage => {
-      const totalAmount = stage.deals.reduce((sum, deal) => {
-        // const amount = parseFloat(deal.amount.replace('$', '').replace(',', ''));
-        return sum + (deal.amount || 0);
-      }, 0);
-      stage.amount = totalAmount;;
+      stage.amount = stage.deals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
+      grandTotalReturn += stage.amount;
+      grandTotalDeals += stage.deals.length;
     });
 
-    const totalReturn = this.stages.reduce((total, stage) => {
-      const stageAmount = stage.deals.reduce((sum, deal) => {
-        // const amount = parseFloat(deal.amount.replace('$', '').replace(',', ''));
-        return sum + (deal.amount || 0);
-      }, 0);
-      return total + stageAmount;
-    }, 0);
-    this.topcardData[0].amount = totalReturn;
+    const totalReturnCard = this.topcardData.find(card => card.title === 'Total Return');
+    if (totalReturnCard) totalReturnCard.amount = grandTotalReturn;
 
-    this.topcardData[1].amount = this.stages.reduce((total, stage) => total + stage.deals.length, 0);
+    const totalCountCard = this.topcardData.find(card => card.title === 'Total Count of Deals');
+    if (totalCountCard) totalCountCard.amount = grandTotalDeals;
   }
-
-  
 }
