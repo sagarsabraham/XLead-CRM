@@ -5,7 +5,7 @@ import { DxButtonModule, DxDrawerModule, DxListModule } from 'devextreme-angular
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardModule } from './dashboard/dashboard.module';
-import { PipelineModule } from './pipeline/pipeline.module';
+// import { PipelineModule } from './pipeline/pipeline.module';
 import { CompanyModule } from './company/company.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { DashboardPageComponent } from './dashboard/dashboard-page/dashboard-page.component';
@@ -14,6 +14,7 @@ import { ContactPageComponent } from './contacts/contact-page/contact-page.compo
 import { CompanyPageComponent } from './company/company-page/company-page.component';
 import { SharedModule } from './shared/shared.module';
 import { DealInfoModule } from './deal-info/deal-info.module';
+import { PipelineModule } from './pipeline/pipeline.module';
 
 const routes: Routes = [
   { path: 'dashboard', component: DashboardPageComponent },

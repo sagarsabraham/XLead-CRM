@@ -1,5 +1,5 @@
-import { getSupportedInputTypes } from '@angular/cdk/platform';
-import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 
 import { CountryService } from 'src/app/services/country.service';
 import { DuService } from 'src/app/services/du.service';
@@ -152,7 +152,7 @@ ngOnInit() {
   this.duService.getDU().subscribe({
     next: (data) => {
       this.dus = data;
-      this.cdr.detectChanges(); // Force change detection
+      this.cdr.detectChanges(); 
     },
     error: (error) => {
       console.error('Error fetching dus:', error);
