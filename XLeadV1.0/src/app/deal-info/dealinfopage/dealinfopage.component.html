@@ -1,0 +1,25 @@
+<div class="deal-info-page">
+    <app-deal-header [deal]="deal"></app-deal-header>
+    <app-status-timeline
+        [currentStage]="deal?.stage"
+        (stageChange)="onStageChange($event)">
+    </app-status-timeline>
+    <div class="content">
+        <div class="left-column">
+            <app-deal-info-card 
+                [deal]="deal"
+                (descriptionChange)="onDescriptionChange($event)">
+            </app-deal-info-card>
+        </div>
+        <div class="right-column">
+            <dx-tabs
+                [items]="tabs"
+                [selectedIndex]="0"
+                (onItemClick)="onTabSelect($event)"
+            ></dx-tabs>
+
+            <app-history-timeline *ngIf="selectedTabId === 'history'" [history] = "history"></app-history-timeline>
+            <app-doc-upload *ngIf="selectedTabId === 'documents'"></app-doc-upload>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,14 @@
+<div class="status-timeline">
+  <ng-container *ngFor="let stage of stages; let i = index">
+    <div class="stage" (click)="onStageClick(stage)">
+      <div class="circle" [class.active]="stage === currentStage">
+        {{ i + 1 }}
+      </div>
+      <div class="label" [class.active]="stage === currentStage">
+        {{ stage }}
+      </div>
+      <div class="connector" *ngIf="i < stages.length - 1"></div>
+    </div>
+  </ng-container>
+</div>
+

@@ -1,0 +1,14 @@
+<div class="deal-header" [class.vertical]="collapsed">
+  <span *ngIf="!collapsed">
+    <div class="title">{{stageName}}</div>
+    <div class="summary">
+      <div class="amount"> {{amount | currency:'USD':'symbol':'1.2-2':'en-US' }}</div>
+      <div class="count">{{dealCount}} Deal{{ dealCount !== 1 ? 's' : '' }}</div>
+    </div>
+  </span>
+  <span *ngIf="collapsed" class="vertical-text">
+    <span>{{ dealCount }} Deal{{ dealCount !== 1 ? 's' : '' }}</span>
+    <span>{{ amount | currency:'USD':'symbol':'1.2-2':'en-US' }}</span>
+    <span>{{ stageName }}</span>
+  </span> 
+</div>
