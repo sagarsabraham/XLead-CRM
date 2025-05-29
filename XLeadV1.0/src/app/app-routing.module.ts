@@ -1,5 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+<<<<<<< HEAD
+
+const routes: Routes = [];
+=======
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 import { ContactPageComponent } from './contacts/contact-page/contact-page.component';
 
@@ -31,6 +35,7 @@ const routes: Routes = [
     path: '**', component: PageNotFoundComponent
   }
 ];
+>>>>>>> 325271a8456b435c271682d4f14c87eb343b1e6d
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

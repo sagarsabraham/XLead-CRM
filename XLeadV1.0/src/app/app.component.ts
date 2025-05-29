@@ -20,6 +20,10 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
+<<<<<<< HEAD
+  title = 'XLeadV1.0';
+}
+=======
   isSidenavOpen = true;
   navItems = [
     {
@@ -70,3 +74,4 @@ export class AppComponent {
 
 
 }
+>>>>>>> 325271a8456b435c271682d4f14c87eb343b1e6d

@@ -1,5 +1,10 @@
 import { NgModule, Pipe } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+<<<<<<< HEAD
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+=======
 import { RouterModule, Routes } from '@angular/router';
 import { DxButtonModule, DxDrawerModule, DxListModule, DxLoadIndicatorModule } from 'devextreme-angular';
 import { AppRoutingModule } from './app-routing.module';
@@ -25,10 +30,18 @@ const routes: Routes = [
   { path: 'companies', component: CompanyPageComponent },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 ];
+>>>>>>> 325271a8456b435c271682d4f14c87eb343b1e6d
 
 
 @NgModule({
   declarations: [
+<<<<<<< HEAD
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule
+=======
     AppComponent,
   ],
   imports: [
@@ -46,8 +59,13 @@ const routes: Routes = [
     SharedModule,
     AppRoutingModule,
     DealInfoModule
+>>>>>>> 325271a8456b435c271682d4f14c87eb343b1e6d
   ],
   bootstrap: [AppComponent],
   providers: []
 })
+<<<<<<< HEAD
+export class AppModule { }
+=======
 export class AppModule {}
+>>>>>>> 325271a8456b435c271682d4f14c87eb343b1e6d
