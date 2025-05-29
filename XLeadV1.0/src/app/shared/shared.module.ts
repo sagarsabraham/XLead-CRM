@@ -1,3 +1,4 @@
+
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DevExtremeModule,
@@ -30,6 +31,7 @@ import { TopcardComponent } from './topcard/topcard.component';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { TopbarComponent } from './topbar/topbar.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -52,7 +54,8 @@ import { TopbarComponent } from './topbar/topbar.component';
     TopcardComponent,
     PageNotFoundComponent,
     TableComponent,
-    TopbarComponent
+    TopbarComponent,
+    
   ],
   
   imports: [
@@ -74,7 +77,8 @@ import { TopbarComponent } from './topbar/topbar.component';
     DxButtonModule,
     DxBoxModule,
     DxoExportModule,
-    DxDataGridModule
+    DxDataGridModule,
+    FormsModule,
 
   ],
   exports: [

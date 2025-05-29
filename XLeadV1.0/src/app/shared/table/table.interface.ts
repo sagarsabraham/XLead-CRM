@@ -1,18 +1,18 @@
+import { BookType } from 'xlsx';
 export interface GridColumn {
   dataField: string;
   caption: string;
-  width?: number;
+  visible?: boolean;
   allowSorting?: boolean;
   allowFiltering?: boolean;
-  alignment?: 'left' | 'right' | 'center';
+  allowEditing?: boolean; // Add this property
   cellTemplate?: string;
   headerCellTemplate?: string;
-  visible?: boolean;
   sortOrder?: 'asc' | 'desc' | undefined;
 }
 
 export interface ExportFormat {
-  format: 'excel' | 'csv';
-  fileType: 'xlsx' | 'csv';
-  fileExtension: 'xlsx' | 'csv';
+  format: string;
+  fileType: BookType;
+  fileExtension: string;
 }

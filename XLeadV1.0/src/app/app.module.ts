@@ -1,7 +1,7 @@
 import { NgModule, Pipe } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
-import { DxButtonModule, DxDrawerModule, DxListModule } from 'devextreme-angular';
+import { DxButtonModule, DxDrawerModule, DxListModule, DxLoadIndicatorModule } from 'devextreme-angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardModule } from './dashboard/dashboard.module';
@@ -14,6 +14,9 @@ import { ContactPageComponent } from './contacts/contact-page/contact-page.compo
 import { CompanyPageComponent } from './company/company-page/company-page.component';
 import { SharedModule } from './shared/shared.module';
 import { DealInfoModule } from './deal-info/deal-info.module';
+import { HttpClientModule } from '@angular/common/http';
+
+ 
 
 const routes: Routes = [
   { path: 'dashboard', component: DashboardPageComponent },
@@ -33,7 +36,9 @@ const routes: Routes = [
     DxButtonModule,
     DxDrawerModule,
     DxListModule,
+    DxLoadIndicatorModule,
     DashboardModule,
+    HttpClientModule,
     PipelineModule,
     CompanyModule,
     ContactsModule,
