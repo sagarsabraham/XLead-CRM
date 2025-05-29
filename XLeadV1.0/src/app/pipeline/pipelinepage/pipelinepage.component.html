@@ -18,9 +18,6 @@
         [iconColor]="getIconColor(i)">
       </app-topcard>
     </div>
-<<<<<<< HEAD
-    <div class="card-container" cdkDropListGroup>
-=======
 
     <!-- Loading Spinner -->
     <div *ngIf="isLoadingDeals" class="loading-spinner-overlay">
@@ -30,7 +27,6 @@
     </div>
 
     <div class="card-container" cdkDropListGroup [class.content-loading]="isLoadingDeals">
->>>>>>> e487256fd5190cb47dbd610bdd8489de7ef1c118
       <div
           *ngFor="let stage of stages; let i = index;"
           class="stage-card dx-card" 
