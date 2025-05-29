@@ -2,12 +2,13 @@
   display: block;
   width: 100%;
 }
-
+ 
 .page-container {
   display: flex;
   width: 100%;
+  min-height: 100vh; /* Ensure full viewport height */
 }
-
+ 
 app-sidebar {
   width: 80px; /* Fixed width for the sidebar */
   height: 100vh; /* Full height of the viewport */
@@ -15,21 +16,31 @@ app-sidebar {
   top: 0;
   left: 0;
   background-color: #f5f5f5; /* Placeholder background color */
+  transition: transform 0.3s ease; /* Smooth transition for hiding/showing */
 }
-
+ 
+app-sidebar.sidebar-hidden {
+  transform: translateX(-100%); /* Slide out to the left */
+}
+ 
+app-sidebar.sidebar-visible {
+  transform: translateX(0); /* Slide in */
+}
+ 
 .container {
   padding: 20px;
   margin-left: 100px; /* 80px sidebar width + 20px gap */
   width: calc(100% - 100px); /* Adjust width to account for sidebar and gap */
+  box-sizing: border-box;
 }
-
+ 
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
-
+ 
 .topbar h1 {
   margin: 0;
   font-size: 32px;
@@ -37,32 +48,34 @@ app-sidebar {
   color: #333;
   text-align: left;
 }
-
+ 
 .total-count {
   font-size: 20px;
   font-weight: bold;
   color: #333;
   text-align: right;
 }
-
-.content {
-  flex: 1;
-  overflow-y: auto;
+ 
+.metric-cards-section {
+  margin-bottom: 20px;
 }
-
-.table-container {
+ 
+.topcard-container {
   display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 1230px;
+  gap: 20px;
 }
-
+ 
+.topcard-container app-topcard {
+  flex: 1; /* Ensure each card takes equal space */
+}
+ 
+ 
 .owner-cell {
   display: flex;
   align-items: center;
   gap: 8px; /* Space between avatar and name */
 }
-
+ 
 .owner-avatar {
   width: 32px;
   height: 32px;
@@ -74,41 +87,182 @@ app-sidebar {
   font-size: 14px;
   font-weight: 500;
 }
-
+ 
 .owner-name {
   font-size: 14px;
   color: #333;
 }
-
+ 
 dx-data-grid {
   width: 100%;
   max-width: 1230px;
 }
-
+ 
 /* Row styles */
 :host ::ng-deep .dx-datagrid-rowsview .dx-row {
   font-size: 14px;
   height: 48px; /* Consistent row height */
 }
-
+ 
 /* Hover effect on rows */
 :host ::ng-deep .dx-datagrid-rowsview .dx-row:hover {
   background-color: #f0f0f0;
 }
-
+ 
 /* Checkbox column alignment */
 :host ::ng-deep .dx-datagrid-rowsview .dx-selection .dx-checkbox {
   margin: 0 auto;
 }
-
+ 
 /* Ensure consistent cell padding */
 :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
   padding: 10px;
 }
-
+ 
 /* Pager styles */
 :host ::ng-deep .dx-datagrid-pager {
   padding: 10px;
   background-color: #f9f9f9;
   border-top: 1px solid #e0e0e0;
 }
+ 
+/* Desktop-specific adjustments */
+@media (min-width: 577px) {
+  .metric-cards-section {
+    margin-bottom: 90px; /* Increase separation between top cards and table in desktop view */
+  }
+}
+ 
+/* Mobile Styles */
+@media (max-width: 576px) {
+  .page-container.mobile-view {
+    flex-direction: column;
+  }
+ 
+  app-sidebar {
+    width: 200px; /* Wider sidebar on mobile when visible */
+    z-index: 999; /* Ensure sidebar is above content */
+  }
+ 
+  .container {
+    margin-left: 0; /* Remove sidebar offset on mobile */
+    width: 100%; /* Full width */
+    padding: 10px; /* Reduced padding */
+  }
+ 
+  .topbar {
+    flex-direction: column; /* Stack vertically on mobile */
+    align-items: flex-start;
+    gap: 8px; /* Space between title and total count */
+    margin-bottom: 10px;
+  }
+ 
+  .topbar h1 {
+    font-size: 24px; /* Smaller heading on mobile */
+  }
+ 
+  .total-count {
+    font-size: 16px; /* Smaller font size */
+    text-align: left; /* Align left for consistency */
+  }
+ 
+  .metric-cards-section {
+    margin-bottom: 15px;
+  }
+ 
+  .topcard-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+ 
+  .topcard-container app-topcard {
+    width: 100%;
+  }
+ 
+  .content {
+    padding-top: 0; /* No extra padding needed without hamburger menu */
+  }
+ 
+  .table-container {
+    max-width: 100%; /* Full width on mobile */
+  }
+ 
+  dx-data-grid {
+    max-width: 100%; /* Full width on mobile */
+  }
+ 
+  /* Adjust owner cell for mobile */
+  .owner-cell {
+    gap: 6px;
+  }
+ 
+  .owner-avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+ 
+  .owner-name {
+    font-size: 12px;
+  }
+ 
+  /* Adjust row height and font size for mobile */
+  :host ::ng-deep .dx-datagrid-rowsview .dx-row {
+    font-size: 12px;
+    height: 40px;
+  }
+ 
+  :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
+    padding: 8px;
+  }
+ 
+  :host ::ng-deep .dx-datagrid-pager {
+    padding: 8px;
+    font-size: 12px;
+  }
+}
+ 
+/* Add to contact-page.component.css */
+.loading-state, .error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 20px;
+  text-align: center;
+}
+ 
+.loading-state p {
+  margin-top: 15px;
+  color: #666;
+}
+ 
+.error-state {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 30px;
+  margin: 20px 0;
+}
+ 
+.error-message {
+  color: #d9534f;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+ 
+.retry-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+ 
+.retry-button:hover {
+  background-color: #0069d9;
+}
+ 

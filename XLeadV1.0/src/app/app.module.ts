@@ -1,7 +1,7 @@
 import { NgModule, Pipe } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
-import { DxButtonModule, DxDrawerModule, DxListModule } from 'devextreme-angular';
+import { DxButtonModule, DxDrawerModule, DxListModule, DxLoadIndicatorModule } from 'devextreme-angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardModule } from './dashboard/dashboard.module';
@@ -29,6 +29,7 @@ const routes: Routes = [
     AppComponent,
   ],
   imports: [
+    DxLoadIndicatorModule,
     BrowserModule,
     RouterModule.forRoot(routes),
     DxButtonModule,

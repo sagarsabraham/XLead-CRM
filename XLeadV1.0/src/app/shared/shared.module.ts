@@ -30,6 +30,7 @@ import { TopcardComponent } from './topcard/topcard.component';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { TopbarComponent } from './topbar/topbar.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -56,6 +57,7 @@ import { TopbarComponent } from './topbar/topbar.component';
   ],
   
   imports: [
+    FormsModule,
     HttpClientModule,
     CommonModule,
     DevExtremeModule,
