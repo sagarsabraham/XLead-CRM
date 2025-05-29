@@ -49,7 +49,7 @@ loadContacts(): void {
         phone: contact.phoneNumber || '',
         email: contact.email || '',
         company: contact.companyName || '',
-        status: contact.isActive ? 'Active' : 'Inactive', // 👈 Map isActive to status
+        status: contact.isActive ? 'Active' : 'Inactive',
         owner: contact.createdBy?.toString() || 'System'
       }));
 

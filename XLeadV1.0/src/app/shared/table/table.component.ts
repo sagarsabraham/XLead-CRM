@@ -81,8 +81,6 @@ export class TableComponent implements AfterViewInit {
   }
 
 
-  
-
   ngOnInit() {
     this.checkIfMobile();
     // Reset selection when data changes
@@ -96,7 +94,6 @@ export class TableComponent implements AfterViewInit {
       this.adjustFilterRowPosition();
     }
     
-    // Debug logging
     console.log('=== TABLE COMPONENT INIT ===');
     console.log('Data sample:', this.data.slice(0, 2));
     console.log('Export filename:', this.exportFileName);
@@ -669,8 +666,6 @@ export class TableComponent implements AfterViewInit {
 
     this.dataGrid.instance.option('width', '100%');
     this.dataGrid.instance.refresh();
-
-
 
   }
 }
