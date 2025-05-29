@@ -1,31 +1,16 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { DxButtonModule, DxDataGridModule } from 'devextreme-angular';
-import { RouterModule, Routes } from '@angular/router';
-import { AppComponent } from './app.component';
-import { TableOutlineComponent } from './shared/table-outline/table-outline.component';
-import { TableComponent } from './shared/table/table.component';
-import { ContactPageComponent } from './contacts/contact-page/contact-page.component';
 
-// Define routes
-const routes: Routes = [
-  { path: 'contact', component: ContactPageComponent },
-  { path: '', redirectTo: '/contact', pathMatch: 'full' },
-  { path: '**', redirectTo: '/contact' }
-];
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ContactPageComponent,
-    TableOutlineComponent,
-    TableComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
-    DxDataGridModule,
-    RouterModule.forRoot(routes),
-    DxButtonModule
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
