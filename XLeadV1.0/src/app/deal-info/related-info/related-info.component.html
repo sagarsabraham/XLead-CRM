@@ -1,0 +1,18 @@
+<!-- related-info.component.html -->
+<div class="related-info-container">
+  <h3 class="related-info-title">{{ title }}</h3>
+  <div class="related-info-content">
+    <div *ngFor="let item of items" class="related-info-item">
+      <i class="dx-icon-{{ getIconName(item.icon) }} related-info-icon"></i>
+      <ng-container *ngIf="item.isLink">
+        <a [href]="item.text.startsWith('http') ? item.text : 'http://' + item.text" target="_blank" class="related-info-text">{{ item.text }}</a>
+      </ng-container>
+      <ng-container *ngIf="item.isPhone">
+        <a [href]="'tel:' + item.text" class="related-info-text">{{ item.text }}</a>
+      </ng-container>
+      <ng-container *ngIf="!item.isLink && !item.isPhone">
+        <p class="related-info-text">{{ item.text }}</p>
+      </ng-container>
+    </div>
+  </div>
+</div>

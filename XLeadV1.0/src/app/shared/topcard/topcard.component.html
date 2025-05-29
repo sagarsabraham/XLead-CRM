@@ -1,0 +1,11 @@
+<div class="topcard" [class.compact]="variant === 'compact'">
+  <div class="topcard-icon" [style.background-color]="iconColor">
+    <i class="dx-icon-{{icon}}"></i>
+  </div>
+  <div class="topcard-content">
+    <h3 class="topcard-amount">
+      {{ isCurrency ? (amount | currency:'INR':'symbol':'1.2-2':'en-IN') : amount }}
+    </h3>
+    <p class="topcard-title">{{ title }}</p>
+  </div>
+</div>
