@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ContactService } from '../../services/contact.service';
  
+=======
+import { Component } from '@angular/core';
+import { CompanyContactService } from 'src/app/services/company-contact.service';
+
+>>>>>>> e487256fd5190cb47dbd610bdd8489de7ef1c118
 @Component({
   selector: 'app-contact-page',
   templateUrl: './contact-page.component.html',
@@ -13,8 +19,9 @@ export class ContactPageComponent implements OnInit {
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'email', caption: 'Email', visible: true },
     { dataField: 'company', caption: 'Company', visible: false },
-    { dataField: 'owner', caption: 'Owner', visible: true, cellTemplate: 'ownerCellTemplate' }
+    { dataField: 'status', caption: 'Status', visible: true }
   ];
+<<<<<<< HEAD
  
   tableData: any[] = [];
   totalContacts = 0;
@@ -99,5 +106,39 @@ handleSelectionChanged(event: any): void {
  
   toggleSidebar(): void {
     this.isSidebarVisible = !this.isSidebarVisible;
+=======
+
+  tableData: any[] = [];
+  totalContacts = 0;
+  isLoading = true;
+
+  constructor(private companyContactService: CompanyContactService) {}
+
+  ngOnInit(): void {
+    this.loadContacts();
+  }
+
+  loadContacts(): void {
+    this.isLoading = true;
+    this.companyContactService.getContacts().subscribe({
+      next: (data) => {
+        this.tableData = data.map((contact: any) => ({
+          id: contact.id,
+          name: contact.fullName,
+          company: contact.companyName,
+          email: contact.email,
+          phone: contact.phoneNumber,
+          status: contact.isActive ? 'Active' : 'Not Active'
+        }));
+        
+        this.totalContacts = this.tableData.length;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading contacts:', error);
+        this.isLoading = false;
+      }
+    });
+>>>>>>> e487256fd5190cb47dbd610bdd8489de7ef1c118
   }
 }
