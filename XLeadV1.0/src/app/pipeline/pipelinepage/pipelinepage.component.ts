@@ -137,14 +137,12 @@ export class PipelinepageComponent implements OnInit {
     }
   }
 
-  // --- RESTORED METHOD IMPLEMENTATIONS ---
+
   getIconColor(index: number): string {
-    // This logic was from your original component code.
-    // Ensure it matches the purpose of your topcardData.
-    // Assuming first card is 'Total Return', second is 'Total Count of Deals'.
+   
     switch (index) {
-      case 0: // First card
-        return '#8a2be2'; // Violet (example, use your original color)
+      case 0: 
+        return '#8a2be2'; 
       case 1: // Second card
         return '#28a745'; // Green (example, use your original color)
       default:
