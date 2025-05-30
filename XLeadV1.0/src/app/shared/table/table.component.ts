@@ -419,7 +419,7 @@ export class TableComponent implements AfterViewInit {
     event.stopPropagation();
     this.clickedInsideDropdown = true;
   }
-
+ 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;

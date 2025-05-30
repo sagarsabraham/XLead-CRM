@@ -8,10 +8,10 @@ import { filter, map } from 'rxjs';
   styleUrls: ['./topbar.component.css']
 })
 export class TopbarComponent implements OnInit{
-  profile = {
-    name: 'Subash Joseph',
-    role: 'Admin',
-  };
+  // profile = {
+  //   name: 'Subash Joseph',
+  //   role: 'Admin',
+  // };
 
   pageTitle: string = '';
 

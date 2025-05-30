@@ -31,6 +31,7 @@ const routes: Routes = [
     AppComponent,
   ],
   imports: [
+    DxLoadIndicatorModule,
     BrowserModule,
     RouterModule.forRoot(routes),
     DxButtonModule,

@@ -35,7 +35,7 @@ app-sidebar.sidebar-visible {
   width: calc(100% - 100px); /* Adjust width to account for sidebar and gap */
   box-sizing: border-box;
 }
-
+ 
 .topbar {
   display: flex;
   flex-direction: column;
@@ -43,7 +43,7 @@ app-sidebar.sidebar-visible {
   margin-bottom: 1.5rem;
   animation: fadeIn 0.5s ease;
 }
-
+ 
 .topbar h1 {
   margin: 0;
   font-size: 2rem;
@@ -51,7 +51,7 @@ app-sidebar.sidebar-visible {
   color: #2c3e50;
   text-align: left;
 }
-
+ 
 .total-count {
   font-size: 1rem;
   color: #666;
@@ -80,7 +80,7 @@ app-sidebar.sidebar-visible {
   gap: 0.5rem;
   flex-direction: row;
 }
-
+ 
 .owner-avatar {
   width: 2rem;
   height: 2rem;
@@ -92,7 +92,7 @@ app-sidebar.sidebar-visible {
   font-size: 0.875rem;
   font-weight: 500;
 }
-
+ 
 .owner-name {
   font-size: 0.875rem;
   color: #333;

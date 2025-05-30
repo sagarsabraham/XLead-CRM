@@ -8,4 +8,14 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
+  showTopbar = true;
+
+  constructor(private router: Router) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        // Hide topbar for '/pipeline' route
+        this.showTopbar = !event.urlAfterRedirects.includes('/pipeline');
+      }
+    });
+  }
 }
