@@ -1,0 +1,49 @@
+<div class="sidebar-container">
+  <button class="hamburger-button" (click)="toggleMobileMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <div class="sidebar" [class.mobile-open]="isMobileMenuOpen">
+    <div class="logo">
+      <img [src]="logoPath" alt="Logo" />
+    </div>
+    <div class="close-button" (click)="toggleMobileMenu()">×</div>
+    <div class="nav-items">
+      <div class="icons" *ngFor="let item of navItems" (click)="navigate(item.route); closeMobileMenuIfOpen()">
+        <app-icon
+          [iconPath]="item.iconPath"
+          [isActive]="item.isActive"
+          [ngClass]="{  
+            'active-icon': item.isActive,
+            'hover-icon': !item.isActive
+          }"
+        ></app-icon>
+        <span class="icon-label">{{ item.text }}</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Overlay for mobile (appears when menu is open) -->
+  <div class="sidebar-overlay" *ngIf="isMobileMenuOpen" (click)="toggleMobileMenu()"></div>
+</div>
+
+<!-- <div class="sidebar">
+  <div class="logo">
+    <img [src]="logoPath"/>
+    <span class="logo-x">X</span><span class="logo-lead">Lead</span>
+  </div>
+  <div class="icons" *ngFor="let item of navItems">
+    <app-icon
+      [iconPath]="item.iconPath"
+      [isActive]="item.isActive"
+      [ngClass]="{
+        'active-icon': item.isActive,
+        'hover-icon': !item.isActive
+      }"
+      (onClick)="navigate(item.route)"
+    ></app-icon>
+    <span class="icon-label">{{ item.text }}</span>
+  </div>
+</div> -->

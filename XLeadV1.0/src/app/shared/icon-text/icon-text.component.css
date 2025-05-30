@@ -1,0 +1,32 @@
+.icon-text-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.icon-text-container.active {
+  background-color: #ffffff;
+}
+
+.text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.icon-text-container.active .text {
+  color: #000000;
+}
+
+.icon-text-container img {
+  filter: brightness(1.5);
+}
+
+.icon-text-container.active img {
+  filter: none;
+}

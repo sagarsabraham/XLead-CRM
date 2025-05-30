@@ -1,0 +1,24 @@
+<div class="buttons">
+    <div *ngIf="showCustomize" class="customize-fields">
+    
+        <dx-button
+          [text]="customize"
+          type="default"
+          (onClick)="handleCustomize()">
+        </dx-button>
+    </div>
+    <div class="modal-buttons" >
+        <dx-button
+            [text]="cancelText"
+            type="normal"
+            (onClick)="handleCancel()">
+        </dx-button>
+        
+        <dx-button
+            [text]="saveText"
+            type="success"
+            [disabled]="isSaveDisabled"
+            (onClick)="handleSave()">
+        </dx-button>
+    </div>
+</div>
