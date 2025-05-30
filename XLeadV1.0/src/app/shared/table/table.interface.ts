@@ -10,7 +10,7 @@ export interface GridColumn {
   headerCellTemplate?: string;
   sortOrder?: 'asc' | 'desc' | undefined;
 }
- 
+
 export interface ExportFormat {
   format: string;
   fileType: BookType;

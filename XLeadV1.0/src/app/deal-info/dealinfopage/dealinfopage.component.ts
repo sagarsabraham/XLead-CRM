@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RelatedInfoService } from 'src/app/shared/services/related-info.service';
+
 
 @Component({
   selector: 'app-dealinfopage',
@@ -37,6 +37,7 @@ export class DealinfopageComponent implements OnInit{
     }
 
     this.deal = dealData;
+    // this.deal.amount=dealData.amount.toString();
     this.deal.contactEmail = `${this.deal.contactName.replace(/\s+/g, '.').toLowerCase()}@example.com`;
     this.deal.contactPhone = '+919847908657';
     this.deal.companyWebsite = `info@${this.deal.companyName.toLowerCase()}.com`;
@@ -67,5 +68,16 @@ export class DealinfopageComponent implements OnInit{
     
     console.log('Updated description:', newDescription); // Log the updated description
     this.deal.description = newDescription;
+  }
+
+  tabs = [
+    { text: 'History', id: 'history' },
+    { text: 'Documents', id: 'documents' }
+  ];
+
+  selectedTabId = 'history';
+
+  onTabSelect(e: any) {
+    this.selectedTabId = e.itemData.id;
   }
 }

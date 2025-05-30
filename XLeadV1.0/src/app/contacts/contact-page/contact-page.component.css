@@ -2,31 +2,33 @@
   display: block;
   width: 100%;
 }
- 
+
+/* Page Layout */
 .page-container {
   display: flex;
   width: 100%;
   min-height: 100vh; /* Ensure full viewport height */
 }
- 
-app-sidebar {
-  width: 80px; /* Fixed width for the sidebar */
-  height: 100vh; /* Full height of the viewport */
-  position: fixed; /* Fixed position to stay on the left */
+
+/* app-sidebar {
+  width: 5rem;
+  height: 100vh;
+  position: fixed;
   top: 0;
   left: 0;
-  background-color: #f5f5f5; /* Placeholder background color */
-  transition: transform 0.3s ease; /* Smooth transition for hiding/showing */
-}
- 
+  background-color: #f5f5f5;
+  transition: transform 0.3s ease;*/
+
 app-sidebar.sidebar-hidden {
   transform: translateX(-100%); /* Slide out to the left */
 }
- 
+
 app-sidebar.sidebar-visible {
   transform: translateX(0); /* Slide in */
 }
- 
+
+/* Main Content */
+.content-container,
 .container {
   padding: 20px;
   margin-left: 100px; /* 80px sidebar width + 20px gap */
@@ -36,192 +38,197 @@ app-sidebar.sidebar-visible {
  
 .topbar {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  animation: fadeIn 0.5s ease;
 }
  
 .topbar h1 {
   margin: 0;
-  font-size: 32px;
-  font-weight: bold;
-  color: #333;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
   text-align: left;
 }
  
 .total-count {
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
+  font-size: 1rem;
+  color: #666;
+  font-weight: 500;
   text-align: right;
 }
- 
+
 .metric-cards-section {
   margin-bottom: 20px;
 }
- 
+
 .topcard-container {
   display: flex;
   gap: 20px;
 }
- 
+
 .topcard-container app-topcard {
   flex: 1; /* Ensure each card takes equal space */
 }
- 
- 
+
+
+/* Owner Cell */
 .owner-cell {
   display: flex;
   align-items: center;
-  gap: 8px; /* Space between avatar and name */
+  gap: 0.5rem;
+  flex-direction: row;
 }
  
 .owner-avatar {
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
 }
  
 .owner-name {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #333;
 }
- 
+
+/* DevExtreme Data Grid */
 dx-data-grid {
   width: 100%;
-  max-width: 1230px;
+  max-width: 76.875rem;
 }
- 
-/* Row styles */
+
 :host ::ng-deep .dx-datagrid-rowsview .dx-row {
-  font-size: 14px;
-  height: 48px; /* Consistent row height */
+  font-size: 0.875rem;
+  height: 3rem;
 }
- 
-/* Hover effect on rows */
+
 :host ::ng-deep .dx-datagrid-rowsview .dx-row:hover {
   background-color: #f0f0f0;
 }
- 
-/* Checkbox column alignment */
+
 :host ::ng-deep .dx-datagrid-rowsview .dx-selection .dx-checkbox {
   margin: 0 auto;
 }
- 
-/* Ensure consistent cell padding */
+
 :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
-  padding: 10px;
+  padding: 0.625rem;
 }
- 
-/* Pager styles */
+
+:host ::ng-deep .dx-datagrid-headers .dx-header-row > td {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  color: #374151;
+  padding: 0.625rem;
+}
+
 :host ::ng-deep .dx-datagrid-pager {
-  padding: 10px;
   background-color: #f9f9f9;
   border-top: 1px solid #e0e0e0;
 }
- 
+
 /* Desktop-specific adjustments */
 @media (min-width: 577px) {
   .metric-cards-section {
     margin-bottom: 90px; /* Increase separation between top cards and table in desktop view */
   }
 }
- 
+
 /* Mobile Styles */
 @media (max-width: 576px) {
   .page-container.mobile-view {
     flex-direction: column;
   }
- 
+
   app-sidebar {
     width: 200px; /* Wider sidebar on mobile when visible */
     z-index: 999; /* Ensure sidebar is above content */
   }
- 
+
   .container {
     margin-left: 0; /* Remove sidebar offset on mobile */
     width: 100%; /* Full width */
     padding: 10px; /* Reduced padding */
   }
- 
+
   .topbar {
     flex-direction: column; /* Stack vertically on mobile */
     align-items: flex-start;
     gap: 8px; /* Space between title and total count */
     margin-bottom: 10px;
   }
- 
+
   .topbar h1 {
     font-size: 24px; /* Smaller heading on mobile */
   }
- 
+
   .total-count {
     font-size: 16px; /* Smaller font size */
     text-align: left; /* Align left for consistency */
   }
- 
+
   .metric-cards-section {
     margin-bottom: 15px;
   }
- 
+
   .topcard-container {
     flex-direction: column;
     gap: 15px;
   }
- 
+
   .topcard-container app-topcard {
     width: 100%;
   }
- 
+
   .content {
     padding-top: 0; /* No extra padding needed without hamburger menu */
   }
- 
+
   .table-container {
     max-width: 100%; /* Full width on mobile */
   }
- 
+
   dx-data-grid {
     max-width: 100%; /* Full width on mobile */
   }
- 
+
   /* Adjust owner cell for mobile */
   .owner-cell {
     gap: 6px;
   }
- 
+
   .owner-avatar {
     width: 24px;
     height: 24px;
     font-size: 12px;
   }
- 
+
   .owner-name {
     font-size: 12px;
   }
- 
+
   /* Adjust row height and font size for mobile */
   :host ::ng-deep .dx-datagrid-rowsview .dx-row {
     font-size: 12px;
     height: 40px;
   }
- 
+
   :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
     padding: 8px;
   }
- 
+
   :host ::ng-deep .dx-datagrid-pager {
     padding: 8px;
     font-size: 12px;
   }
 }
- 
+
 /* Add to contact-page.component.css */
 .loading-state, .error-state {
   display: flex;
@@ -232,12 +239,12 @@ dx-data-grid {
   padding: 20px;
   text-align: center;
 }
- 
+
 .loading-state p {
   margin-top: 15px;
   color: #666;
 }
- 
+
 .error-state {
   background-color: #fff;
   border-radius: 8px;
@@ -245,13 +252,13 @@ dx-data-grid {
   padding: 30px;
   margin: 20px 0;
 }
- 
+
 .error-message {
   color: #d9534f;
   margin-bottom: 20px;
   font-size: 16px;
 }
- 
+
 .retry-button {
   background-color: #007bff;
   color: white;
@@ -261,8 +268,7 @@ dx-data-grid {
   cursor: pointer;
   transition: background-color 0.2s;
 }
- 
+
 .retry-button:hover {
   background-color: #0069d9;
 }
- 

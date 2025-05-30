@@ -1,3 +1,4 @@
+
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DevExtremeModule,
@@ -53,7 +54,8 @@ import { FormsModule } from '@angular/forms';
     TopcardComponent,
     PageNotFoundComponent,
     TableComponent,
-    TopbarComponent
+    TopbarComponent,
+    
   ],
   
   imports: [
@@ -76,7 +78,8 @@ import { FormsModule } from '@angular/forms';
     DxButtonModule,
     DxBoxModule,
     DxoExportModule,
-    DxDataGridModule
+    DxDataGridModule,
+    FormsModule,
 
   ],
   exports: [
@@ -92,7 +95,8 @@ import { FormsModule } from '@angular/forms';
     IconTextComponent,
     ProfileComponent,
     SidebarComponent,
-    CheckboxComponent
+    CheckboxComponent,
+    TopbarComponent
   ],
 
    schemas: [CUSTOM_ELEMENTS_SCHEMA]

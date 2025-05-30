@@ -1,13 +1,10 @@
 <div class="container">
-    <div class="topbar">
-        <h1>Pipelines</h1>
         <app-button
             *ngFor="let button of dealButton"
             [label]="button.label"
             [icon]="button.icon"
             (onClick)="onAddDeal()"
         ></app-button>
-    </div>
     <div class="topcard-container">
       <app-topcard 
         *ngFor="let card of topcardData; let i = index"
@@ -36,7 +33,12 @@
           (click)="toggleCollapse(i)"
       >
           <div>
-              <app-dealheader [stageName]="stage.name" [amount]="stage.amount" [dealCount]="stage.deals.length" [collapsed]="stage.collapsed"></app-dealheader>
+              <app-dealheader 
+              [stageName]="stage.name"
+              [amount]="stage.amount" 
+              [dealCount]="stage.deals.length" 
+              [collapsed]="stage.collapsed">
+              </app-dealheader>
           </div>
 
           <div *ngIf="!stage.collapsed">
@@ -62,6 +64,7 @@
         [isVisible]="isModalVisible"
         [dealToEdit]="selectedDealForModal()" 
         [mode]="isEditMode ? 'edit' : 'add'"
+        [selectedStage]="selectedStage"
         (onClose)="onModalClose()"
         (onSubmitSuccess)="onDealSubmitSuccess($event)" 
         (onSubmitError)="onDealSubmitError($event)">  

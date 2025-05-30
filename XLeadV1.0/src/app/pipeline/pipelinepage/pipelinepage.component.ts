@@ -58,7 +58,7 @@ export class PipelinepageComponent implements OnInit {
   isLoadingDeals: boolean = false;
   isModalVisible: boolean = false;
   isEditMode: boolean = false;
-  
+  selectedStage : number = 1;
   _selectedDealForModalInput: DealRead | null = null; 
   _currentlyEditingPipelineDeal: PipelineDeal | null = null; 
   _originalStageNameOfEditingDeal: string = '';

@@ -14,13 +14,15 @@ import { ContactPageComponent } from './contacts/contact-page/contact-page.compo
 import { CompanyPageComponent } from './company/company-page/company-page.component';
 import { SharedModule } from './shared/shared.module';
 import { DealInfoModule } from './deal-info/deal-info.module';
+import { HttpClientModule } from '@angular/common/http';
+
+ 
 
 const routes: Routes = [
   { path: 'dashboard', component: DashboardPageComponent },
   { path: 'pipeline', component: PipelinepageComponent },
   { path: 'contacts', component: ContactPageComponent },
-  { path: 'companies', component: CompanyPageComponent },
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: 'companies', component: CompanyPageComponent }
 ];
 
 
@@ -35,7 +37,9 @@ const routes: Routes = [
     DxButtonModule,
     DxDrawerModule,
     DxListModule,
+    DxLoadIndicatorModule,
     DashboardModule,
+    HttpClientModule,
     PipelineModule,
     CompanyModule,
     ContactsModule,

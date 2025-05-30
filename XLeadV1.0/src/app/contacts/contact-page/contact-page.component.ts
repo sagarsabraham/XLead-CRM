@@ -1,12 +1,7 @@
-<<<<<<< HEAD
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ContactService } from '../../services/contact.service';
- 
-=======
-import { Component } from '@angular/core';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 
->>>>>>> e487256fd5190cb47dbd610bdd8489de7ef1c118
 @Component({
   selector: 'app-contact-page',
   templateUrl: './contact-page.component.html',
@@ -110,13 +105,22 @@ handleSelectionChanged(event: any): void {
 
   tableData: any[] = [];
   totalContacts = 0;
-  isLoading = true;
+  isMobile: boolean = false;
+  isSidebarVisible: boolean = false;
+  isLoading: boolean = true;
+  error: string | null = null;
 
-  constructor(private companyContactService: CompanyContactService) {}
+  constructor(private contactService: CompanyContactService) {
+    this.checkIfMobile();
+  }
 
   ngOnInit(): void {
     this.loadContacts();
   }
+// In your contact-page.component.ts file
+private safeToString(value: any): string {
+  return value !== undefined && value !== null ? String(value) : '';
+}
 
   loadContacts(): void {
     this.isLoading = true;
@@ -140,5 +144,67 @@ handleSelectionChanged(event: any): void {
       }
     });
 >>>>>>> e487256fd5190cb47dbd610bdd8489de7ef1c118
+// contact-page.component.ts
+loadContacts(): void {
+  this.isLoading = true;
+  this.error = null;
+
+  this.contactService.getContacts().subscribe({
+    next: (contacts) => {
+      this.tableData = contacts.map(contact => ({
+        id: this.safeToString(contact.id || `temp-id-${Math.random().toString(36).substring(2)}`),
+        name: contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim(),
+        phone: contact.phoneNumber || '',
+        email: contact.email || '',
+        company: contact.companyName || '',
+        status: contact.isActive ? 'Active' : 'Inactive', // 👈 Map isActive to status
+        owner: contact.createdBy?.toString() || 'System'
+      }));
+
+      const ids = this.tableData.map(item => item.id);
+      const uniqueIds = new Set(ids);
+      if (uniqueIds.size !== ids.length) {
+        console.error('Duplicate IDs detected:', ids);
+      }
+
+      this.totalContacts = this.tableData.length;
+      this.isLoading = false;
+    },
+    error: (err) => {
+      console.error('Error fetching contacts:', err);
+      this.error = 'Failed to load contacts. Please try again later.';
+      this.isLoading = false;
+    }
+  });
+}
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.checkIfMobile();
+  }
+
+  private checkIfMobile(): void {
+    this.isMobile = window.innerWidth <= 576;
+    if (this.isMobile) {
+      this.isSidebarVisible = false;
+    } else {
+      this.isSidebarVisible = true;
+    }
+  }
+
+  selectedContactIds: string[] = [];
+
+// Add to ContactPageComponent
+handleSelectionChanged(event: any): void {
+  console.log('Selection changed:', event);
+  console.log('Selected keys:', event.selectedRowKeys);
+  console.log('Selected data:', event.selectedRowsData);
+  
+  // If you want to track selected contacts
+  this.selectedContactIds = event.selectedRowKeys || [];
+}
+
+  toggleSidebar(): void {
+    this.isSidebarVisible = !this.isSidebarVisible;
   }
 }

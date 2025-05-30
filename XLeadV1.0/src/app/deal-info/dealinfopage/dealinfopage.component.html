@@ -10,13 +10,16 @@
                 [deal]="deal"
                 (descriptionChange)="onDescriptionChange($event)">
             </app-deal-info-card>
-            <!-- <app-description 
-                [description]="deal?.description"
-                (descriptionChange)="onDescriptionChange($event)">
-            </app-description> -->
         </div>
         <div class="right-column">
-            <app-history-timeline [history]="history"></app-history-timeline>
+            <dx-tabs
+                [items]="tabs"
+                [selectedIndex]="0"
+                (onItemClick)="onTabSelect($event)"
+            ></dx-tabs>
+
+            <app-history-timeline *ngIf="selectedTabId === 'history'" [history] = "history"></app-history-timeline>
+            <app-doc-upload *ngIf="selectedTabId === 'documents'"></app-doc-upload>
         </div>
     </div>
 </div>

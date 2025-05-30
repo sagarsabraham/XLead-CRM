@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, AfterViewInit } from '@angular/core';
 import { DxFormComponent, DxPopupComponent } from 'devextreme-angular';
 import { finalize } from 'rxjs/operators';
+import { getSupportedInputTypes } from '@angular/cdk/platform';
 
 export interface QuickContactFormData {
   FirstName: string;
@@ -35,7 +36,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() isVisible: boolean = false;
   @Input() mode: 'add' | 'edit' = 'add';
   @Input() dealToEdit: DealRead | null = null;
-
+  @Input() selectedStage: number = 1;
   @Output() onClose = new EventEmitter<void>();
   @Output() onSubmitSuccess = new EventEmitter<DealRead>();
   @Output() onSubmitError = new EventEmitter<string>();

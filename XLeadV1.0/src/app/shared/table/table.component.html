@@ -98,7 +98,7 @@
               </ng-container>
             </div>
           </dx-data-grid>
- 
+
           <!-- Column Chooser Dropdown -->
           <div
             class="custom-dropdown column-chooser-dropdown"
@@ -132,7 +132,7 @@
               </label>
             </div>
           </div>
- 
+
           <!-- Export Options Dropdown -->
           <div
             class="custom-dropdown export-options-dropdown"
@@ -159,7 +159,7 @@
       </div>
     </div>
   </div>
- 
+
   <!-- Mobile View -->
   <div *ngIf="isMobile" class="mobile-view">
     <!-- Mobile Toolbar -->
@@ -179,9 +179,9 @@
         </span>
       </div>
       <div class="search-container">
-        <input
-          type="text"
-          placeholder="Search contacts..."
+        <input 
+          type="text" 
+          placeholder="Search contacts..." 
           (input)="searchMobile($event)"
           class="mobile-search"
         >
@@ -198,7 +198,7 @@
         </button>
       </div>
     </div>
-   
+    
     <!-- Mobile Column Chooser -->
     <div *ngIf="showColumnChooserMobile" class="mobile-column-chooser">
       <div class="column-chooser-header">
@@ -229,21 +229,21 @@
         </div>
       </div>
     </div>
-   
+    
     <!-- Mobile Sort Options -->
     <div *ngIf="showSortOptions" class="mobile-sort-options">
       <div class="sort-header">Sort by:</div>
       <div class="sort-options">
         <ng-container *ngFor="let header of headers">
-          <div *ngIf="columnVisibility[header.dataField] && header.allowSorting !== false"
-               class="sort-option"
+          <div *ngIf="columnVisibility[header.dataField] && header.allowSorting !== false" 
+               class="sort-option" 
                (click)="toggleSortMobile(header.dataField)">
             {{ header.caption }} <span class="sort-indicator">{{ getSortIndicator(header.dataField) }}</span>
           </div>
         </ng-container>
       </div>
     </div>
-   
+    
     <!-- Mobile Export Options -->
     <div *ngIf="showMobileExportOptions" class="mobile-export-options">
       <div class="export-header">
@@ -259,12 +259,12 @@
         </button>
       </div>
     </div>
-   
+    
     <!-- Mobile Card List -->
     <div class="mobile-card-list">
       <div *ngFor="let item of paginatedData" class="contact-card" (click)="openDetailsModal(item)">
         <div class="card-selection" (click)="$event.stopPropagation()">
-          <input type="checkbox"
+          <input type="checkbox" 
                  [checked]="selectedRowKeys.includes(item.id)"
                  (change)="toggleSelection(item.id)"
           >
@@ -285,7 +285,7 @@
         </div>
       </div>
     </div>
-   
+    
     <!-- Mobile Pagination -->
     <div class="mobile-pagination">
       <div class="pagination-controls">
@@ -304,7 +304,7 @@
         </select>
       </div>
     </div>
- 
+
     <!-- Mobile Details Modal -->
     <div *ngIf="isDetailsModalOpen" class="mobile-details-modal">
       <div class="modal-overlay" (click)="closeDetailsModal()"></div>
@@ -346,7 +346,7 @@
       </div>
     </div>
   </div>
- 
+
   <!-- Export Message -->
   <div class="export-message" *ngIf="showExportMessage">
     {{ exportMessage }}
