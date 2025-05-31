@@ -4,11 +4,12 @@
   [title]="modalTitle"
   [width]="popupWidth"
   [height]="'auto'"
+  [dragEnabled]="false"
   [showCloseButton]="true"
   (onHidden)="handleClose()"> <!-- handleClose will also reset isFormReady -->
  
   <div *dxTemplate="let data of 'content'" class="popup-content">
-    <div class="form-container">
+    <div #formContainer class="form-container" (wheel)="onMouseWheel($event)">
       <app-modal-header title="Deal Information" [showOwner]="true"></app-modal-header>
       <dx-form
         #dealFormInstance 

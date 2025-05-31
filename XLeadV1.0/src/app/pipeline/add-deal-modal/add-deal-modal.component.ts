@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, AfterViewInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { DxFormComponent, DxPopupComponent } from 'devextreme-angular';
 import { finalize } from 'rxjs/operators';
 import { getSupportedInputTypes } from '@angular/cdk/platform';
@@ -32,6 +32,7 @@ import { DealCreatePayload, DealRead } from 'src/app/services/dealcreation.servi
 export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild('dealFormInstance', { static: false }) dealFormInstance!: DxFormComponent;
   @ViewChild('popupInstanceRef', { static: false }) dxPopupInstance!: DxPopupComponent; // Reference to dx-popup
+  @ViewChild('formContainer', { static: false }) formContainer!: ElementRef<HTMLDivElement>; // Reference to the form container
 
   @Input() isVisible: boolean = false;
   @Input() mode: 'add' | 'edit' = 'add';
@@ -148,6 +149,16 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       });
     } else {
         console.warn('dxPopupInstance is not available in ngAfterViewInit. Popup events cannot be subscribed.');
+    }
+  }
+
+  // Add a handler to enable mouse wheel scrolling
+  onMouseWheel(event: WheelEvent) {
+    if (this.formContainer && this.formContainer.nativeElement) {
+      const container = this.formContainer.nativeElement;
+      // Scroll the form container based on the mouse wheel delta
+      container.scrollTop += event.deltaY;
+      event.preventDefault(); // Prevent the default page scroll
     }
   }
 
