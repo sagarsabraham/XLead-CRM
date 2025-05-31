@@ -651,9 +651,10 @@ export class TableComponent implements AfterViewInit {
 
     this.dataGrid.instance.option('columnResizingMode', 'widget');
 
-    this.headers.forEach((header) => {
-      this.dataGrid.instance.columnOption(header.dataField, 'minWidth', 150);
-    });
+   this.headers.forEach((header) => {
+    this.dataGrid.instance.columnOption(header.dataField, 'minWidth', 150);
+    this.dataGrid.instance.columnOption(header.dataField, 'visible', this.columnVisibility[header.dataField]);
+  });
 
     if (this.headers.length > 0) {
       const firstColumnDataField = this.headers[0].dataField;
@@ -669,10 +670,22 @@ export class TableComponent implements AfterViewInit {
       scrollByThumb: true,
     });
 
-    this.dataGrid.instance.option('width', '100%');
+    
+
+this.dataGrid.instance.option('dataSource', this.data); // Explicitly set dataSource
+  this.dataGrid.instance.clearFilter(); // Ensure no filters are hiding rows
+
+  this.dataGrid.instance.option('width', '100%');
     this.dataGrid.instance.refresh();
 
-
+  // Enhanced debugging logs
+  console.log('=== DataGrid Debug Info ===');
+  console.log('DataSource:', this.dataGrid.instance.option('dataSource'));
+  console.log('Columns:', this.dataGrid.instance.option('columns'));
+  console.log('Visible Rows:', this.dataGrid.instance.getVisibleRows());
+  console.log('Total Row Count:', this.dataGrid.instance.totalCount());
+  console.log('Filter:', this.dataGrid.instance.getCombinedFilter());
+  console.log('=========================');
 
   }
 }

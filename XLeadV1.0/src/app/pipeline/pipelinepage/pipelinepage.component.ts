@@ -54,6 +54,27 @@ export class PipelinepageComponent implements OnInit {
     { name: 'Closed Won', amount: 0, collapsed: false, hover: false, deals: [] },
     { name: 'Closed Lost', amount: 0, collapsed: false, hover: false, deals: [] }
   ];
+  tableHeaders = [
+    { dataField: 'title', caption: 'Deal Name', visible: true },
+    { dataField: 'amount', caption: 'Amount', visible: true },
+    { dataField: 'startDate', caption: 'Start Date', visible: true },
+    { dataField: 'closeDate', caption: 'Close Date', visible: true },
+    { dataField: 'department', caption: 'Department', visible: true },
+    { dataField: 'probability', caption: 'Probability', visible: true },
+    { dataField: 'region', caption: 'Region', visible: true },
+    
+    { dataField: 'companyName', caption: 'Company', visible: true },
+    { dataField: 'contactName', caption: 'Contact', visible: true },
+    { dataField: 'stageName', caption: 'Stage', visible: true } // Add stage name for context
+  ];
+  
+  viewMode: 'card' | 'table' = 'card'; // Default to card view
+
+  // Existing constructor and methods...
+
+  toggleViewMode(): void {
+    this.viewMode = this.viewMode === 'card' ? 'table' : 'card';
+  }
   stageNames: string[] = this.stages.map(s => s.name);
  
   isLoadingInitialData: boolean = false;
@@ -65,7 +86,15 @@ export class PipelinepageComponent implements OnInit {
   _originalStageNameOfEditingDeal: string = '';
  
   companyContactMap: { [company: string]: string[] } = {};
- 
+
+  selectedDealIds: string[] = [];
+
+
+  handleSelectionChanged(event: any): void {
+    console.log('Selection changed:', event);
+    this.selectedDealIds = event.selectedRowKeys || [];
+  }
+  
   constructor(
     private dealService: DealService,
     private companyContactService: CompanyContactService,
@@ -115,7 +144,7 @@ export class PipelinepageComponent implements OnInit {
     const normalizedSearchContact = contactFullName.trim(); // Normalize search term slightly
  
     // DEBUG: Log the map and the contact name you are searching for
-    // console.log(`findCompanyByContact: Searching for contact: "${normalizedSearchContact}"`);
+    // console.log(findCompanyByContact: Searching for contact: "${normalizedSearchContact}");
     // For very detailed debugging, uncomment the next line, but it can be verbose:
     // console.log('findCompanyByContact: Full Map:', JSON.parse(JSON.stringify(this.companyContactMap)));
  
@@ -123,7 +152,7 @@ export class PipelinepageComponent implements OnInit {
     for (const companyName in this.companyContactMap) {
       if (Object.prototype.hasOwnProperty.call(this.companyContactMap, companyName)) {
         const contactsInCompany = this.companyContactMap[companyName];
-        // console.log(`findCompanyByContact: Checking company: "${companyName}", contacts: [${contactsInCompany?.join(', ')}]`);
+        // console.log(findCompanyByContact: Checking company: "${companyName}", contacts: [${contactsInCompany?.join(', ')}]);
  
         // Ensure contactsInCompany is an array and normalize contacts within it for comparison
         if (Array.isArray(contactsInCompany)) {
@@ -135,40 +164,40 @@ export class PipelinepageComponent implements OnInit {
           });
  
           if (found) {
-            // console.log(`findCompanyByContact: MATCH! Contact "${normalizedSearchContact}" found in company "${companyName}"`);
+            // console.log(findCompanyByContact: MATCH! Contact "${normalizedSearchContact}" found in company "${companyName}");
             return companyName; // Found the company
           }
         } else {
-          // console.warn(`findCompanyByContact: contactsInCompany for "${companyName}" is not an array:`, contactsInCompany);
+          // console.warn(findCompanyByContact: contactsInCompany for "${companyName}" is not an array:, contactsInCompany);
         }
       }
     }
-    // console.log(`findCompanyByContact: NO MATCH for contact: "${normalizedSearchContact}"`);
+    // console.log(findCompanyByContact: NO MATCH for contact: "${normalizedSearchContact}");
     return null; // Contact not found in any company's list
   }
  
   processFetchedDeals(fetchedDeals: DealRead[]): void {
     console.log('PipelinePage: processFetchedDeals called with', fetchedDeals.length, 'deals.');
     fetchedDeals.forEach(backendDeal => {
-      // console.log(`PipelinePage: Processing backendDeal ID: ${backendDeal.id}, Name: ${backendDeal.dealName}, Contact: ${backendDeal.contactName}, Backend Company: ${backendDeal.companyName}`);
+      // console.log(PipelinePage: Processing backendDeal ID: ${backendDeal.id}, Name: ${backendDeal.dealName}, Contact: ${backendDeal.contactName}, Backend Company: ${backendDeal.companyName});
  
       const targetStage = this.stages.find(s => s.name === backendDeal.stageName);
       if (targetStage) {
         let determinedCompanyName = backendDeal.companyName;
  
         if (!determinedCompanyName && backendDeal.contactName) {
-          // console.log(`PipelinePage: Backend company for deal ${backendDeal.id} is missing. Trying to find by contact: "${backendDeal.contactName}"`);
+          // console.log(PipelinePage: Backend company for deal ${backendDeal.id} is missing. Trying to find by contact: "${backendDeal.contactName}");
           determinedCompanyName = this.findCompanyByContact(backendDeal.contactName) ?? undefined;
           // if (determinedCompanyName) {
-          //   console.log(`PipelinePage: Found company "${determinedCompanyName}" for contact "${backendDeal.contactName}" for deal ${backendDeal.id}`);
+          //   console.log(PipelinePage: Found company "${determinedCompanyName}" for contact "${backendDeal.contactName}" for deal ${backendDeal.id});
           // } else {
-          //   console.log(`PipelinePage: Could NOT find company for contact "${backendDeal.contactName}" for deal ${backendDeal.id}`);
+          //   console.log(PipelinePage: Could NOT find company for contact "${backendDeal.contactName}" for deal ${backendDeal.id});
           // }
         }
  
         const finalCompanyName = determinedCompanyName || this.extractCompanyNameFallback(backendDeal) || 'Unknown Co.';
         // if (finalCompanyName === 'Unknown Co.') {
-        //    console.warn(`PipelinePage: Deal ID ${backendDeal.id} (${backendDeal.dealName}) ended up with "Unknown Co.". Original backend company: ${backendDeal.companyName}, Contact: ${backendDeal.contactName}, Determined via map: ${determinedCompanyName}`);
+        //    console.warn(PipelinePage: Deal ID ${backendDeal.id} (${backendDeal.dealName}) ended up with "Unknown Co.". Original backend company: ${backendDeal.companyName}, Contact: ${backendDeal.contactName}, Determined via map: ${determinedCompanyName});
         // }
  
  
@@ -193,9 +222,7 @@ export class PipelinepageComponent implements OnInit {
           originalData: backendDeal,
         };
         targetStage.deals.push(pipelineDeal);
-      } else {
-        console.warn(`PipelinePage: Deal "${backendDeal.dealName}" (ID: ${backendDeal.id}) has an unknown stage: "${backendDeal.stageName}"`);
-      }
+      } 
     });
     // console.log('PipelinePage: processFetchedDeals finished. Current stages:', JSON.parse(JSON.stringify(this.stages)));
   }
@@ -254,7 +281,7 @@ export class PipelinepageComponent implements OnInit {
         const [movedDeal] = previousStage.deals.splice(dealIndexInPrev, 1);
         currentStage.deals.splice(currentIndex, 0, movedDeal);
  
-        console.log(`PipelinePage: Deal "${movedDeal.title}" (ID: ${movedDeal.id}) moved to stage "${currentStageName}". Backend update needed.`);
+       
         // TODO: API Call: this.dealService.updateDealStage(movedDeal.id, currentStage.name /* or currentStage.id */).subscribe(...);
  
         this.updateStageAmountsAndTopCards();
@@ -352,12 +379,12 @@ export class PipelinepageComponent implements OnInit {
     if (this._currentlyEditingPipelineDeal && this._currentlyEditingPipelineDeal.id === updatedBackendDeal.id) {
       let determinedCompanyName = updatedBackendDeal.companyName;
       if (!determinedCompanyName && updatedBackendDeal.contactName) {
-        // console.log(`PipelinePage (Edit): Backend company for deal ${updatedBackendDeal.id} is missing. Trying to find by contact: "${updatedBackendDeal.contactName}"`);
+        // console.log(PipelinePage (Edit): Backend company for deal ${updatedBackendDeal.id} is missing. Trying to find by contact: "${updatedBackendDeal.contactName}");
         determinedCompanyName = this.findCompanyByContact(updatedBackendDeal.contactName) ?? undefined;
       }
       const finalCompanyName = determinedCompanyName || this.extractCompanyNameFallback(updatedBackendDeal) || 'Unknown Co.';
       // if (finalCompanyName === 'Unknown Co.') {
-      //   console.warn(`PipelinePage (Edit): Deal ID ${updatedBackendDeal.id} (${updatedBackendDeal.dealName}) ended up with "Unknown Co." after edit.`);
+      //   console.warn(PipelinePage (Edit): Deal ID ${updatedBackendDeal.id} (${updatedBackendDeal.dealName}) ended up with "Unknown Co." after edit.);
       // }
  
       const updatedPipelineDeal: PipelineDeal = {
@@ -389,22 +416,15 @@ export class PipelinepageComponent implements OnInit {
         if (indexInOriginal > -1) {
           originalStage.deals.splice(indexInOriginal, 1);
         }
-      } else {
-          console.warn(`PipelinePage (Edit): Original stage "${this._originalStageNameOfEditingDeal}" not found for deal ID ${updatedPipelineDeal.id}.`);
-      }
+      } 
+         
  
       if (newTargetStage) {
         newTargetStage.deals.push(updatedPipelineDeal);
         newTargetStage.deals.sort((a,b) =>
             new Date(a.originalData.closingDate!).getTime() - new Date(b.originalData.closingDate!).getTime()
         );
-      } else {
-        console.warn(`PipelinePage (Edit): New target stage "${updatedBackendDeal.stageName}" not found for edited deal ID ${updatedPipelineDeal.id}. The deal might be misplaced or data will refresh entirely if critical.`);
-        // Fallback to full reload if stage integrity is compromised
-        this.loadInitialData();
-        this.onModalClose();
-        return;
-      }
+      } 
       alert('Deal updated successfully!');
     } else {
       console.warn('PipelinePage: onDealSubmitSuccess in edit mode, but _currentlyEditingPipelineDeal is mismatched or missing. Reloading data.');
@@ -418,7 +438,7 @@ export class PipelinepageComponent implements OnInit {
  
   onDealSubmitError(errorMessage: string): void {
     console.error('PipelinePage: Error from deal modal:', errorMessage);
-    alert(`Deal operation failed: ${errorMessage}`);
+    
   }
  
   updateStageAmountsAndTopCards(): void {
@@ -437,5 +457,13 @@ export class PipelinepageComponent implements OnInit {
     const totalCountCard = this.topcardData.find(card => card.title === 'Total Count of Deals');
     if (totalCountCard) totalCountCard.amount = grandTotalDeals;
   }
+   get tableData(): any[] {
+    return this.stages.flatMap(stage =>
+      stage.deals.map(deal => ({
+        ...deal,
+        stageName: stage.name, // Add the stage name to each deal for display
+        id: String(deal.id) // Ensure ID is a string for TableComponent compatibility
+      }))
+    );
+  }
 }
- 

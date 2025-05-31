@@ -25,8 +25,13 @@
       <div class="spinner"></div>
       <p>Loading Data...</p> <!-- You might want to update the text too -->
     </div>
- 
-    <div class="card-container" cdkDropListGroup [class.content-loading]="isLoadingInitialData"> <!-- Changed here -->
+   <!-- Toggle Button -->
+  <div class="toggle-view">
+    <button (click)="toggleViewMode()">
+      {{ viewMode === 'card' ? 'Switch to Table View' : 'Switch to Card View' }}
+    </button>
+  </div>
+    <div *ngIf="viewMode === 'card'" class="card-container" cdkDropListGroup [class.content-loading]="isLoadingInitialData"> <!-- Changed here -->
       <div
           *ngFor="let stage of stages; let i = index;"
           class="stage-card dx-card"
@@ -56,7 +61,19 @@
           </div>
       </div>
     </div>
- 
+ <!-- Table View -->
+  <div *ngIf="viewMode === 'table'" class="table-view">
+    <app-table
+    
+      [data]="tableData"
+      [headers]="tableHeaders"
+      [useOwnerTemplate]="false"
+      [exportFileName]="'PipelineDeals'"
+      (onSelectionChanged)="handleSelectionChanged($event)"
+    ></app-table>
+   
+  </div>
+  
     <!-- Add Deal Modal Component -->
     <app-add-deal-modal
         [isVisible]="isModalVisible"

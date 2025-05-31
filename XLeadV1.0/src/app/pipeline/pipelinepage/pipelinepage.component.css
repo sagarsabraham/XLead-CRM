@@ -162,3 +162,26 @@ app-button {
   }
 }
 }
+.toggle-view {
+  margin: 20px 0;
+  text-align: right;
+}
+
+.toggle-view button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.toggle-view button:hover {
+  background-color: #0056b3;
+}
+
+.table-view {
+  margin-top: 20px;
+  width: 100%;
+  overflow-x: auto;
+}
