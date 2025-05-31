@@ -7,13 +7,7 @@
 .page-container {
   display: flex;
   width: 100%;
-  position: relative;
-}
-
-.sidebar-space {
-  width: 0.5rem; /* 80px */
-  /* flex-shrink: 0; */
-  display: none; /* Hidden on mobile */
+  min-height: 100vh; /* Ensure full viewport height */
 }
 
 /* app-sidebar {
@@ -23,18 +17,25 @@
   top: 0;
   left: 0;
   background-color: #f5f5f5;
-} */
+  transition: transform 0.3s ease;*/
+
+app-sidebar.sidebar-hidden {
+  transform: translateX(-100%); /* Slide out to the left */
+}
+
+app-sidebar.sidebar-visible {
+  transform: translateX(0); /* Slide in */
+}
 
 /* Main Content */
 .content-container,
 .container {
-  flex: 1;
-  padding: 1.5rem;
-  width: 100%;
-  transition: all 0.3s ease;
+  padding: 20px;
+  margin-left: 100px; /* 80px sidebar width + 20px gap */
+  width: calc(100% - 100px); /* Adjust width to account for sidebar and gap */
+  box-sizing: border-box;
 }
-
-/* Topbar */
+ 
 .topbar {
   display: flex;
   flex-direction: column;
@@ -42,7 +43,7 @@
   margin-bottom: 1.5rem;
   animation: fadeIn 0.5s ease;
 }
-
+ 
 .topbar h1 {
   margin: 0;
   font-size: 2rem;
@@ -50,7 +51,7 @@
   color: #2c3e50;
   text-align: left;
 }
-
+ 
 .total-count {
   font-size: 1rem;
   color: #666;
@@ -58,21 +59,19 @@
   text-align: right;
 }
 
-
-
-/* Table Wrapper */
-.table-wrapper,
-.table-container {
-  background-color: #fff;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  animation: fadeIn 0.7s ease;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 76.875rem; /* 1230px */
+.metric-cards-section {
+  margin-bottom: 20px;
 }
+
+.topcard-container {
+  display: flex;
+  gap: 20px;
+}
+
+.topcard-container app-topcard {
+  flex: 1; /* Ensure each card takes equal space */
+}
+
 
 /* Owner Cell */
 .owner-cell {
@@ -81,7 +80,7 @@
   gap: 0.5rem;
   flex-direction: row;
 }
-
+ 
 .owner-avatar {
   width: 2rem;
   height: 2rem;
@@ -93,7 +92,7 @@
   font-size: 0.875rem;
   font-weight: 500;
 }
-
+ 
 .owner-name {
   font-size: 0.875rem;
   color: #333;
@@ -132,76 +131,144 @@ dx-data-grid {
 :host ::ng-deep .dx-datagrid-pager {
   background-color: #f9f9f9;
   border-top: 1px solid #e0e0e0;
-  padding: 0.625rem;
 }
 
-/* Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(0.625rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+/* Desktop-specific adjustments */
+@media (min-width: 577px) {
+  .metric-cards-section {
+    margin-bottom: 90px; /* Increase separation between top cards and table in desktop view */
   }
 }
 
-/* Responsive Styles */
-@media (min-width: 48rem) { /* 768px and up */
-                                
-  .content-container,
+/* Mobile Styles */
+@media (max-width: 576px) {
+  .page-container.mobile-view {
+    flex-direction: column;
+  }
+
+  app-sidebar {
+    width: 200px; /* Wider sidebar on mobile when visible */
+    z-index: 999; /* Ensure sidebar is above content */
+  }
+
   .container {
-    margin-left: 6.25rem;
-    width: calc(100% - 6.25rem);
-  }
-
-  .sidebar-space {
-    display: block;
+    margin-left: 0; /* Remove sidebar offset on mobile */
+    width: 100%; /* Full width */
+    padding: 10px; /* Reduced padding */
   }
 
   .topbar {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column; /* Stack vertically on mobile */
+    align-items: flex-start;
+    gap: 8px; /* Space between title and total count */
+    margin-bottom: 10px;
   }
 
   .topbar h1 {
-    font-size: 2rem;
+    font-size: 24px; /* Smaller heading on mobile */
   }
 
   .total-count {
-    font-size: 1.125rem;
+    font-size: 16px; /* Smaller font size */
+    text-align: left; /* Align left for consistency */
+  }
+
+  .metric-cards-section {
+    margin-bottom: 15px;
+  }
+
+  .topcard-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .topcard-container app-topcard {
+    width: 100%;
+  }
+
+  .content {
+    padding-top: 0; /* No extra padding needed without hamburger menu */
+  }
+
+  .table-container {
+    max-width: 100%; /* Full width on mobile */
+  }
+
+  dx-data-grid {
+    max-width: 100%; /* Full width on mobile */
+  }
+
+  /* Adjust owner cell for mobile */
+  .owner-cell {
+    gap: 6px;
+  }
+
+  .owner-avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .owner-name {
+    font-size: 12px;
+  }
+
+  /* Adjust row height and font size for mobile */
+  :host ::ng-deep .dx-datagrid-rowsview .dx-row {
+    font-size: 12px;
+    height: 40px;
+  }
+
+  :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
+    padding: 8px;
+  }
+
+  :host ::ng-deep .dx-datagrid-pager {
+    padding: 8px;
+    font-size: 12px;
   }
 }
 
-@media (min-width: 62rem) { /* 992px */
-  .content-container,
-  .container {
-    padding: 2rem;
-  }
+/* Add to contact-page.component.css */
+.loading-state, .error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 20px;
+  text-align: center;
 }
 
-@media (max-width: 36rem) { /* 576px */
-  .content-container,
-  .container {
-    padding: 1rem;
-  }
+.loading-state p {
+  margin-top: 15px;
+  color: #666;
+}
 
-  .topbar {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .topbar h1 {
-    font-size: 1.5rem;
-  }
+.error-state {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 30px;
+  margin: 20px 0;
+}
 
-  .total-count {
-    font-size: 1rem;
-  }
+.error-message {
+  color: #d9534f;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
 
-  .sidebar-space {
-    display: none; /* Ensure hidden on small screens */
-  }
+.retry-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.retry-button:hover {
+  background-color: #0069d9;
 }

@@ -1,4 +1,5 @@
 <app-sidebar></app-sidebar>
 <div class="top-and-body">
-<router-outlet></router-outlet>
+    <app-topbar *ngIf="showTopbar"></app-topbar>
+    <router-outlet></router-outlet>
 </div>

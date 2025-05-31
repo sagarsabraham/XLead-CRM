@@ -3,202 +3,245 @@
   width: 100%;
 }
 
-/* app-sidebar {
-  width: 80px;
-  height: 100vh;
-  position: fixed;
+.page-container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh; /* Ensure full viewport height */
+}
+
+app-sidebar {
+  width: 80px; /* Fixed width for the sidebar */
+  height: 100vh; /* Full height of the viewport */
+  position: fixed; /* Fixed position to stay on the left */
   top: 0;
   left: 0;
-  background-color: #f5f5f5;
-} */
+  background-color: #f5f5f5; /* Placeholder background color */
+  transition: transform 0.3s ease; /* Smooth transition for hiding/showing */
+}
 
-/* Main Content */
-.content-container,
+app-sidebar.sidebar-hidden {
+  transform: translateX(-100%); /* Slide out to the left */
+}
+
+app-sidebar.sidebar-visible {
+  transform: translateX(0); /* Slide in */
+}
+
 .container {
   padding: 20px;
   margin-left: 100px; /* 80px sidebar width + 20px gap */
   width: calc(100% - 100px); /* Adjust width to account for sidebar and gap */
-  overflow-x: hidden;
   box-sizing: border-box;
 }
 
-/* Topbar */
+Topbar
 .topbar {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  animation: fadeIn 0.5s ease;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
-
+ 
 .topbar h1 {
   margin: 0;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #2c3e50;
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
   text-align: left;
 }
 
-/* Metric Cards Section */
+.total-count {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  text-align: right;
+}
+
 .metric-cards-section {
   margin-bottom: 1.5rem;
   animation: fadeIn 0.6s ease;
 }
-
+ 
 .topcard-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
   gap: 1rem;
 }
-
+ 
 .topcard-container app-topcard {
   flex: 1;
   overflow-y: auto;
-  padding-top: 35px;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
-
-/* Table Wrapper */
-.table-wrapper,
-.table-container {
-  background-color: #fff;
-  border-radius: 0.5rem;
-  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  animation: fadeIn 0.7s ease;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 76.875rem; /* 1230px */
-}
-
-/* Owner Cell */
-.owner-cell {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.owner-avatar {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.owner-name {
-  font-size: 0.875rem;
-  color: #333;
-}
-
-/* DevExtreme Grid Overrides */
-dx-data-grid {
-  width: 100%;
-  max-width: 76.875rem;
-}
-
-:host ::ng-deep .dx-datagrid-rowsview .dx-row {
-  font-size: 0.875rem;
-  height: 3rem;
-}
-
-:host ::ng-deep .dx-datagrid-rowsview .dx-row:hover {
-  background-color: #f0f0f0;
-}
-
-:host ::ng-deep .dx-datagrid-rowsview .dx-selection .dx-checkbox {
-  margin: 0 auto;
-}
-
-:host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
-  padding: 0.625rem;
-}
-
-:host ::ng-deep .dx-datagrid-headers .dx-header-row > td {
-  background-color: #f5f5f5;
-  font-weight: 600;
-  color: #374151;
-  padding: 0.625rem;
-}
-
-/* Pager */
-:host ::ng-deep .dx-datagrid-pager {
-  background-color: #f9f9f9;
-  border-top: 1px solid #e0e0e0;
-  padding: 0.625rem;
-}
-
-/* Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(0.625rem);
+ 
+/* Desktop-specific adjustments */
+@media (min-width: 577px) {
+  .metric-cards-section {
+    margin-bottom: 50px; /* Increased separation */
+    padding-bottom: 1px; /* Prevent margin collapsing */
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .content {
+    margin-top: 20px; /* Additional separation */
+    padding-top: 0;
+  }
+
+  .table-wrapper {
+    margin-top: 20px; /* Additional separation */
   }
 }
 
-/* Responsive Breakpoints */
-@media (min-width: 48rem) {
-  .sidebar-space {
-    display: block;
+/* Mobile Styles */
+@media (max-width: 576px) {
+  .page-container.mobile-view {
+    flex-direction: column;
+  }
+
+  app-sidebar {
+    width: 200px; /* Wider sidebar on mobile when visible */
+    z-index: 999; /* Ensure sidebar is above content */
+  }
+
+  .container {
+    margin-left: 0; /* Remove sidebar offset on mobile */
+    width: 100%; /* Full width */
+    padding: 10px; /* Reduced padding */
   }
 
   .topbar {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column; /* Stack vertically on mobile */
+    align-items: flex-start;
+    gap: 8px; /* Space between title and total count */
+    margin-bottom: 10px;
   }
 
   .topbar h1 {
-    font-size: 2.25rem;
-  }
-   .content-container,
-  .container {
-    margin-left: 6.25rem;
-    width: calc(100% - 6.25rem);
+    font-size: 24px; /* Smaller heading on mobile */
   }
 
-}
-
-@media (min-width: 62rem) {
-  .content-container,
-  .container {
-    padding: 2rem;
-  }
-
-  .topcard-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 36rem) {
-  .content-container,
-  .container {
-    padding: 1rem;
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .topbar {
-    margin-bottom: 1rem;
+  .total-count {
+    font-size: 16px; /* Smaller font size */
+    text-align: left; /* Align left for consistency */
   }
 
   .metric-cards-section {
-    margin-bottom: 1rem;
+    margin-bottom: 15px;
   }
 
   .topcard-container {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    gap: 15px;
   }
 
-  .sidebar-space {
-    display: none;
+  .topcard-container app-topcard {
+    width: 100%;
   }
+
+  .content {
+    padding-top: 0; /* No extra padding needed without hamburger menu */
+  }
+
+  .table-wrapper {
+    margin-top: 0; /* Reset for mobile */
+  }
+
+  .table-container {
+    max-width: 100%; /* Full width on mobile */
+  }
+
+  dx-data-grid {
+    max-width: 100%; /* Full width on mobile */
+  }
+
+  /* Adjust owner cell for mobile */
+  .owner-cell {
+    gap: 6px;
+  }
+
+  .owner-avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .owner-name {
+    font-size: 12px;
+  }
+
+  /* Adjust row height and font size for mobile */
+  :host ::ng-deep .dx-datagrid-rowsview .dx-row {
+    font-size: 12px;
+    height: 40px;
+  }
+
+  :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
+    padding: 8px;
+  }
+
+  :host ::ng-deep .dx-datagrid-pager {
+    padding: 8px;
+    font-size: 12px;
+  }
+}
+
+/* company-page.component.css */
+.loading-state, .error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 20px;
+  text-align: center;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: #007bff;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-state p {
+  margin-top: 15px;
+  color: #666;
+}
+
+.error-state {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 30px;
+  margin: 20px 0;
+}
+
+.error-message {
+  color: #d9534f;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.retry-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.retry-button:hover {
+  background-color: #0069d9;
 }

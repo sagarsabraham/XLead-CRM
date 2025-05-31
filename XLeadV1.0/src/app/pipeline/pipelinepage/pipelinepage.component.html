@@ -18,14 +18,14 @@
         [iconColor]="getIconColor(i)">
       </app-topcard>
     </div>
-
+ 
     <!-- Loading Spinner -->
     <div *ngIf="isLoadingInitialData" class="loading-spinner-overlay"> <!-- Changed here -->
       <!-- Replace with your preferred spinner, e.g., <mat-spinner></mat-spinner> -->
       <div class="spinner"></div>
       <p>Loading Data...</p> <!-- You might want to update the text too -->
     </div>
-
+ 
     <div class="card-container" cdkDropListGroup [class.content-loading]="isLoadingInitialData"> <!-- Changed here -->
       <div
           *ngFor="let stage of stages; let i = index;"
@@ -38,7 +38,7 @@
           <div>
               <app-dealheader [stageName]="stage.name" [amount]="stage.amount" [dealCount]="stage.deals.length" [collapsed]="stage.collapsed"></app-dealheader>
           </div>
-
+ 
           <div *ngIf="!stage.collapsed">
               <!-- $event from onEdit here is the PipelineDeal object from dealcard -->
               <app-dealbody
@@ -49,14 +49,14 @@
                   (onEdit)="onEditDeal($event, stage.name)">
               </app-dealbody>
           </div>
-
+ 
           <div *ngIf="stage.hover && !stage.collapsed">
               <!-- Assuming dealButton is for adding a new deal within the stage footer, adjust if needed -->
               <app-dealfooter [buttons]="dealButton" (buttonClick)="onAddDeal()"></app-dealfooter>
           </div>
       </div>
     </div>
-
+ 
     <!-- Add Deal Modal Component -->
     <app-add-deal-modal
         [isVisible]="isModalVisible"
