@@ -12,7 +12,7 @@ export class CompanyPageComponent implements OnInit {
     { dataField: 'companyName', caption: 'Company Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'website', caption: 'Website', visible: true },
-    { dataField: 'owner', caption: 'Owner', visible: true, cellTemplate: 'ownerCellTemplate' },
+    // { dataField: 'owner', caption: 'Owner', visible: true, cellTemplate: 'ownerCellTemplate' },
     { dataField: 'status', caption: 'Status', visible: true }
     // Keep other headers as needed
   ];
@@ -128,14 +128,14 @@ private mapCompanyData(company: any): any {
   }
   
   console.log('Found owner:', owner);
-  const ownerName = owner ? owner.name : 'System';
+  // const ownerName = owner ? owner.name : 'System';
   
   return {
     id: this.safeToString(company.id),
     companyName: company.companyName || 'Unnamed Company',
     phone: company.companyPhoneNumber || '',
     website: company.website || '',
-    owner: ownerName,
+    // owner: ownerName,
     status: this.mapStatus(company),
   };
 }
