@@ -40,10 +40,10 @@ export interface PipelineStage {
   styleUrls: ['./pipelinepage.component.css']
 })
 export class PipelinepageComponent implements OnInit {
-  topcardData = [
-    { amount: 0, title: 'Total Return', isCurrency: true, icon: 'money', iconBackgroundColor: '#ECB985', variant: 'default' },
-    { amount: 0, title: 'Total Count of Deals', isCurrency: false, icon: 'sorted', iconBackgroundColor: '#ECB985', variant: 'default' }
-  ];
+ topcardData = [
+    { amount: 33300, title: 'Total Return', isCurrency: true, icon: 'assets/money.svg' },
+    { amount: 15, title: 'Total Count of Deals', isCurrency: false, icon: 'assets/count.svg' },
+  ]; 
   dealButton = [{ label: 'Deal', icon: 'add' }];
  
   stages: PipelineStage[] = [

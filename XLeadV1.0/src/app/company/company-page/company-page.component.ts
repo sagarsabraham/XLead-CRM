@@ -12,14 +12,14 @@ export class CompanyPageComponent implements OnInit {
     { dataField: 'companyName', caption: 'Company Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'website', caption: 'Website', visible: true },
-    { dataField: 'owner', caption: 'Owner', visible: true, cellTemplate: 'ownerCellTemplate' },
+    // { dataField: 'owner', caption: 'Owner', visible: true, cellTemplate: 'ownerCellTemplate' },
     { dataField: 'status', caption: 'Status', visible: true }
     // Keep other headers as needed
   ];
 
   tableData: any[] = [];
   topcardData = [
-    { amount: 0, title: 'Total Companies', icon: 'sorted' },
+    { amount: 0, title: 'Total Companies', icon: 'assets/count.svg' },
     { amount: 0, title: 'Active Companies', icon: 'sorted' },
     { amount: 0, title: 'Inactive Companies', icon: 'sorted' }
   ];
@@ -177,9 +177,9 @@ private mapCompanyData(company: any): any {
     
     // Update top card data
     this.topcardData = [
-      { amount: total, title: 'Total Companies', icon: 'sorted' },
-      { amount: active, title: 'Active Companies', icon: 'sorted' },
-      { amount: inactive, title: 'Inactive Companies', icon: 'sorted' }
+      { amount: total, title: 'Total Companies',icon: 'assets/count.svg'},
+      { amount: active, title: 'Active Companies', icon: 'assets/company.svg' },
+      { amount: inactive, title: 'Inactive Companies', icon: 'assets/company.svg' }
     ];
   }
 
