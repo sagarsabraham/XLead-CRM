@@ -165,6 +165,23 @@
         <dxi-validation-rule type="required" message="Probability is required"></dxi-validation-rule>
         <dxi-validation-rule type="range" [min]="0" [max]="100" message="Probability must be between 0 and 100"></dxi-validation-rule>
       </dxi-item>
+
+      <!-- Additional Information Section for Custom Fields -->
+        <dxi-item *ngIf="customFields.length > 0" itemType="group">
+          <dxo-label text="Additional Information" cssClass="bold-label section-label"></dxo-label>
+          <dxi-item
+            *ngFor="let field of customFields"
+            [dataField]="field.dataField"
+            [editorType]="getEditorType(field.fieldType)"
+            [editorOptions]="getEditorOptions(field.fieldType)">
+            <dxo-label [text]="field.fieldLabel" cssClass="bold-label"></dxo-label>
+            <dxi-validation-rule
+              *ngIf="field.required"
+              type="required"
+              [message]="field.fieldLabel + ' is required'">
+            </dxi-validation-rule>
+          </dxi-item>
+        </dxi-item>
       </dx-form>
     </div>
    

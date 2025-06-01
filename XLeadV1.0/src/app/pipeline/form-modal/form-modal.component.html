@@ -4,6 +4,7 @@
   [title]="title"
   [height]="'auto'"
   [showCloseButton]="true"
+  [dragEnabled]="false"
   (onHidden)="handleClose()"
 >
   <div *dxTemplate="let data of 'content'">
