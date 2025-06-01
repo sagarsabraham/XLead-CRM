@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import { DxResponsiveBoxModule } from 'devextreme-angular';
-import { SharedModule } from 'src/app/shared/shared.module';
-import { DashboardModule } from '../dashboard.module';
+
 
 
 @Component({

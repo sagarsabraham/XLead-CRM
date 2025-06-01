@@ -76,7 +76,7 @@
   text-overflow: ellipsis;
 }
 .svg-icon {
-  width: 48px;
+  width: 30px;
   height: 48px;
   object-fit: contain;
 }
@@ -109,9 +109,19 @@
   .compact .topcard-amount {
     font-size: 1.25rem;
   }
+  .svg-icon {
+   width: 30px;
+  height: 48px;
+  object-fit: contain;
+}
 }
 
 @media (max-width: 576px) {
+  .svg-icon {
+  width: 30px;
+  height: 48px;
+  object-fit: contain;
+}
   .topcard {
     flex-direction: column;
     align-items: flex-start;

@@ -3,7 +3,6 @@
   flex-direction: column;
   height: 100%;
 }
-
 .form-container {
   flex: 1;
   max-height: 400px;
@@ -11,7 +10,6 @@
   padding-right: 10px;
   padding-bottom: 20px;
 }
-
 .buttons {
   display: flex;
   justify-content: space-between;
@@ -20,21 +18,17 @@
   border-top: 1px solid #e0e0e0;
   background-color: #fff;
 }
-
 .modal-buttons {
   display: flex;
   gap: 10px;
 }
-
 .customize-fields {
   display: flex;
   align-items: center;
 }
-
 .form-container::-webkit-scrollbar {
   width: 8px;
 }
-
 .form-container::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
@@ -47,6 +41,8 @@
 .form-container::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+
 
 :host ::ng-deep .dx-field-item-label {
   font-weight: bold !important;

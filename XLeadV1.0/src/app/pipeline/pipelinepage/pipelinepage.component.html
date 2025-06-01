@@ -74,7 +74,9 @@
    <app-table
   [data]="tableData"
   [headers]="tableHeaders"
-  [useOwnerTemplate]="false">
+  [useOwnerTemplate]="false"
+    [exportFileName]="'pipeline'"
+  (onSelectionChanged)="handleSelectionChanged($event)">
 </app-table>
   </div>
   <!-- Add Deal Modal -->

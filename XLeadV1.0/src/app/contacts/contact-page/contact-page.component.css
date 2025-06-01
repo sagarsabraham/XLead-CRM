@@ -34,17 +34,18 @@ app-sidebar.sidebar-visible {
   margin-left: 100px; /* 80px sidebar width + 20px gap */
   width: calc(100% - 100px); /* Adjust width to account for sidebar and gap */
   box-sizing: border-box;
+ 
 }
  
 .topbar {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
   animation: fadeIn 0.5s ease;
 }
  
-.topbar h1 {
+ h2 {
   margin: 0;
   font-size: 2rem;
   font-weight: 700;
@@ -57,16 +58,13 @@ app-sidebar.sidebar-visible {
   color: #666;
   font-weight: 500;
   text-align: right;
+  margin-top: 10px;
 }
 
 .metric-cards-section {
   margin-bottom: 20px;
 }
 
-.topcard-container {
-  display: flex;
-  gap: 20px;
-}
 
 .topcard-container app-topcard {
   flex: 1; /* Ensure each card takes equal space */
@@ -145,32 +143,43 @@ dx-data-grid {
   .page-container.mobile-view {
     flex-direction: column;
   }
+topbar.h2 {
+    font-size: 32px;
 
+    padding: 8px 0;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-left: 20px;
+  }
   app-sidebar {
     width: 200px; /* Wider sidebar on mobile when visible */
     z-index: 999; /* Ensure sidebar is above content */
   }
 
   .container {
+    margin-top: 50px;
     margin-left: 0; /* Remove sidebar offset on mobile */
     width: 100%; /* Full width */
     padding: 10px; /* Reduced padding */
   }
 
   .topbar {
-    flex-direction: column; /* Stack vertically on mobile */
-    align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+    /* align-items: flex-start; */
     gap: 8px; /* Space between title and total count */
     margin-bottom: 10px;
   }
 
   .topbar h1 {
+    margin-top: 5px;
     font-size: 24px; /* Smaller heading on mobile */
   }
 
   .total-count {
     font-size: 16px; /* Smaller font size */
-    text-align: left; /* Align left for consistency */
+    text-align: left;
+    margin-top: 15px; 
   }
 
   .metric-cards-section {

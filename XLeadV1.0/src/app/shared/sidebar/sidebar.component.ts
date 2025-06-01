@@ -52,33 +52,36 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Set initial active route
+  
     this.updateActiveRoute(this.router.url);
     
-    // Subscribe to route changes
+ 
     this.routerSubscription = this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       this.updateActiveRoute(event.urlAfterRedirects);
     });
     
-    // Check screen size on init
+  
     this.checkScreenSize();
   }
   
   ngOnDestroy() {
-    // Clean up subscription
+  
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
   }
 
-  updateActiveRoute(url: string) {
-    this.navItems = this.navItems.map(item => ({
-      ...item,
-      isActive: url === item.route || url.startsWith(item.route + '/'),
-    }));
-  }
+updateActiveRoute(url: string) {
+  const normalizedUrl = url === '/' ? '/dashboard' : url;
+
+  this.navItems = this.navItems.map(item => ({
+    ...item,
+    isActive: normalizedUrl === item.route || normalizedUrl.startsWith(item.route + '/'),
+  }));
+}
+
 
   @HostListener('window:resize', ['$event'])
   onResize() {

@@ -23,7 +23,7 @@ export class ModalButtonsComponent {
     this.onSave.emit();
   }
   handleCustomize() {
-    this.onCustomize.emit(); // Emit the customize event
+    this.onCustomize.emit(); 
   }
 }
 

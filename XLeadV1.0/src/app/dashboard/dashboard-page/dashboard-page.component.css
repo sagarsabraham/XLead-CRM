@@ -4,9 +4,18 @@
   max-width: 1200px;
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  padding-left: calc(1rem + 64px);
+  /* padding-left: calc(1rem + 64px); */
   box-sizing: border-box;
 }
+
+ h2 {
+    font-size: 32px;
+
+    padding: 8px 0;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-left: 20px;
+  }
 
 .metric-wrapper {
   /* padding: 1rem 0; */
@@ -100,6 +109,7 @@
 
 @media (max-width: 480px) {
   :host {
+    margin-top: 50px;
     padding: 0.25rem;
   }
 

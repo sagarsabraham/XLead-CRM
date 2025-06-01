@@ -11,5 +11,5 @@ export class TopcardComponent {
   @Input() title: string = '';
   @Input() icon: string = '';
   @Input() iconColor: string = '#000000';
-  @Input() isCurrency: boolean = false; // For Pipeline page compatibility
+  @Input() isCurrency: boolean = false; 
 }

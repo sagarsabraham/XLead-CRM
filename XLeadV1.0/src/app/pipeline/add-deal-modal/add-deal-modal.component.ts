@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, AfterViewInit } from '@angular/core';
 import { DxFormComponent, DxPopupComponent } from 'devextreme-angular';
 import { finalize } from 'rxjs/operators';
-import { getSupportedInputTypes } from '@angular/cdk/platform';
+
 
 export interface QuickContactFormData {
   FirstName: string;
@@ -21,7 +21,7 @@ import { DealstageService } from 'src/app/services/dealstage.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 import{ DealService } from 'src/app/services/dealcreation.service';
 import { DealCreatePayload, DealRead } from 'src/app/services/dealcreation.service';
-// import { NotificationService } from '../../services/notification.service'; 
+
 
 
 @Component({
@@ -43,7 +43,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
 
   popupWidth = window.innerWidth < 600 ? '90%' : 500;
   isLoading: boolean = false;
-  isFormReady: boolean = false; // Flag to indicate form readiness
+  isFormReady: boolean = false; 
 
   accounts: { id: number; accountName: string }[] = [];
   regions: { id: number; regionName: string }[] = [];
@@ -110,9 +110,17 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   onResize(event: any) {
     this.popupWidth = event.target.innerWidth < 600 ? '90%' : 500;
   }
+validateCloseDate = (e: any) => {
+  return !this.newDeal.startDate || !e.value || new Date(e.value) >= new Date(this.newDeal.startDate);
+}
+currencyFormat = {
+  type: 'fixedPoint',
+  precision: 2  // or 0 if you want only whole numbers
+};
+
 
   ngOnInit() {
-    console.log('AddDealModal ngOnInit - dealFormInstance:', this.dealFormInstance); // Expected: undefined
+   
     this.loadDropdownData();
     // Initial form state based on mode (will be refined in ngOnChanges and AfterViewInit for popup events)
     if (this.mode === 'edit' && this.dealToEdit) {
@@ -123,49 +131,45 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    console.log('AddDealModal ngAfterViewInit - dealFormInstance:', this.dealFormInstance); // Might be undefined if popup defers content
+   
 
     if (this.dxPopupInstance && this.dxPopupInstance.instance) {
       this.dxPopupInstance.instance.on('shown', () => {
-        console.log('DxPopup "shown" event. Current dealFormInstance:', this.dealFormInstance);
-        this.cdr.detectChanges(); // Nudge Angular to pick up ViewChildren within popup content
-
+       
+        this.cdr.detectChanges();
         if (this.dealFormInstance && this.dealFormInstance.instance) {
           this.isFormReady = true;
-          console.log('Form is now marked as ready.');
+         
         } else {
-          console.error('CRITICAL: dealFormInstance is NOT available even after popup "shown" and detectChanges. Check #dealFormInstance in template.');
-          // this.notificationService.showError('Form failed to initialize. Please try again.');
+         
+          
           alert('Form failed to initialize. Please try again.');
         }
-        this.cdr.detectChanges(); // Update bindings that depend on isFormReady (e.g. button state)
+        this.cdr.detectChanges();
       });
 
       this.dxPopupInstance.instance.on('hiding', () => {
-        this.isFormReady = false; // Reset when popup hides
-        console.log('Form is marked as not ready (popup hiding).');
+       
         this.cdr.detectChanges();
       });
-    } else {
-        console.warn('dxPopupInstance is not available in ngAfterViewInit. Popup events cannot be subscribed.');
-    }
+    } 
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['isVisible']) {
         if (this.isVisible) {
-            // When modal becomes visible, form is not immediately ready until 'shown' event
+            
             this.isFormReady = false; 
-            console.log('Modal became visible (isVisible=true), form marked as NOT ready initially.');
+           
             if (this.mode === 'edit' && this.dealToEdit) {
                 this.prefillFormForEdit(this.dealToEdit);
             } else {
-                this.resetForm(); // Reset form data, but isFormReady is still false
+                this.resetForm(); 
             }
         } else {
-            // When modal is hidden programmatically (isVisible becomes false)
+           
             this.isFormReady = false;
-             console.log('Modal became hidden (isVisible=false), form marked as NOT ready.');
+            
         }
     }
     if (changes['dealToEdit'] && this.isVisible && this.mode === 'edit' && this.dealToEdit) {
@@ -173,27 +177,27 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  loadDropdownData() { /* ... same as before ... */ 
+  loadDropdownData() { 
     this.loadAccounts(); this.loadRegions(); this.loadDomains(); this.loadStages();
     this.loadDus(); this.loadRevenueTypes(); this.loadCountries(); this.loadCompanyContactData();
   }
-  loadAccounts() { this.accountService.getAllAccounts().subscribe(data => this.accounts = data, err => console.error('Error accounts', err)); }
-  loadRegions() { this.regionService.getAllRegions().subscribe(data => this.regions = data, err => console.error('Error regions', err)); }
-  loadDomains() { this.domainService.getAllDomains().subscribe(data => this.domains = data, err => console.error('Error domains', err)); }
-  loadStages() { this.dealStageService.getAllDealStages().subscribe(data => this.dealStages = data.map(s => ({...s, displayName: s.displayName || s.stageName!})), err => console.error('Error stages', err)); }
-  loadDus() { this.duService.getDU().subscribe(data => this.dus = data, err => console.error('Error DUs', err)); }
-  loadRevenueTypes() { this.revenuetypeService.getRevenueTypes().subscribe(data => this.revenueTypes = data, err => console.error('Error revenue types', err)); }
-  loadCountries() { this.countryService.getCountries().subscribe(data => this.countries = data, err => console.error('Error countries', err)); }
+  loadAccounts() { this.accountService.getAllAccounts().subscribe(data => this.accounts = data); }
+  loadRegions() { this.regionService.getAllRegions().subscribe(data => this.regions = data); }
+  loadDomains() { this.domainService.getAllDomains().subscribe(data => this.domains = data); }
+  loadStages() { this.dealStageService.getAllDealStages().subscribe(data => this.dealStages = data.map(s => ({...s, displayName: s.displayName || s.stageName!}))); }
+  loadDus() { this.duService.getDU().subscribe(data => this.dus = data); }
+  loadRevenueTypes() { this.revenuetypeService.getRevenueTypes().subscribe(data => this.revenueTypes = data); }
+  loadCountries() { this.countryService.getCountries().subscribe(data => this.countries = data); }
   loadCompanyContactData() {
     this.companyContactService.getCompanyContactMap().subscribe(data => {
       this.companyContactMap = data; this.companies = Object.keys(data);
       this.filteredCompanies = [...this.companies];
       if (this.newDeal.companyName) { this.filteredContacts = this.companyContactMap[this.newDeal.companyName] || []; }
       this.cdr.detectChanges();
-    }, err => console.error('Error company/contact map', err));
+    });
   }
 
-  prefillFormForEdit(deal: DealRead) { /* ... same as before ... */ 
+  prefillFormForEdit(deal: DealRead) { 
     const parseDate = (dateStr: string | null | undefined): Date | null => dateStr ? new Date(dateStr) : null;
     this.newDeal = {
       amount: deal.dealAmount || 0, companyName: '', title: deal.dealName || '',
@@ -215,22 +219,22 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   get modalTitle(): string { return this.mode === 'edit' ? 'Edit Deal' : 'Create Deal'; }
 
   handleClose() {
-    this.isFormReady = false; // Ensure form is marked not ready
+    this.isFormReady = false; 
     this.onClose.emit();
-    this.resetForm(); // resetForm also sets isLoading to false
+    this.resetForm(); 
   }
 
   handleSubmit() {
-    console.log('handleSubmit CALLED - isFormReady:', this.isFormReady, 'dealFormInstance:', this.dealFormInstance);
+    
     if (!this.isFormReady || !this.dealFormInstance || !this.dealFormInstance.instance) {
       let message = "The form is not ready for submission. ";
       if (!this.isFormReady) message += "Popup content might not be fully initialized. ";
       if (!this.dealFormInstance || !this.dealFormInstance.instance) message += "Form component reference is missing. ";
       
-      console.error(message + "Please wait a moment. If the problem persists, try closing and reopening the modal.");
+     
       alert(message + "Please wait a moment. If the problem persists, try closing and reopening the modal.");
       this.onSubmitError.emit('Form not ready for submission.');
-      this.isLoading = false; // Ensure isLoading is reset
+      this.isLoading = false;
       return;
     }
 
@@ -238,12 +242,12 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     if (!validationResult.isValid) {
       alert('Please correct the validation errors before saving.');
       this.onSubmitError.emit('Validation failed. Please check the form.');
-      return; // isLoading will be handled by finalize if an API call was intended
+      return; 
     }
 
     if (this.mode === 'edit') {
       console.warn('Edit mode handleSubmit not fully implemented.');
-      // this.updateExistingDeal(); 
+     
       return;
     }
 
@@ -275,14 +279,14 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
           alert('Deal created successfully!'); this.onSubmitSuccess.emit(createdDeal); this.handleClose();
         },
         error: (err: Error) => {
-          console.error('Error creating deal:', err.message, err);
+         
           alert(`Error: ${err.message || 'Failed to create deal. Please try again.'}`);
           this.onSubmitError.emit(err.message || 'Failed to create deal. Please try again.');
         }
       });
   }
 
-  resetForm() { /* ... same as before ... */ 
+  resetForm() {
     this.newDeal = {
        amount: 0, companyName: '', title: '', account: null, region: null, contactName: '',
       domain: null, stage: null, revenueType: null, department: null, country: null,
@@ -292,36 +296,36 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     else { this.filteredCompanies = []; }
     this.filteredContacts = [];
     this.isLoading = false;
-    // isFormReady is handled by popup events and ngOnChanges, not directly in resetForm unless it's part of closing logic
+   
     this.dealFormInstance?.instance.resetValues();
     this.cdr.detectChanges();
   }
 
-  onCompanyChange(companyName: string, clearContact: boolean = true) { /* ... same as before ... */ 
+  onCompanyChange(companyName: string, clearContact: boolean = true) { 
     this.newDeal.companyName = companyName; this.filteredContacts = this.companyContactMap[companyName] || [];
     if (clearContact || !this.filteredContacts.includes(this.newDeal.contactName)) { this.newDeal.contactName = ''; }
     this.cdr.detectChanges();
   }
   onContactChange(contactName: string) { this.newDeal.contactName = contactName; }
 
-  openQuickCreateCompanyModal() { /* ... same as before ... */ this.companyData = { companyName: '', phoneNo: '', website: '' }; this.isCompanyModalVisible = true; }
+  openQuickCreateCompanyModal() {  this.companyData = { companyName: '', phoneNo: '', website: '' }; this.isCompanyModalVisible = true; }
   closeQuickCreateCompanyModal() { this.isCompanyModalVisible = false; }
   addNewCompany(newCompanyData: { companyName: string; phoneNo: string; website: string; }) { /* ... same as before, ensure isLoading is handled ... */ 
     const payload = { companyName: newCompanyData.companyName, website: newCompanyData.website, companyPhoneNumber: newCompanyData.phoneNo, createdBy: 1 };
     this.isLoading = true;
     this.companyContactService.addCompany(payload).pipe(finalize(() => this.isLoading = false)).subscribe({
-      next: () => { alert('Company added!'); this.loadCompanyContactData(); this.newDeal.companyName = payload.companyName; this.onCompanyChange(payload.companyName); this.closeQuickCreateCompanyModal(); },
+      next: () => {  this.loadCompanyContactData(); this.newDeal.companyName = payload.companyName; this.onCompanyChange(payload.companyName); this.closeQuickCreateCompanyModal(); },
       error: (err) => { console.error('Company creation failed:', err); alert(err.message || 'Failed to create company.'); }
     });
   }
 
-  openQuickCreateContactModal() { /* ... same as before ... */ 
+  openQuickCreateContactModal() {
     if (!this.newDeal.companyName) { alert('Please select a company first.'); return; }
     this.contactData = { FirstName: '', LastName: '', companyName: this.newDeal.companyName, Email: '', phoneNo: '' };
     this.isContactModalVisible = true;
   }
   closeQuickCreateContactModal() { this.isContactModalVisible = false; }
-  addNewContact(newContactData: QuickContactFormData) { /* ... same as before, ensure isLoading is handled ... */ 
+  addNewContact(newContactData: QuickContactFormData) { 
     const payload = { firstName: newContactData.FirstName, lastName: newContactData.LastName || '', email: newContactData.Email, phoneNumber: newContactData.phoneNo, companyName: this.newDeal.companyName, createdBy: 1 };
     this.isLoading = true;
     this.companyContactService.addContact(payload).pipe(finalize(() => this.isLoading = false)).subscribe({
@@ -334,7 +338,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     });
   }
 
-  openCustomizeFieldModal() { /* ... same as before ... */ this.customizeFieldFormData = {}; this.isCustomizeFieldModalVisible = true; }
+  openCustomizeFieldModal() { this.customizeFieldFormData = {}; this.isCustomizeFieldModalVisible = true; }
   closeCustomizeFieldModal() { this.isCustomizeFieldModalVisible = false; }
-  addCustomField(newField: any) { /* ... same as before ... */ console.log('Custom Field Added:', newField); this.closeCustomizeFieldModal(); }
+  addCustomField(newField: any) { console.log('Custom Field Added:', newField); this.closeCustomizeFieldModal(); }
 }

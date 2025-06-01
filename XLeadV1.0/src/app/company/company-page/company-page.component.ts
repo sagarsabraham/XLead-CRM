@@ -14,7 +14,7 @@ export class CompanyPageComponent implements OnInit {
     { dataField: 'website', caption: 'Website', visible: true },
     // { dataField: 'owner', caption: 'Owner', visible: true, cellTemplate: 'ownerCellTemplate' },
     { dataField: 'status', caption: 'Status', visible: true }
-    // Keep other headers as needed
+  
   ];
 
   tableData: any[] = [];
@@ -86,7 +86,7 @@ export class CompanyPageComponent implements OnInit {
         this.error = 'Failed to load companies. Please try again later.';
         this.isLoading = false;
         
-        // Optional: Keep demo data for UI testing if API fails
+        
         this.tableData = [
           {
             id: '1',
@@ -102,7 +102,7 @@ export class CompanyPageComponent implements OnInit {
     });
   }
 
-  // Add users property
+
   private users: any[] = [];
 
 private mapCompanyData(company: any): any {

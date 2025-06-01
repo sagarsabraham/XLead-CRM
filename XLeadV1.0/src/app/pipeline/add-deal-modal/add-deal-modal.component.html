@@ -5,7 +5,7 @@
   [width]="popupWidth"
   [height]="'auto'"
   [showCloseButton]="true"
-  (onHidden)="handleClose()"> <!-- handleClose will also reset isFormReady -->
+  (onHidden)="handleClose()">
  
   <div *dxTemplate="let data of 'content'" class="popup-content">
     <div class="form-container">
@@ -20,10 +20,21 @@
           <dxo-label text="SalesPerson" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="SalesPerson Name is required"></dxi-validation-rule>
         </dxi-item> -->
-        <dxi-item dataField="amount" editorType="dxNumberBox">
-          <dxo-label text="Amount" cssClass="bold-label"></dxo-label>
-          <dxi-validation-rule type="required" message="Amount is required"></dxi-validation-rule>
-        </dxi-item>
+  <dxi-item
+  dataField="amount"
+  editorType="dxNumberBox"
+  [editorOptions]="{
+    showSpinButtons: true,
+    min: 0,
+    max: 100000000,
+    format: { type: 'fixedPoint', precision: 2 }
+  }"
+>
+  <dxo-label text="Amount" cssClass="bold-label"></dxo-label>
+  <dxi-validation-rule type="required" message="Amount is required"></dxi-validation-rule>
+</dxi-item>
+
+
         <dxi-item dataField="companyName">
           <dxo-label text="Company Name" cssClass="bold-label"></dxo-label>
           <div class="company-name-container">
@@ -155,7 +166,8 @@
       </dxi-item>
       <dxi-item dataField="closeDate" editorType="dxDateBox">
         <dxo-label text="Closing Date" cssClass="bold-label"></dxo-label>
-        <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
+       
+        <dxi-validation-rule type="required" message="Date is required" type="custom" [validationCallback]="validateCloseDate" message="Closing date must be after start date"></dxi-validation-rule>
       </dxi-item>
       <dxi-item dataField="description" editorType="dxTextArea" [editorOptions]="{ placeholder: 'A few words about this deal', height: 90 }">
         <dxo-label text="Description" cssClass="bold-label"></dxo-label>
@@ -182,7 +194,8 @@
   </div>
 </dx-popup>
  
-<!-- Quick Create Company Modal -->
+
+
 <app-form-modal
   *ngIf="isCompanyModalVisible"
   [isVisible]="isCompanyModalVisible"
