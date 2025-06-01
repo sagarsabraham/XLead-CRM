@@ -21,6 +21,7 @@ import { DealstageService } from 'src/app/services/dealstage.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 import{ DealService } from 'src/app/services/dealcreation.service';
 import { DealCreatePayload, DealRead } from 'src/app/services/dealcreation.service';
+import { DxValidationRule } from '../form-modal/form-modal.component';
 
 
 
@@ -31,7 +32,7 @@ import { DealCreatePayload, DealRead } from 'src/app/services/dealcreation.servi
 })
 export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild('dealFormInstance', { static: false }) dealFormInstance!: DxFormComponent;
-  @ViewChild('popupInstanceRef', { static: false }) dxPopupInstance!: DxPopupComponent; // Reference to dx-popup
+  @ViewChild('popupInstanceRef', { static: false }) dxPopupInstance!: DxPopupComponent; 
 
   @Input() isVisible: boolean = false;
   @Input() mode: 'add' | 'edit' = 'add';
@@ -40,7 +41,13 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() onClose = new EventEmitter<void>();
   @Output() onSubmitSuccess = new EventEmitter<DealRead>();
   @Output() onSubmitError = new EventEmitter<string>();
-
+countryCodes: { code: string; name: string }[] = [
+    { code: '+91', name: 'India (+91)' },
+    { code: '+1', name: 'United States (+1)' },
+    { code: '+44', name: 'United Kingdom (+44)' },
+    { code: '+81', name: 'Japan (+81)' },
+    // Add more country codes as needed
+  ];
   popupWidth = window.innerWidth < 600 ? '90%' : 500;
   isLoading: boolean = false;
   isFormReady: boolean = false; 
@@ -69,20 +76,119 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
 
   isCompanyModalVisible: boolean = false;
   companyData = { companyName: '', phoneNo: '', website: '' };
-  companyFields = [
-    { dataField: 'companyName', label: 'Company Name', required: true },
-    { dataField: 'phoneNo', label: 'Phone Number', required: true },
-    { dataField: 'website', label: 'Website', required: true }
+  companyFields: {
+    dataField: string;
+    label: string;
+    editorType?: string;
+    editorOptions?: any;
+    validationRules?: DxValidationRule[]; // Use the imported type
+  }[] = [
+    {
+      dataField: 'companyName',
+      label: 'Company Name',
+      validationRules: [
+        { type: 'required', message: 'Company Name is required' },
+        { type: 'stringLength', min: 2, message: 'Company Name must be at least 2 characters long' }
+      ]
+    },
+   {
+  dataField: 'phoneNo',
+  label: 'Phone Number',
+  editorType: 'dxTextBox',
+  editorOptions: {
+    mask: '+91 00000-00000',
+    maskRules: { "0": /[0-9]/ }
+  },
+  validationRules: [
+    { type: 'required', message: 'Phone Number is required' },
+    {
+      type: 'pattern',
+      pattern: /^\+?91?\s?\d{5}\s?-?\d{5}$/,
+      message: 'Invalid Indian phone number format. Use +91 followed by 10 digits or 10 digits starting with 6, 7, 8, or 9.'
+    },
+    // {
+    //   type: 'pattern',
+    //   pattern: /^[6-9]\d{9}$|^(\+91)\s?\d{5}\s?-?\d{5}$/,
+    //   message: 'Phone number must start with 6, 7, 8, or 9 if no country code is provided.'
+    // }
+  ]
+},
+    {
+      dataField: 'website',
+      label: 'Website',
+      validationRules: [
+        { type: 'required', message: 'Website is required' },
+        // Basic pattern for a URL. For stricter validation, a custom rule might be better.
+        { type: 'pattern', pattern: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/, message: 'Invalid website URL format' }
+      ]
+    }
   ];
 
   isContactModalVisible: boolean = false;
   contactData: QuickContactFormData = { FirstName: '', LastName: '', companyName: '', Email: '', phoneNo: '' };
-  contactFields = [
-    { dataField: 'FirstName', label: 'First Name', required: true },
-    { dataField: 'LastName', label: 'Last Name', required: false },
-    { dataField: 'companyName', label: 'Company Name', editorOptions: { disabled: true }, required: true },
-    { dataField: 'Email', label: 'Email', required: false },
-    { dataField: 'phoneNo', label: 'Phone Number', required: true }
+ contactFields: {
+    dataField: string;
+    label: string;
+    editorType?: string;
+    editorOptions?: any;
+    validationRules?: DxValidationRule[]; // Use the imported type
+  }[] = [
+    {
+      dataField: 'FirstName',
+      label: 'First Name',
+      validationRules: [
+        { type: 'required', message: 'First Name is required' },
+        { type: 'stringLength', min: 2, message: 'First Name must be at least 2 characters' }
+      ]
+    },
+    {
+      dataField: 'LastName',
+      label: 'Last Name',
+      // Not required, but if provided, maybe a min length
+      validationRules: [
+         { type: 'stringLength', min: 2, message: 'Last Name must be at least 2 characters if provided' }
+      ]
+    },
+    {
+      dataField: 'companyName',
+      label: 'Company Name',
+      editorOptions: { disabled: true }, // Stays disabled
+      validationRules: [
+        { type: 'required', message: 'Company Name is required (should be auto-filled)' }
+      ]
+    },
+    {
+      dataField: 'Email',
+      label: 'Email',
+      editorType: 'dxTextBox',
+      editorOptions: { mode: 'email' },
+      validationRules: [
+        // Not strictly required, but if entered, must be valid email format
+        { type: 'email', message: 'Invalid email format' }
+      ]
+    },
+       {
+  dataField: 'phoneNo',
+  label: 'Phone Number',
+  editorType: 'dxTextBox',
+  editorOptions: {
+    mask: '+91 00000-00000',
+    maskRules: { "0": /[0-9]/ }
+  },
+  validationRules: [
+    { type: 'required', message: 'Phone Number is required' },
+    {
+      type: 'pattern',
+      pattern: /^\+?91?\s?\d{5}\s?-?\d{5}$/,
+      message: 'Invalid Indian phone number format. Use +91 followed by 10 digits or 10 digits starting with 6, 7, 8, or 9.'
+    },
+    // {
+    //   type: 'pattern',
+    //   pattern: /^[6-9]\d{9}$|^(\+91)\s?\d{5}\s?-?\d{5}$/,
+    //   message: 'Phone number must start with 6, 7, 8, or 9 if no country code is provided.'
+    // }
+  ]
+},
   ];
 
   isCustomizeFieldModalVisible: boolean = false;
@@ -310,8 +416,10 @@ currencyFormat = {
 
   openQuickCreateCompanyModal() {  this.companyData = { companyName: '', phoneNo: '', website: '' }; this.isCompanyModalVisible = true; }
   closeQuickCreateCompanyModal() { this.isCompanyModalVisible = false; }
-  addNewCompany(newCompanyData: { companyName: string; phoneNo: string; website: string; }) { /* ... same as before, ensure isLoading is handled ... */ 
+ addNewCompany(newCompanyData: { companyName: string; phoneNo: string; website: string; }) {
+    // If FormModal's handleSubmit validated, we can proceed
     const payload = { companyName: newCompanyData.companyName, website: newCompanyData.website, companyPhoneNumber: newCompanyData.phoneNo, createdBy: 1 };
+    // ... rest of your existing logic ...
     this.isLoading = true;
     this.companyContactService.addCompany(payload).pipe(finalize(() => this.isLoading = false)).subscribe({
       next: () => {  this.loadCompanyContactData(); this.newDeal.companyName = payload.companyName; this.onCompanyChange(payload.companyName); this.closeQuickCreateCompanyModal(); },
@@ -325,8 +433,10 @@ currencyFormat = {
     this.isContactModalVisible = true;
   }
   closeQuickCreateContactModal() { this.isContactModalVisible = false; }
-  addNewContact(newContactData: QuickContactFormData) { 
+addNewContact(newContactData: QuickContactFormData) {
+    // If FormModal's handleSubmit validated, we can proceed
     const payload = { firstName: newContactData.FirstName, lastName: newContactData.LastName || '', email: newContactData.Email, phoneNumber: newContactData.phoneNo, companyName: this.newDeal.companyName, createdBy: 1 };
+    // ... rest of your existing logic ...
     this.isLoading = true;
     this.companyContactService.addContact(payload).pipe(finalize(() => this.isLoading = false)).subscribe({
       next: () => {

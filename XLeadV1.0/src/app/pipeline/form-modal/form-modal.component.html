@@ -7,18 +7,57 @@
   (onHidden)="handleClose()"
 >
   <div *dxTemplate="let data of 'content'">
-    <dx-form [formData]="formData">
-      <dxi-item 
-        *ngFor="let field of fields" 
+    <dx-form #dxFormInstance [formData]="formData">
+      <dxi-item
+        *ngFor="let field of fields"
         [dataField]="field.dataField"
         [editorType]="field.editorType || 'dxTextBox'"
-        [editorOptions]="field.editorOptions">
+        [editorOptions]="field.editorOptions"
+      >
         <dxo-label [text]="field.label"></dxo-label>
-        <dxi-validation-rule 
-          *ngIf="field.required" 
-          type="required"
-          [message]="field.label + ' is required'">
-        </dxi-validation-rule>
+        <ng-container *ngFor="let rule of field.validationRules">
+          <dxi-validation-rule
+            [type]="rule.type"
+            [message]="rule.message"
+            [min]="rule.min"
+            *ngIf="rule.min !== undefined"
+          ></dxi-validation-rule>
+          <dxi-validation-rule
+            [type]="rule.type"
+            [message]="rule.message"
+            [max]="rule.max"
+            *ngIf="rule.max !== undefined"
+          ></dxi-validation-rule>
+          <dxi-validation-rule
+            [type]="rule.type"
+            [message]="rule.message"
+            [pattern]="rule.pattern"
+            *ngIf="rule.pattern !== undefined"
+          ></dxi-validation-rule>
+          <dxi-validation-rule
+            [type]="rule.type"
+            [message]="rule.message"
+            [comparisonTarget]="rule.comparisonTarget"
+            *ngIf="rule.comparisonTarget !== undefined"
+          ></dxi-validation-rule>
+          <dxi-validation-rule
+            [type]="rule.type"
+            [message]="rule.message"
+            [comparisonType]="rule.comparisonType"
+            *ngIf="rule.comparisonType !== undefined"
+          ></dxi-validation-rule>
+          <dxi-validation-rule
+            [type]="rule.type"
+            [message]="rule.message"
+            [validationCallback]="rule.validationCallback"
+            *ngIf="rule.validationCallback !== undefined"
+          ></dxi-validation-rule>
+          <dxi-validation-rule
+            [type]="rule.type"
+            [message]="rule.message"
+            *ngIf="rule.min === undefined && rule.max === undefined && rule.pattern === undefined && rule.comparisonTarget === undefined && rule.comparisonType === undefined && rule.validationCallback === undefined"
+          ></dxi-validation-rule>
+        </ng-container>
       </dxi-item>
     </dx-form>
 
@@ -27,7 +66,7 @@
       [cancelText]="'Cancel'"
       [saveText]="'Save'"
       (onCancel)="handleClose()"
-      (onSave)="handleSubmit()">
-    </app-modal-buttons>
+      (onSave)="handleSubmit()"
+    ></app-modal-buttons>
   </div>
 </dx-popup>
