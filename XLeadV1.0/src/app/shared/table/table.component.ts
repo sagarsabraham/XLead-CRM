@@ -67,17 +67,20 @@ export class TableComponent implements AfterViewInit {
   mobileAllowedPageSizes: number[] = [5, 10, 20];
   paginatedData: any[] = [];
  
+  // New properties for mobile card fields
+  cardFields: string[] = [];
+ 
   constructor(private cdr: ChangeDetectorRef) {
     this.initializeHeaders();
   }
  
   get modalHeading(): string {
-  return `${this.entityType} Details`;
-}
+    return `${this.entityType} Details`;
+  }
  
-get searchPlaceholder(): string {
-  return `Search ${this.entityType.toLowerCase()}s...`;
-}
+  get searchPlaceholder(): string {
+    return `Search ${this.entityType.toLowerCase()}s...`;
+  }
  
   private adjustFilterRowPosition(): void {
     if (!this.dataGrid?.instance) return;
@@ -91,13 +94,21 @@ get searchPlaceholder(): string {
     }, 100);
   }
  
- 
- 
- 
   ngOnInit() {
     this.checkIfMobile();
+    // Add IDs if missing
+    this.data = this.data.map((item, index) => ({
+      ...item,
+      id: item.id ?? `row-${index + 1}`,
+    }));
+    // Compute the first three visible columns for mobile cards
+    this.cardFields = this.headers
+      .filter(header => header.visible !== false)
+      .slice(0, 3)
+      .map(header => header.dataField);
     // Reset selection when data changes
     this.selectedRowKeys = [];
+    this.updatePagination();
   }
  
   ngAfterViewInit(): void {
@@ -132,7 +143,10 @@ get searchPlaceholder(): string {
     phone: [{ type: 'pattern', pattern: /^[0-9-+\s()]*$/, message: 'Invalid phone number' }]
   };
  
- 
+  // Helper to get display value with fallback
+  getDisplayValue(item: any, field: string): string {
+    return item[field] || `No ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`;
+  }
  
   private checkIfMobile(): void {
     const wasMobile = this.isMobile;
@@ -160,7 +174,6 @@ get searchPlaceholder(): string {
     this.paginatedData = this.filteredData.slice(startIndex, endIndex);
   }
  
-  // FIXED: Centralized selection change emission
   private emitSelectionChange(): void {
     const selectedRowsData = this.data.filter(row =>
       this.selectedRowKeys.includes(String(row.id))
@@ -267,7 +280,6 @@ get searchPlaceholder(): string {
     }
   }
  
-  // FIXED: Mobile select all functionality
   toggleSelectAllOnPage(): void {
     const currentPageItems = this.paginatedData;
     const currentPageIds = currentPageItems.map(item => String(item.id));
@@ -302,7 +314,6 @@ get searchPlaceholder(): string {
     return selectedCount > 0 && selectedCount < currentPageIds.length;
   }
  
-  // FIXED: Mobile individual selection
   toggleSelection(id: string): void {
     const stringId = String(id);
     const index = this.selectedRowKeys.indexOf(stringId);
@@ -355,7 +366,6 @@ get searchPlaceholder(): string {
   }
  
   private initializeColumnVisibility(): void {
-    // Remove localStorage usage as per instructions
     this.headers.forEach((header) => {
       this.columnVisibility[header.dataField] = header.visible !== false;
     });
@@ -379,6 +389,11 @@ get searchPlaceholder(): string {
     if (!this.isMobile && this.dataGrid?.instance) {
       this.dataGrid.instance.columnOption(dataField, 'visible', this.columnVisibility[dataField]);
     }
+    // Recompute cardFields
+    this.cardFields = this.headers
+      .filter(header => header.visible !== false && this.columnVisibility[header.dataField])
+      .slice(0, 3)
+      .map(header => header.dataField);
     this.clickedInsideDropdown = true;
     this.cdr.detectChanges();
   }
@@ -400,6 +415,11 @@ get searchPlaceholder(): string {
         this.dataGrid.instance.columnOption(header.dataField, 'visible', !allSelected);
       }
     });
+    // Recompute cardFields
+    this.cardFields = this.headers
+      .filter(header => header.visible !== false && this.columnVisibility[header.dataField])
+      .slice(0, 3)
+      .map(header => header.dataField);
     this.clickedInsideDropdown = true;
     this.cdr.detectChanges();
   }
@@ -464,7 +484,6 @@ get searchPlaceholder(): string {
     }
   }
  
-  // FIXED: Desktop selection handler
   handleSelectionChanged(event: any): void {
     console.log('=== DESKTOP SELECTION EVENT ===');
     console.log('DevExtreme event:', event);
@@ -680,8 +699,5 @@ get searchPlaceholder(): string {
  
     this.dataGrid.instance.option('width', '100%');
     this.dataGrid.instance.refresh();
- 
- 
- 
   }
 }

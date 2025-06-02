@@ -38,12 +38,12 @@ tableData = [
 ];
  
   topcardData = [
-    { amount: 14, title: 'Qualification', icon: 'plus' },
-    { amount: 5, title: 'Need Analysis', icon: 'doc' },
-    { amount: 4, title: 'Proposal', icon: 'money' },
-    { amount: 14, title: 'Negotiation', icon: 'overflow' },
-    { amount: 14, title: 'Closed Won', icon: 'check' },
-    { amount: 14, title: 'Closed Lost', icon: 'close' }
+    { amount: 14, title: 'Qualification', icon: 'assets/qualification.svg' },
+    { amount: 5, title: 'Need Analysis', icon: 'assets/needanalysis.svg' },
+    { amount: 4, title: 'Proposal', icon: 'assets/proposal.svg' },
+    { amount: 14, title: 'Negotiation', icon: 'assets/negotiation.svg' },
+    { amount: 14, title: 'Closed Won', icon: 'assets/closedwon.svg' },
+    { amount: 14, title: 'Closed Lost', icon: 'assets/closedlost.svg' }
   ];
  
   getIconColor(index: number): string {

@@ -15,7 +15,7 @@ app-sidebar {
   flex: 1;
   overflow-y: auto;
   background-color: #f5f5f5;
-  padding-top: 20px;
+  /* padding-top: 20px; */
 }
  
  
@@ -28,7 +28,7 @@ app-sidebar {
  
   .top-and-body {
     margin-left: 0; /* Remove left margin on mobile */
-    padding-top: 80px; /* Add padding for mobile header */
+    padding-top: 50px;
   }
 }
  
