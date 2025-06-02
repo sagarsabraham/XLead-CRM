@@ -1,27 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
-
+ 
 @Component({
   selector: 'app-dealinfopage',
   templateUrl: './dealinfopage.component.html',
   styleUrls: ['./dealinfopage.component.css']
 })
-export class DealinfopageComponent implements OnInit{
+export class DealinfopageComponent implements OnInit {
   deal: any = null;
   history: { timestamp: string; editedBy: string; fromStage: string; toStage: string }[] = [];
-
-  constructor(private route: ActivatedRoute, private router: Router) { };
+  isMobile: boolean = false;
+  desktopSelectedTabId: string = 'history'; // Default for desktop
+  mobileSelectedTabId: string = 'deal-stage'; // Default for mobile
+ 
+  constructor(private route: ActivatedRoute, private router: Router) {}
+ 
   ngOnInit() {
+    // Check screen size on init
+    this.checkScreenSize();
+ 
     // Try to get the deal from navigation state
     const navigation = this.router.getCurrentNavigation();
     let dealData = navigation?.extras?.state?.['deal'];
-
+ 
     // Fallback to history.state if navigation state is unavailable
     if (!dealData && history.state.deal) {
       dealData = history.state.deal;
     }
-
+ 
     // If no deal data is found, use mock data for testing
     if (!dealData) {
       dealData = {
@@ -35,14 +41,13 @@ export class DealinfopageComponent implements OnInit{
         description: 'This is a sample deal description.'
       };
     }
-
+ 
     this.deal = dealData;
-    // this.deal.amount=dealData.amount.toString();
     this.deal.contactEmail = `${this.deal.contactName.replace(/\s+/g, '.').toLowerCase()}@example.com`;
     this.deal.contactPhone = '+919847908657';
     this.deal.companyWebsite = `info@${this.deal.companyName.toLowerCase()}.com`;
     this.deal.companyPhone = '+917745635467';
-
+ 
     // Initialize history with the initial stage
     this.history.push({
       timestamp: new Date().toLocaleString(),
@@ -51,7 +56,24 @@ export class DealinfopageComponent implements OnInit{
       toStage: this.deal.stage
     });
   }
-
+ 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.checkScreenSize();
+  }
+ 
+  checkScreenSize() {
+    this.isMobile = window.innerWidth <= 768;
+    // Reset mobile tab when switching to mobile view
+    if (this.isMobile && (this.mobileSelectedTabId === '' || this.mobileSelectedTabId === 'history' || this.mobileSelectedTabId === 'documents')) {
+      this.mobileSelectedTabId = 'deal-stage';
+    }
+    // Reset desktop tab when switching to desktop view
+    if (!this.isMobile && (this.desktopSelectedTabId === '' || this.desktopSelectedTabId === 'deal-stage' || this.desktopSelectedTabId === 'deal-info')) {
+      this.desktopSelectedTabId = 'history';
+    }
+  }
+ 
   onStageChange(newStage: string) {
     const oldStage = this.deal.stage;
     this.deal.stage = newStage;
@@ -61,23 +83,27 @@ export class DealinfopageComponent implements OnInit{
       fromStage: oldStage,
       toStage: newStage
     });
-    console.log('History updated:', this.history); // Debug log
+    console.log('History updated:', this.history);
   }
-
+ 
   onDescriptionChange(newDescription: string) {
-    
-    console.log('Updated description:', newDescription); // Log the updated description
+    console.log('Updated description:', newDescription);
     this.deal.description = newDescription;
   }
-
-  tabs = [
+ 
+  onDesktopTabSelect(e: any) {
+    this.desktopSelectedTabId = e.itemData.id;
+  }
+ 
+  mobileTabs = [
+    { text: 'Deal Stage', id: 'deal-stage' },
+    { text: 'Deal Info', id: 'deal-info' },
     { text: 'History', id: 'history' },
     { text: 'Documents', id: 'documents' }
   ];
-
-  selectedTabId = 'history';
-
-  onTabSelect(e: any) {
-    this.selectedTabId = e.itemData.id;
-  }
+ 
+  desktopTabs = [
+    { text: 'History', id: 'history' },
+    { text: 'Documents', id: 'documents' }
+  ];
 }

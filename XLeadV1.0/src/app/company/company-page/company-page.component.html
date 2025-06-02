@@ -1,14 +1,14 @@
 <div class="page-container" [ngClass]="{'mobile-view': isMobile}">
   <!-- Sidebar (uncomment if needed) -->
   <!-- <app-sidebar></app-sidebar> -->
-
+ 
   <div class="container">
     <!-- Loading state -->
     <div *ngIf="isLoading" class="loading-state">
       <div class="spinner"></div>
       <p>Loading companies...</p>
     </div>
-
+ 
     <!-- Error state -->
     <div *ngIf="error" class="error-state">
       <div class="error-message">
@@ -18,7 +18,7 @@
         Retry
       </button>
     </div>
-
+ 
     <!-- Only show content when data is loaded -->
     <div *ngIf="!isLoading && !error">
       <div class="metric-cards-section">
@@ -39,6 +39,7 @@
           [useOwnerTemplate]="true"
           [ownerField]="'owner'"
           [exportFileName]="'Companies'"
+          [entityType]="'Company'"
         ></app-table>
       </div>
     </div>

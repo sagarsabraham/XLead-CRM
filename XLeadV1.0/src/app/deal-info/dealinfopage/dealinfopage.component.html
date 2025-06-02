@@ -1,25 +1,80 @@
 <div class="deal-info-page">
-    <app-deal-header [deal]="deal"></app-deal-header>
+  <!-- Header -->
+  <app-deal-header [deal]="deal"></app-deal-header>
+ 
+  <!-- Status Timeline -->
+  <div class="timeline-wrapper">
     <app-status-timeline
-        [currentStage]="deal?.stage"
-        (stageChange)="onStageChange($event)">
-    </app-status-timeline>
+      [currentStage]="deal?.stage"
+      (stageChange)="onStageChange($event)"
+    ></app-status-timeline>
+  </div>
+ 
+  <!-- Mobile Tabs -->
+  <div class="mobile-tab-bar" *ngIf="isMobile">
+    <div class="tab-bar-wrapper">
+      <div
+        *ngFor="let tab of mobileTabs"
+        class="tab"
+        [class.active]="mobileSelectedTabId === tab.id"
+        (click)="mobileSelectedTabId = tab.id"
+      >
+        {{ tab.text }}
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Content Wrapper with Max Width -->
+  <div class="content-wrapper">
     <div class="content">
+      <!-- Desktop: Two-column layout -->
+      <div class="desktop-layout">
         <div class="left-column">
-            <app-deal-info-card 
-                [deal]="deal"
-                (descriptionChange)="onDescriptionChange($event)">
-            </app-deal-info-card>
+          <app-deal-info-card
+            [deal]="deal"
+            (descriptionChange)="onDescriptionChange($event)"
+          ></app-deal-info-card>
         </div>
         <div class="right-column">
-            <dx-tabs
-                [items]="tabs"
-                [selectedIndex]="0"
-                (onItemClick)="onTabSelect($event)"
-            ></dx-tabs>
-
-            <app-history-timeline *ngIf="selectedTabId === 'history'" [history] = "history"></app-history-timeline>
-            <app-doc-upload *ngIf="selectedTabId === 'documents'"></app-doc-upload>
+          <dx-tabs
+            [items]="desktopTabs"
+            [selectedIndex]="0"
+            (onItemClick)="onDesktopTabSelect($event)"
+          ></dx-tabs>
+ 
+          <app-history-timeline
+            *ngIf="desktopSelectedTabId === 'history'"
+            [history]="history"
+          ></app-history-timeline>
+          <app-doc-upload
+            *ngIf="desktopSelectedTabId === 'documents'"
+          ></app-doc-upload>
         </div>
+      </div>
+ 
+      <!-- Mobile: Single-column layout -->
+      <div class="mobile-layout" *ngIf="isMobile">
+        <div class="section-content">
+          <div *ngIf="mobileSelectedTabId === 'deal-stage'" class="tab-section">
+            <app-status-timeline
+              [currentStage]="deal?.stage"
+              (stageChange)="onStageChange($event)"
+            ></app-status-timeline>
+          </div>
+          <div *ngIf="mobileSelectedTabId === 'deal-info'" class="tab-section">
+            <app-deal-info-card
+              [deal]="deal"
+              (descriptionChange)="onDescriptionChange($event)"
+            ></app-deal-info-card>
+          </div>
+          <div *ngIf="mobileSelectedTabId === 'history'" class="tab-section">
+            <app-history-timeline [history]="history"></app-history-timeline>
+          </div>
+          <div *ngIf="mobileSelectedTabId === 'documents'" class="tab-section">
+            <app-doc-upload></app-doc-upload>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
