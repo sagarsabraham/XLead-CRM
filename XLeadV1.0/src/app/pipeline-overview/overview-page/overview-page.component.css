@@ -2,13 +2,13 @@
   display: block;
   width: 100%;
 }
-
+ 
 /* Layout */
 .page-container {
   display: flex;
   width: 100%;
 }
-
+ 
 app-sidebar {
   width: 80px;
   height: 100vh;
@@ -17,7 +17,7 @@ app-sidebar {
   left: 0;
   background-color: #f5f5f5;
 }
-
+ 
 .container {
   padding: 1rem 1rem 1.5rem 1rem;
   margin-left: 100px;
@@ -25,14 +25,14 @@ app-sidebar {
   max-width: 80rem;
   margin-right: auto;
 }
-
+ 
 .topbar {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   margin-bottom: 1.5rem;
 }
-
+ 
 .topbar h1 {
   margin: 0;
   font-size: 32px;
@@ -40,27 +40,27 @@ app-sidebar {
   color: #1f2937;
   text-align: left;
 }
-
+ 
 .metric-cards-section {
   margin-bottom: 1.5rem;
 }
-
+ 
 .topcard-container {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 1rem;
 }
-
+ 
 .topcard-container app-topcard {
   flex: 0.1;
 }
-
+ 
 .content {
   flex: 1;
   overflow-y: auto;
   padding-top: 35px;
 }
-
+ 
 /* Table */
 .table-container {
   display: flex;
@@ -68,18 +68,18 @@ app-sidebar {
   width: 100%;
   max-width: 1230px;
 }
-
+ 
 dx-data-grid {
   width: 100%;
   max-width: 1230px;
 }
-
+ 
 .owner-cell {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-
+ 
 .owner-avatar {
   width: 32px;
   height: 32px;
@@ -91,83 +91,83 @@ dx-data-grid {
   font-size: 14px;
   font-weight: 500;
 }
-
+ 
 .owner-name {
   font-size: 14px;
   color: #333;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-rowsview .dx-row {
   font-size: 14px;
   height: 48px;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-rowsview .dx-row:hover {
   background-color: #f0f0f0;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-rowsview .dx-selection .dx-checkbox {
   margin: 0 auto;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
   padding: 10px;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-pager {
   padding: 10px;
   background-color: #f9f9f9;
   border-top: 1px solid #e0e0e0;
 }
-
-
+ 
+ 
 /* Responsive Styles*/
-
-
+ 
+ 
 @media (max-width: 1200px) {
   .topcard-container {
     grid-template-columns: repeat(3, 1fr);
   }
-
+ 
   .container {
     padding: 1rem 0.75rem;
   }
 }
-
+ 
 @media (max-width: 992px) {
   .topcard-container {
     gap: 0.75rem;
   }
-
+ 
   .container {
     padding: 1rem 0.75rem;
   }
-
+ 
   .topbar h1 {
     font-size: 1.5rem;
   }
 }
-
+ 
 @media (max-width: 768px) {
   .topcard-container {
     grid-template-columns: repeat(2, 1fr);
   }
-
+ 
   .container {
     margin-left: 80px;
     width: calc(100% - 80px);
     padding: 1rem 0.75rem 1.5rem 1rem;
   }
-
+ 
   .topbar {
     margin-bottom: 1rem;
   }
-
+ 
   .metric-cards-section {
     margin-bottom: 1rem;
   }
 }
-
+ 
 @media (max-width: 576px) {
   app-sidebar {
     position: fixed;
@@ -175,32 +175,32 @@ dx-data-grid {
     overflow: hidden;
     transition: width 0.3s ease;
   }
-
+ 
   .container {
     margin-left: 0;
     width: 100%;
     padding: 0.5rem;
   }
-
+ 
   .topcard-container {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
   }
-
+ 
   .topbar h1 {
     font-size: 1.25rem;
   }
-
+ 
   .metric-cards-section {
     margin-bottom: 0.75rem;
   }
-
-  
+ 
+ 
   :host ::ng-deep .dx-datagrid-pager {
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
   }
-
+ 
   :host ::ng-deep .dx-datagrid-pager .dx-page,
   :host ::ng-deep .dx-datagrid-pager .dx-page-size {
     min-width: 2.5rem;
@@ -209,18 +209,17 @@ dx-data-grid {
     font-size: 0.875rem;
     margin: 0 0.25rem;
   }
-
+ 
   :host ::ng-deep .dx-page-sizes {
     margin-left: 0.5rem;
   }
-
+ 
   :host ::ng-deep .dx-pages {
     gap: 0.25rem;
   }
-
+ 
   :host ::ng-deep .dx-datagrid-pager .dx-info {
     font-size: 0.75rem;
     margin-top: 0.25rem;
   }
 }
-

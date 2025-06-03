@@ -3,6 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 
 const routes: Routes = [
+  { path: '', loadChildren: () =>
+     import('./dashboard/dashboard.module').then(m => m.DashboardModule),
+     data : {title : 'Pipeline Analytics'}
+  },
   {path: 'pipeline', loadChildren: () =>
     import('./pipeline/pipeline.module').then(m => m.PipelineModule),
     data : {title : 'Pipelines'}

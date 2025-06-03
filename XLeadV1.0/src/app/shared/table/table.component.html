@@ -99,7 +99,7 @@
               </ng-container>
             </div>
           </dx-data-grid>
-
+ 
           <!-- Column Chooser Dropdown -->
           <div
             class="custom-dropdown column-chooser-dropdown"
@@ -133,7 +133,7 @@
               </label>
             </div>
           </div>
-
+ 
           <!-- Export Options Dropdown -->
           <div
             class="custom-dropdown export-options-dropdown"
@@ -160,7 +160,7 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- Mobile View -->
   <div *ngIf="isMobile" class="mobile-view">
     <!-- Mobile Toolbar -->
@@ -180,9 +180,9 @@
         </span>
       </div>
       <div class="search-container">
-        <input 
-          type="text" 
-          placeholder="Search contacts..." 
+        <input
+          type="text"
+          [placeholder]="searchPlaceholder"
           (input)="searchMobile($event)"
           class="mobile-search"
         >
@@ -199,7 +199,7 @@
         </button>
       </div>
     </div>
-    
+   
     <!-- Mobile Column Chooser -->
     <div *ngIf="showColumnChooserMobile" class="mobile-column-chooser">
       <div class="column-chooser-header">
@@ -230,21 +230,21 @@
         </div>
       </div>
     </div>
-    
+   
     <!-- Mobile Sort Options -->
     <div *ngIf="showSortOptions" class="mobile-sort-options">
       <div class="sort-header">Sort by:</div>
       <div class="sort-options">
         <ng-container *ngFor="let header of headers">
-          <div *ngIf="columnVisibility[header.dataField] && header.allowSorting !== false" 
-               class="sort-option" 
+          <div *ngIf="columnVisibility[header.dataField] && header.allowSorting !== false"
+               class="sort-option"
                (click)="toggleSortMobile(header.dataField)">
             {{ header.caption }} <span class="sort-indicator">{{ getSortIndicator(header.dataField) }}</span>
           </div>
         </ng-container>
       </div>
     </div>
-    
+   
     <!-- Mobile Export Options -->
     <div *ngIf="showMobileExportOptions" class="mobile-export-options">
       <div class="export-header">
@@ -260,21 +260,21 @@
         </button>
       </div>
     </div>
-    
+   
     <!-- Mobile Card List -->
     <div class="mobile-card-list">
       <div *ngFor="let item of paginatedData" class="contact-card" (click)="openDetailsModal(item)">
         <div class="card-selection" (click)="$event.stopPropagation()">
-          <input type="checkbox" 
+          <input type="checkbox"
                  [checked]="selectedRowKeys.includes(item.id)"
                  (change)="toggleSelection(item.id)"
           >
         </div>
         <div class="card-content">
-          <div *ngIf="columnVisibility['name']" class="card-primary">{{ item.name }}</div>
-          <div *ngIf="columnVisibility['phone']" class="card-secondary">{{ item.phone }}</div>
-          <div *ngIf="columnVisibility['email']" class="card-tertiary">{{ item.email }}</div>
-          <div *ngIf="useOwnerTemplate && columnVisibility[ownerField]" class="card-owner">
+          <div class="card-primary" *ngIf="cardFields[0]">{{ getDisplayValue(item, cardFields[0]) }}</div>
+          <div class="card-secondary" *ngIf="cardFields[1]">{{ getDisplayValue(item, cardFields[1]) }}</div>
+          <div class="card-tertiary" *ngIf="cardFields[2]">{{ getDisplayValue(item, cardFields[2]) }}</div>
+          <div class="card-owner" *ngIf="useOwnerTemplate && columnVisibility[ownerField]">
             <div class="owner-avatar small" [style.backgroundColor]="getOwnerColor(item[ownerField])">
               {{ getOwnerInitial(item[ownerField]) }}
             </div>
@@ -286,7 +286,7 @@
         </div>
       </div>
     </div>
-    
+   
     <!-- Mobile Pagination -->
     <div class="mobile-pagination">
       <div class="pagination-controls">
@@ -305,13 +305,13 @@
         </select>
       </div>
     </div>
-
+ 
     <!-- Mobile Details Modal -->
     <div *ngIf="isDetailsModalOpen" class="mobile-details-modal">
       <div class="modal-overlay" (click)="closeDetailsModal()"></div>
       <div class="modal-container">
         <div class="modal-header">
-          <h2>Contact Details</h2>
+          <h2>{{ modalHeading }}</h2>
           <button class="close-modal-btn" (click)="closeDetailsModal()">×</button>
         </div>
         <div class="modal-body">
@@ -319,7 +319,7 @@
             <div class="detail-label">{{ header.caption }}</div>
             <div class="detail-value">
               <ng-container *ngIf="header.cellTemplate !== 'ownerCellTemplate'">
-                {{ selectedContact[header.dataField] }}
+                {{ selectedContact[header.dataField] || 'N/A' }}
               </ng-container>
               <div *ngIf="header.cellTemplate === 'ownerCellTemplate' && useOwnerTemplate" class="owner-cell">
                 <div class="owner-avatar" [style.backgroundColor]="getOwnerColor(selectedContact[ownerField])">
@@ -341,13 +341,13 @@
             <i class="fas fa-phone"></i> Call
           </button>
           <button class="modal-action-btn">
-            <i class="fas fa-envelope"></i> Email
+            <i class="fas fa-envelope"></i>
           </button>
         </div>
       </div>
     </div>
   </div>
-
+ 
   <!-- Export Message -->
   <div class="export-message" *ngIf="showExportMessage">
     {{ exportMessage }}

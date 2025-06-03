@@ -1,6 +1,12 @@
 <div class="topcard" [class.compact]="variant === 'compact'">
   <div class="topcard-icon" [style.background-color]="iconColor">
-    <i class="dx-icon-{{icon}}"></i>
+  <img
+  *ngIf="icon"
+  [src]="icon"
+  alt="{{ title }} icon"
+  class="svg-icon"
+  [ngClass]="{ 'compact-icon-img': variant === 'compact' }"
+/>
   </div>
   <div class="topcard-content">
     <h3 class="topcard-amount">
@@ -9,3 +15,4 @@
     <p class="topcard-title">{{ title }}</p>
   </div>
 </div>
+ 

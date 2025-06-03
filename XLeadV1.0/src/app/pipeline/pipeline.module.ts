@@ -7,7 +7,7 @@ import { DealheaderComponent } from './dealheader/dealheader.component';
 import { DealfooterComponent } from './dealfooter/dealfooter.component';
 import { PipelinepageComponent } from './pipelinepage/pipelinepage.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { DxBoxModule, DxButtonModule, DxDateBoxModule, DxFileUploaderModule, DxFormModule, DxListModule, DxLoadPanelModule, DxNumberBoxModule, DxPopupModule, DxSelectBoxModule } from 'devextreme-angular';
+import { DxBoxModule, DxButtonModule, DxDateBoxModule, DxFileUploaderModule, DxFormModule, DxListModule, DxNumberBoxModule, DxPopupModule, DxSelectBoxModule, DxTabsModule } from 'devextreme-angular';
 import { SharedModule } from '../shared/shared.module';
 import { AddDealModalComponent } from './add-deal-modal/add-deal-modal.component';
 import { ModalHeaderComponent } from './modal-header/modal-header.component'
@@ -32,6 +32,7 @@ import dxLoadPanel from 'devextreme/ui/load_panel';
    
   ],
   imports: [
+    DxTabsModule,
     DxListModule,
     CommonModule,
     PipelineRoutingModule,
