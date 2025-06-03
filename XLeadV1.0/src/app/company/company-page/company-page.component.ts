@@ -12,9 +12,8 @@ export class CompanyPageComponent implements OnInit {
     { dataField: 'companyName', caption: 'Company Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'website', caption: 'Website', visible: true },
-    
+    {dataField: 'industyVertical', caption: 'Industry Vertical', visible: true},
     { dataField: 'status', caption: 'Status', visible: true }
-  
   ];
 
   tableData: any[] = [];

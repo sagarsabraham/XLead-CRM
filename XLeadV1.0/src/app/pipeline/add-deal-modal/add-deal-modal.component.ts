@@ -16,6 +16,7 @@ interface NewDeal {
   companyName: string;
   title: string;
   account: number | null;
+  serviceline: number | null; 
   region: number | null;
   contactName: string;
   domain: number | null;
@@ -41,6 +42,7 @@ import { CompanyContactService } from 'src/app/services/company-contact.service'
 import { DealService } from 'src/app/services/dealcreation.service';
 import { DealCreatePayload, DealRead } from 'src/app/services/dealcreation.service';
 import { DxValidationRule } from '../form-modal/form-modal.component';
+import { SeviceLineService } from 'src/app/services/sevice-line.service';
 
 @Component({
   selector: 'app-add-deal-modal',
@@ -72,6 +74,8 @@ countryCodes: { code: string; name: string }[] = [
 
   accounts: { id: number; accountName: string }[
   ] = [];
+   serviceline: { id: number; serviceName: string }[
+  ] = [];
   regions: { id: number; regionName: string }[] = [];
   domains: { id: number; domainName: string }[] = [];
   dealStages: { id: number; displayName: string; stageName?: string; }[] = [];
@@ -93,6 +97,7 @@ countryCodes: { code: string; name: string }[] = [
     companyName: '',
     title: '',
     account: null,
+    serviceline: null,
     region: null,
     contactName: '',
     domain: null,
@@ -238,6 +243,7 @@ countryCodes: { code: string; name: string }[] = [
     private revenuetypeService: RevenuetypeService,
     private companyContactService: CompanyContactService,
     private dealService: DealService,
+    private serviceLine:SeviceLineService
   ) {}
 
   @HostListener('window:resize', ['$event'])
@@ -321,6 +327,7 @@ currencyFormat = {
 
   loadDropdownData() {
     this.loadAccounts();
+    this.loadServiceLines();
     this.loadRegions();
     this.loadDomains();
     this.loadStages();
@@ -329,7 +336,9 @@ currencyFormat = {
     this.loadCountries();
     this.loadCompanyContactData();
   }
-
+loadServiceLines() {
+  this.serviceLine.getServiceTypes().subscribe(data => this.serviceline = data, err => console.error('Error accounts', err));
+}
   loadAccounts() {
     this.accountService.getAllAccounts().subscribe(data => this.accounts = data, err => console.error('Error accounts', err));
   }
@@ -379,6 +388,7 @@ currencyFormat = {
       companyName: '',
       title: deal.dealName || '',
       account: deal.accountId || null,
+      serviceline: deal.serviceId || null,
       region: deal.regionId || null,
       contactName: deal.contactName || '',
       domain: deal.domainId || null,
@@ -481,6 +491,7 @@ currencyFormat = {
       companyName: this.newDeal.companyName,
       contactFullName: this.newDeal.contactName,
       accountId: this.newDeal.account,
+      serviceId: this.newDeal.serviceline,
       regionId: this.newDeal.region as number,
       domainId: this.newDeal.domain,
       dealStageId: this.newDeal.stage as number,
@@ -517,6 +528,7 @@ currencyFormat = {
       companyName: '',
       title: '',
       account: null,
+      serviceline: null,
       region: null,
       contactName: '',
       domain: null,

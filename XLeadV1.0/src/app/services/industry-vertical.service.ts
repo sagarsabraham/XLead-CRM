@@ -2,25 +2,23 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-
-interface Domain {
+interface IndustryVertical {
   id: number;
-  domainName: string;
+  industryName: string;
 }
-
 @Injectable({
   providedIn: 'root'
 })
-export class DomainService {
+export class IndustryVerticalService {
 
-  private apiUrl = environment.apiUrl;
-          
+   private apiUrl = environment.apiUrl;
+    
     constructor(private http: HttpClient) { }
     
-    getAllDomains(): Observable<Domain[]> {
+    getIndustryVertical(): Observable<IndustryVertical[]> {
   
-      const url = `${this.apiUrl}/api/Domain`;
+      const url = `${this.apiUrl}/api/IndustryVertical`;
       console.log('Calling API at:', url);
-      return this.http.get<Domain[]>(url);
+      return this.http.get<IndustryVertical[]>(url);
     }
 }

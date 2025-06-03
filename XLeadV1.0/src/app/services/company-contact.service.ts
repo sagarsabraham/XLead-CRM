@@ -1,43 +1,83 @@
+
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
+export interface Company {
+  companyName: string;
+  phoneNo: string;
+  website: string;
+  industryVertical:string;
+}
+
+export interface Contact {
+  FirstName: string;
+  LastName: string;
+  companyName: string;
+  Email: string;
+  phoneNo: string;
+}
+
+export interface ContactCreateDto {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  companyName: string;
+  createdBy: number;
+}
+export interface CompanyContactMap {
+  [companyName: string]: string[]; 
+}
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyContactService {
-  private apiUrl = 'https://localhost:7297/api/CompanyContact'
-; // Replace with your real API
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
   getCompanyContactMap(): Observable<{ [company: string]: string[] }> {
-    return this.http.get<{ [company: string]: string[] }>(`${this.apiUrl}/company-contact-map`);
+    return this.http.get<{ [company: string]: string[] }>(
+      `${this.apiUrl}/api/CompanyContact/company-contact-map`
+    );
   }
-addCompany(company: any): Observable<any> {
-  return this.http.post(`${this.apiUrl}/company`, company, {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    })
-  });
-}
- getContacts(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/contacts`);
+
+  getCompanies(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/api/CompanyContact/companies`);
   }
- getCompanies(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/companies`);
+
+  getContacts(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/api/CompanyContact/contacts`);
   }
+
+  addCompany(company: any): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/api/CompanyContact/company`,
+      company,
+      {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+        })
+      }
+    );
+  }
+
   addContact(contact: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/contact`, contact,{
-       headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    })
-  });
+    return this.http.post(
+      `${this.apiUrl}/api/CompanyContact/contact`,
+      contact,
+      {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+        })
+      }
+    );
   }
+
   getCompanyByName(name: string): Observable<any> {
-  return this.http.get<any>(`${this.apiUrl}/companies`).pipe(
-    map(companies => companies.find((company: any) => company.companyName === name))
-  );
-}
+    return this.getCompanies().pipe(
+      map(companies => companies.find((company: any) => company.companyName === name))
+    );
+  }
 }

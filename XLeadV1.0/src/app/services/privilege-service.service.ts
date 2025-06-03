@@ -1,8 +1,10 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
-interface Privilege {
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+export interface Privilege {
   id: number;
   privilegeName: string;
 }
@@ -11,11 +13,11 @@ interface Privilege {
   providedIn: 'root'
 })
 export class PrivilegeServiceService {
-  private baseUrl = 'https://localhost:7297/api/UserPrivileges';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
   getPrivileges(userId: number): Observable<Privilege[]> {
-    return this.http.get<Privilege[]>(`${this.baseUrl}/${userId}`);
+    return this.http.get<Privilege[]>(`${this.apiUrl}/api/UserPrivileges/${userId}`);
   }
 }

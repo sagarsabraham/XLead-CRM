@@ -19,7 +19,7 @@ export class DuService {
   constructor(private http: HttpClient) { }
   
   getDU(): Observable<DU[]> {
-    // Add the full path here
+    
     const url = `${this.apiUrl}/api/Du`;
     console.log('Calling API at:', url);
     return this.http.get<DU[]>(url);

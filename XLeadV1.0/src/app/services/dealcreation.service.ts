@@ -11,6 +11,7 @@ export interface DealCreatePayload {
   companyName: string;
   contactFullName: string;
   accountId: number | null;
+  serviceId: number | null;
   regionId: number;
   domainId: number | null;
   dealStageId: number;
@@ -39,12 +40,14 @@ export interface DealRead {
   duName?: string | null;
   regionName?: string | null;
   accountName?: string | null;
+  serviceName?: string | null;
   contactName?: string | null;
   domainName?: string | null;
   revenueTypeName?: string | null;
   countryName?: string | null;
   companyName?: string | null;
   accountId?: number | null;
+  serviceId?: number | null;
   regionId?: number | null;
   domainId?: number | null;
   revenueTypeId?: number | null;

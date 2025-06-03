@@ -71,6 +71,17 @@
           placeholder="Select Account (Optional)">
         </dx-select-box>
       </dxi-item>
+       <dxi-item dataField="account">
+        <dxo-label text="Service Line" cssClass="bold-label"></dxo-label>
+        <dx-select-box
+          [(value)]="newDeal.serviceline"
+          [dataSource]="serviceline"
+          displayExpr="serviceName"
+          valueExpr="id"
+          [searchEnabled]="true"
+          placeholder="Select Service Line (Optional)">
+        </dx-select-box>
+      </dxi-item>
       <dxi-item dataField="region">
         <dxo-label text="Region" cssClass="bold-label"></dxo-label>
         <dx-select-box
