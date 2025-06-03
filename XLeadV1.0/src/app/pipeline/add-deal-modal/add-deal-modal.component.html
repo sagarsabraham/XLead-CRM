@@ -11,6 +11,7 @@
   <div *dxTemplate="let data of 'content'" class="popup-content">
     <div #formContainer class="form-container" (wheel)="onMouseWheel($event)">
       <app-modal-header title="Deal Information" [showOwner]="true"></app-modal-header>
+
       <dx-form
         #dealFormInstance 
         [formData]="newDeal"
@@ -47,7 +48,7 @@
               (onValueChanged)="onCompanyChange($event.value)">
             </dx-select-box>
             <dx-button
-              text="+"
+              text="+" 
               type="default"
               (onClick)="openQuickCreateCompanyModal()">
             </dx-button>
