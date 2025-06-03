@@ -1,0 +1,335 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+ 
+.deal-info-page {
+  margin-left: 100px;
+  font-family: 'Poppins';
+  overflow-x: hidden;
+  width: calc(100% - 100px);
+  box-sizing: border-box;
+  padding: 0 !important;
+}
+ 
+.content {
+  display: flex;
+  gap: 20px !important; /* Reinforced gap for desktop */
+  margin-top: 20px;
+  align-items: flex-start;
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+}
+ 
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 0 0 400px; /* Fixed width */
+  max-width: 400px;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box;
+}
+ 
+.right-column {
+  flex: 1 1 auto; /* Take remaining space */
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Allows column to shrink */
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box;
+}
+ 
+/* Desktop Tabs Styling */
+.dx-tabs {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  width: auto !important;
+  min-width: 300px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-self: flex-start !important;
+}
+ 
+:host ::ng-deep .dx-tab {
+  border-radius: 15px !important;
+  background: transparent !important;
+  flex: 1 !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  padding: 10px 25px !important;
+  min-width: 130px !important;
+  font-size: 13px !important;
+}
+ 
+:host ::ng-deep .dx-tab:hover {
+  background: #f8fafc !important;
+  border-bottom-color: #cbd5e1 !important;
+}
+ 
+:host ::ng-deep .dx-tabs-wrapper {
+  display: flex !important;
+  flex-direction: row !important;
+  width: 100% !important;
+}
+ 
+/* Ensure content below dx-tabs takes full width and aligns with tabs */
+:host ::ng-deep app-history-timeline,
+:host ::ng-deep app-doc-upload {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  margin-top: 20px !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  align-self: stretch !important;
+}
+ 
+/* Constrain app-deal-info-card to prevent expansion */
+:host ::ng-deep app-deal-info-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important; /* Ensure no margins interfere with gap */
+  box-sizing: border-box;
+  overflow: hidden;
+}
+ 
+/* Ensure textarea inside app-deal-info-card doesn't expand */
+:host ::ng-deep app-deal-info-card textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  max-width: 100%;
+}
+ 
+/* Mobile-Specific Styles */
+@media (max-width: 768px) {
+  .deal-info-page {
+    margin-left: 0;
+    width: 100%;
+    padding: 16px !important;
+  }
+ 
+  .content {
+    display: block;
+    margin-top: 0;
+    gap: 0;
+  }
+ 
+  .left-column,
+  .right-column {
+    flex: none;
+    max-width: 100%;
+    width: 100%;
+  }
+ 
+  .desktop-layout {
+    display: none;
+  }
+ 
+  .mobile-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+ 
+  .mobile-tab-bar {
+    margin: 20px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+ 
+  .mobile-tab-bar::-webkit-scrollbar {
+    display: none;
+  }
+ 
+  .tab-bar-wrapper {
+    display: flex;
+    gap: 12px;
+    white-space: nowrap;
+    padding: 8px 0;
+    border-bottom: 1px solid #e2e8f0;
+  }
+ 
+  .tab {
+    padding: 10px 20px;
+    font-size: 15px;
+    color: #64748b;
+    background-color: transparent;
+    border-radius: 20px 20px 0 0;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    min-width: 110px;
+    text-align: center;
+  }
+ 
+  .tab.active {
+    background-color: #1976d2;
+    color: white;
+    font-weight: 600;
+  }
+ 
+  .tab:hover {
+    background-color: #e2e8f0;
+  }
+ 
+  .tab.active:hover {
+    background-color: #1565c0;
+  }
+ 
+  .section-content {
+    flex: 1;
+    width: 100%;
+    overflow-y: auto;
+    min-height: calc(100vh - 220px);
+    padding-bottom: 24px;
+  }
+ 
+  .tab-section {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100%;
+    padding: 16px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+  }
+ 
+  .timeline-wrapper {
+    display: none;
+  }
+ 
+  :host ::ng-deep app-deal-header {
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 10px;
+    margin-bottom: 16px;
+  }
+ 
+  :host ::ng-deep app-deal-header h2 {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+ 
+  :host ::ng-deep app-deal-header p {
+    font-size: 13px;
+    margin: 4px 0;
+  }
+ 
+  :host ::ng-deep app-status-timeline {
+    flex: 1;
+    padding: 12px 0;
+  }
+ 
+  :host ::ng-deep app-status-timeline .vertical-stage-list {
+    max-width: 100%;
+  }
+ 
+  :host ::ng-deep app-status-timeline .vertical-stage {
+    padding: 16px 0;
+  }
+ 
+  :host ::ng-deep app-status-timeline .vertical-label {
+    font-size: 15px;
+  }
+ 
+  :host ::ng-deep app-status-timeline .vertical-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+ 
+  :host ::ng-deep app-status-timeline .vertical-connector {
+    left: 15px;
+    top: 48px;
+    height: calc(100% - 48px);
+  }
+ 
+  :host ::ng-deep app-deal-info-card {
+    padding: 16px;
+    flex: 1;
+    margin: 0 !important; /* Ensure no margins in mobile */
+  }
+ 
+  :host ::ng-deep app-deal-info-card h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+ 
+  :host ::ng-deep app-deal-info-card p {
+    font-size: 13px;
+    margin: 6px 0;
+  }
+ 
+  :host ::ng-deep app-deal-info-card textarea {
+    font-size: 13px;
+    min-height: 100px;
+    padding: 12px;
+  }
+ 
+  :host ::ng-deep app-history-timeline {
+    padding: 16px;
+    flex: 1;
+  }
+ 
+  :host ::ng-deep app-history-timeline .history-item p {
+    font-size: 13px;
+    margin: 6px 0;
+  }
+ 
+  :host ::ng-deep app-doc-upload {
+    padding: 16px;
+    flex: 1;
+  }
+ 
+  :host ::ng-deep app-doc-upload .upload-area {
+    padding: 20px;
+    min-height: 140px;
+  }
+ 
+  :host ::ng-deep app-doc-upload .upload-area p {
+    font-size: 13px;
+    margin: 6px 0;
+  }
+}
+ 
+/* Desktop Specific Styles */
+@media (min-width: 769px) {
+  .mobile-layout {
+    display: none;
+  }
+ 
+  .mobile-tab-bar {
+    display: none;
+  }
+ 
+  .desktop-layout {
+    display: flex !important;
+    width: 100% !important;
+    gap: 20px !important; /* Reinforced gap for desktop */
+  }
+ 
+  .timeline-wrapper {
+    display: block;
+  }
+ 
+  /* Ensure flexbox layout stays horizontal */
+  .content {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+  }
+}

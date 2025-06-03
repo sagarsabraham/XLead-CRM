@@ -1,0 +1,47 @@
+<div class="page-container" [ngClass]="{'mobile-view': isMobile}">
+  <!-- Sidebar (uncomment if needed) -->
+  <!-- <app-sidebar></app-sidebar> -->
+ 
+  <div class="container">
+    <!-- Loading state -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading companies...</p>
+    </div>
+ 
+    <!-- Error state -->
+    <div *ngIf="error" class="error-state">
+      <div class="error-message">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+      </div>
+      <button class="retry-button" (click)="loadCompanies()">
+        Retry
+      </button>
+    </div>
+ 
+    <!-- Only show content when data is loaded -->
+    <div *ngIf="!isLoading && !error">
+      <div class="metric-cards-section">
+        <div class="topcard-container">
+          <app-topcard
+            *ngFor="let card of topcardData; let i = index"
+            [amount]="card.amount"
+            [title]="card.title"
+            [icon]="card.icon"
+            [iconColor]="getIconColor(i)"
+          ></app-topcard>
+        </div>
+      </div>
+      <div class="content">
+        <app-table
+          [data]="tableData"
+          [headers]="tableHeaders"
+          
+          [ownerField]="'owner'"
+          [exportFileName]="'Companies'"
+          [entityType]="'Company'"
+        ></app-table>
+      </div>
+    </div>
+  </div>
+</div>

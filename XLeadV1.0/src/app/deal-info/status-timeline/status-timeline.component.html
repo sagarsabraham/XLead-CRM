@@ -1,0 +1,84 @@
+<div class="status-timeline">
+  <!-- Desktop: Horizontal Layout -->
+  <div class="stage-list" *ngIf="!isMobile">
+    <ng-container *ngFor="let stage of stages; let i = index">
+      <div class="stage" (click)="onStageClick(stage)">
+        <div class="circle"
+             [class.active]="stage === currentStage"
+             [class.completed]="isStageCompleted(i)"
+             [class.closed-lost]="stage === 'Closed Lost'"
+             [class.closed-won]="stage === 'Closed Won'">
+          <i class="checkmark" *ngIf="stage === 'Closed Won' && stage === currentStage">✓</i>
+          <span *ngIf="stage !== 'Closed Won' || stage !== currentStage">{{ i + 1 }}</span>
+        </div>
+        <div class="label"
+             [class.active]="stage === currentStage"
+             [class.closed-lost]="stage === 'Closed Lost'"
+             [class.closed-won]="stage === 'Closed Won'">
+          {{ stage }}
+        </div>
+        <div class="connector"
+             *ngIf="i < stages.length - 1"
+             [class.completed]="isConnectorCompleted(i)"></div>
+      </div>
+    </ng-container>
+  </div>
+ 
+  <!-- Mobile: Vertical Layout -->
+  <div class="mobile-stage-container" *ngIf="isMobile">
+    <!-- Current Stage Display Card -->
+    <div class="current-stage-card"
+         [class.closed-lost]="currentStage === 'Closed Lost'"
+         [class.closed-won]="currentStage === 'Closed Won'">
+      <div class="current-stage-header">Current Stage</div>
+      <div class="current-stage-name">{{ currentStage }}</div>
+      <div class="current-stage-number">Stage {{ getCurrentStageIndex() + 1 }} of {{ stages.length }}</div>
+    </div>
+ 
+    <!-- Vertical stage list -->
+    <div class="vertical-stage-list">
+      <ng-container *ngFor="let stage of stages; let i = index">
+        <div class="vertical-stage"
+             [class.active]="stage === currentStage"
+             [class.completed]="isStageCompleted(i)"
+             (click)="onStageClick(stage)">
+         
+          <!-- Circle and Connector Container -->
+          <div class="circle-container">
+            <div class="vertical-circle"
+                 [class.active]="stage === currentStage"
+                 [class.completed]="isStageCompleted(i)"
+                 [class.closed-lost]="stage === 'Closed Lost'"
+                 [class.closed-won]="stage === 'Closed Won'">
+              <i class="checkmark" *ngIf="stage === 'Closed Won' && stage === currentStage">✓</i>
+              <span *ngIf="stage !== 'Closed Won' || stage !== currentStage">{{ i + 1 }}</span>
+            </div>
+            <!-- Connector line -->
+            <div class="vertical-connector"
+                 *ngIf="i < stages.length - 1"
+                 [class.completed]="isConnectorCompleted(i)"></div>
+          </div>
+         
+          <!-- Stage Content -->
+          <div class="stage-content">
+            <div class="vertical-label"
+                 [class.active]="stage === currentStage"
+                 [class.closed-lost]="stage === 'Closed Lost'"
+                 [class.closed-won]="stage === 'Closed Won'">
+              {{ stage }}
+            </div>
+            <div class="stage-status">
+              <span *ngIf="isStageCompleted(i)" class="status-completed">Completed</span>
+              <span *ngIf="stage === currentStage"
+                    class="status-current"
+                    [class.closed-lost]="stage === 'Closed Lost'">
+                {{ stage === 'Closed Lost' ? 'Lost' : stage === 'Closed Won' ? 'Won' : 'In Progress' }}
+              </span>
+              <span *ngIf="!isStageCompleted(i) && stage !== currentStage" class="status-pending">Pending</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

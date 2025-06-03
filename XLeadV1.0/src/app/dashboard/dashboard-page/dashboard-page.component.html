@@ -1,0 +1,41 @@
+<dx-responsive-box>
+ 
+  <dxi-row [ratio]="1"></dxi-row>
+  <dxi-row [ratio]="2"></dxi-row>
+  <dxi-row [ratio]="1"></dxi-row>
+  <dxi-col [ratio]="1" screen="lg md"></dxi-col>
+  <dxi-col [ratio]="3" screen="lg md"></dxi-col>
+  <dxi-col [ratio]="1" screen="sm xs"></dxi-col>
+
+  <!-- Metric Cards -->
+  <dxi-item>
+    <dxi-location [row]="0" [col]="0" [colspan]="4" screen="lg md"></dxi-location>
+    <dxi-location [row]="0" [col]="0" [colspan]="1" screen="sm xs"></dxi-location>
+    <div class="metric-wrapper">
+      <app-metric-card-outline></app-metric-card-outline>
+    </div>
+  </dxi-item>
+
+  <!-- Top Companies and Pipeline Graph in a single row -->
+  <dxi-item>
+    <dxi-location [row]="1" [col]="0" [colspan]="4" screen="lg md"></dxi-location>
+    <dxi-location [row]="1" [col]="0" [colspan]="1" screen="sm xs"></dxi-location>
+    <div class="content-row">
+      <div class="top-company-wrapper">
+        <app-top-company [companyData]="companyData"></app-top-company>
+      </div>
+      <div class="chart-wrapper">
+        <app-pipeline-stage-graph [stages]="stages"></app-pipeline-stage-graph>
+      </div>
+    </div>
+  </dxi-item>
+
+  <!-- Revenue Chart -->
+  <dxi-item>
+    <dxi-location [row]="2" [col]="0" [colspan]="4" screen="lg md"></dxi-location>
+    <dxi-location [row]="2" [col]="0" [colspan]="1" screen="sm xs"></dxi-location>
+    <div class="chart-wrapper full-width">
+      <app-revenue-chart [revenueData]="revenueData"></app-revenue-chart>
+    </div>
+  </dxi-item>
+</dx-responsive-box>

@@ -1,0 +1,38 @@
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.form-container {
+  flex: 1;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 10px;
+  padding-bottom: 20px;
+}
+
+.form-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.form-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.form-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.form-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+:host ::ng-deep .dx-field-item-label {
+  font-weight: bold !important;
+}
+
+:host ::ng-deep .bold-label {
+  font-weight: bold !important;
+}
