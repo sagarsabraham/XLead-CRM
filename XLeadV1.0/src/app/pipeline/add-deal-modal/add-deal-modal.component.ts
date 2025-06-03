@@ -222,6 +222,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     { dataField: 'fieldType', label: 'Field Type', editorType: 'dxSelectBox', editorOptions: { items: ['Text', 'Numerical', 'Boolean', 'Date'], placeholder: 'Select field type' }, required: true }
   ];
 
+  private qualificationStageId: number | null = null; // Store the ID of the "Qualification" stage
+
   constructor(
     private cdr: ChangeDetectorRef,
     private accountService: AccountService,
@@ -330,7 +332,25 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   loadStages() {
-    this.dealStageService.getAllDealStages().subscribe(data => this.dealStages = data.map(s => ({...s, displayName: s.displayName || s.stageName!})), err => console.error('Error stages', err));
+    this.dealStageService.getAllDealStages().subscribe({
+      next: (data) => {
+        this.dealStages = data.map(s => ({ ...s, displayName: s.displayName || s.stageName! }));
+        // Find the "Qualification" stage ID
+        const qualificationStage = this.dealStages.find(stage => stage.displayName === 'Qualification' || stage.stageName === 'Qualification');
+        if (qualificationStage) {
+          this.qualificationStageId = qualificationStage.id;
+          console.log('Qualification stage ID found:', this.qualificationStageId);
+          // Set the default stage to "Qualification" if not in edit mode
+          if (this.mode !== 'edit' || !this.dealToEdit) {
+            this.newDeal.stage = this.qualificationStageId;
+          }
+        } else {
+          console.warn('Qualification stage not found in dealStages:', this.dealStages);
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error stages', err)
+    });
   }
 
   loadDus() {
@@ -369,7 +389,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       region: deal.regionId || null,
       contactName: deal.contactName || '',
       domain: deal.domainId || null,
-      stage: deal.dealStageId || null,
+      stage: deal.dealStageId || this.qualificationStageId,
       revenueType: deal.revenueTypeId || null,
       department: deal.duId || null,
       country: deal.countryId || null,
@@ -507,11 +527,11 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       region: null,
       contactName: '',
       domain: null,
-      stage: null,
+      stage: this.qualificationStageId,
       revenueType: null,
       department: null,
       country: null,
-      startDate: new Date(), // Set default to current date
+      startDate: new Date(), 
       closeDate: null,
       description: '',
       probability: null,

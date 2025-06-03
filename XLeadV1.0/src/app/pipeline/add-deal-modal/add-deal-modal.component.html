@@ -6,7 +6,7 @@
   [height]="'auto'"
   [dragEnabled]="false"
   [showCloseButton]="true"
-  (onHidden)="handleClose()"> <!-- handleClose will also reset isFormReady -->
+  (onHidden)="handleClose()"> 
  
   <div *dxTemplate="let data of 'content'" class="popup-content">
     <div #formContainer class="form-container" (wheel)="onMouseWheel($event)">
@@ -15,26 +15,19 @@
         #dealFormInstance 
         [formData]="newDeal"
         [colCountByScreen]="{ xs: 1, sm: 1, md: 1, lg: 1 }">
- 
-        <!-- <dxi-item dataField="salesperson">
-          <dxo-label text="SalesPerson" cssClass="bold-label"></dxo-label>
-          <dxi-validation-rule type="required" message="SalesPerson Name is required"></dxi-validation-rule>
-        </dxi-item> -->
-  <dxi-item
-  dataField="amount"
-  editorType="dxNumberBox"
-  [editorOptions]="{
-    showSpinButtons: true,
-    min: 0,
-    max: 100000000,
-    format: { type: 'fixedPoint', precision: 2 }
-  }"
->
-  <dxo-label text="Amount" cssClass="bold-label"></dxo-label>
-  <dxi-validation-rule type="required" message="Amount is required"></dxi-validation-rule>
-</dxi-item>
- 
- 
+        <dxi-item
+        dataField="amount"
+        editorType="dxNumberBox"
+        [editorOptions]="{
+          showSpinButtons: true,
+          min: 0,
+          max: 100000000,
+          format: { type: 'fixedPoint', precision: 2 }
+        }"
+      >
+          <dxo-label text="Amount" cssClass="bold-label"></dxo-label>
+          <dxi-validation-rule type="required" message="Amount is required"></dxi-validation-rule>
+        </dxi-item>
         <dxi-item dataField="companyName">
           <dxo-label text="Company Name" cssClass="bold-label"></dxo-label>
           <div class="company-name-container">

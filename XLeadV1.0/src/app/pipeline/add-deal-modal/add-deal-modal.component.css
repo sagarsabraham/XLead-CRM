@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden; /* Prevent .popup-content from scrolling */
+  overflow: hidden; 
 }
 
 .form-container {
@@ -13,14 +13,12 @@
   padding-bottom: 20px;
 }
 
-/* Ensure the dx-form inside form-container takes up full width */
 :host ::ng-deep .dx-form {
   width: 100%;
 }
 
-/* Ensure modal buttons at the bottom are not part of the scrollable area */
 app-modal-buttons {
-  flex-shrink: 0; /* Prevent the buttons from shrinking */
+  flex-shrink: 0; 
   padding-top: 10px;
 }
 
@@ -51,14 +49,14 @@ app-modal-buttons {
 .company-name-container {
   display: flex;
   align-items: center;
-  gap: 10px; /* Space between the dropdown and the button */
+  gap: 10px;
 }
 
 .company-name-container dx-select-box {
-  flex-grow: 1; /* Dropdown takes up remaining space */
+  flex-grow: 1; 
 }
 
 .company-name-container dx-button {
-  flex-shrink: 0; /* Button doesn't shrink */
+  flex-shrink: 0; 
 }
 
