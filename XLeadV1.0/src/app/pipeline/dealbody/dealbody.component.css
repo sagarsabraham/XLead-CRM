@@ -5,6 +5,13 @@
     background-color: white;
 }
 
+.empty-message {
+    color: #666666; 
+    font-style: italic;
+    text-align: center;
+    padding: 20px 0;
+}
+
 /* Chrome, Edge, Safari */
 .deal-body::-webkit-scrollbar {
     width: 8px; 
