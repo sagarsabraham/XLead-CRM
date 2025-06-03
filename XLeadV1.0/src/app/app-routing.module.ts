@@ -5,7 +5,7 @@ import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.co
 const routes: Routes = [
   { path: '', loadChildren: () =>
      import('./dashboard/dashboard.module').then(m => m.DashboardModule),
-     data : {title : 'Pipeline Analytics'}
+     data : {title : 'Dashboard'}
   },
   {path: 'pipeline', loadChildren: () =>
     import('./pipeline/pipeline.module').then(m => m.PipelineModule),
@@ -13,7 +13,7 @@ const routes: Routes = [
   },
   { path: 'dashboard', loadChildren: () =>
      import('./dashboard/dashboard.module').then(m => m.DashboardModule),
-     data : {title : 'Pipeline Analytics'}
+     data : {title : 'Dashboard'}
   },
   { path: 'contacts', loadChildren: () => 
     import('./contacts/contacts.module').then(m => m.ContactsModule),

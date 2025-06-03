@@ -38,7 +38,16 @@
     font-size: 14px;
     color: #333333;
 }
+
+.dealname:hover {
+  color: #1E90FF; 
+}
+
+.deal-amount {
+  font-weight: 500; 
+}
   
+
 .deal-details {
     display: flex;
     justify-content: space-between;

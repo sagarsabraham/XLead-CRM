@@ -15,6 +15,8 @@ import { FormsModule } from '@angular/forms';
 import { FormModalComponent } from './form-modal/form-modal.component';
 import { ModalButtonsComponent } from './modal-buttons/modal-buttons.component';
 import { DealInfoModule } from '../deal-info/deal-info.module';
+import { RouterModule } from '@angular/router';
+import { HighlightDirective } from '../directives/highlight.directive';
 
 
 @NgModule({
@@ -27,7 +29,8 @@ import { DealInfoModule } from '../deal-info/deal-info.module';
     AddDealModalComponent,
     ModalHeaderComponent,
     FormModalComponent,
-    ModalButtonsComponent
+    ModalButtonsComponent,
+    HighlightDirective
    
   ],
   imports: [
@@ -46,7 +49,8 @@ import { DealInfoModule } from '../deal-info/deal-info.module';
     DxNumberBoxModule,
     DxDateBoxModule,
     DxFileUploaderModule,
-    DealInfoModule
+    DealInfoModule,
+    RouterModule
   ],
   exports: [
     PipelinepageComponent 
