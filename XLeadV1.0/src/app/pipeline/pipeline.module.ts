@@ -49,7 +49,7 @@ import dxLoadPanel from 'devextreme/ui/load_panel';
     DxFileUploaderModule,
     DealInfoModule,
    
-    DxLoadPanelModule
+ 
   ],
   exports: [
     PipelinepageComponent 
