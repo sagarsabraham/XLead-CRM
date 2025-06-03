@@ -3,87 +3,92 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-
+ 
 // Define an interface for the Deal data structure expected by the backend (DealCreateDto.cs)
 export interface DealCreatePayload {
   title: string;
   amount: number;
   companyName: string;
   contactFullName: string;
-  salespersonName?: string | null; // Optional as per previous change
-  accountId?: number | null;
+  accountId: number | null;
   regionId: number;
-  domainId?: number | null;
+  domainId: number | null;
   dealStageId: number;
   revenueTypeId: number;
   duId: number;
   countryId: number;
   description: string;
-  probability?: number | null;
-  startingDate: string; // ISO string format
-  closingDate: string; // ISO string format
+  probability: number | null;
+  startingDate: string;
+  closingDate: string;
   createdBy: number;
+  customFields?: { [key: string]: any };
 }
-
+ 
 // Define an interface for the Deal data structure returned by the backend (DealReadDto.cs)
 export interface DealRead {
   id: number;
-  dealName: string; // Maps to PipelineDeal.title
-  dealAmount: number; // Maps to PipelineDeal.amount
-  salespersonName?: string | null; // <<<--- ADDED/CORRECTED (make optional if backend can omit it)
-  accountId?: number | null;
-  accountName?: string | null;
-  regionId?: number | null;
-  regionName?: string | null;
-  domainId?: number | null;
-  domainName?: string | null;
-  revenueTypeId?: number | null;
-  revenueTypeName?: string | null;
-  duId?: number | null;
-  duName?: string | null; // Should be duName to match casing, not DUName
-  countryId?: number | null;
-  countryName?: string | null;
+  dealName: string;
+  dealAmount: number;
+  salespersonName?: string | null;
+  startingDate?: string | null;
+  closingDate?: string | null;
   description?: string | null;
   probability?: number | null;
-  dealStageId?: number | null;
-  stageName?: string | null; // Used to assign deal to a pipeline stage
-  contactId: number; // Assuming contact is always present
+  stageName?: string | null;
+  duName?: string | null;
+  regionName?: string | null;
+  accountName?: string | null;
   contactName?: string | null;
-  startingDate?: string | null; // ISO string from backend
-  closingDate?: string | null;  // <<<--- CORRECTED CASING (if it was 'closeDate' before) / ENSURE PRESENT
-  createdBy: number;
-  createdAt: string; // ISO string
-  // This field was an error, it belongs to PipelineDeal not DealRead
-  // originalData?: DealRead; // REMOVE THIS IF IT WAS HERE
-  companyName?: string; // If your DealReadDto has a direct companyName field from a join
+  domainName?: string | null;
+  revenueTypeName?: string | null;
+  countryName?: string | null;
+  companyName?: string | null;
+  accountId?: number | null;
+  regionId?: number | null;
+  domainId?: number | null;
+  revenueTypeId?: number | null;
+  duId?: number | null;
+  countryId?: number | null;
+  dealStageId?: number | null;
+  createdAt?: string | null;
+  createdBy?: number | null;
+  contactId?: number | null;
+  customFields?: { [key: string]: any };
 }
-
-
+ 
+ 
 @Injectable({
   providedIn: 'root'
 })
 export class DealService {
   private apiUrl = 'https://localhost:7297/api/deals'; // Example: Update
   private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
-
+ 
   constructor(private http: HttpClient) { }
-
+ 
   createDeal(dealData: DealCreatePayload): Observable<DealRead> {
     return this.http.post<DealRead>(this.apiUrl, JSON.stringify(dealData), this.httpOptions)
       .pipe(catchError(this.handleError));
   }
-
+ 
   getDealById(id: number): Observable<DealRead> {
     const url = `${this.apiUrl}/${id}`;
     return this.http.get<DealRead>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
-
+ 
   getAllDeals(): Observable<DealRead[]> {
     return this.http.get<DealRead[]>(this.apiUrl, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
-
+ 
+  updateDealStage(id: number, stageName: string): Observable<DealRead[]> {
+    const url = `${this.apiUrl}/${id}/stage`;
+    return this.http.put<DealRead[]>(url, JSON.stringify({"stageName":stageName}), this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+ 
   // Basic error handling
   private handleError(error: HttpErrorResponse) {
     // ... (your existing handleError logic) ...
@@ -112,3 +117,4 @@ export class DealService {
     return throwError(() => new Error(errorMessage));
   }
 }
+ 

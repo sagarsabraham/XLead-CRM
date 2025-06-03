@@ -1,8 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, AfterViewInit } from '@angular/core';
 import { DxFormComponent, DxPopupComponent } from 'devextreme-angular';
 import { finalize } from 'rxjs/operators';
-
-
 export interface QuickContactFormData {
   FirstName: string;
   LastName: string;
@@ -10,7 +8,6 @@ export interface QuickContactFormData {
   Email: string;
   phoneNo: string;
 }
-
 import { CountryService } from 'src/app/services/country.service';
 import { DuService } from 'src/app/services/du.service';
 import { RevenuetypeService } from 'src/app/services/revenuetype.service';
@@ -52,7 +49,8 @@ countryCodes: { code: string; name: string }[] = [
   isLoading: boolean = false;
   isFormReady: boolean = false; 
 
-  accounts: { id: number; accountName: string }[] = [];
+  accounts: { id: number; accountName: string }[
+  ] = [];
   regions: { id: number; regionName: string }[] = [];
   domains: { id: number; domainName: string }[] = [];
   dealStages: { id: number; displayName: string; stageName?: string; }[] = [];
@@ -81,7 +79,7 @@ countryCodes: { code: string; name: string }[] = [
     label: string;
     editorType?: string;
     editorOptions?: any;
-    validationRules?: DxValidationRule[]; // Use the imported type
+    validationRules?: DxValidationRule[]; 
   }[] = [
     {
       dataField: 'companyName',
@@ -118,7 +116,7 @@ countryCodes: { code: string; name: string }[] = [
       label: 'Website',
       validationRules: [
         { type: 'required', message: 'Website is required' },
-        // Basic pattern for a URL. For stricter validation, a custom rule might be better.
+        
         { type: 'pattern', pattern: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/, message: 'Invalid website URL format' }
       ]
     }
@@ -131,7 +129,7 @@ countryCodes: { code: string; name: string }[] = [
     label: string;
     editorType?: string;
     editorOptions?: any;
-    validationRules?: DxValidationRule[]; // Use the imported type
+    validationRules?: DxValidationRule[]; 
   }[] = [
     {
       dataField: 'FirstName',
@@ -144,7 +142,7 @@ countryCodes: { code: string; name: string }[] = [
     {
       dataField: 'LastName',
       label: 'Last Name',
-      // Not required, but if provided, maybe a min length
+     
       validationRules: [
          { type: 'stringLength', min: 2, message: 'Last Name must be at least 2 characters if provided' }
       ]
@@ -152,7 +150,7 @@ countryCodes: { code: string; name: string }[] = [
     {
       dataField: 'companyName',
       label: 'Company Name',
-      editorOptions: { disabled: true }, // Stays disabled
+      editorOptions: { disabled: true }, 
       validationRules: [
         { type: 'required', message: 'Company Name is required (should be auto-filled)' }
       ]
@@ -163,7 +161,6 @@ countryCodes: { code: string; name: string }[] = [
       editorType: 'dxTextBox',
       editorOptions: { mode: 'email' },
       validationRules: [
-        // Not strictly required, but if entered, must be valid email format
         { type: 'email', message: 'Invalid email format' }
       ]
     },
@@ -209,7 +206,7 @@ countryCodes: { code: string; name: string }[] = [
     private revenuetypeService: RevenuetypeService,
     private companyContactService: CompanyContactService,
     private dealService: DealService,
-    // private notificationService: NotificationService
+   
   ) {}
 
   @HostListener('window:resize', ['$event'])
@@ -221,14 +218,14 @@ validateCloseDate = (e: any) => {
 }
 currencyFormat = {
   type: 'fixedPoint',
-  precision: 2  // or 0 if you want only whole numbers
+  precision: 2  
 };
 
 
   ngOnInit() {
    
     this.loadDropdownData();
-    // Initial form state based on mode (will be refined in ngOnChanges and AfterViewInit for popup events)
+   
     if (this.mode === 'edit' && this.dealToEdit) {
       this.prefillFormForEdit(this.dealToEdit);
     } else {
@@ -417,9 +414,9 @@ currencyFormat = {
   openQuickCreateCompanyModal() {  this.companyData = { companyName: '', phoneNo: '', website: '' }; this.isCompanyModalVisible = true; }
   closeQuickCreateCompanyModal() { this.isCompanyModalVisible = false; }
  addNewCompany(newCompanyData: { companyName: string; phoneNo: string; website: string; }) {
-    // If FormModal's handleSubmit validated, we can proceed
+ 
     const payload = { companyName: newCompanyData.companyName, website: newCompanyData.website, companyPhoneNumber: newCompanyData.phoneNo, createdBy: 1 };
-    // ... rest of your existing logic ...
+  
     this.isLoading = true;
     this.companyContactService.addCompany(payload).pipe(finalize(() => this.isLoading = false)).subscribe({
       next: () => {  this.loadCompanyContactData(); this.newDeal.companyName = payload.companyName; this.onCompanyChange(payload.companyName); this.closeQuickCreateCompanyModal(); },
@@ -434,9 +431,9 @@ currencyFormat = {
   }
   closeQuickCreateContactModal() { this.isContactModalVisible = false; }
 addNewContact(newContactData: QuickContactFormData) {
-    // If FormModal's handleSubmit validated, we can proceed
+  
     const payload = { firstName: newContactData.FirstName, lastName: newContactData.LastName || '', email: newContactData.Email, phoneNumber: newContactData.phoneNo, companyName: this.newDeal.companyName, createdBy: 1 };
-    // ... rest of your existing logic ...
+   
     this.isLoading = true;
     this.companyContactService.addContact(payload).pipe(finalize(() => this.isLoading = false)).subscribe({
       next: () => {

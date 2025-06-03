@@ -68,23 +68,23 @@ export class PipelinepageComponent implements OnInit {
     { dataField: 'stageName', caption: 'Stage', visible: true }
   ];
   
-  selectedTabId: string = 'card'; // default view
+  selectedTabId: string = 'card';
   selectedTabIndex: number = 0;
   
-  // Add this property to store table data
+
   private _tableData: any[] = [];
 
   onTabChange(event: any) {
     const tabId = event.itemData?.id;
     this.selectedTabId = tabId;
 
-    // update selected index (optional for tracking)
+ 
     this.selectedTabIndex = tabId === 'card' ? 0 : 1;
     
-    // Force update table data when switching to table view
+    
     if (tabId === 'table') {
       this.refreshTableData();
-      // Force change detection after a small delay
+     
       setTimeout(() => {
         this.cdr.detectChanges();
       }, 50);
@@ -134,7 +134,7 @@ export class PipelinepageComponent implements OnInit {
         this.companyContactMap = results.contactMap;
         this.processFetchedDeals(results.deals);
         this.updateStageAmountsAndTopCards();
-        this.refreshTableData(); // Refresh table data after processing deals
+        this.refreshTableData(); 
         this.isLoadingInitialData = false;
         this.cdr.detectChanges();
       },
@@ -147,13 +147,13 @@ export class PipelinepageComponent implements OnInit {
     });
   }
 
-  // Add method to refresh table data
+
   private refreshTableData(): void {
     this._tableData = this.stages.flatMap(stage =>
       stage.deals.map(deal => ({
         ...deal,
         stageName: stage.name,
-        id: String(deal.id) // Ensure ID is a string for TableComponent compatibility
+        id: String(deal.id)
       }))
     );
     console.log('Table data refreshed:', this._tableData.length, 'deals');
@@ -270,21 +270,22 @@ export class PipelinepageComponent implements OnInit {
     this.stages[index].hover = false;
   }
  
-  onDealDropped(event: { previousStageName: string, currentStageName: string, deal: PipelineDeal, previousIndex: number, currentIndex: number }): void {
-    const { previousStageName, currentStageName, deal, currentIndex } = event;
-    const previousStage = this.stages.find(s => s.name === previousStageName);
-    const currentStage = this.stages.find(s => s.name === currentStageName);
- 
-    if (previousStage && currentStage && deal && deal.id) {
-      const dealIndexInPrev = previousStage.deals.findIndex(d => d.id === deal.id);
+ onDealDropped(event: { previousStage: string, currentStage: string, previousIndex: number, currentIndex: number }): void {
+    const { previousStage, currentStage, previousIndex, currentIndex } = event;
+    const previousStageName = this.stages.find(s => s.name === previousStage);
+    const currentStageName = this.stages.find(s => s.name === currentStage);
+    const deal = previousStageName?.deals[previousIndex];
+    if (previousStageName && currentStageName && deal && deal.id) {
+      const dealIndexInPrev = previousStageName.deals.findIndex(d => d.id === deal.id);
       if (dealIndexInPrev > -1) {
-        const [movedDeal] = previousStage.deals.splice(dealIndexInPrev, 1);
-        currentStage.deals.splice(currentIndex, 0, movedDeal);
+        const [movedDeal] = previousStageName.deals.splice(dealIndexInPrev, 1);
+        currentStageName.deals.splice(currentIndex, 0, movedDeal);
  
-        // TODO: API Call: this.dealService.updateDealStage(movedDeal.id, currentStage.name).subscribe(...);
+        console.log(`PipelinePage: Deal "${movedDeal.title}" (ID: ${movedDeal.id}) moved to stage "${currentStage}". Backend update needed.`);
+        // TODO: API Call: this.dealService.updateDealStage(movedDeal.id, currentStage.name /* or currentStage.id */).subscribe(...);
+        this.dealService.updateDealStage(deal.id, currentStageName.name).subscribe();
  
         this.updateStageAmountsAndTopCards();
-        this.refreshTableData(); // Refresh table data after deal movement
         this.cdr.detectChanges();
       }
     }
@@ -420,7 +421,7 @@ export class PipelinepageComponent implements OnInit {
     }
  
     this.updateStageAmountsAndTopCards();
-    this.refreshTableData(); // Refresh table data after deal update
+    this.refreshTableData(); 
     this.onModalClose();
     this.cdr.detectChanges();
   }
@@ -446,7 +447,7 @@ export class PipelinepageComponent implements OnInit {
     if (totalCountCard) totalCountCard.amount = grandTotalDeals;
   }
   
-  // Updated getter to use the private property
+  
   get tableData(): any[] {
     return this._tableData;
   }
