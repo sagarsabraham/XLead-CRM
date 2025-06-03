@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden; /* Prevent .popup-content from scrolling */
 }
 
 .form-container {
@@ -12,6 +13,16 @@
   padding-bottom: 20px;
 }
 
+/* Ensure the dx-form inside form-container takes up full width */
+:host ::ng-deep .dx-form {
+  width: 100%;
+}
+
+/* Ensure modal buttons at the bottom are not part of the scrollable area */
+app-modal-buttons {
+  flex-shrink: 0; /* Prevent the buttons from shrinking */
+  padding-top: 10px;
+}
 
 .form-container::-webkit-scrollbar {
   width: 8px;

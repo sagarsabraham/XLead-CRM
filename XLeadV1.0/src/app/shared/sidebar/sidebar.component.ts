@@ -98,7 +98,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   onResize() {
     this.checkScreenSize();
   }
-
+ 
   checkScreenSize() {
     const prevMobileView = this.isMobileView;
     this.isMobileView = window.innerWidth <= 768;
@@ -106,12 +106,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
       this.isMobileMenuOpen = false;
     }
   }
-
+ 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
     document.body.style.overflow = this.isMobileMenuOpen ? 'hidden' : '';
   }
-
+ 
   closeMobileMenuIfOpen() {
     if (this.isMobileView && this.isMobileMenuOpen) {
       this.isMobileMenuOpen = false;

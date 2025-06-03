@@ -8,7 +8,7 @@
       (onClick)="onAddDeal()"
     ></app-button>
   </div>
-
+ 
   <div class="topcard-container">
     <app-topcard
       *ngFor="let card of topcardData; let i = index"
@@ -19,7 +19,7 @@
       [iconColor]="getIconColor(i)">
     </app-topcard>
   </div>
-
+ 
   <!-- Tab Switcher -->
   <dx-tabs
     [items]="[
@@ -29,7 +29,7 @@
     [selectedIndex]="selectedTabIndex"
     (onItemClick)="onTabChange($event)">
   </dx-tabs>
-
+ 
   <!-- Card View -->
   <div *ngIf="selectedTabId === 'card'" class="card-container" cdkDropListGroup [class.content-loading]="isLoadingInitialData">
     <div
@@ -48,7 +48,7 @@
           [collapsed]="stage.collapsed">
         </app-dealheader>
       </div>
-
+ 
       <div *ngIf="!stage.collapsed">
         <app-dealbody
           [deals]="stage.deals"
@@ -58,7 +58,7 @@
           (onEdit)="onEditDeal($event, stage.name)">
         </app-dealbody>
       </div>
-
+ 
       <div *ngIf="stage.hover && !stage.collapsed">
         <app-dealfooter
           [buttons]="dealButton"
@@ -67,9 +67,9 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- Table View -->
-
+ 
   <div *ngIf="selectedTabId === 'table'" class="table-view">
    <app-table
   [data]="tableData"

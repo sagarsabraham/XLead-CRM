@@ -1,4 +1,7 @@
-<div class="deal-header" [class.vertical]="collapsed">
+<div class="deal-header" [class.vertical]="collapsed" [ngClass]="{
+  'closed-won': stageName === 'Closed Won',
+  'closed-lost': stageName === 'Closed Lost'
+}">
   <span *ngIf="!collapsed">
     <div class="title">{{stageName}}</div>
     <div class="summary">

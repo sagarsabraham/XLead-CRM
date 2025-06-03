@@ -12,7 +12,7 @@ export class CompanyPageComponent implements OnInit {
     { dataField: 'companyName', caption: 'Company Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'website', caption: 'Website', visible: true },
-    // { dataField: 'owner', caption: 'Owner', visible: true, cellTemplate: 'ownerCellTemplate' },
+    
     { dataField: 'status', caption: 'Status', visible: true }
   
   ];

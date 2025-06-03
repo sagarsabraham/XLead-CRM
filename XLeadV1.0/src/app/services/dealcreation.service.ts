@@ -82,13 +82,13 @@ export class DealService {
     return this.http.get<DealRead[]>(this.apiUrl, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
- 
+
   updateDealStage(id: number, stageName: string): Observable<DealRead[]> {
     const url = `${this.apiUrl}/${id}/stage`;
     return this.http.put<DealRead[]>(url, JSON.stringify({"stageName":stageName}), this.httpOptions)
       .pipe(catchError(this.handleError));
   }
- 
+
   // Basic error handling
   private handleError(error: HttpErrorResponse) {
     // ... (your existing handleError logic) ...

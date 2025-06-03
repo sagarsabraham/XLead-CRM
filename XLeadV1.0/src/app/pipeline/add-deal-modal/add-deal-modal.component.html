@@ -4,11 +4,12 @@
   [title]="modalTitle"
   [width]="popupWidth"
   [height]="'auto'"
+  [dragEnabled]="false"
   [showCloseButton]="true"
   (onHidden)="handleClose()">
  
   <div *dxTemplate="let data of 'content'" class="popup-content">
-    <div class="form-container">
+    <div #formContainer class="form-container" (wheel)="onMouseWheel($event)">
       <app-modal-header title="Deal Information" [showOwner]="true"></app-modal-header>
 
       <dx-form
@@ -33,8 +34,8 @@
   <dxo-label text="Amount" cssClass="bold-label"></dxo-label>
   <dxi-validation-rule type="required" message="Amount is required"></dxi-validation-rule>
 </dxi-item>
-
-
+ 
+ 
         <dxi-item dataField="companyName">
           <dxo-label text="Company Name" cssClass="bold-label"></dxo-label>
           <div class="company-name-container">
@@ -117,7 +118,7 @@
         <dx-select-box
           [(value)]="newDeal.stage"
           [dataSource]="dealStages"
-          displayExpr="displayName" 
+          displayExpr="displayName"
           valueExpr="id"
           [searchEnabled]="true"
           placeholder="Select Stage">
@@ -160,14 +161,14 @@
           </dx-select-box>
           <dxi-validation-rule type="required" message="Country is required"></dxi-validation-rule>
       </dxi-item>
-      <dxi-item dataField="startDate" editorType="dxDateBox">
-        <dxo-label text="Starting Date" cssClass="bold-label"></dxo-label>
-        <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
+      <dxi-item dataField="startDate" editorType="dxDateBox" [editorOptions]="{ displayFormat: 'dd/MMM/yyyy' }">
+          <dxo-label text="Starting Date" cssClass="bold-label"></dxo-label>
+          <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
       </dxi-item>
-      <dxi-item dataField="closeDate" editorType="dxDateBox">
-        <dxo-label text="Closing Date" cssClass="bold-label"></dxo-label>
-       
-        <dxi-validation-rule type="required" message="Date is required" type="custom" [validationCallback]="validateCloseDate" message="Closing date must be after start date"></dxi-validation-rule>
+      <dxi-item dataField="closeDate" editorType="dxDateBox" [editorOptions]="{ displayFormat: 'dd/MMM/yyyy' }">
+          <dxo-label text="Closing Date" cssClass="bold-label"></dxo-label>
+          <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
+          <dxi-validation-rule type="custom" [validationCallback]="validateCloseDate" message="Closing date must be after start date"></dxi-validation-rule>
       </dxi-item>
       <dxi-item dataField="description" editorType="dxTextArea" [editorOptions]="{ placeholder: 'A few words about this deal', height: 90 }">
         <dxo-label text="Description" cssClass="bold-label"></dxo-label>
@@ -178,6 +179,23 @@
         <dxi-validation-rule type="required" message="Probability is required"></dxi-validation-rule>
         <dxi-validation-rule type="range" [min]="0" [max]="100" message="Probability must be between 0 and 100"></dxi-validation-rule>
       </dxi-item>
+
+      <!-- Additional Information Section for Custom Fields -->
+        <dxi-item *ngIf="customFields.length > 0" itemType="group">
+          <dxo-label text="Additional Information" cssClass="bold-label section-label"></dxo-label>
+          <dxi-item
+            *ngFor="let field of customFields"
+            [dataField]="field.dataField"
+            [editorType]="getEditorType(field.fieldType)"
+            [editorOptions]="getEditorOptions(field.fieldType)">
+            <dxo-label [text]="field.fieldLabel" cssClass="bold-label"></dxo-label>
+            <dxi-validation-rule
+              *ngIf="field.required"
+              type="required"
+              [message]="field.fieldLabel + ' is required'">
+            </dxi-validation-rule>
+          </dxi-item>
+        </dxi-item>
       </dx-form>
     </div>
    

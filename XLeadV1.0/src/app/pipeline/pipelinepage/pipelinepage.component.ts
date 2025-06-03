@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { DealRead, DealService } from 'src/app/services/dealcreation.service'; 
+import { DealRead, DealService } from 'src/app/services/dealcreation.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 import { forkJoin } from 'rxjs';
  
-
+ 
 export interface PipelineDeal {
   id: number;
   title: string;
@@ -22,7 +22,7 @@ export interface PipelineDeal {
   country: string;
   description: string;
   doc: string;
-  originalData: DealRead; 
+  originalData: DealRead;
 }
  
 export interface PipelineStage {
@@ -41,9 +41,9 @@ export interface PipelineStage {
 })
 export class PipelinepageComponent implements OnInit {
  topcardData = [
-    { amount: 33300, title: 'Total Return', isCurrency: true, icon: 'assets/money.svg' },
-    { amount: 15, title: 'Total Count of Deals', isCurrency: false, icon: 'assets/count.svg' },
-  ]; 
+    { amount: 0, title: 'Total Return', isCurrency: true, icon: 'assets/dollar-sign-svgrepo-com.svg' },
+    { amount: 0, title: 'Total Count of Deals', isCurrency: false, icon: 'assets/count.svg' },
+  ];
   dealButton = [{ label: 'Deal', icon: 'add' }];
  
   stages: PipelineStage[] = [
@@ -54,7 +54,7 @@ export class PipelinepageComponent implements OnInit {
     { name: 'Closed Won', amount: 0, collapsed: false, hover: false, deals: [] },
     { name: 'Closed Lost', amount: 0, collapsed: false, hover: false, deals: [] }
   ];
-  
+ 
   tableHeaders = [
     { dataField: 'title', caption: 'Deal Name', visible: true },
     { dataField: 'amount', caption: 'Amount', visible: true },
@@ -67,21 +67,21 @@ export class PipelinepageComponent implements OnInit {
     { dataField: 'contactName', caption: 'Contact', visible: true },
     { dataField: 'stageName', caption: 'Stage', visible: true }
   ];
-  
+ 
   selectedTabId: string = 'card';
   selectedTabIndex: number = 0;
-  
-
+ 
+ 
   private _tableData: any[] = [];
-
+ 
   onTabChange(event: any) {
     const tabId = event.itemData?.id;
     this.selectedTabId = tabId;
-
+ 
  
     this.selectedTabIndex = tabId === 'card' ? 0 : 1;
-    
-    
+   
+   
     if (tabId === 'table') {
       this.refreshTableData();
      
@@ -90,7 +90,7 @@ export class PipelinepageComponent implements OnInit {
       }, 50);
     }
   }
-
+ 
   stageNames: string[] = this.stages.map(s => s.name);
  
   isLoadingInitialData: boolean = false;
@@ -103,12 +103,12 @@ export class PipelinepageComponent implements OnInit {
  
   companyContactMap: { [company: string]: string[] } = {};
   selectedDealIds: string[] = [];
-
+ 
   handleSelectionChanged(event: any): void {
     console.log('Selection changed:', event);
     this.selectedDealIds = event.selectedRowKeys || [];
   }
-  
+ 
   constructor(
     private dealService: DealService,
     private companyContactService: CompanyContactService,
@@ -134,7 +134,7 @@ export class PipelinepageComponent implements OnInit {
         this.companyContactMap = results.contactMap;
         this.processFetchedDeals(results.deals);
         this.updateStageAmountsAndTopCards();
-        this.refreshTableData(); 
+        this.refreshTableData();
         this.isLoadingInitialData = false;
         this.cdr.detectChanges();
       },
@@ -146,8 +146,8 @@ export class PipelinepageComponent implements OnInit {
       }
     });
   }
-
-
+ 
+ 
   private refreshTableData(): void {
     this._tableData = this.stages.flatMap(stage =>
       stage.deals.map(deal => ({
@@ -166,7 +166,7 @@ export class PipelinepageComponent implements OnInit {
       return null;
     }
  
-    const normalizedSearchContact = contactFullName.trim(); 
+    const normalizedSearchContact = contactFullName.trim();
  
     for (const companyName in this.companyContactMap) {
       if (Object.prototype.hasOwnProperty.call(this.companyContactMap, companyName)) {
@@ -181,13 +181,13 @@ export class PipelinepageComponent implements OnInit {
           });
  
           if (found) {
-            return companyName; 
+            return companyName;
           }
         }
       }
     }
-    
-    return null; 
+   
+    return null;
   }
  
   processFetchedDeals(fetchedDeals: DealRead[]): void {
@@ -202,7 +202,7 @@ export class PipelinepageComponent implements OnInit {
         }
  
         const finalCompanyName = determinedCompanyName || this.extractCompanyNameFallback(backendDeal) || 'Unknown Co.';
-
+ 
         const pipelineDeal: PipelineDeal = {
           id: backendDeal.id,
           title: backendDeal.dealName,
@@ -224,7 +224,7 @@ export class PipelinepageComponent implements OnInit {
           originalData: backendDeal,
         };
         targetStage.deals.push(pipelineDeal);
-      } 
+      }
     });
   }
  
@@ -245,8 +245,8 @@ export class PipelinepageComponent implements OnInit {
  
   getIconColor(index: number): string {
     switch (index) {
-      case 0: 
-        return '#8a2be2'; 
+      case 0:
+        return '#8a2be2';
       case 1:
         return '#28a745';
       default:
@@ -261,11 +261,11 @@ export class PipelinepageComponent implements OnInit {
   toggleCollapse(index: number): void {
     this.stages[index].collapsed = !this.stages[index].collapsed;
   }
-  
+ 
   onMouseEnter(index: number): void {
     this.stages[index].hover = true;
   }
-  
+ 
   onMouseLeave(index: number): void {
     this.stages[index].hover = false;
   }
@@ -376,7 +376,7 @@ export class PipelinepageComponent implements OnInit {
         determinedCompanyName = this.findCompanyByContact(updatedBackendDeal.contactName) ?? undefined;
       }
       const finalCompanyName = determinedCompanyName || this.extractCompanyNameFallback(updatedBackendDeal) || 'Unknown Co.';
-
+ 
       const updatedPipelineDeal: PipelineDeal = {
         id: updatedBackendDeal.id,
         title: updatedBackendDeal.dealName,
@@ -406,14 +406,14 @@ export class PipelinepageComponent implements OnInit {
         if (indexInOriginal > -1) {
           originalStage.deals.splice(indexInOriginal, 1);
         }
-      } 
+      }
  
       if (newTargetStage) {
         newTargetStage.deals.push(updatedPipelineDeal);
         newTargetStage.deals.sort((a,b) =>
             new Date(a.originalData.closingDate!).getTime() - new Date(b.originalData.closingDate!).getTime()
         );
-      } 
+      }
       alert('Deal updated successfully!');
     } else {
       console.warn('PipelinePage: onDealSubmitSuccess in edit mode, but _currentlyEditingPipelineDeal is mismatched or missing. Reloading data.');
@@ -421,7 +421,7 @@ export class PipelinepageComponent implements OnInit {
     }
  
     this.updateStageAmountsAndTopCards();
-    this.refreshTableData(); 
+    this.refreshTableData();
     this.onModalClose();
     this.cdr.detectChanges();
   }
@@ -446,8 +446,8 @@ export class PipelinepageComponent implements OnInit {
     const totalCountCard = this.topcardData.find(card => card.title === 'Total Count of Deals');
     if (totalCountCard) totalCountCard.amount = grandTotalDeals;
   }
-  
-  
+ 
+ 
   get tableData(): any[] {
     return this._tableData;
   }

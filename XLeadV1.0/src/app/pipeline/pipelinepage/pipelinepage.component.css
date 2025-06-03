@@ -1,4 +1,4 @@
-  .container {
+.container {
     margin-left: 11.5vh;
     padding: 16px;
     font-family: 'poppins';
@@ -6,8 +6,8 @@
     /* margin-left: 100px;
     width: calc(100% - 100px);  */
   }
-
-
+ 
+ 
   .topbar {
     display: flex;
     flex-wrap: wrap;
@@ -15,17 +15,17 @@
     align-items: center;
     gap: 12px;
   }
-
+ 
   .topbar h1 {
     font-size: 32px;
-
+ 
     padding: 8px 0;
     font-weight: bold;
     margin-top: 20px;
     margin-left: 20px;
   }
-
-
+ 
+ 
   .topcard-container {
     display: flex;
     flex-wrap: wrap;
@@ -33,17 +33,17 @@
     gap: 16px;
     padding: 16px 0;
   }
-
+ 
 .topcard-container app-topcard {
   flex: 1 1 300px;
   min-width: 280px;
 }
-
-
+ 
+ 
 :host {
     display: flex;
 }
-
+ 
 .card-container {
   display: flex;
   flex-wrap: nowrap;
@@ -53,7 +53,7 @@
   scroll-snap-type: x mandatory;
   padding-top: 35px;
 }
-
+ 
 .stage-card {
   position: relative;
   flex: 0 0 auto;
@@ -66,12 +66,12 @@
   transition: all 0.3s;
   cursor: pointer;
 }
-
+ 
 .stage-card.dx-card {
   box-shadow: none;
 }
-
-
+ 
+ 
 .stage-card.collapsed {
   flex: 0 0 50px !important;
   max-width: 50px !important;
@@ -80,15 +80,15 @@
   overflow: hidden;
   padding: 0;
 }
-
+ 
 .stage-card.collapsed * {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   max-width: 100%;
 }
-
-
+ 
+ 
 app-dealfooter {
   position: absolute;
   bottom: 0;
@@ -96,22 +96,22 @@ app-dealfooter {
   right: 0;
   z-index: 10;
 }
-
-
+ 
+ 
 app-button {
   padding: 8px 16px;
   flex-shrink: 0;
-  
+ 
 }
-
+ 
 /* ========== Responsive Breakpoints ========== */
-
+ 
 @media (max-width: 1024px) {
-
+ 
   .topcard-container {
     justify-content: center;
   }
-
+ 
   .stage-card {
     min-width: 240px;
 .container {
@@ -123,35 +123,34 @@ app-button {
 .topcard-container {
     display: flex;
     gap: 30px;
-    flex-wrap: nowrap; 
+    flex-wrap: nowrap;
     width: 100%;
-    justify-content: space-between; 
+    justify-content: space-between;
     padding-left: 16px;
   }
 }
-
+ 
 @media (max-width: 768px) {
     .container {
-    margin-left: 0; 
+    margin-left: 0;
   }
   .topcard-container app-topcard {
     flex: 1 1 100%;
     min-width: unset;
   }
-
+ 
   .stage-card {
     min-width: 200px;
   }
-
+ 
   .topbar h1 {
     font-size: 20px;
   }
 }
-
+ 
 @media (max-width: 480px) {
   .container {
-    margin-top: 50px;
-    margin-left: 0; 
+    margin-left: 0;
   }
   .topbar {
     display: flex;
@@ -163,16 +162,16 @@ app-button {
   .topbar h1 {
     font-size: 18px;
   }
-
+ 
   app-button {
     width: 100%;
     padding: 10px;
   }
-
+ 
   .card-container {
     gap: 8px;
   }
-
+ 
   .stage-card {
     min-width: 180px;
   }
@@ -182,7 +181,7 @@ app-button {
   margin: 20px 0;
   text-align: right;
 }
-
+ 
 .toggle-view button {
   padding: 10px 20px;
   background-color: #007bff;
@@ -191,11 +190,11 @@ app-button {
   border-radius: 5px;
   cursor: pointer;
 }
-
+ 
 .toggle-view button:hover {
   background-color: #0056b3;
 }
-
+ 
 .table-view {
   margin-top: 20px;
   width: 100%;
