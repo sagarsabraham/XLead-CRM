@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { DxFormComponent } from 'devextreme-angular';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, AfterViewInit, HostListener, ChangeDetectorRef } from '@angular/core';
+import { DxFormComponent, DxPopupComponent } from 'devextreme-angular';
+
 export interface DxValidationRule {
   type: 'required' | 'numeric' | 'range' | 'stringLength' | 'custom' | 'compare' | 'pattern' | 'email';
   message: string;
@@ -9,61 +10,97 @@ export interface DxValidationRule {
   comparisonTarget?: () => any;
   comparisonType?: string;
   validationCallback?: (options: { value: any; rule: DxValidationRule; data: any; }) => boolean;
-  // ... other rule-specific properties
 }
+
 @Component({
   selector: 'app-form-modal',
   templateUrl: './form-modal.component.html',
   styleUrls: ['./form-modal.component.css']
 })
-export class FormModalComponent {
+export class FormModalComponent implements AfterViewInit {
   @Input() isVisible: boolean = false;
   @Input() title: string = '';
   @Input() formData: any = {};
-   @Input() fields: {
+  @Input() fields: {
     dataField: string;
     label: string;
-    type?: string; // This 'type' seems more for general data type, not editorType
-    required?: boolean; // Can keep for simple cases or derive from validationRules
+    type?: string;
+    required?: boolean;
     editorType?: string;
     editorOptions?: any;
-    validationRules?: DxValidationRule[]; // << NEW: Array of DevExtreme validation rules
+    validationRules?: DxValidationRule[];
   }[] = [];
-@ViewChild(DxFormComponent, { static: false }) dxFormInstance!: DxFormComponent;
   @Output() onClose = new EventEmitter<void>();
   @Output() onSubmit = new EventEmitter<any>();
- 
+
+  @ViewChild(DxFormComponent, { static: false }) dxFormInstance!: DxFormComponent;
+  @ViewChild('formContainer', { static: false }) formContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild(DxPopupComponent, { static: false }) dxPopup!: DxPopupComponent;
+
+  private isViewInitialized: boolean = false;
+
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  ngAfterViewInit() {
+    if (this.dxPopup && this.dxPopup.instance) {
+      this.dxPopup.instance.on('shown', () => {
+        if (this.formContainer && this.formContainer.nativeElement) {
+          this.isViewInitialized = true;
+          this.cdr.detectChanges();
+        }
+      });
+
+      this.dxPopup.instance.on('hiding', () => {
+        this.isViewInitialized = false;
+      });
+    }
+  }
+
   handleClose() {
     this.onClose.emit();
     this.resetForm();
+    this.isViewInitialized = false;
   }
- 
+
   handleSubmit() {
-  if (this.dxFormInstance && this.dxFormInstance.instance) {
-    const validationResult = this.dxFormInstance.instance.validate();
-    if (validationResult.isValid) {
-      this.onSubmit.emit(this.formData);
-      // this.resetForm(); // Consider parental control for reset
-    } else {
-      // Optionally: alert('Please correct errors.'); or rely on dx-form UI
+    if (this.dxFormInstance && this.dxFormInstance.instance) {
+      const validationResult = this.dxFormInstance.instance.validate();
+      if (validationResult.isValid) {
+        this.onSubmit.emit(this.formData);
+      } else {
+        alert('Please correct errors.');
+      }
     }
-  } else {
-    // Fallback if form instance isn't ready - unlikely if modal is visible
-    console.warn('dxFormInstance not available in FormModalComponent');
-    // this.onSubmit.emit(this.formData); // Or don't emit if form can't be validated
   }
-}
- 
+
   resetForm() {
     this.fields.forEach(field => {
       if (field.editorType === 'dxSelectBox' && field.editorOptions?.items) {
-        // Default to the first item in the dropdown if available
         this.formData[field.dataField] = field.editorOptions.items[0] || '';
       } else {
         this.formData[field.dataField] = '';
       }
     });
   }
+
+  @HostListener('wheel', ['$event'])
+  onHostWheel(event: WheelEvent) {
+    if (!this.isViewInitialized) {
+      return;
+    }
+
+    if (this.formContainer && this.formContainer.nativeElement) {
+      const container = this.formContainer.nativeElement;
+      const isMouseOverContainer = container.contains(event.target as Node);
+
+      if (isMouseOverContainer) {
+        const newScrollTop = container.scrollTop + event.deltaY;
+        const maxScrollTop = container.scrollHeight - container.clientHeight;
+
+        container.scrollTop = Math.max(0, Math.min(newScrollTop, maxScrollTop));
+        event.stopPropagation();
+        event.preventDefault();
+      }
+    }
+  }
 }
- 
- 
