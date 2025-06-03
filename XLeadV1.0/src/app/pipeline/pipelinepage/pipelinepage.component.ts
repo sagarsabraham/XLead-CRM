@@ -41,7 +41,7 @@ export interface PipelineStage {
 })
 export class PipelinepageComponent implements OnInit {
  topcardData = [
-    { amount: 0, title: 'Total Return', isCurrency: true, icon: 'assets/money.svg' },
+    { amount: 0, title: 'Total Return', isCurrency: true, icon: 'assets/dollar-sign-svgrepo-com.svg' },
     { amount: 0, title: 'Total Count of Deals', isCurrency: false, icon: 'assets/count.svg' },
   ];
   dealButton = [{ label: 'Deal', icon: 'add' }];
