@@ -41,6 +41,7 @@ import { DealstageService } from 'src/app/services/dealstage.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 import { DealService } from 'src/app/services/dealcreation.service';
 import { DealCreatePayload, DealRead } from 'src/app/services/dealcreation.service';
+import { DxValidationRule } from '../form-modal/form-modal.component';
 
 @Component({
   selector: 'app-add-deal-modal',
@@ -101,20 +102,108 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
 
   isCompanyModalVisible: boolean = false;
   companyData = { companyName: '', phoneNo: '', website: '' };
-  companyFields = [
-    { dataField: 'companyName', label: 'Company Name', required: true },
-    { dataField: 'phoneNo', label: 'Phone Number', required: true },
-    { dataField: 'website', label: 'Website', required: true }
+  companyFields: {
+    dataField: string;
+    label: string;
+    editorType?: string;
+    editorOptions?: any;
+    validationRules?: DxValidationRule[];
+  }[] = [
+    {
+      dataField: 'companyName',
+      label: 'Company Name',
+      validationRules: [
+        { type: 'required', message: 'Company Name is required' },
+        { type: 'stringLength', min: 2, message: 'Company Name must be at least 2 characters long' }
+      ]
+    },
+   {
+  dataField: 'phoneNo',
+  label: 'Phone Number',
+  editorType: 'dxTextBox',
+  editorOptions: {
+    mask: '+91 00000-00000',
+    maskRules: { "0": /[0-9]/ }
+  },
+  validationRules: [
+    { type: 'required', message: 'Phone Number is required' },
+    {
+      type: 'pattern',
+      pattern: /^\+?91?\s?\d{5}\s?-?\d{5}$/,
+      message: 'Invalid Indian phone number format. Use +91 followed by 10 digits or 10 digits starting with 6, 7, 8, or 9.'
+    },
+  ]
+},
+    {
+      dataField: 'website',
+      label: 'Website',
+      validationRules: [
+        { type: 'required', message: 'Website is required' },
+       
+        { type: 'pattern', pattern: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/, message: 'Invalid website URL format' }
+      ]
+    }
   ];
 
   isContactModalVisible: boolean = false;
   contactData: QuickContactFormData = { FirstName: '', LastName: '', companyName: '', Email: '', phoneNo: '' };
-  contactFields = [
-    { dataField: 'FirstName', label: 'First Name', required: true },
-    { dataField: 'LastName', label: 'Last Name', required: false },
-    { dataField: 'companyName', label: 'Company Name', editorOptions: { disabled: true }, required: true },
-    { dataField: 'Email', label: 'Email', required: false },
-    { dataField: 'phoneNo', label: 'Phone Number', required: true }
+  contactFields: {
+    dataField: string;
+    label: string;
+    editorType?: string;
+    editorOptions?: any;
+    validationRules?: DxValidationRule[];
+  }[] = [
+    {
+      dataField: 'FirstName',
+      label: 'First Name',
+      validationRules: [
+        { type: 'required', message: 'First Name is required' },
+        { type: 'stringLength', min: 2, message: 'First Name must be at least 2 characters' }
+      ]
+    },
+    {
+      dataField: 'LastName',
+      label: 'Last Name',
+     
+      validationRules: [
+         { type: 'stringLength', min: 2, message: 'Last Name must be at least 2 characters if provided' }
+      ]
+    },
+    {
+      dataField: 'companyName',
+      label: 'Company Name',
+      editorOptions: { disabled: true },
+      validationRules: [
+        { type: 'required', message: 'Company Name is required (should be auto-filled)' }
+      ]
+    },
+    {
+      dataField: 'Email',
+      label: 'Email',
+      editorType: 'dxTextBox',
+      editorOptions: { mode: 'email' },
+      validationRules: [
+        { type: 'email', message: 'Invalid email format' }
+      ]
+    },
+  {
+  dataField: 'phoneNo',
+  label: 'Phone Number',
+  editorType: 'dxTextBox',
+  editorOptions: {
+    mask: '+91 00000-00000',
+    maskRules: { "0": /[0-9]/ }
+  },
+  validationRules: [
+    { type: 'required', message: 'Phone Number is required' },
+    {
+      type: 'pattern',
+      pattern: /^\+?91?\s?\d{5}\s?-?\d{5}$/,
+      message: 'Invalid Indian phone number format. Use +91 followed by 10 digits or 10 digits starting with 6, 7, 8, or 9.'
+    },
+  ]
+},
   ];
 
   isCustomizeFieldModalVisible: boolean = false;
@@ -607,4 +696,15 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         return {};
     }
   }
+
+  validateCloseDate = (e: any) => {
+  return !this.newDeal.startDate || !e.value || new Date(e.value) >= new Date(this.newDeal.startDate);
+  }
+
+  currencyFormat = {
+  type: 'fixedPoint',
+  precision: 2  
+  };
+
+
 }
