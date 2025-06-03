@@ -52,7 +52,10 @@
 .deal-amount {
   font-weight: bold; 
 }
-  
+
+.close-date {
+    font-weight: bold;
+}
 
 .deal-details {
     display: flex;

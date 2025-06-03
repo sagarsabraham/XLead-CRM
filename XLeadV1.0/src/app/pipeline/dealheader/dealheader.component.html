@@ -10,8 +10,8 @@
     </div>
   </span>
   <span *ngIf="collapsed" class="vertical-text">
-    <span>{{ dealCount }} Deal{{ dealCount !== 1 ? 's' : '' }}</span>
-    <span>{{ amount | currency:'USD':'symbol':'1.2-2':'en-US' }}</span>
-    <span>{{ stageName }}</span>
+    <div class="vertical-item stage-name">{{stageName}}</div>
+    <div class="vertical-item deal-count">{{dealCount}} Deal{{ dealCount !== 1 ? 's' : '' }}</div>
+    <div class="vertical-item amount">{{amount | currency:'USD':'symbol':'1.2-2':'en-US'}}</div>
   </span> 
 </div>
