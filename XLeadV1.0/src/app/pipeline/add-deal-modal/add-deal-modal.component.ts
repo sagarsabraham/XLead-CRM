@@ -6,6 +6,7 @@ import { getSupportedInputTypes } from '@angular/cdk/platform';
 export interface QuickContactFormData {
   FirstName: string;
   LastName: string;
+  Designation: string; // Add designation field
   companyName: string;
   Email: string;
   phoneNo: string;
@@ -146,7 +147,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   ];
 
   isContactModalVisible: boolean = false;
-  contactData: QuickContactFormData = { FirstName: '', LastName: '', companyName: '', Email: '', phoneNo: '' };
+  contactData: QuickContactFormData = { FirstName: '', LastName: '', Designation: '', companyName: '', Email: '', phoneNo: '' };
   contactFields: {
     dataField: string;
     label: string;
@@ -168,6 +169,14 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
      
       validationRules: [
          { type: 'stringLength', min: 2, message: 'Last Name must be at least 2 characters if provided' }
+      ]
+    },
+    {
+      dataField: 'designation',
+      label: 'Designation',
+      validationRules: [
+        { type: 'required', message: 'Designation is required' },
+        { type: 'stringLength', min: 2, message: 'Designation must be at least 2 characters' }
       ]
     },
     {
@@ -586,7 +595,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       alert('Please select a company first.');
       return;
     }
-    this.contactData = { FirstName: '', LastName: '', companyName: this.newDeal.companyName, Email: '', phoneNo: '' };
+    this.contactData = { FirstName: '', LastName: '', Designation: '', companyName: this.newDeal.companyName, Email: '', phoneNo: '' };
     this.isContactModalVisible = true;
   }
 
@@ -595,7 +604,9 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   addNewContact(newContactData: QuickContactFormData) {
-    const payload = { firstName: newContactData.FirstName, lastName: newContactData.LastName || '', email: newContactData.Email, phoneNumber: newContactData.phoneNo, companyName: this.newDeal.companyName, createdBy: 1 };
+    const payload = { firstName: newContactData.FirstName, lastName: newContactData.LastName || '', 
+      designation: newContactData.Designation, // Include designation in payload
+      email: newContactData.Email, phoneNumber: newContactData.phoneNo, companyName: this.newDeal.companyName, createdBy: 1 };
     this.isLoading = true;
     this.companyContactService.addContact(payload).pipe(finalize(() => this.isLoading = false)).subscribe({
       next: () => {
