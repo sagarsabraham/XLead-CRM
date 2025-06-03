@@ -160,14 +160,14 @@
           </dx-select-box>
           <dxi-validation-rule type="required" message="Country is required"></dxi-validation-rule>
       </dxi-item>
-      <dxi-item dataField="startDate" editorType="dxDateBox">
-        <dxo-label text="Starting Date" cssClass="bold-label"></dxo-label>
-        <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
+      <dxi-item dataField="startDate" editorType="dxDateBox" [editorOptions]="{ displayFormat: 'dd/MMM/yyyy' }">
+          <dxo-label text="Starting Date" cssClass="bold-label"></dxo-label>
+          <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
       </dxi-item>
-      <dxi-item dataField="closeDate" editorType="dxDateBox">
-        <dxo-label text="Closing Date" cssClass="bold-label"></dxo-label>
-       
-        <dxi-validation-rule type="required" message="Date is required" type="custom" [validationCallback]="validateCloseDate" message="Closing date must be after start date"></dxi-validation-rule>
+      <dxi-item dataField="closeDate" editorType="dxDateBox" [editorOptions]="{ displayFormat: 'dd/MMM/yyyy' }">
+          <dxo-label text="Closing Date" cssClass="bold-label"></dxo-label>
+          <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
+          <dxi-validation-rule type="custom" [validationCallback]="validateCloseDate" message="Closing date must be after start date"></dxi-validation-rule>
       </dxi-item>
       <dxi-item dataField="description" editorType="dxTextArea" [editorOptions]="{ placeholder: 'A few words about this deal', height: 90 }">
         <dxo-label text="Description" cssClass="bold-label"></dxo-label>

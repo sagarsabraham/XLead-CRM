@@ -490,7 +490,6 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   resetForm() {
-    // Reset standard fields
     const resetData: NewDeal = {
       amount: 0,
       companyName: '',
@@ -503,7 +502,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       revenueType: null,
       department: null,
       country: null,
-      startDate: null,
+      startDate: new Date(), // Set default to current date
       closeDate: null,
       description: '',
       probability: null,
@@ -691,7 +690,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       case 'boolean':
         return {};
       case 'date':
-        return { displayFormat: 'dd/MM/yyyy' };
+        return { displayFormat: 'dd/MMM/yyyy' };
       default:
         return {};
     }
