@@ -1,26 +1,25 @@
-
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-// src/app/services/company-contact.service.ts
-export interface Company {
-  companyName: string;
-  phoneNo: string; // Without country code (handled separately in modal)
+
+export interface Customer {
+  customerName: string;
+  phoneNo: string;
   website: string;
-  industryVerticalId: number | null; // Updated to match backend
-  countryCode: string; // Added to handle country code
+  industryVerticalId: number | null;
+  countryCode: string;
   createdBy: number;
 }
 
 export interface Contact {
   firstName: string;
   lastName: string;
-  designation: string; // Added to match backend
-  companyName: string;
+  designation: string;
+  customerName: string;
   email: string;
-  phoneNo: string; // Without country code (handled separately in modal)
-  countryCode?: string; // Added to handle country code (optional for compatibility)
+  phoneNo: string;
+  countryCode?: string;
   createdBy: number;
 }
 
@@ -30,12 +29,14 @@ export interface ContactCreateDto {
   designation: string; 
   email: string;
   phoneNumber: string;
-  companyName: string;
+  customerName: string;
   createdBy: number;
 }
-export interface CompanyContactMap {
-  [companyName: string]: string[]; 
+
+export interface CustomerContactMap {
+  [customerName: string]: string[]; 
 }
+
 @Injectable({
   providedIn: 'root'
 })
@@ -44,16 +45,27 @@ export class CompanyContactService {
 
   constructor(private http: HttpClient) {}
 
-getContactByNameAndCompany(contactName: string, companyName: string): Observable<Contact | undefined> {
-  return this.getContacts().pipe(
-    map(contacts => contacts.find((contact: any) => 
-      `${contact.firstName} ${contact.lastName}`.trim() === contactName && 
-      contact.customerName === companyName
-    ))
-  );
-}
-  getCompanyContactMap(): Observable<{ [company: string]: string[] }> {
-    return this.http.get<{ [company: string]: string[] }>(
+  getContactByNameAndCustomer(contactName: string, customerName: string): Observable<Contact | undefined> {
+    console.log('getContactByNameAndCustomer called with contactName:', contactName, 'customerName:', customerName);
+    return this.getContacts().pipe(
+      map(contacts => {
+        const normalizedContactName = contactName.trim().toLowerCase();
+        const normalizedCustomerName = customerName.trim().toLowerCase();
+        const foundContact = contacts.find((contact: any) => {
+          const fullName = `${contact.firstName} ${contact.lastName}`.trim().toLowerCase();
+          const contactCustomerName = contact.customerName?.trim().toLowerCase();
+          return fullName === normalizedContactName && contactCustomerName === normalizedCustomerName;
+        });
+        if (!foundContact) {
+          console.warn('No contact found for contactName:', contactName, 'customerName:', customerName);
+        }
+        return foundContact;
+      })
+    );
+  }
+
+  getCompanyContactMap(): Observable<{ [customer: string]: string[] }> {
+    return this.http.get<{ [customer: string]: string[] }>(
       `${this.apiUrl}/api/CustomerContact/customer-contact-map`
     );
   }
@@ -66,10 +78,10 @@ getContactByNameAndCompany(contactName: string, companyName: string): Observable
     return this.http.get<any[]>(`${this.apiUrl}/api/CustomerContact/contacts`);
   }
 
-  addCompany(company: any): Observable<any> {
+  addCompany(customer: any): Observable<any> {
     return this.http.post(
       `${this.apiUrl}/api/CustomerContact/customer`,
-      company,
+      customer,
       {
         headers: new HttpHeaders({
           'Content-Type': 'application/json'
@@ -92,7 +104,7 @@ getContactByNameAndCompany(contactName: string, companyName: string): Observable
 
   getCompanyByName(name: string): Observable<any> {
     return this.getCompanies().pipe(
-      map(companies => companies.find((company: any) => company.companyName === name))
+      map(companies => companies.find((company: any) => company.customerName === name))
     );
   }
 }

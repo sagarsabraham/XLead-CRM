@@ -1,20 +1,20 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { DxFormComponent, DxPopupComponent } from 'devextreme-angular';
 import { finalize } from 'rxjs/operators';
+
 export interface QuickContactFormData {
   FirstName: string;
   LastName: string;
   Designation: string;
-  companyName: string;
+  customerName: string; // Updated to match backend
   Email: string;
   phoneNo: string;
-  countryCode: string; // Added
+  countryCode: string;
 }
 
-// Interface for newDeal to define known properties and allow dynamic custom fields
 interface NewDeal {
   amount: number;
-  companyName: string;
+  customerName: string; // Updated to match backend
   title: string;
   account: number | null;
   serviceline: number | null; 
@@ -29,7 +29,7 @@ interface NewDeal {
   closeDate: Date | null;
   description: string;
   probability: number | null;
-  [key: string]: any; // Allow dynamic properties for custom fields
+  [key: string]: any;
 }
 
 import { CountryService } from 'src/app/services/country.service';
@@ -39,14 +39,12 @@ import { AccountService } from '../../services/account.service';
 import { RegionService } from '../../services/region.service';
 import { DomainService } from '../../services/domain.service';
 import { DealstageService } from 'src/app/services/dealstage.service';
-import { Company, CompanyContactService, Contact } from 'src/app/services/company-contact.service';
-import { DealService } from 'src/app/services/dealcreation.service';
-import { DealCreatePayload, DealRead } from 'src/app/services/dealcreation.service';
+import { Customer, CompanyContactService, Contact } from 'src/app/services/company-contact.service';
+import { DealService, DealCreatePayload, DealRead } from 'src/app/services/dealcreation.service';
 import { DxValidationRule } from '../form-modal/form-modal.component';
 import { SeviceLineService } from 'src/app/services/sevice-line.service';
 import { IndustryVerticalService } from 'src/app/services/industry-vertical.service';
 import { AuthServiceService } from 'src/app/services/auth-service.service';
-
 
 @Component({
   selector: 'app-add-deal-modal',
@@ -65,39 +63,50 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() onClose = new EventEmitter<void>();
   @Output() onSubmitSuccess = new EventEmitter<DealRead>();
   @Output() onSubmitError = new EventEmitter<string>();
-countryCodes: { code: string; name: string }[] = [
+
+  countryCodes: { code: string; name: string }[] = [
     { code: '+91', name: 'India (+91)' },
     { code: '+1', name: 'United States (+1)' },
     { code: '+44', name: 'United Kingdom (+44)' },
     { code: '+81', name: 'Japan (+81)' },
-    // Add more country codes as needed
+    { code: '+86', name: 'China (+86)' },
+    { code: '+33', name: 'France (+33)' },
+    { code: '+49', name: 'Germany (+49)' },
+    { code: '+39', name: 'Italy (+39)' },
+    { code: '+34', name: 'Spain (+34)' },
+    { code: '+7', name: 'Russia (+7)' },
+    { code: '+55', name: 'Brazil (+55)' },
+    { code: '+52', name: 'Mexico (+52)' },
+    { code: '+61', name: 'Australia (+61)' },
+    { code: '+82', name: 'South Korea (+82)' },
+    { code: '+65', name: 'Singapore (+65)' }
   ];
+
   popupWidth = window.innerWidth < 600 ? '90%' : 500;
   isLoading: boolean = false;
   isFormReady: boolean = false;
+  isContactLoading: boolean = false;
+
   industryVertical: { id: number; industryName: string }[] = [];
-  accounts: { id: number; accountName: string }[
-  ] = [];
-   serviceline: { id: number; serviceName: string }[
-  ] = [];
+  accounts: { id: number; accountName: string }[] = [];
+  serviceline: { id: number; serviceName: string }[] = [];
   regions: { id: number; regionName: string }[] = [];
   domains: { id: number; domainName: string }[] = [];
-  dealStages: { id: number; displayName: string; stageName?: string; }[] = [];
+  dealStages: { id: number; displayName: string; stageName?: string }[] = [];
   revenueTypes: { id: number; revenueTypeName: string }[] = [];
   dus: { id: number; duName: string }[] = [];
   countries: { id: number; countryName: string }[] = [];
   
-  companies: string[] = [];
-  companyContactMap: { [company: string]: string[] } = {};
-  filteredCompanies: string[] = [];
+  customers: string[] = []; // Updated to match backend
+  customerContactMap: { [customer: string]: string[] } = {}; // Updated to match backend
+  filteredCustomers: string[] = []; // Updated to match backend
   filteredContacts: string[] = [];
 
   customFields: { fieldLabel: string; fieldType: string; dataField: string; required?: boolean }[] = [];
 
- 
   newDeal: NewDeal = {
     amount: 0,
-    companyName: '',
+    customerName: '', // Updated to match backend
     title: '',
     account: null,
     serviceline: null,
@@ -114,15 +123,16 @@ countryCodes: { code: string; name: string }[] = [
     probability: null,
   };
 
-  isCompanyModalVisible: boolean = false;
-   companyData = { 
-    companyName: '', 
+  isCustomerModalVisible: boolean = false; // Updated to match backend
+  customerData = { // Updated to match backend
+    customerName: '', 
     phoneNo: '', 
     website: '', 
     industryVertical: null as number | null,
-    countryCode: '+91' // Default country code
+    countryCode: '+91'
   };
-  companyFields: {
+
+  customerFields: { // Updated to match backend
     dataField: string;
     label: string;
     editorType?: string;
@@ -130,11 +140,11 @@ countryCodes: { code: string; name: string }[] = [
     validationRules?: DxValidationRule[];
   }[] = [
     {
-      dataField: 'companyName',
-      label: 'Company Name',
+      dataField: 'customerName',
+      label: 'Customer Name',
       validationRules: [
-        { type: 'required', message: 'Company Name is required' },
-        { type: 'stringLength', min: 2, message: 'Company Name must be at least 2 characters long' }
+        { type: 'required', message: 'Customer Name is required' },
+        { type: 'stringLength', min: 2, message: 'Customer Name must be at least 2 characters long' }
       ]
     },
     {
@@ -157,23 +167,7 @@ countryCodes: { code: string; name: string }[] = [
       label: 'Country Code',
       editorType: 'dxSelectBox',
       editorOptions: {
-        dataSource: [
-          { code: '+91', name: 'India (+91)' },
-          { code: '+1', name: 'United States (+1)' },
-          { code: '+44', name: 'United Kingdom (+44)' },
-          { code: '+81', name: 'Japan (+81)' },
-          { code: '+86', name: 'China (+86)' },
-          { code: '+33', name: 'France (+33)' },
-          { code: '+49', name: 'Germany (+49)' },
-          { code: '+39', name: 'Italy (+39)' },
-          { code: '+34', name: 'Spain (+34)' },
-          { code: '+7', name: 'Russia (+7)' },
-          { code: '+55', name: 'Brazil (+55)' },
-          { code: '+52', name: 'Mexico (+52)' },
-          { code: '+61', name: 'Australia (+61)' },
-          { code: '+82', name: 'South Korea (+82)' },
-          { code: '+65', name: 'Singapore (+65)' }
-        ],
+        dataSource: this.countryCodes,
         displayExpr: 'name',
         valueExpr: 'code',
         searchEnabled: true,
@@ -194,7 +188,6 @@ countryCodes: { code: string; name: string }[] = [
       },
       validationRules: [
         { type: 'required', message: 'Phone Number is required' },
-       
       ]
     },
     {
@@ -206,16 +199,18 @@ countryCodes: { code: string; name: string }[] = [
       ]
     }
   ];
+
   isContactModalVisible: boolean = false;
- contactData: QuickContactFormData = { 
-  FirstName: '', 
-  LastName: '', 
-  Designation: '', 
-  companyName: '', 
-  Email: '', 
-  phoneNo: '',
-  countryCode: '+91' // Default to India
-};
+  contactData: QuickContactFormData = { 
+    FirstName: '', 
+    LastName: '', 
+    Designation: '', 
+    customerName: '', // Updated to match backend
+    Email: '', 
+    phoneNo: '',
+    countryCode: '+91'
+  };
+
   contactFields: {
     dataField: string;
     label: string;
@@ -234,9 +229,8 @@ countryCodes: { code: string; name: string }[] = [
     {
       dataField: 'LastName',
       label: 'Last Name',
-     
       validationRules: [
-         { type: 'stringLength', min: 2, message: 'Last Name must be at least 2 characters if provided' }
+        { type: 'stringLength', min: 2, message: 'Last Name must be at least 2 characters if provided' }
       ]
     },
     {
@@ -248,45 +242,29 @@ countryCodes: { code: string; name: string }[] = [
       ]
     },
     {
-      dataField: 'companyName',
-      label: 'Company Name',
+      dataField: 'customerName',
+      label: 'Customer Name',
       editorOptions: { disabled: true },
       validationRules: [
-        { type: 'required', message: 'Company Name is required (should be auto-filled)' }
+        { type: 'required', message: 'Customer Name is required (should be auto-filled)' }
       ]
     },
     {
-  dataField: 'Email',
-  label: 'Email',
-  editorType: 'dxTextBox',
-  editorOptions: { mode: 'email' },
-  validationRules: [
-    { type: 'required', message: 'Email is required' }, // Added required rule
-    { type: 'email', message: 'Invalid email format' }
-  ]
-},
- {
+      dataField: 'Email',
+      label: 'Email',
+      editorType: 'dxTextBox',
+      editorOptions: { mode: 'email' },
+      validationRules: [
+        { type: 'required', message: 'Email is required' },
+        { type: 'email', message: 'Invalid email format' }
+      ]
+    },
+    {
       dataField: 'countryCode',
       label: 'Country Code',
       editorType: 'dxSelectBox',
       editorOptions: {
-        dataSource: [
-          { code: '+91', name: 'India (+91)' },
-          { code: '+1', name: 'United States (+1)' },
-          { code: '+44', name: 'United Kingdom (+44)' },
-          { code: '+81', name: 'Japan (+81)' },
-          { code: '+86', name: 'China (+86)' },
-          { code: '+33', name: 'France (+33)' },
-          { code: '+49', name: 'Germany (+49)' },
-          { code: '+39', name: 'Italy (+39)' },
-          { code: '+34', name: 'Spain (+34)' },
-          { code: '+7', name: 'Russia (+7)' },
-          { code: '+55', name: 'Brazil (+55)' },
-          { code: '+52', name: 'Mexico (+52)' },
-          { code: '+61', name: 'Australia (+61)' },
-          { code: '+82', name: 'South Korea (+82)' },
-          { code: '+65', name: 'Singapore (+65)' }
-        ],
+        dataSource: this.countryCodes,
         displayExpr: 'name',
         valueExpr: 'code',
         searchEnabled: true,
@@ -296,24 +274,24 @@ countryCodes: { code: string; name: string }[] = [
         { type: 'required', message: 'Country Code is required' }
       ]
     },
-{
-  dataField: 'phoneNo',
-  label: 'Phone Number',
-  editorType: 'dxTextBox',
-  editorOptions: {
-    mask: '00000-00000', // Remove hardcoded country code from mask
-    maskRules: { "0": /[0-9]/ },
-    placeholder: 'Enter 10-digit phone number'
-  },
-  validationRules: [
-    { type: 'required', message: 'Phone Number is required' },
     {
-      type: 'pattern',
-      pattern: /^\d{5}-?\d{5}$/, // Adjust pattern to match 10 digits with optional hyphen
-      message: 'Phone number must be 10 digits (e.g., 12345-67890 or 1234567890)'
+      dataField: 'phoneNo',
+      label: 'Phone Number',
+      editorType: 'dxTextBox',
+      editorOptions: {
+        mask: '00000-00000',
+        maskRules: { "0": /[0-9]/ },
+        placeholder: 'Enter 10-digit phone number'
+      },
+      validationRules: [
+        { type: 'required', message: 'Phone Number is required' },
+        {
+          type: 'pattern',
+          pattern: /^\d{5}-?\d{5}$/,
+          message: 'Phone number must be 10 digits (e.g., 12345-67890 or 1234567890)'
+        }
+      ]
     }
-  ]
-}
   ];
 
   isCustomizeFieldModalVisible: boolean = false;
@@ -322,6 +300,8 @@ countryCodes: { code: string; name: string }[] = [
     { dataField: 'fieldLabel', label: 'Field Label', required: true },
     { dataField: 'fieldType', label: 'Field Type', editorType: 'dxSelectBox', editorOptions: { items: ['Text', 'Numerical', 'Boolean', 'Date'], placeholder: 'Select field type' }, required: true }
   ];
+
+  selectedContactDetails: Contact | null = null;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -334,7 +314,7 @@ countryCodes: { code: string; name: string }[] = [
     private revenuetypeService: RevenuetypeService,
     private companyContactService: CompanyContactService,
     private dealService: DealService,
-    private serviceLine:SeviceLineService,
+    private serviceLine: SeviceLineService,
     private industryVerticalService: IndustryVerticalService,
     private authService: AuthServiceService
   ) {}
@@ -343,14 +323,15 @@ countryCodes: { code: string; name: string }[] = [
   onResize(event: any) {
     this.popupWidth = event.target.innerWidth < 600 ? '90%' : 500;
   }
-validateCloseDate = (e: any) => {
-  return !this.newDeal.startDate || !e.value || new Date(e.value) >= new Date(this.newDeal.startDate);
-}
-currencyFormat = {
-  type: 'fixedPoint',
-  precision: 2  
-};
 
+  validateCloseDate = (e: any) => {
+    return !this.newDeal.startDate || !e.value || new Date(e.value) >= new Date(this.newDeal.startDate);
+  }
+
+  currencyFormat = {
+    type: 'fixedPoint',
+    precision: 2  
+  };
 
   ngOnInit() {
     console.log('AddDealModal ngOnInit - dealFormInstance:', this.dealFormInstance);
@@ -372,7 +353,6 @@ currencyFormat = {
 
         if (this.dealFormInstance && this.dealFormInstance.instance) {
           this.isFormReady = true;
-         
         } else {
           console.error('CRITICAL: dealFormInstance is NOT available even after popup "shown" and detectChanges.');
           alert('Form failed to initialize. Please try again.');
@@ -427,15 +407,15 @@ currencyFormat = {
     this.loadDus();
     this.loadRevenueTypes();
     this.loadCountries();
-    this.loadCompanyContactData();
+    this.loadCustomerContactData();
     this.loadIndustryVerticals();
   }
+
   loadIndustryVerticals() {
     this.industryVerticalService.getIndustryVertical().subscribe({
       next: (data) => {
         this.industryVertical = data;
-        // Update the companyFields editorOptions for industryVertical
-        const industryField = this.companyFields.find(field => field.dataField === 'industryVertical');
+        const industryField = this.customerFields.find(field => field.dataField === 'industryVertical');
         if (industryField && industryField.editorOptions) {
           industryField.editorOptions.dataSource = this.industryVertical;
         }
@@ -445,9 +425,10 @@ currencyFormat = {
     });
   }
 
-loadServiceLines() {
-  this.serviceLine.getServiceTypes().subscribe(data => this.serviceline = data, err => console.error('Error accounts', err));
-}
+  loadServiceLines() {
+    this.serviceLine.getServiceTypes().subscribe(data => this.serviceline = data, err => console.error('Error accounts', err));
+  }
+
   loadAccounts() {
     this.accountService.getAllAccounts().subscribe(data => this.accounts = data, err => console.error('Error accounts', err));
   }
@@ -476,13 +457,13 @@ loadServiceLines() {
     this.countryService.getCountries().subscribe(data => this.countries = data, err => console.error('Error countries', err));
   }
 
-  loadCompanyContactData() {
+  loadCustomerContactData() {
     this.companyContactService.getCompanyContactMap().subscribe(data => {
-      this.companyContactMap = data;
-      this.companies = Object.keys(data);
-      this.filteredCompanies = [...this.companies];
-      if (this.newDeal.companyName) {
-        this.filteredContacts = this.companyContactMap[this.newDeal.companyName] || [];
+      this.customerContactMap = data;
+      this.customers = Object.keys(data);
+      this.filteredCustomers = [...this.customers];
+      if (this.newDeal.customerName) {
+        this.filteredContacts = this.customerContactMap[this.newDeal.customerName] || [];
       }
       this.cdr.detectChanges();
     });
@@ -491,10 +472,9 @@ loadServiceLines() {
   prefillFormForEdit(deal: DealRead) {
     const parseDate = (dateStr: string | null | undefined): Date | null => dateStr ? new Date(dateStr) : null;
     
-    // Reset newDeal with standard fields
     this.newDeal = {
       amount: deal.dealAmount || 0,
-      companyName: '',
+      customerName: '', // Updated to match backend
       title: deal.dealName || '',
       account: deal.accountId || null,
       serviceline: deal.serviceId || null,
@@ -511,22 +491,21 @@ loadServiceLines() {
       probability: deal.probability || null,
     };
 
-    // Prefill custom fields if they exist
     if (deal.customFields) {
       Object.keys(deal.customFields).forEach(key => {
         this.newDeal[key] = deal.customFields![key];
       });
     }
 
-    if (deal.contactName && this.companyContactMap) {
-      for (const compName of Object.keys(this.companyContactMap)) {
-        if (this.companyContactMap[compName].includes(deal.contactName)) {
-          this.newDeal.companyName = compName;
+    if (deal.contactName && this.customerContactMap) {
+      for (const custName of Object.keys(this.customerContactMap)) {
+        if (this.customerContactMap[custName].includes(deal.contactName)) {
+          this.newDeal.customerName = custName;
           break;
         }
       }
     }
-    this.onCompanyChange(this.newDeal.companyName, false);
+    this.onCustomerChange(this.newDeal.customerName, false);
     this.cdr.detectChanges();
   }
 
@@ -540,107 +519,136 @@ loadServiceLines() {
     this.resetForm();
   }
 
- handleSubmit() {
-  if (!this.isFormReady || !this.dealFormInstance || !this.dealFormInstance.instance) {
-    let message = "The form is not ready for submission. ";
-    if (!this.isFormReady) message += "Popup content might not be fully initialized. ";
-    if (!this.dealFormInstance || !this.dealFormInstance.instance) message += "Form component reference is missing. ";
-    alert(message + "Please wait a moment. If the problem persists, try closing and reopening the modal.");
-    this.onSubmitError.emit('Form not ready for submission.');
-    this.isLoading = false;
-    return;
-  }
+  handleSubmit() {
+    console.log('handleSubmit called. Form data:', this.newDeal, 'selectedContactDetails:', this.selectedContactDetails);
+    if (!this.isFormReady || !this.dealFormInstance || !this.dealFormInstance.instance) {
+      let message = "The form is not ready for submission. ";
+      if (!this.isFormReady) message += "Popup content might not be fully initialized. ";
+      if (!this.dealFormInstance || !this.dealFormInstance.instance) message += "Form component reference is missing. ";
+      alert(message + "Please wait a moment. If the problem persists, try closing and reopening the modal.");
+      this.onSubmitError.emit('Form not ready for submission.');
+      this.isLoading = false;
+      return;
+    }
 
-  const validationResult = this.dealFormInstance.instance.validate();
-  if (!validationResult.isValid) {
-    alert('Please correct the validation errors before saving.');
-    this.onSubmitError.emit('Validation failed. Please check the form.');
-    return;
-  }
+    const validationResult = this.dealFormInstance.instance.validate();
+    if (!validationResult.isValid) {
+      alert('Please correct the validation errors before saving.');
+      this.onSubmitError.emit('Validation failed. Please check the form.');
+      return;
+    }
 
-  if (this.mode === 'edit') {
-    console.warn('Edit mode handleSubmit not fully implemented.');
-    return;
-  }
+    if (this.mode === 'edit') {
+      console.warn('Edit mode handleSubmit not fully implemented.');
+      return;
+    }
 
-  this.isLoading = true;
+    if (this.isContactLoading) {
+      alert("Contact details are still loading. Please wait a moment.");
+      this.isLoading = false;
+      this.onSubmitError.emit("Contact details are still loading.");
+      return;
+    }
 
-  if (!this.newDeal.region || !this.newDeal.stage || !this.newDeal.revenueType || !this.newDeal.department || !this.newDeal.country) {
-    const missing = [
-      !this.newDeal.region ? "Region" : null,
-      !this.newDeal.stage ? "Stage" : null,
-      !this.newDeal.revenueType ? "Revenue Type" : null,
-      !this.newDeal.department ? "DU" : null,
-      !this.newDeal.country ? "Country" : null
-    ].filter(Boolean).join(', ');
-    alert(`Required fields missing: ${missing}`);
-    this.isLoading = false;
-    this.onSubmitError.emit(`Required fields missing: ${missing}`);
-    return;
-  }
+    this.isLoading = true;
 
-  if (!this.newDeal.startDate || !this.newDeal.closeDate) {
-    alert("Starting and Closing dates are required.");
-    this.isLoading = false;
-    this.onSubmitError.emit("Starting and Closing dates are required.");
-    return;
-  }
+    if (!this.newDeal.customerName) {
+      alert("Please select a customer.");
+      this.isLoading = false;
+      this.onSubmitError.emit("Customer not selected.");
+      return;
+    }
 
-  if (!this.selectedContactDetails) {
-    alert("Contact details could not be loaded. Please try selecting the contact again.");
-    this.isLoading = false;
-    this.onSubmitError.emit("Contact details not available.");
-    return;
-  }
+    if (!this.newDeal.contactName) {
+      alert("Please select a contact.");
+      this.isLoading = false;
+      this.onSubmitError.emit("Contact not selected.");
+      return;
+    }
 
-  // Extract custom fields into an object
-  const customFieldValues: { [key: string]: any } = {};
-  this.customFields.forEach(field => {
-    customFieldValues[field.dataField] = this.newDeal[field.dataField];
-  });
+    if (!this.newDeal.region || !this.newDeal.stage || !this.newDeal.revenueType || !this.newDeal.department || !this.newDeal.country) {
+      const missing = [
+        !this.newDeal.region ? "Region" : null,
+        !this.newDeal.stage ? "Stage" : null,
+        !this.newDeal.revenueType ? "Revenue Type" : null,
+        !this.newDeal.department ? "DU" : null,
+        !this.newDeal.country ? "Country" : null
+      ].filter(Boolean).join(', ');
+      alert(`Required fields missing: ${missing}`);
+      this.isLoading = false;
+      this.onSubmitError.emit(`Required fields missing: ${missing}`);
+      return;
+    }
 
-  const dealPayload: DealCreatePayload = {
-    title: this.newDeal.title,
-    amount: this.newDeal.amount,
-    companyName: this.newDeal.companyName,
-    contactFullName: this.newDeal.contactName,
-    contactEmail: this.selectedContactDetails.email,
-    contactPhoneNumber: this.selectedContactDetails.phoneNo ? `${this.selectedContactDetails.countryCode || '+91'} ${this.selectedContactDetails.phoneNo}` : null,
-    contactDesignation: this.selectedContactDetails.designation || null,
-    accountId: this.newDeal.account,
-    serviceId: this.newDeal.serviceline,
-    regionId: this.newDeal.region as number,
-    domainId: this.newDeal.domain,
-    dealStageId: this.newDeal.stage as number,
-    revenueTypeId: this.newDeal.revenueType as number,
-    duId: this.newDeal.department as number,
-    countryId: this.newDeal.country as number,
-    description: this.newDeal.description,
-    probability: this.newDeal.probability,
-    startingDate: this.newDeal.startDate.toISOString(),
-    closingDate: this.newDeal.closeDate.toISOString(),
-    createdBy: this.authService.userId, // Hardcoded as 3
-    customFields: customFieldValues
-  };
+    if (!this.newDeal.startDate || !this.newDeal.closeDate) {
+      alert("Starting and Closing dates are required.");
+      this.isLoading = false;
+      this.onSubmitError.emit("Starting and Closing dates are required.");
+      return;
+    }
 
-  this.dealService.createDeal(dealPayload)
-    .pipe(finalize(() => { this.isLoading = false; this.cdr.detectChanges(); }))
-    .subscribe({
-      next: (createdDeal: DealRead) => {
-        alert('Deal created successfully!');
-        this.onSubmitSuccess.emit(createdDeal);
-        this.handleClose();
-      },
-      error: (err: Error) => {
-        alert(`Error: ${err.message || 'Failed to create deal. Please try again.'}`);
-        this.onSubmitError.emit(err.message || 'Failed to create deal. Please try again.');
-      }
+    if (!this.selectedContactDetails) {
+      console.warn('Contact details not loaded. Using fallback values.');
+    }
+
+    const contactDetails = this.selectedContactDetails || {
+      email: '',
+      phoneNo: '',
+      designation: '',
+      countryCode: '+91'
+    };
+
+    const customFieldValues: { [key: string]: any } = {};
+    this.customFields.forEach(field => {
+      customFieldValues[field.dataField] = this.newDeal[field.dataField];
     });
-}
+
+    const dealPayload: DealCreatePayload = {
+      title: this.newDeal.title,
+      amount: this.newDeal.amount,
+      customerName: this.newDeal.customerName,
+      contactFullName: this.newDeal.contactName,
+      contactEmail: contactDetails.email || null,
+      contactPhoneNumber: contactDetails.phoneNo ? `${contactDetails.countryCode || '+91'} ${contactDetails.phoneNo}` : null,
+      contactDesignation: contactDetails.designation || null,
+      accountId: this.newDeal.account,
+      serviceId: this.newDeal.serviceline,
+      regionId: this.newDeal.region as number,
+      domainId: this.newDeal.domain,
+      dealStageId: this.newDeal.stage as number,
+      revenueTypeId: this.newDeal.revenueType as number,
+      duId: this.newDeal.department as number,
+      countryId: this.newDeal.country as number,
+      description: this.newDeal.description,
+      probability: this.newDeal.probability,
+      startingDate: this.newDeal.startDate.toISOString(),
+      closingDate: this.newDeal.closeDate.toISOString(),
+      createdBy: this.authService.userId,
+      customFields: customFieldValues
+    };
+
+    console.log('Submitting deal payload:', dealPayload);
+
+    this.dealService.createDeal(dealPayload)
+      .pipe(finalize(() => { this.isLoading = false; this.cdr.detectChanges(); }))
+      .subscribe({
+        next: (createdDeal: DealRead) => {
+          alert('Deal created successfully!');
+          this.onSubmitSuccess.emit(createdDeal);
+          this.handleClose();
+        },
+        error: (err: Error) => {
+          console.error('Error creating deal:', err);
+          alert(`Error: ${err.message || 'Failed to create deal. Please try again.'}`);
+          this.onSubmitError.emit(err.message || 'Failed to create deal. Please try again.');
+        }
+      });
+  }
+
   resetForm() {
     const resetData: NewDeal = {
       amount: 0,
-      companyName: '',
+      customerName: '',
       title: '',
       account: null,
       serviceline: null,
@@ -651,13 +659,12 @@ loadServiceLines() {
       revenueType: null,
       department: null,
       country: null,
-      startDate: new Date(), // Set default to current date
+      startDate: new Date(),
       closeDate: null,
       description: '',
       probability: null,
     };
 
-    // Reset custom field values
     this.customFields.forEach(field => {
       switch (field.fieldType.toLowerCase()) {
         case 'text':
@@ -678,11 +685,13 @@ loadServiceLines() {
     });
 
     this.newDeal = resetData;
+    this.selectedContactDetails = null;
+    this.isContactLoading = false;
 
-    if (this.companies && this.companies.length > 0) {
-      this.filteredCompanies = [...this.companies];
+    if (this.customers && this.customers.length > 0) {
+      this.filteredCustomers = [...this.customers];
     } else {
-      this.filteredCompanies = [];
+      this.filteredCustomers = [];
     }
     this.filteredContacts = [];
     this.isLoading = false;
@@ -690,177 +699,186 @@ loadServiceLines() {
     this.cdr.detectChanges();
   }
 
-  onCompanyChange(companyName: string, clearContact: boolean = true) {
-    this.newDeal.companyName = companyName;
-    this.filteredContacts = this.companyContactMap[companyName] || [];
+  onCustomerChange(customerName: string, clearContact: boolean = true) {
+    console.log('onCustomerChange called with customerName:', customerName);
+    this.newDeal.customerName = customerName;
+    this.filteredContacts = this.customerContactMap[customerName] || [];
     if (clearContact || !this.filteredContacts.includes(this.newDeal.contactName)) {
       this.newDeal.contactName = '';
+      this.selectedContactDetails = null;
     }
     this.cdr.detectChanges();
   }
-selectedContactDetails: Contact | null = null;
- onContactChange(contactName: string) {
-  this.newDeal.contactName = contactName;
-  if (contactName && this.newDeal.companyName) {
-    this.companyContactService.getContactByNameAndCompany(contactName, this.newDeal.companyName)
-      .subscribe({
-        next: (contact) => {
-          this.selectedContactDetails = contact || null;
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          console.error('Error fetching contact details:', err);
-          this.selectedContactDetails = null;
-        }
-      });
-  } else {
-    this.selectedContactDetails = null;
-  }
-}
 
- openQuickCreateCompanyModal() {
-    this.companyData = { 
-      companyName: '', 
+  onContactChange(contactName: string) {
+    console.log('onContactChange called with contactName:', contactName, 'customerName:', this.newDeal.customerName);
+    this.newDeal.contactName = contactName;
+    if (contactName && this.newDeal.customerName) {
+      this.isContactLoading = true;
+      this.companyContactService.getContactByNameAndCustomer(contactName, this.newDeal.customerName)
+        .pipe(
+          finalize(() => {
+            this.isContactLoading = false;
+            this.cdr.detectChanges();
+          })
+        )
+        .subscribe({
+          next: (contact) => {
+            console.log('Contact details fetched:', contact);
+            this.selectedContactDetails = contact || null;
+            this.cdr.detectChanges();
+          },
+          error: (err) => {
+            console.error('Error fetching contact details:', err);
+            this.selectedContactDetails = null;
+            this.cdr.detectChanges();
+          }
+        });
+    } else {
+      console.warn('Contact or customer not selected. contactName:', contactName, 'customerName:', this.newDeal.customerName);
+      this.selectedContactDetails = null;
+      this.isContactLoading = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  openQuickCreateCustomerModal() {
+    this.customerData = { 
+      customerName: '', 
       phoneNo: '', 
       website: '', 
       industryVertical: null,
-      countryCode: '+91' // Default to India
+      countryCode: '+91'
     };
-    this.isCompanyModalVisible = true;
+    this.isCustomerModalVisible = true;
   }
 
-  closeQuickCreateCompanyModal() {
-    this.isCompanyModalVisible = false;
+  closeQuickCreateCustomerModal() {
+    this.isCustomerModalVisible = false;
   }
 
-   addNewCompany(newCompanyData: { 
-  companyName: string; 
-  phoneNo: string; 
-  website: string; 
-  industryVertical: number | null;
-  countryCode: string;
-}) {
-  // Combine country code with phone number
-  const fullPhoneNumber = `${newCompanyData.countryCode} ${newCompanyData.phoneNo}`;
-
-  const payload: Company = { 
-    companyName: newCompanyData.companyName,
-    phoneNo: newCompanyData.phoneNo, // Not needed in payload since we use fullPhoneNumber
-    website: newCompanyData.website,
-    industryVerticalId: newCompanyData.industryVertical,
-    countryCode: newCompanyData.countryCode,
-    createdBy: this.authService.userId // Hardcoded as 3
-  };
-
-  // Map to backend DTO (CustomerCreateDto)
-  const backendPayload = {
-    customerName: payload.companyName,
-    website: payload.website || null,
-    customerPhoneNumber: fullPhoneNumber,
-    industryVerticalId: payload.industryVerticalId || null,
-    createdBy: payload.createdBy
-  };
-
-  this.isLoading = true;
-  this.companyContactService.addCompany(backendPayload).pipe(
-    finalize(() => {
-      this.isLoading = false;
-      this.cdr.detectChanges();
-    })
-  ).subscribe({
-    next: () => {
-      alert('Company added successfully!');
-      this.loadCompanyContactData(); // Refresh the company-contact map
-      this.newDeal.companyName = payload.companyName;
-      this.onCompanyChange(payload.companyName);
-      this.closeQuickCreateCompanyModal();
-    },
-    error: (err) => {
-      console.error('Company creation failed:', err);
-      alert(err.message || 'Failed to create company.');
-    }
-  });
-}
-  openQuickCreateContactModal() {
-  if (!this.newDeal.companyName) {
-    alert('Please select a company first.');
-    return;
-  }
-  this.contactData = { 
-    FirstName: '', 
-    LastName: '', 
-    Designation: '', 
-    companyName: this.newDeal.companyName, 
-    Email: '', 
-    phoneNo: '',
-    countryCode: '+91'
-  };
-  this.isContactModalVisible = true;
-  this.cdr.detectChanges(); // Ensure form updates
-}
-closeQuickCreateContactModal() {
-  this.isContactModalVisible = false;
-  this.contactData = { 
-    FirstName: '', 
-    LastName: '', 
-    Designation: '', 
-    companyName: '', 
-    Email: '', 
-    phoneNo: '',
-    countryCode: '+91'
-  };
-}
-
- addNewContact(newContactData: QuickContactFormData) {
-  // Combine country code with phone number
-  const fullPhoneNumber = `${newContactData.countryCode} ${newContactData.phoneNo}`;
-
-  const payload: Contact = { 
-    firstName: newContactData.FirstName,
-    lastName: newContactData.LastName || '',
-    designation: newContactData.Designation,
-    email: newContactData.Email,
-    phoneNo: newContactData.phoneNo,
-    companyName: this.newDeal.companyName,
-    countryCode: newContactData.countryCode,
-    createdBy: this.authService.userId // Hardcoded as 3
-  };
-
-  // Map to backend DTO (ContactCreateDto)
-  const backendPayload = {
-    firstName: payload.firstName,
-    lastName: payload.lastName,
-    designation: payload.designation,
-    email: payload.email,
-    phoneNumber: fullPhoneNumber,
-    customerName: payload.companyName,
-    createdBy: payload.createdBy
-  };
-
-  this.isLoading = true;
-  this.companyContactService.addContact(backendPayload).pipe(
-    finalize(() => {
-      this.isLoading = false;
-      this.cdr.detectChanges();
-    })
-  ).subscribe({
-    next: () => {
-      alert('Contact added successfully!');
-      this.loadCompanyContactData();
-      const fullName = `${payload.firstName} ${payload.lastName}`.trim();
-      setTimeout(() => {
-        this.newDeal.contactName = fullName;
-        this.onCompanyChange(this.newDeal.companyName, false);
+  addNewCustomer(newCustomerData: { 
+    customerName: string; 
+    phoneNo: string; 
+    website: string; 
+    industryVertical: number | null;
+    countryCode: string;
+  }) {
+    const fullPhoneNumber = `${newCustomerData.countryCode} ${newCustomerData.phoneNo}`;
+    const payload: Customer= { 
+      customerName: newCustomerData.customerName,
+      phoneNo: newCustomerData.phoneNo,
+      website: newCustomerData.website,
+      industryVerticalId: newCustomerData.industryVertical,
+      countryCode: newCustomerData.countryCode,
+      createdBy: this.authService.userId
+    };
+    const backendPayload = {
+      customerName: payload.customerName,
+      website: payload.website || null,
+      customerPhoneNumber: fullPhoneNumber,
+      industryVerticalId: payload.industryVerticalId || null,
+      createdBy: payload.createdBy
+    };
+    this.isLoading = true;
+    this.companyContactService.addCompany(backendPayload).pipe(
+      finalize(() => {
+        this.isLoading = false;
         this.cdr.detectChanges();
-      }, 300);
-      this.closeQuickCreateContactModal();
-    },
-    error: (err) => {
-      console.error('Contact creation failed:', err);
-      alert(err.message || 'Failed to create contact.');
+      })
+    ).subscribe({
+      next: () => {
+        alert('Customer added successfully!');
+        this.loadCustomerContactData();
+        this.newDeal.customerName = payload.customerName;
+        this.onCustomerChange(payload.customerName);
+        this.closeQuickCreateCustomerModal();
+      },
+      error: (err) => {
+        console.error('Customer creation failed:', err);
+        alert(err.message || 'Failed to create customer.');
+      }
+    });
+  }
+
+  openQuickCreateContactModal() {
+    if (!this.newDeal.customerName) {
+      alert('Please select a customer first.');
+      return;
     }
-  });
-}
+    this.contactData = { 
+      FirstName: '', 
+      LastName: '', 
+      Designation: '', 
+      customerName: this.newDeal.customerName, 
+      Email: '', 
+      phoneNo: '',
+      countryCode: '+91'
+    };
+    this.isContactModalVisible = true;
+    this.cdr.detectChanges();
+  }
+
+  closeQuickCreateContactModal() {
+    this.isContactModalVisible = false;
+    this.contactData = { 
+      FirstName: '', 
+      LastName: '', 
+      Designation: '', 
+      customerName: '', 
+      Email: '', 
+      phoneNo: '',
+      countryCode: '+91'
+    };
+  }
+
+  addNewContact(newContactData: QuickContactFormData) {
+    const fullPhoneNumber = `${newContactData.countryCode} ${newContactData.phoneNo}`;
+    const payload: Contact = { 
+      firstName: newContactData.FirstName,
+      lastName: newContactData.LastName || '',
+      designation: newContactData.Designation,
+      email: newContactData.Email,
+      phoneNo: newContactData.phoneNo,
+      customerName: this.newDeal.customerName,
+      countryCode: newContactData.countryCode,
+      createdBy: this.authService.userId
+    };
+    const backendPayload = {
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      designation: payload.designation,
+      email: payload.email,
+      phoneNumber: fullPhoneNumber,
+      customerName: payload.customerName,
+      createdBy: payload.createdBy
+    };
+    this.isLoading = true;
+    this.companyContactService.addContact(backendPayload).pipe(
+      finalize(() => {
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: () => {
+        alert('Contact added successfully!');
+        this.loadCustomerContactData();
+        const fullName = `${payload.firstName} ${payload.lastName}`.trim();
+        setTimeout(() => {
+          this.newDeal.contactName = fullName;
+          this.onCustomerChange(this.newDeal.customerName, false);
+          this.onContactChange(fullName);
+          this.cdr.detectChanges();
+        }, 500);
+        this.closeQuickCreateContactModal();
+      },
+      error: (err) => {
+        console.error('Contact creation failed:', err);
+        alert(err.message || 'Failed to create contact.');
+      }
+    });
+  }
+
   openCustomizeFieldModal() {
     this.customizeFieldFormData = {};
     this.isCustomizeFieldModalVisible = true;
@@ -872,21 +890,14 @@ closeQuickCreateContactModal() {
 
   addCustomField(newField: any) {
     console.log('Custom Field Added:', newField);
-
-    // Generate a unique dataField name (e.g., "custom_fieldLabel")
     const dataField = `custom_${newField.fieldLabel.toLowerCase().replace(/\s+/g, '_')}`;
-
-    // Add the new field to customFields
     this.customFields.push({
       fieldLabel: newField.fieldLabel,
       fieldType: newField.fieldType,
       dataField: dataField,
       required: false,
     });
-
     console.log("Custom field array", this.customFields);
-
-    // Initialize the value in newDeal based on fieldType
     switch (newField.fieldType.toLowerCase()) {
       case 'text':
         this.newDeal[dataField] = '';
@@ -903,13 +914,11 @@ closeQuickCreateContactModal() {
       default:
         this.newDeal[dataField] = '';
     }
-    
     this.cdr.detectChanges();
     console.log("Custom field array", this.customFields);
     this.closeCustomizeFieldModal();
   }
 
-  // Map field type to DevExtreme editor type
   getEditorType(fieldType: string): string {
     switch (fieldType.toLowerCase()) {
       case 'text':
@@ -925,7 +934,6 @@ closeQuickCreateContactModal() {
     }
   }
 
-  // Provide editor options based on field type
   getEditorOptions(fieldType: string): any {
     switch (fieldType.toLowerCase()) {
       case 'text':
@@ -940,7 +948,4 @@ closeQuickCreateContactModal() {
         return {};
     }
   }
-
- 
-
 }

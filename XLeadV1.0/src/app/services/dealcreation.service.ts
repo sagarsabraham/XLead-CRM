@@ -8,11 +8,11 @@ import { catchError, map } from 'rxjs/operators';
 export interface DealCreatePayload {
   title: string;
   amount: number;
-  companyName: string;
+  customerName: string;
   contactFullName: string;
-  contactEmail: string; 
-  contactPhoneNumber: string | null; 
-  contactDesignation: string | null; 
+  contactEmail: string | null; // Updated to allow null
+  contactPhoneNumber: string | null; // Updated to allow null
+  contactDesignation: string | null; // Updated to allow null
   accountId: number | null;
   serviceId: number | null;
   regionId: number;
@@ -33,35 +33,35 @@ export interface DealRead {
   id: number;
   dealName: string;
   dealAmount: number;
+  customerName?: string;
+  contactName?: string;
   salespersonName?: string | null;
   startingDate?: string | null;
   closingDate?: string | null;
-  description?: string | null;
-  probability?: number | null;
-  stageName?: string | null;
-  duName?: string | null;
-  regionName?: string | null;
-  accountName?: string | null;
-  serviceName?: string | null;
-  contactName?: string | null;
-  domainName?: string | null;
-  revenueTypeName?: string | null;
-  countryName?: string | null;
-  companyName?: string | null;
-  accountId?: number | null;
-  serviceId?: number | null;
-  regionId?: number | null;
+  regionName?: string;
+  regionId?: number;
+  domainName?: string;
   domainId?: number | null;
-  revenueTypeId?: number | null;
-  duId?: number | null;
-  countryId?: number | null;
-  dealStageId?: number | null;
-  createdAt?: string | null;
-  createdBy?: number | null;
-  contactId?: number | null;
+  stageName?: string;
+  dealStageId?: number;
+  revenueTypeName?: string;
+  revenueTypeId?: number;
+  duName?: string;
+  duId?: number;
+  countryName?: string;
+  countryId?: number;
+  description?: string;
+  probability?: number | null;
+  accountName?: string;
+  accountId?: number | null;
+  serviceName?: string;
+  serviceId?: number | null;
+  createdBy?: number;
+  createdAt?: string;
+  updatedAt?: string;
   customFields?: { [key: string]: any };
 }
- 
+
  
 @Injectable({
   providedIn: 'root'
