@@ -14,7 +14,7 @@ describe('DealcardComponent', () => {
   const mockDeal = {
     title: 'Big Deal Q4',
     amount: 150000.75,
-    closeDate: new Date(2024, 11, 20), // Dec 20, 2024
+    closeDate: new Date(2024, 11, 20), 
     account: 'Acme Corp',
     companyName: '(Subsidiary Inc.)',
     department: 'Sales EMEA',
@@ -49,11 +49,10 @@ describe('DealcardComponent', () => {
   });
 
   describe('Display Logic', () => {
-    let dealContentElements: DebugElement[]; // To store the queried .deal-content elements
+    let dealContentElements: DebugElement[]; 
 
     beforeEach(() => {
-      // Query all .deal-content divs that are direct children of .content
-      // This is done once before all tests in this describe block.
+  
       dealContentElements = fixture.debugElement.queryAll(By.css('.content > .deal-content'));
     });
 
@@ -73,7 +72,7 @@ describe('DealcardComponent', () => {
     });
 
     it('should display account and company name', () => {
-      // The first element in our filtered list
+     
       expect(dealContentElements.length).toBeGreaterThanOrEqual(1); // Basic sanity check
       const accountCompanyEl = dealContentElements[0].nativeElement;
       expect(accountCompanyEl.textContent).toContain(mockDeal.account);
@@ -81,29 +80,27 @@ describe('DealcardComponent', () => {
     });
 
     it('should display department', () => {
-      // The second element in our filtered list
+     
       expect(dealContentElements.length).toBeGreaterThanOrEqual(2);
       const departmentEl = dealContentElements[1].nativeElement;
       expect(departmentEl.textContent).toContain(mockDeal.department);
     });
 
     it('should display probability', () => {
-      // The third element in our filtered list
+      
       expect(dealContentElements.length).toBeGreaterThanOrEqual(3);
       const probabilityEl = dealContentElements[2].nativeElement;
       expect(probabilityEl.textContent).toContain(mockDeal.probability);
     });
 
     it('should display region', () => {
-      // The fourth element in our filtered list
+      
       expect(dealContentElements.length).toBeGreaterThanOrEqual(4);
       const regionEl = dealContentElements[3].nativeElement;
       expect(regionEl.textContent).toContain(mockDeal.region);
     });
   });
 
-  // ... rest of your tests (Hover and Edit Icon, Card Click, Edit Click) ...
-  // These should remain the same as they were not affected by this specific selector issue.
 
   describe('Hover and Edit Icon', () => {
     it('should set hover to true on mouseenter', () => {
@@ -187,7 +184,7 @@ describe('DealcardComponent', () => {
     });
 
     it('clicking edit icon should not trigger onCardClick (due to stopPropagation)', () => {
-        spyOn(component, 'onCardClick').and.callThrough(); // Use callThrough if you want to ensure it's not called
+        spyOn(component, 'onCardClick').and.callThrough(); 
         component.hover = true;
         fixture.detectChanges();
 
