@@ -15,7 +15,17 @@ import { FormsModule } from '@angular/forms';
 import { FormModalComponent } from './form-modal/form-modal.component';
 import { ModalButtonsComponent } from './modal-buttons/modal-buttons.component';
 import { DealInfoModule } from '../deal-info/deal-info.module';
-import dxLoadPanel from 'devextreme/ui/load_panel';
+import { RouterModule } from '@angular/router';
+import { HighlightDirective } from '../directives/highlight.directive';
+import { AccountService } from '../services/account.service';
+import { CompanyContactService } from '../services/company-contact.service';
+import { CountryService } from '../services/country.service';
+import { DealService } from '../services/dealcreation.service';
+import { DomainService } from '../services/domain.service';
+import { DuService } from '../services/du.service';
+import { RegionService } from '../services/region.service';
+import { RevenuetypeService } from '../services/revenuetype.service';
+import { DealstageService } from '../services/dealstage.service';
 
 
 @NgModule({
@@ -28,7 +38,8 @@ import dxLoadPanel from 'devextreme/ui/load_panel';
     AddDealModalComponent,
     ModalHeaderComponent,
     FormModalComponent,
-    ModalButtonsComponent
+    ModalButtonsComponent,
+    HighlightDirective
    
   ],
   imports: [
@@ -48,9 +59,21 @@ import dxLoadPanel from 'devextreme/ui/load_panel';
     DxDateBoxModule,
     DxFileUploaderModule,
     DealInfoModule,
-   
- 
+    RouterModule
   ],
+
+  providers: [
+    DealService,
+    CompanyContactService,
+    AccountService,
+    RegionService,
+    DomainService,
+    CountryService,
+    DuService,
+    DealstageService,
+    RevenuetypeService
+  ],
+  
   exports: [
     PipelinepageComponent 
   ]

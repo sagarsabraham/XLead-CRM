@@ -6,6 +6,12 @@
     padding: 10px;
     z-index: 10;
     font-family: 'poppins';
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+}
+
+.deal-card:hover {
+    border-color: #1E90FF;
 }
 
 .deal-card.dx-card {
@@ -38,7 +44,19 @@
     font-size: 14px;
     color: #333333;
 }
-  
+
+.dealname:hover {
+  color: #1E90FF; 
+}
+
+.deal-amount {
+  font-weight: bold; 
+}
+
+.close-date {
+    font-weight: bold;
+}
+
 .deal-details {
     display: flex;
     justify-content: space-between;

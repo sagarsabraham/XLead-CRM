@@ -10,25 +10,21 @@ export class DealinfopageComponent implements OnInit {
   deal: any = null;
   history: { timestamp: string; editedBy: string; fromStage: string; toStage: string }[] = [];
   isMobile: boolean = false;
-  desktopSelectedTabId: string = 'history'; // Default for desktop
-  mobileSelectedTabId: string = 'deal-stage'; // Default for mobile
- 
+  desktopSelectedTabId: string = 'history'; 
+  mobileSelectedTabId: string = 'deal-stage'; 
+
   constructor(private route: ActivatedRoute, private router: Router) {}
  
   ngOnInit() {
-    // Check screen size on init
     this.checkScreenSize();
  
-    // Try to get the deal from navigation state
     const navigation = this.router.getCurrentNavigation();
     let dealData = navigation?.extras?.state?.['deal'];
  
-    // Fallback to history.state if navigation state is unavailable
     if (!dealData && history.state.deal) {
       dealData = history.state.deal;
     }
  
-    // If no deal data is found, use mock data for testing
     if (!dealData) {
       dealData = {
         title: 'Display Screen',
@@ -47,8 +43,6 @@ export class DealinfopageComponent implements OnInit {
     this.deal.contactPhone = '+919847908657';
     this.deal.companyWebsite = `info@${this.deal.companyName.toLowerCase()}.com`;
     this.deal.companyPhone = '+917745635467';
- 
-    // Initialize history with the initial stage
     this.history.push({
       timestamp: new Date().toLocaleString(),
       editedBy: this.deal.salesperson,
@@ -64,11 +58,9 @@ export class DealinfopageComponent implements OnInit {
  
   checkScreenSize() {
     this.isMobile = window.innerWidth <= 768;
-    // Reset mobile tab when switching to mobile view
     if (this.isMobile && (this.mobileSelectedTabId === '' || this.mobileSelectedTabId === 'history' || this.mobileSelectedTabId === 'documents')) {
       this.mobileSelectedTabId = 'deal-stage';
     }
-    // Reset desktop tab when switching to desktop view
     if (!this.isMobile && (this.desktopSelectedTabId === '' || this.desktopSelectedTabId === 'deal-stage' || this.desktopSelectedTabId === 'deal-info')) {
       this.desktopSelectedTabId = 'history';
     }

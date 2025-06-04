@@ -6,12 +6,12 @@ import { getSupportedInputTypes } from '@angular/cdk/platform';
 export interface QuickContactFormData {
   FirstName: string;
   LastName: string;
+  Designation: string; 
   companyName: string;
   Email: string;
   phoneNo: string;
 }
 
-// Interface for newDeal to define known properties and allow dynamic custom fields
 interface NewDeal {
   amount: number;
   companyName: string;
@@ -28,7 +28,7 @@ interface NewDeal {
   closeDate: Date | null;
   description: string;
   probability: number | null;
-  [key: string]: any; // Allow dynamic properties for custom fields
+  [key: string]: any; 
 }
 
 import { CountryService } from 'src/app/services/country.service';
@@ -41,6 +41,7 @@ import { DealstageService } from 'src/app/services/dealstage.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 import { DealService } from 'src/app/services/dealcreation.service';
 import { DealCreatePayload, DealRead } from 'src/app/services/dealcreation.service';
+import { DxValidationRule } from '../form-modal/form-modal.component';
 
 @Component({
   selector: 'app-add-deal-modal',
@@ -55,7 +56,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() isVisible: boolean = false;
   @Input() mode: 'add' | 'edit' = 'add';
   @Input() dealToEdit: DealRead | null = null;
-  @Input() selectedStage: number = 1;
+  @Input() selectedStage: number | null = null;
   @Output() onClose = new EventEmitter<void>();
   @Output() onSubmitSuccess = new EventEmitter<DealRead>();
   @Output() onSubmitError = new EventEmitter<string>();
@@ -77,10 +78,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   filteredCompanies: string[] = [];
   filteredContacts: string[] = [];
 
-  // Store custom fields
   customFields: { fieldLabel: string; fieldType: string; dataField: string; required?: boolean }[] = [];
 
-  // Use the NewDeal interface for newDeal
   newDeal: NewDeal = {
     amount: 0,
     companyName: '',
@@ -101,20 +100,116 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
 
   isCompanyModalVisible: boolean = false;
   companyData = { companyName: '', phoneNo: '', website: '' };
-  companyFields = [
-    { dataField: 'companyName', label: 'Company Name', required: true },
-    { dataField: 'phoneNo', label: 'Phone Number', required: true },
-    { dataField: 'website', label: 'Website', required: true }
+  companyFields: {
+    dataField: string;
+    label: string;
+    editorType?: string;
+    editorOptions?: any;
+    validationRules?: DxValidationRule[];
+  }[] = [
+    {
+      dataField: 'companyName',
+      label: 'Customer Name',
+      validationRules: [
+        { type: 'required', message: 'Customer Name is required' },
+        { type: 'stringLength', min: 2, message: 'Customer Name must be at least 2 characters long' }
+      ]
+    },
+   {
+  dataField: 'phoneNo',
+  label: 'Phone Number',
+  editorType: 'dxTextBox',
+  editorOptions: {
+    mask: '+91 00000-00000',
+    maskRules: { "0": /[0-9]/ }
+  },
+  validationRules: [
+    { type: 'required', message: 'Phone Number is required' },
+    {
+      type: 'pattern',
+      pattern: /^\+?91?\s?\d{5}\s?-?\d{5}$/,
+      message: 'Invalid Indian phone number format. Use +91 followed by 10 digits or 10 digits starting with 6, 7, 8, or 9.'
+    },
+  ]
+},
+    {
+      dataField: 'website',
+      label: 'Website',
+      validationRules: [
+        { type: 'required', message: 'Website is required' },
+       
+        { type: 'pattern', pattern: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/, message: 'Invalid website URL format' }
+      ]
+    }
   ];
 
   isContactModalVisible: boolean = false;
-  contactData: QuickContactFormData = { FirstName: '', LastName: '', companyName: '', Email: '', phoneNo: '' };
-  contactFields = [
-    { dataField: 'FirstName', label: 'First Name', required: true },
-    { dataField: 'LastName', label: 'Last Name', required: false },
-    { dataField: 'companyName', label: 'Company Name', editorOptions: { disabled: true }, required: true },
-    { dataField: 'Email', label: 'Email', required: false },
-    { dataField: 'phoneNo', label: 'Phone Number', required: true }
+  contactData: QuickContactFormData = { FirstName: '', LastName: '', Designation: '', companyName: '', Email: '', phoneNo: '' };
+  contactFields: {
+    dataField: string;
+    label: string;
+    editorType?: string;
+    editorOptions?: any;
+    validationRules?: DxValidationRule[];
+  }[] = [
+    {
+      dataField: 'FirstName',
+      label: 'First Name',
+      validationRules: [
+        { type: 'required', message: 'First Name is required' },
+        { type: 'stringLength', min: 2, message: 'First Name must be at least 2 characters' }
+      ]
+    },
+    {
+      dataField: 'LastName',
+      label: 'Last Name',
+     
+      validationRules: [
+         { type: 'stringLength', min: 2, message: 'Last Name must be at least 2 characters if provided' }
+      ]
+    },
+    {
+      dataField: 'designation',
+      label: 'Designation',
+      validationRules: [
+        { type: 'required', message: 'Designation is required' },
+        { type: 'stringLength', min: 2, message: 'Designation must be at least 2 characters' }
+      ]
+    },
+    {
+      dataField: 'companyName',
+      label: 'Customer Name',
+      editorOptions: { disabled: true },
+      validationRules: [
+        { type: 'required', message: 'Customer Name is required (should be auto-filled)' }
+      ]
+    },
+    {
+      dataField: 'Email',
+      label: 'Email',
+      editorType: 'dxTextBox',
+      editorOptions: { mode: 'email' },
+      validationRules: [
+        { type: 'email', message: 'Invalid email format' }
+      ]
+    },
+  {
+  dataField: 'phoneNo',
+  label: 'Phone Number',
+  editorType: 'dxTextBox',
+  editorOptions: {
+    mask: '+91 00000-00000',
+    maskRules: { "0": /[0-9]/ }
+  },
+  validationRules: [
+    { type: 'required', message: 'Phone Number is required' },
+    {
+      type: 'pattern',
+      pattern: /^\+?91?\s?\d{5}\s?-?\d{5}$/,
+      message: 'Invalid Indian phone number format. Use +91 followed by 10 digits or 10 digits starting with 6, 7, 8, or 9.'
+    },
+  ]
+},
   ];
 
   isCustomizeFieldModalVisible: boolean = false;
@@ -123,6 +218,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     { dataField: 'fieldLabel', label: 'Field Label', required: true },
     { dataField: 'fieldType', label: 'Field Type', editorType: 'dxSelectBox', editorOptions: { items: ['Text', 'Numerical', 'Boolean', 'Date'], placeholder: 'Select field type' }, required: true }
   ];
+
+  private qualificationStageId: number | null = null; 
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -220,31 +317,84 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   loadAccounts() {
-    this.accountService.getAllAccounts().subscribe(data => this.accounts = data, err => console.error('Error accounts', err));
+    this.accountService.getAllAccounts().subscribe(
+    data => {
+      this.accounts = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error accounts', err)
+  );
   }
 
   loadRegions() {
-    this.regionService.getAllRegions().subscribe(data => this.regions = data, err => console.error('Error regions', err));
+    this.regionService.getAllRegions().subscribe(
+    data => {
+      this.regions = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error regions', err)
+  );
   }
 
   loadDomains() {
-    this.domainService.getAllDomains().subscribe(data => this.domains = data, err => console.error('Error domains', err));
+    this.domainService.getAllDomains().subscribe(
+    data => {
+      this.domains = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error domains', err)
+  );
   }
 
   loadStages() {
-    this.dealStageService.getAllDealStages().subscribe(data => this.dealStages = data.map(s => ({...s, displayName: s.displayName || s.stageName!})), err => console.error('Error stages', err));
+    this.dealStageService.getAllDealStages().subscribe({
+      next: (data) => {
+        this.dealStages = data.map(s => ({ ...s, displayName: s.displayName || s.stageName! }));
+        
+        const qualificationStage = this.dealStages.find(stage => stage.displayName === 'Qualification' || stage.stageName === 'Qualification');
+        if (qualificationStage) {
+          this.qualificationStageId = qualificationStage.id;
+          console.log('Qualification stage ID found:', this.qualificationStageId);
+        } else {
+          console.warn('Qualification stage not found in dealStages:', this.dealStages);
+        }
+        if (this.mode !== 'edit' || !this.dealToEdit) {
+          this.setDefaultStage();
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error stages', err)
+    });
   }
 
   loadDus() {
-    this.duService.getDU().subscribe(data => this.dus = data, err => console.error('Error DUs', err));
+    this.duService.getDU().subscribe(
+    data => {
+      this.dus = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error DUs', err)
+  );
   }
 
   loadRevenueTypes() {
-    this.revenuetypeService.getRevenueTypes().subscribe(data => this.revenueTypes = data, err => console.error('Error revenue types', err));
+    this.revenuetypeService.getRevenueTypes().subscribe(
+    data => {
+      this.revenueTypes = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error revenue types', err)
+  );
   }
 
   loadCountries() {
-    this.countryService.getCountries().subscribe(data => this.countries = data, err => console.error('Error countries', err));
+    this.countryService.getCountries().subscribe(
+    data => {
+      this.countries = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error countries', err)
+  );
   }
 
   loadCompanyContactData() {
@@ -271,7 +421,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       region: deal.regionId || null,
       contactName: deal.contactName || '',
       domain: deal.domainId || null,
-      stage: deal.dealStageId || null,
+      stage: deal.dealStageId || this.qualificationStageId,
       revenueType: deal.revenueTypeId || null,
       department: deal.duId || null,
       country: deal.countryId || null,
@@ -401,7 +551,6 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   resetForm() {
-    // Reset standard fields
     const resetData: NewDeal = {
       amount: 0,
       companyName: '',
@@ -414,7 +563,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       revenueType: null,
       department: null,
       country: null,
-      startDate: null,
+      startDate: new Date(), 
       closeDate: null,
       description: '',
       probability: null,
@@ -442,6 +591,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
 
     this.newDeal = resetData;
 
+    this.setDefaultStage();
+
     if (this.companies && this.companies.length > 0) {
       this.filteredCompanies = [...this.companies];
     } else {
@@ -451,6 +602,14 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.isLoading = false;
     this.dealFormInstance?.instance.resetValues();
     this.cdr.detectChanges();
+  }
+
+  private setDefaultStage() {
+    if (this.selectedStage !== null && this.dealStages.some(stage => stage.id === this.selectedStage)) {
+      this.newDeal.stage = this.selectedStage;
+    } else if (this.qualificationStageId !== null) {
+      this.newDeal.stage = this.qualificationStageId;
+    }
   }
 
   onCompanyChange(companyName: string, clearContact: boolean = true) {
@@ -498,7 +657,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       alert('Please select a company first.');
       return;
     }
-    this.contactData = { FirstName: '', LastName: '', companyName: this.newDeal.companyName, Email: '', phoneNo: '' };
+    this.contactData = { FirstName: '', LastName: '', Designation: '', companyName: this.newDeal.companyName, Email: '', phoneNo: '' };
     this.isContactModalVisible = true;
   }
 
@@ -507,7 +666,9 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   addNewContact(newContactData: QuickContactFormData) {
-    const payload = { firstName: newContactData.FirstName, lastName: newContactData.LastName || '', email: newContactData.Email, phoneNumber: newContactData.phoneNo, companyName: this.newDeal.companyName, createdBy: 1 };
+    const payload = { firstName: newContactData.FirstName, lastName: newContactData.LastName || '', 
+      designation: newContactData.Designation, 
+      email: newContactData.Email, phoneNumber: newContactData.phoneNo, companyName: this.newDeal.companyName, createdBy: 1 };
     this.isLoading = true;
     this.companyContactService.addContact(payload).pipe(finalize(() => this.isLoading = false)).subscribe({
       next: () => {
@@ -537,10 +698,10 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.isCustomizeFieldModalVisible = false;
   }
 
+  showForm = true;
   addCustomField(newField: any) {
     console.log('Custom Field Added:', newField);
 
-    // Generate a unique dataField name (e.g., "custom_fieldLabel")
     const dataField = `custom_${newField.fieldLabel.toLowerCase().replace(/\s+/g, '_')}`;
 
     // Add the new field to customFields
@@ -550,6 +711,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       dataField: dataField,
       required: false,
     });
+
+    this.newDeal[dataField] = '';
 
     console.log("Custom field array", this.customFields);
 
@@ -571,6 +734,9 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         this.newDeal[dataField] = '';
     }
     
+    this.showForm = false;
+    this.cdr.detectChanges();
+    this.showForm = true;
     this.cdr.detectChanges();
     console.log("Custom field array", this.customFields);
     this.closeCustomizeFieldModal();
@@ -602,9 +768,18 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       case 'boolean':
         return {};
       case 'date':
-        return { displayFormat: 'dd/MM/yyyy' };
+        return { displayFormat: 'dd/MMM/yyyy' };
       default:
         return {};
     }
   }
+
+  validateCloseDate = (e: any) => {
+  return !this.newDeal.startDate || !e.value || new Date(e.value) >= new Date(this.newDeal.startDate);
+  }
+
+  currencyFormat = {
+  type: 'fixedPoint',
+  precision: 2  
+  };
 }

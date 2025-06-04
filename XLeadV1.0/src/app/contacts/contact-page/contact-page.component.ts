@@ -13,7 +13,7 @@ export class ContactPageComponent implements OnInit {
     { dataField: 'name', caption: 'Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'email', caption: 'Email', visible: true },
-    { dataField: 'company', caption: 'Company', visible: false },
+    { dataField: 'company', caption: 'Customer', visible: false },
     { dataField: 'status', caption: 'Status', visible: true }
   ];
 
@@ -31,12 +31,10 @@ export class ContactPageComponent implements OnInit {
   ngOnInit(): void {
     this.loadContacts();
   }
-// In your contact-page.component.ts file
 private safeToString(value: any): string {
   return value !== undefined && value !== null ? String(value) : '';
 }
 
-// contact-page.component.ts
 loadContacts(): void {
   this.isLoading = true;
   this.error = null;
@@ -49,7 +47,7 @@ loadContacts(): void {
         phone: contact.phoneNumber || '',
         email: contact.email || '',
         company: contact.companyName || '',
-        status: contact.isActive ? 'Active' : 'Inactive', // 👈 Map isActive to status
+        status: contact.isActive ? 'Active' : 'Inactive',
         owner: contact.createdBy?.toString() || 'System'
       }));
 
@@ -86,13 +84,11 @@ loadContacts(): void {
 
   selectedContactIds: string[] = [];
 
-// Add to ContactPageComponent
 handleSelectionChanged(event: any): void {
   console.log('Selection changed:', event);
   console.log('Selected keys:', event.selectedRowKeys);
   console.log('Selected data:', event.selectedRowsData);
   
-  // If you want to track selected contacts
   this.selectedContactIds = event.selectedRowKeys || [];
 }
 

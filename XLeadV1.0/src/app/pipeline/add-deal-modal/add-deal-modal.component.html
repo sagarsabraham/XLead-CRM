@@ -6,32 +6,38 @@
   [height]="'auto'"
   [dragEnabled]="false"
   [showCloseButton]="true"
-  (onHidden)="handleClose()"> <!-- handleClose will also reset isFormReady -->
+  (onHidden)="handleClose()"> 
  
   <div *dxTemplate="let data of 'content'" class="popup-content">
     <div #formContainer class="form-container" (wheel)="onMouseWheel($event)">
       <app-modal-header title="Deal Information" [showOwner]="true"></app-modal-header>
       <dx-form
+      *ngIf="showForm"
         #dealFormInstance 
         [formData]="newDeal"
         [colCountByScreen]="{ xs: 1, sm: 1, md: 1, lg: 1 }">
- 
-        <!-- <dxi-item dataField="salesperson">
-          <dxo-label text="SalesPerson" cssClass="bold-label"></dxo-label>
-          <dxi-validation-rule type="required" message="SalesPerson Name is required"></dxi-validation-rule>
-        </dxi-item> -->
-        <dxi-item dataField="amount" editorType="dxNumberBox">
+        <dxi-item
+        dataField="amount"
+        editorType="dxNumberBox"
+        [editorOptions]="{
+          showSpinButtons: true,
+          min: 0,
+          max: 100000000,
+          format: { type: 'fixedPoint', precision: 2 }
+        }"
+      >
           <dxo-label text="Amount" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Amount is required"></dxi-validation-rule>
         </dxi-item>
         <dxi-item dataField="companyName">
-          <dxo-label text="Company Name" cssClass="bold-label"></dxo-label>
+          <dxo-label text="Customer Name" cssClass="bold-label"></dxo-label>
           <div class="company-name-container">
             <dx-select-box
+              id="companySelect"
               [(value)]="newDeal.companyName"
               [dataSource]="filteredCompanies"
               [searchEnabled]="true"
-              placeholder="Select or search a company"
+              placeholder="Select or search a customer"
               (onValueChanged)="onCompanyChange($event.value)">
             </dx-select-box>
             <dx-button
@@ -40,7 +46,7 @@
               (onClick)="openQuickCreateCompanyModal()">
             </dx-button>
           </div>
-          <dxi-validation-rule type="required" message="Company Name is required"></dxi-validation-rule>
+          <dxi-validation-rule type="required" message="Customer Name is required"></dxi-validation-rule>
         </dxi-item>
        
         <dxi-item dataField="title">
@@ -105,7 +111,7 @@
         <dx-select-box
           [(value)]="newDeal.stage"
           [dataSource]="dealStages"
-          displayExpr="displayName" 
+          displayExpr="displayName"
           valueExpr="id"
           [searchEnabled]="true"
           placeholder="Select Stage">
@@ -148,13 +154,14 @@
           </dx-select-box>
           <dxi-validation-rule type="required" message="Country is required"></dxi-validation-rule>
       </dxi-item>
-      <dxi-item dataField="startDate" editorType="dxDateBox">
-        <dxo-label text="Starting Date" cssClass="bold-label"></dxo-label>
-        <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
+      <dxi-item dataField="startDate" editorType="dxDateBox" [editorOptions]="{ displayFormat: 'dd/MMM/yyyy' }">
+          <dxo-label text="Starting Date" cssClass="bold-label"></dxo-label>
+          <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
       </dxi-item>
-      <dxi-item dataField="closeDate" editorType="dxDateBox">
-        <dxo-label text="Closing Date" cssClass="bold-label"></dxo-label>
-        <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
+      <dxi-item dataField="closeDate" editorType="dxDateBox" [editorOptions]="{ displayFormat: 'dd/MMM/yyyy' }">
+          <dxo-label text="Closing Date" cssClass="bold-label"></dxo-label>
+          <dxi-validation-rule type="required" message="Date is required"></dxi-validation-rule>
+          <dxi-validation-rule type="custom" [validationCallback]="validateCloseDate" message="Closing date must be after start date"></dxi-validation-rule>
       </dxi-item>
       <dxi-item dataField="description" editorType="dxTextArea" [editorOptions]="{ placeholder: 'A few words about this deal', height: 90 }">
         <dxo-label text="Description" cssClass="bold-label"></dxo-label>
@@ -202,7 +209,7 @@
 <app-form-modal
   *ngIf="isCompanyModalVisible"
   [isVisible]="isCompanyModalVisible"
-  [title]="'Add New Company'"
+  [title]="'Add New Customer'"
   [formData]="companyData"
   [fields]="companyFields"
   (onClose)="closeQuickCreateCompanyModal()"

@@ -1,8 +1,6 @@
 <div class="deal-info-page">
-  <!-- Header -->
   <app-deal-header [deal]="deal"></app-deal-header>
  
-  <!-- Status Timeline -->
   <div class="timeline-wrapper">
     <app-status-timeline
       [currentStage]="deal?.stage"
@@ -24,10 +22,8 @@
     </div>
   </div>
  
-  <!-- Content Wrapper with Max Width -->
   <div class="content-wrapper">
     <div class="content">
-      <!-- Desktop: Two-column layout -->
       <div class="desktop-layout">
         <div class="left-column">
           <app-deal-info-card

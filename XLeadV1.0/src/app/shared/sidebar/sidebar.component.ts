@@ -35,8 +35,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
       isActive: false,
     },
     {
-      iconPath: 'assets/Company.png',
-      text: 'Companies',
+      iconPath: 'assets/customer.png',
+      text: 'Customers',
       route: '/companies',
       isActive: false,
     },
