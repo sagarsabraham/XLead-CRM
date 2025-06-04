@@ -320,7 +320,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.accountService.getAllAccounts().subscribe(
     data => {
       this.accounts = data;
-      this.cdr.detectChanges(); // <-- Move here
+      this.cdr.detectChanges();
     },
     err => console.error('Error accounts', err)
   );
@@ -350,7 +350,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.dealStageService.getAllDealStages().subscribe({
       next: (data) => {
         this.dealStages = data.map(s => ({ ...s, displayName: s.displayName || s.stageName! }));
-        // Find the "Qualification" stage ID for fallback
+        
         const qualificationStage = this.dealStages.find(stage => stage.displayName === 'Qualification' || stage.stageName === 'Qualification');
         if (qualificationStage) {
           this.qualificationStageId = qualificationStage.id;
@@ -358,7 +358,6 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         } else {
           console.warn('Qualification stage not found in dealStages:', this.dealStages);
         }
-        // Set the stage based on selectedStage or fallback to Qualification
         if (this.mode !== 'edit' || !this.dealToEdit) {
           this.setDefaultStage();
         }
@@ -606,7 +605,6 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   private setDefaultStage() {
-    // Use selectedStage if provided, otherwise fall back to Qualification
     if (this.selectedStage !== null && this.dealStages.some(stage => stage.id === this.selectedStage)) {
       this.newDeal.stage = this.selectedStage;
     } else if (this.qualificationStageId !== null) {
@@ -669,7 +667,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
 
   addNewContact(newContactData: QuickContactFormData) {
     const payload = { firstName: newContactData.FirstName, lastName: newContactData.LastName || '', 
-      designation: newContactData.Designation, // Include designation in payload
+      designation: newContactData.Designation, 
       email: newContactData.Email, phoneNumber: newContactData.phoneNo, companyName: this.newDeal.companyName, createdBy: 1 };
     this.isLoading = true;
     this.companyContactService.addContact(payload).pipe(finalize(() => this.isLoading = false)).subscribe({
