@@ -10,13 +10,15 @@ export class DealfooterComponent {
     label: string, 
     icon: string
   }[] = [];
+  @Input() stageId?: number;
   @Output() collapse = new EventEmitter<void>();
+  @Output() buttonClick = new EventEmitter<{ label: string, stageId?: number }>();
 
   onCollapse() {
     this.collapse.emit();
   }
 
   onButtonClick(label: string) {
-    console.log(`Button clicked: ${label}`);
+    this.buttonClick.emit({ label, stageId: this.stageId }); 
   }
 }

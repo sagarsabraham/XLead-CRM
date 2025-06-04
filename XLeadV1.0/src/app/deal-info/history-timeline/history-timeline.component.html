@@ -1,63 +1,28 @@
-<div class="history-timeline dx-card"> 
-
-  <h4>History Timeline</h4> 
-
-  <div class="timeline-date">{{ getTodayDate() }}</div>
-  <!-- rest of your timeline content -->
-
-
-
-  <div *ngIf="history.length; else noHistory" class="timeline"> 
-
- 
-
-    <div *ngFor="let item of reversedHistory; let i = index" class="timeline-entry"> 
-
-        <div class="timeline-time">{{ getTimeOnly(item.timestamp) }}
-</div> 
-
-        <div class="timeline-dot"> 
-
-        <div class="dot" [class.active]="i === 0"></div> 
-
-        <div class="line" *ngIf="i < reversedHistory.length - 1"></div> 
-
-      </div> 
-
- 
-
-      <div class="timeline-content"> 
-
-        <div class="user-action"> 
-
-          <strong>Stage updated by {{ item.editedBy }}</strong> 
-
-        </div> 
-
-        <div class="stage-change"> 
-
-          {{ item.fromStage }} to {{ item.toStage }} 
-
-        </div> 
-
-      </div> 
-
-    </div> 
-
- 
-
-  </div> 
-
- 
-
-  <ng-template #noHistory> 
-
-    <div class="no-history">No stage history available.</div> 
-
-  </ng-template> 
-
-</div> 
-
- 
-
- 
+<div class="history-timeline dx-card">
+  <div *ngIf="groupedHistory.length; else noHistory" class="timeline">
+    <div *ngFor="let group of groupedHistory; let i = index" class="timeline-group">
+      <div class="timeline-date">
+        <span class="date-dot"></span>
+        <span class="date-text">{{ group.date }}</span>
+      </div>
+      <div *ngFor="let item of group.entries; let j = index; let last = last" class="timeline-entry">
+        <div class="timeline-time">{{ getTimeOnly(item.timestamp) }}</div>
+        <div class="timeline-dot">
+          <div class="dot" [class.active]="i === 0 && j === 0"></div>
+          <div class="line" *ngIf="!last"></div>
+        </div>
+        <div class="timeline-content">
+          <div class="user-action">
+            <strong>Stage updated by {{ item.editedBy }}</strong>
+          </div>
+          <div class="stage-change">
+            {{ item.fromStage }} to {{ item.toStage }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #noHistory>
+    <div class="no-history">No stage history available.</div>
+  </ng-template>
+</div>

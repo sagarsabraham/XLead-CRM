@@ -1,0 +1,18 @@
+<div class="notes-container">
+  <h2>📝 Notes</h2>
+
+  <textarea [(ngModel)]="newNoteContent" rows="3" placeholder="Write a note..."></textarea>
+  <button (click)="addNote()" [disabled]="!newNoteContent.trim()">Add Note</button>
+
+  <ul>
+    <li *ngFor="let note of notes">
+      <div class="note">
+        <p>{{ note.content }}</p>
+        <small>{{ formatDate(note.createdAt) }}</small>
+        <button (click)="deleteNote(note.id)">Delete</button>
+      </div>
+    </li>
+  </ul>
+
+  <p *ngIf="notes.length === 0" class="empty">No notes yet. Add one!</p>
+</div>

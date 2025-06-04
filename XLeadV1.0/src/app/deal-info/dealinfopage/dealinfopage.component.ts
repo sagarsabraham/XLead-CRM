@@ -1,28 +1,45 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RelatedInfoService } from 'src/app/shared/services/related-info.service';
 
 @Component({
   selector: 'app-dealinfopage',
   templateUrl: './dealinfopage.component.html',
   styleUrls: ['./dealinfopage.component.css']
 })
-export class DealinfopageComponent implements OnInit{
+export class DealinfopageComponent implements OnInit {
   deal: any = null;
   history: { timestamp: string; editedBy: string; fromStage: string; toStage: string }[] = [];
+  isMobile: boolean = false;
 
-  constructor(private route: ActivatedRoute, private router: Router) { };
+  desktopSelectedTabId: string = 'history'; // Default for desktop
+  mobileSelectedTabId: string = 'deal-stage';
+
+  mobileTabs = [
+    { text: 'Deal Stage', id: 'deal-stage' },
+    { text: 'Deal Info', id: 'deal-info' },
+    { text: 'History', id: 'history' },
+    { text: 'Documents', id: 'documents' },
+    { text: 'Notes', id: 'notes' }  // Added notes tab here
+  ];
+
+  desktopTabs = [
+    { text: 'History', id: 'history' },
+    { text: 'Documents', id: 'documents' },
+    { text: 'Notes', id: 'notes' }  // Added notes tab here too
+  ];
+
+  constructor(private route: ActivatedRoute, private router: Router) {}
+
   ngOnInit() {
-    // Try to get the deal from navigation state
+    this.checkScreenSize();
+
     const navigation = this.router.getCurrentNavigation();
     let dealData = navigation?.extras?.state?.['deal'];
 
-    // Fallback to history.state if navigation state is unavailable
     if (!dealData && history.state.deal) {
       dealData = history.state.deal;
     }
 
-    // If no deal data is found, use mock data for testing
     if (!dealData) {
       dealData = {
         title: 'Display Screen',
@@ -42,13 +59,27 @@ export class DealinfopageComponent implements OnInit{
     this.deal.companyWebsite = `info@${this.deal.companyName.toLowerCase()}.com`;
     this.deal.companyPhone = '+917745635467';
 
-    // Initialize history with the initial stage
     this.history.push({
       timestamp: new Date().toLocaleString(),
       editedBy: this.deal.salesperson,
       fromStage: 'None',
       toStage: this.deal.stage
     });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.checkScreenSize();
+  }
+
+  checkScreenSize() {
+    this.isMobile = window.innerWidth <= 768;
+    if (this.isMobile && (this.mobileSelectedTabId === '' || this.mobileSelectedTabId === 'history' || this.mobileSelectedTabId === 'documents')) {
+      this.mobileSelectedTabId = 'deal-stage';
+    }
+    if (!this.isMobile && (this.desktopSelectedTabId === '' || this.desktopSelectedTabId === 'deal-stage' || this.desktopSelectedTabId === 'deal-info')) {
+      this.desktopSelectedTabId = 'history';
+    }
   }
 
   onStageChange(newStage: string) {
@@ -60,12 +91,15 @@ export class DealinfopageComponent implements OnInit{
       fromStage: oldStage,
       toStage: newStage
     });
-    console.log('History updated:', this.history); // Debug log
+    console.log('History updated:', this.history);
   }
 
   onDescriptionChange(newDescription: string) {
-    
-    console.log('Updated description:', newDescription); // Log the updated description
+    console.log('Updated description:', newDescription);
     this.deal.description = newDescription;
+  }
+
+  onDesktopTabSelect(e: any) {
+    this.desktopSelectedTabId = e.itemData.id;
   }
 }

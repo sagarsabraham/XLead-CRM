@@ -1,31 +1,38 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
-import { ContactPageComponent } from './contacts/contact-page/contact-page.component';
-
 
 const routes: Routes = [
+  { path: '', loadChildren: () =>
+     import('./dashboard/dashboard.module').then(m => m.DashboardModule),
+     data : {title : 'Dashboard'}
+  },
   {path: 'pipeline', loadChildren: () =>
-    import('./pipeline/pipeline.module').then(m => m.PipelineModule)
+    import('./pipeline/pipeline.module').then(m => m.PipelineModule),
+    data : {title : 'Pipelines'}
   },
   { path: 'dashboard', loadChildren: () =>
-     import('./dashboard/dashboard.module').then(m => m.DashboardModule) 
+     import('./dashboard/dashboard.module').then(m => m.DashboardModule),
+     data : {title : 'Dashboard'}
   },
-
   { path: 'contacts', loadChildren: () => 
-    import('./contacts/contacts.module').then(m => m.ContactsModule) 
+    import('./contacts/contacts.module').then(m => m.ContactsModule),
+    data : {title : 'Contacts'}
   },
   { 
     path: 'companies', loadChildren: () => 
-    import('./company/company.module').then(m => m.CompanyModule)
+    import('./company/company.module').then(m => m.CompanyModule),
+    data : {title : 'Companies'}
   },
   { 
     path: 'overview', loadChildren: () => 
-    import('./pipeline-overview/pipeline-overview.module').then(m => m.PipelineOverviewModule) 
+    import('./pipeline-overview/pipeline-overview.module').then(m => m.PipelineOverviewModule),
+    data : {title : 'Pipeline Overview'}
   },
   {
     path: 'dealinfo', loadChildren: () =>
-    import('./deal-info/deal-info.module').then(m => m.DealInfoModule)
+    import('./deal-info/deal-info.module').then(m => m.DealInfoModule),
+    data : {title : 'Pipeline'}
   },
   {
     path: '**', component: PageNotFoundComponent
