@@ -6,13 +6,12 @@ import { getSupportedInputTypes } from '@angular/cdk/platform';
 export interface QuickContactFormData {
   FirstName: string;
   LastName: string;
-  Designation: string; // Add designation field
+  Designation: string; 
   companyName: string;
   Email: string;
   phoneNo: string;
 }
 
-// Interface for newDeal to define known properties and allow dynamic custom fields
 interface NewDeal {
   amount: number;
   companyName: string;
@@ -29,7 +28,7 @@ interface NewDeal {
   closeDate: Date | null;
   description: string;
   probability: number | null;
-  [key: string]: any; // Allow dynamic properties for custom fields
+  [key: string]: any; 
 }
 
 import { CountryService } from 'src/app/services/country.service';
@@ -79,10 +78,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   filteredCompanies: string[] = [];
   filteredContacts: string[] = [];
 
-  // Store custom fields
   customFields: { fieldLabel: string; fieldType: string; dataField: string; required?: boolean }[] = [];
 
-  // Use the NewDeal interface for newDeal
   newDeal: NewDeal = {
     amount: 0,
     companyName: '',
@@ -112,10 +109,10 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   }[] = [
     {
       dataField: 'companyName',
-      label: 'Company Name',
+      label: 'Customer Name',
       validationRules: [
-        { type: 'required', message: 'Company Name is required' },
-        { type: 'stringLength', min: 2, message: 'Company Name must be at least 2 characters long' }
+        { type: 'required', message: 'Customer Name is required' },
+        { type: 'stringLength', min: 2, message: 'Customer Name must be at least 2 characters long' }
       ]
     },
    {
@@ -181,10 +178,10 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     },
     {
       dataField: 'companyName',
-      label: 'Company Name',
+      label: 'Customer Name',
       editorOptions: { disabled: true },
       validationRules: [
-        { type: 'required', message: 'Company Name is required (should be auto-filled)' }
+        { type: 'required', message: 'Customer Name is required (should be auto-filled)' }
       ]
     },
     {
@@ -222,7 +219,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     { dataField: 'fieldType', label: 'Field Type', editorType: 'dxSelectBox', editorOptions: { items: ['Text', 'Numerical', 'Boolean', 'Date'], placeholder: 'Select field type' }, required: true }
   ];
 
-  private qualificationStageId: number | null = null; // Store the ID of the "Qualification" stage
+  private qualificationStageId: number | null = null; 
 
   constructor(
     private cdr: ChangeDetectorRef,
