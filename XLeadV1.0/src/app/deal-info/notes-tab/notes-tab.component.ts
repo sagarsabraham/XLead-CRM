@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 
 interface Note {
-  id: number;
   content: string;
   createdAt: Date;
 }
@@ -12,30 +11,26 @@ interface Note {
   styleUrls: ['./notes-tab.component.css']
 })
 export class NotesTabComponent {
-  notes: Note[] = [];
   newNoteContent: string = '';
+  notes: Note[] = [];
 
-  addNote() {
+  addNote(): void {
     if (!this.newNoteContent.trim()) return;
 
-    const newNote: Note = {
-      id: Date.now(),
+    this.notes.unshift({
       content: this.newNoteContent.trim(),
       createdAt: new Date()
-    };
+    });
 
-    this.notes.unshift(newNote);
     this.newNoteContent = '';
   }
 
-  deleteNote(id: number) {
-    this.notes = this.notes.filter(note => note.id !== id);
+  // ✅ Make sure this function is exactly here
+  deleteNote(index: number): void {
+    this.notes.splice(index, 1);
   }
 
   formatDate(date: Date): string {
-    return new Intl.DateTimeFormat('en-US', {
-      dateStyle: 'medium',
-      timeStyle: 'short'
-    }).format(date);
+    return new Date(date).toLocaleString();
   }
 }

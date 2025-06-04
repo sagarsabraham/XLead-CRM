@@ -1,18 +1,31 @@
-<div class="notes-container">
-  <h2>📝 Notes</h2>
+<div class="dx-card smart-notes-container">
+  <h3>Smart Notes</h3>
 
-  <textarea [(ngModel)]="newNoteContent" rows="3" placeholder="Write a note..."></textarea>
-  <button (click)="addNote()" [disabled]="!newNoteContent.trim()">Add Note</button>
+ <dx-text-box
+  [value]="newNoteContent"
+  (onValueChanged)="newNoteContent = $event.value"
+  placeholder="Write a note..."
+  stylingMode="outlined">
+</dx-text-box>
 
-  <ul>
-    <li *ngFor="let note of notes">
-      <div class="note">
-        <p>{{ note.content }}</p>
-        <small>{{ formatDate(note.createdAt) }}</small>
-        <button (click)="deleteNote(note.id)">Delete</button>
-      </div>
-    </li>
-  </ul>
+ <dx-button
+  text="Add Note"
+  type="default"
+  [disabled]="!newNoteContent.trim()"
+  [class.highlighted-add-button]="newNoteContent.trim().length > 0"
+  (onClick)="addNote()">
+</dx-button>
 
-  <p *ngIf="notes.length === 0" class="empty">No notes yet. Add one!</p>
+  <div *ngFor="let note of notes; let i = index" class="note-template">
+    <div>
+      <strong>{{ note.content }}</strong><br>
+      <small>{{ formatDate(note.createdAt) }}</small>
+    </div>
+    <dx-button
+      text="Delete"
+      type="danger"
+      stylingMode="text"
+      (onClick)="deleteNote(i)">
+    </dx-button>
+  </div>
 </div>

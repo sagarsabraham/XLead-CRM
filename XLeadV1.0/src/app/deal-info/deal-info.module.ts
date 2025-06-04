@@ -11,7 +11,8 @@ import { DxButtonModule,
          DxFileUploaderModule, 
          DxListModule, 
          DxTextBoxModule, 
-         DxTabsModule } from 'devextreme-angular';
+         DxTabsModule, 
+         DxTextAreaComponent} from 'devextreme-angular';
 import { StatusTimelineComponent } from './status-timeline/status-timeline.component';
 import { RelatedInfoComponent } from './related-info/related-info.component';
 import { DescriptionComponent } from './description/description.component';
@@ -46,7 +47,9 @@ import { FormsModule } from '@angular/forms';
     DxFileUploaderModule,
     DxListModule,
     DxTextBoxModule,
-    DxTabsModule,FormsModule
+    DxTabsModule,FormsModule,
+    DxButtonModule,
+    DxListModule
   ],exports: [
     NotesTabComponent  // optional: only needed if used in other modules
   ]

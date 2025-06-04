@@ -1,44 +1,107 @@
-.notes-container {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+.smart-notes-container {
+  max-width: 900px;          /* from notes-container max-width */
+  margin: 30px auto;
+  padding: 24px;
+  background-color: #fff;
+  border: 1px solid #d6d6d6; /* lighter border */
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-textarea {
-  width: 100%;
-  padding: 10px;
-  font-size: 14px;
-  margin-bottom: 10px;
+/* Header */
+.smart-notes-container h3 {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 26px;
 }
 
-button {
-  padding: 6px 12px;
-  margin-top: 5px;
-}
-
-.note {
-  background: #f4f4f4;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 4px;
-}
-
-.note p {
-  margin: 0;
-}
-
-.note small {
+/* DevExtreme Text Box */
+dx-text-box {
   display: block;
-  color: #666;
-  margin-top: 5px;
+  margin-bottom: 12px;
+  width: 100%;
+  font-family: inherit;
+}
+
+/* DevExtreme Button default */
+.dx-button.dx-button-mode-contained.dx-button-default {
+  background-color: #c0c0c0;
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 16px;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover on default button */
+.dx-button.dx-button-mode-contained.dx-button-default:hover {
+  background-color: #a9a9a9;
+}
+
+/* Disabled button */
+.dx-button:disabled {
+  background-color: #a1a1a1 !important;
+  cursor: not-allowed !important;
+  color: #f0f0f0 !important;
+}
+
+/* Highlighted Add Note button - when typing */
+.highlighted-add-button {
+  background-color: #007acc !important;  /* your blue highlight */
+  color: white !important;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 122, 204, 0.4);
+  transition: background-color 0.3s ease;
+}
+
+/* Hover on highlighted button */
+.highlighted-add-button:hover {
+  background-color: #005a9e !important;
+}
+
+/* Note entry styling - adapting your note-template */
+.note-template {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  background-color: #f9f9f9;
+  border-left: 4px solid #007acc;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+  font-family: inherit;
+}
+
+.note-template:hover {
+  background-color: #f1f1f1;
+}
+
+.note-template strong {
+  font-size: 16px;
+  color: #222;
+}
+
+.note-template small {
   font-size: 12px;
+  color: #777;
 }
 
-.empty {
-  color: #888;
-  font-style: italic;
-  text-align: center;
+/* Danger button style */
+.dx-button.dx-button-mode-text.dx-button-danger {
+  color: #888 !important;
 }
 
+.dx-button.dx-button-mode-text.dx-button-danger:hover {
+  color: red !important;
+}
+
+/* Smooth transitions */
+.dx-button {
+  transition: all 0.3s ease;
+}
