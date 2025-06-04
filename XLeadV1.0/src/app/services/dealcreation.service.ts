@@ -28,7 +28,7 @@ export interface DealCreatePayload {
   createdBy: number;
   customFields?: { [key: string]: any };
 }
-// Define an interface for the Deal data structure returned by the backend (DealReadDto.cs)
+
 export interface DealRead {
   id: number;
   dealName: string;
@@ -94,9 +94,9 @@ export class DealService {
       .pipe(catchError(this.handleError));
   }
 
-  // Basic error handling
+
   private handleError(error: HttpErrorResponse) {
-    // ... (your existing handleError logic) ...
+
     let errorMessage = 'An unknown error occurred!';
     if (error.error instanceof ErrorEvent) {
       errorMessage = `Error: ${error.error.message}`;
