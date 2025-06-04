@@ -80,19 +80,18 @@ export class PipelinepageComponent implements OnInit {
 
   private _tableData: any[] = [];
 
-  onTabChange(event: any) {
-    const tabId = event.itemData?.id;
-    this.selectedTabId = tabId;
+  // Method to handle view switching when icons are clicked
+  switchView(view: 'card' | 'table'): void {
+    this.selectedTabId = view;
+    this.selectedTabIndex = view === 'card' ? 0 : 1;
 
-    this.selectedTabIndex = tabId === 'card' ? 0 : 1;
-
-    if (tabId === 'table') {
+    if (view === 'table') {
       this.refreshTableData();
-
       setTimeout(() => {
         this.cdr.detectChanges();
       }, 50);
     }
+    this.cdr.detectChanges();
   }
 
   stageNames: string[] = this.stages.map(s => s.name);
@@ -100,7 +99,7 @@ export class PipelinepageComponent implements OnInit {
   isLoadingInitialData: boolean = false;
   isModalVisible: boolean = false;
   isEditMode: boolean = false;
-  selectedStageId: number | null = null; // Store the stage ID for the modal
+  selectedStageId: number | null = null;
 
   _selectedDealForModalInput: DealRead | null = null;
   _currentlyEditingPipelineDeal: PipelineDeal | null = null;
@@ -312,7 +311,7 @@ export class PipelinepageComponent implements OnInit {
     this.isEditMode = false;
     this._selectedDealForModalInput = null;
     this._currentlyEditingPipelineDeal = null;
-    this.selectedStageId = stageId || null; // Set the stage ID, or null if not provided (e.g., top bar button)
+    this.selectedStageId = stageId || null; 
     this.isModalVisible = true;
   }
 
@@ -326,7 +325,7 @@ export class PipelinepageComponent implements OnInit {
     this.isEditMode = true;
     this._currentlyEditingPipelineDeal = dealFromCard;
     this._originalStageNameOfEditingDeal = stageName;
-    this.selectedStageId = null; // Reset selectedStageId in edit mode
+    this.selectedStageId = null; 
 
     if (dealFromCard.originalData) {
         this._selectedDealForModalInput = { ...dealFromCard.originalData };
