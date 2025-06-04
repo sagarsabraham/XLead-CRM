@@ -12,6 +12,7 @@
     <div #formContainer class="form-container" (wheel)="onMouseWheel($event)">
       <app-modal-header title="Deal Information" [showOwner]="true"></app-modal-header>
       <dx-form
+      *ngIf="showForm"
         #dealFormInstance 
         [formData]="newDeal"
         [colCountByScreen]="{ xs: 1, sm: 1, md: 1, lg: 1 }">

@@ -317,15 +317,33 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   loadAccounts() {
-    this.accountService.getAllAccounts().subscribe(data => this.accounts = data, err => console.error('Error accounts', err));
+    this.accountService.getAllAccounts().subscribe(
+    data => {
+      this.accounts = data;
+      this.cdr.detectChanges(); // <-- Move here
+    },
+    err => console.error('Error accounts', err)
+  );
   }
 
   loadRegions() {
-    this.regionService.getAllRegions().subscribe(data => this.regions = data, err => console.error('Error regions', err));
+    this.regionService.getAllRegions().subscribe(
+    data => {
+      this.regions = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error regions', err)
+  );
   }
 
   loadDomains() {
-    this.domainService.getAllDomains().subscribe(data => this.domains = data, err => console.error('Error domains', err));
+    this.domainService.getAllDomains().subscribe(
+    data => {
+      this.domains = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error domains', err)
+  );
   }
 
   loadStages() {
@@ -351,15 +369,33 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   loadDus() {
-    this.duService.getDU().subscribe(data => this.dus = data, err => console.error('Error DUs', err));
+    this.duService.getDU().subscribe(
+    data => {
+      this.dus = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error DUs', err)
+  );
   }
 
   loadRevenueTypes() {
-    this.revenuetypeService.getRevenueTypes().subscribe(data => this.revenueTypes = data, err => console.error('Error revenue types', err));
+    this.revenuetypeService.getRevenueTypes().subscribe(
+    data => {
+      this.revenueTypes = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error revenue types', err)
+  );
   }
 
   loadCountries() {
-    this.countryService.getCountries().subscribe(data => this.countries = data, err => console.error('Error countries', err));
+    this.countryService.getCountries().subscribe(
+    data => {
+      this.countries = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error countries', err)
+  );
   }
 
   loadCompanyContactData() {
@@ -664,10 +700,10 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.isCustomizeFieldModalVisible = false;
   }
 
+  showForm = true;
   addCustomField(newField: any) {
     console.log('Custom Field Added:', newField);
 
-    // Generate a unique dataField name (e.g., "custom_fieldLabel")
     const dataField = `custom_${newField.fieldLabel.toLowerCase().replace(/\s+/g, '_')}`;
 
     // Add the new field to customFields
@@ -677,6 +713,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       dataField: dataField,
       required: false,
     });
+
+    this.newDeal[dataField] = '';
 
     console.log("Custom field array", this.customFields);
 
@@ -698,6 +736,9 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         this.newDeal[dataField] = '';
     }
     
+    this.showForm = false;
+    this.cdr.detectChanges();
+    this.showForm = true;
     this.cdr.detectChanges();
     console.log("Custom field array", this.customFields);
     this.closeCustomizeFieldModal();
@@ -743,6 +784,4 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   type: 'fixedPoint',
   precision: 2  
   };
-
-
 }
