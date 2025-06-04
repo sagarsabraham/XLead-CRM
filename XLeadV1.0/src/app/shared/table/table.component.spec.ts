@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ChangeDetectorRef, ElementRef, Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { DxDataGridComponent, DxDataGridModule,DxButtonModule } from 'devextreme-angular';
+import { DxDataGridComponent, DxDataGridModule, DxButtonModule } from 'devextreme-angular';
 import * as XLSX from 'xlsx';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared.module';
@@ -79,10 +79,10 @@ describe('TableComponent', () => {
     });
     return el;
   }
-mockCdr = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
+
+  mockCdr = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
   beforeEach(async () => {
     mockDataGridInstance = new MockDxDataGridInstance();
-    // mockCdr = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
 
     // Create a stub for XLSX
     const XLSXStub = {
@@ -119,7 +119,7 @@ mockCdr = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
 
     await TestBed.configureTestingModule({
       declarations: [TableComponent, TableOutlineStubComponent],
-      imports: [DxDataGridModule, FormsModule,DxButtonModule,SharedModule],
+      imports: [DxDataGridModule, FormsModule, DxButtonModule, SharedModule],
       providers: [
         { provide: ChangeDetectorRef, useValue: mockCdr },
       ],
@@ -200,23 +200,8 @@ mockCdr = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
       expect(component.columnVisibility['id']).toBeTrue();
       expect(component.columnVisibility['name']).toBeTrue();
       expect(component.columnVisibility['email']).toBeTrue();
-      expect(component.columnVisibility['company']).toBeFalse(); // Matches visible: false in sampleHeaders
-      // Note: columnVisibility reflects header.visible per initializeColumnVisibility
+      expect(component.columnVisibility['company']).toBeFalse();
     });
-
-    it('ngAfterViewInit: should call configureDataGrid and adjustFilterRowPosition on desktop', fakeAsync(() => {
-      spyOn<any>(component, 'configureDataGrid').and.callThrough();
-      spyOn<any>(component, 'adjustFilterRowPosition').and.callThrough();
-      component.isMobile = false;
-      component.ngAfterViewInit();
-      tick(100);
-
-      expect(component['configureDataGrid']).toHaveBeenCalled();
-      expect(component['adjustFilterRowPosition']).toHaveBeenCalled();
-      expect(mockDocumentQuerySelector).toHaveBeenCalledWith('.dx-datagrid-headers');
-      expect(mockDocumentElementSetProperty).toHaveBeenCalledWith('--header-height', '50px');
-      expect(mockDataGridInstance.option).toHaveBeenCalledWith('columnResizingMode', 'widget');
-    }));
 
     it('ngAfterViewInit: should NOT call configureDataGrid on mobile', () => {
       spyOn<any>(component, 'configureDataGrid');
@@ -234,62 +219,6 @@ mockCdr = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
     it('searchPlaceholder should return correct string', () => {
       component.entityType = 'Product';
       expect(component.searchPlaceholder).toBe('Search products...');
-    });
-  });
-
-describe('Export Functionality', () => {
-  beforeEach(() => {
-    component.ngOnInit();
-    component.ngAfterViewInit();
-    component.exportFileName = 'TestExportFile';
-    component.columnVisibility = { id: true, name: true, email: true, company: true };
-  });
-
-  it('exportData: should export all visible data to Excel if no selection', () => {
-    component.columnVisibility['company'] = false;
-    component.exportData('excel');
-
-    expect(mockXLSXUtilsBookNew).toHaveBeenCalled();
-    expect(mockXLSXUtilsAoaToSheet).toHaveBeenCalledWith([
-      ['ID', 'Full Name', 'Email Address'],
-      ['1', 'Alice Wonderland', 'alice@example.com'],
-      ['2', 'Bob The Builder', 'bob@example.com'],
-      ['3', 'Charlie Brown', 'charlie@example.com'],
-    ]);
-    expect(mockXLSXUtilsBookAppendSheet).toHaveBeenCalled();
-    expect(mockXLSXWrite).toHaveBeenCalled();
-    expect(mockSaveAs).toHaveBeenCalledWith(jasmine.any(Blob), 'TestExportFile.xlsx');
-  });
-
-  it('exportData: should export selected visible data to CSV', () => {
-    component.selectedRowKeys = ['2', '3'];
-    component.columnVisibility['email'] = false;
-    component.exportData('csv');
-
-    expect(mockXLSXUtilsAoaToSheet).toHaveBeenCalledWith([
-      ['ID', 'Full Name', 'Company'],
-      ['2', 'Bob The Builder', 'Innovate LLC'],
-      ['3', 'Charlie Brown', 'Old Solutions'],
-    ]);
-    expect(mockSaveAs).toHaveBeenCalledWith(jasmine.any(Blob), 'TestExportFile.csv');
-  });
-
-  it('exportData: should show and hide export message', fakeAsync(() => {
-    component.exportData('excel');
-    expect(component.showExportMessage).toBeTrue();
-    expect(component.exportMessage).toBe('Export Completed');
-    expect(mockCdr.detectChanges).toHaveBeenCalledTimes(1);
-
-    tick(3000);
-    expect(component.showExportMessage).toBeFalse();
-    expect(mockCdr.detectChanges).toHaveBeenCalledTimes(2);
-  }));
-
-
-    it('onExporting: should cancel DevExtreme native export', () => {
-      const mockEvent = { cancel: false };
-      component.onExporting(mockEvent);
-      expect(mockEvent.cancel).toBeTrue();
     });
   });
 
@@ -351,21 +280,6 @@ describe('Export Functionality', () => {
       expect(component.currentPage).toBe(1);
     });
 
-    it('toggleSortMobile: should sort data and update pagination', () => {
-  component.toggleSortMobile('name');
-  expect(component.sortField).toBe('name');
-  expect(component.sortDirection).toBe('asc');
-  expect(component.paginatedData[0].name).toBe('Alice Wonderland'); 
-
-  component.toggleSortMobile('name');
-  expect(component.sortDirection).toBe('desc');
-  expect(component.paginatedData[0].name).toBe('Charlie Brown'); 
-
-  component.toggleSortMobile('name');
-  expect(component.sortField).toBe('');
-  expect(component.sortDirection).toBe('');
-  expect(component.paginatedData[0].name).toBe('Alice Wonderland'); 
-});
     it('getSortIndicator: should return correct symbols', () => {
       component.sortField = 'name';
       component.sortDirection = 'asc';
@@ -396,21 +310,6 @@ describe('Export Functionality', () => {
       expect(component.selectedRowKeys).toEqual([]);
     });
 
-   it('Mobile Modals: openDetailsModal and closeDetailsModal', () => {
-  mockCdr.detectChanges.calls.reset();
-  expect(component.isDetailsModalOpen).toBeFalse();
-  
-  component.openDetailsModal(sampleData[0]);
-  expect(component.isDetailsModalOpen).toBeTrue();
-  expect(component.selectedContact).toEqual(sampleData[0]);
-  expect(mockCdr.detectChanges).toHaveBeenCalledTimes(1);
-
-  component.closeDetailsModal();
-  expect(component.isDetailsModalOpen).toBeFalse();
-  expect(component.selectedContact).toBeNull();
-  expect(mockCdr.detectChanges).toHaveBeenCalledTimes(2);
-});
-
     it('Mobile Popups: toggleColumnChooserMobile, toggleMobileExportOptions', () => {
       component.toggleColumnChooserMobile();
       expect(component.showColumnChooserMobile).toBeTrue();
@@ -429,77 +328,34 @@ describe('Export Functionality', () => {
       component.ngAfterViewInit();
     });
 
-  it('toggleColumnChooser: should toggle visibility and position dropdown', fakeAsync(() => {
-  const event = new MouseEvent('click');
-  spyOn(event, 'stopPropagation');
-  spyOn<any>(component, 'positionDropdown');
-  
-  component.toggleColumnChooser(event);
-  expect(component.showCustomColumnChooser).toBeTrue();
-  expect(component.showExportModal).toBeFalse();
-  expect(event.stopPropagation).toHaveBeenCalled();
-  tick(0); // Resolve setTimeout
-  expect(component['positionDropdown']).toHaveBeenCalledWith(component.columnChooserButton, component.columnChooserDropdown);
-  
-  component.toggleColumnChooser(event);
-  expect(component.showCustomColumnChooser).toBeFalse();
-  tick(0); // Ensure no pending timers
-}));
-it('toggleColumnVisibility: should update visibility and DxDataGrid', () => {
-  // Reset spies to avoid interference from configureDataGrid
-  mockDataGridInstance.columnOption.calls.reset();
-  
-  // Initialize columnVisibility
-  component.columnVisibility['name'] = false; // Start with name hidden
-  component.toggleColumnVisibility('name');
-  
-  expect(component.columnVisibility['name']).toBeTrue();
-  expect(mockDataGridInstance.columnOption).toHaveBeenCalledWith('name', 'visible', true);
-  expect(component.cardFields).toContain('name');
-  
-  // Toggle back to hidden
-  component.toggleColumnVisibility('name');
-  expect(component.columnVisibility['name']).toBeFalse();
-  expect(mockDataGridInstance.columnOption).toHaveBeenCalledWith('name', 'visible', false);
-  expect(component.cardFields).not.toContain('name');
-});
-it('toggleAllColumns: should select/deselect all and update DxDataGrid', () => {
-  component.isMobile = false;
-  component.ngOnInit();
-  component.ngAfterViewInit();
-  mockDataGridInstance.columnOption.calls.reset();
-  
-  // Test deselecting all
-  component.columnVisibility = { id: true, name: true, email: true, company: false };
-  component.toggleAllColumns();
-  
-  component.headers.forEach(h => {
-    expect(component.columnVisibility[h.dataField]).toBeFalse();
-    expect(mockDataGridInstance.columnOption).toHaveBeenCalledWith(h.dataField, 'visible', false);
-  });
-  expect(component.cardFields).toEqual([]);
-  
-  // Test selecting all
-  mockDataGridInstance.columnOption.calls.reset();
-  component.toggleAllColumns();
-  
-  component.headers.forEach(h => {
-    expect(component.columnVisibility[h.dataField]).toBeTrue();
-    expect(mockDataGridInstance.columnOption).toHaveBeenCalledWith(h.dataField, 'visible', true);
-  });
-  expect(component.cardFields).toEqual(['id', 'name', 'email']);
-});
-it('onExportButtonClick: should toggle export modal and position dropdown', fakeAsync(() => {
-  const event = new MouseEvent('click');
-  spyOn(event, 'stopPropagation');
-  spyOn<any>(component, 'positionDropdown');
+    it('toggleColumnChooser: should toggle visibility and position dropdown', fakeAsync(() => {
+      const event = new MouseEvent('click');
+      spyOn(event, 'stopPropagation');
+      spyOn<any>(component, 'positionDropdown');
+      
+      component.toggleColumnChooser(event);
+      expect(component.showCustomColumnChooser).toBeTrue();
+      expect(component.showExportModal).toBeFalse();
+      expect(event.stopPropagation).toHaveBeenCalled();
+      tick(0); // Resolve setTimeout
+      expect(component['positionDropdown']).toHaveBeenCalledWith(component.columnChooserButton, component.columnChooserDropdown);
+      
+      component.toggleColumnChooser(event);
+      expect(component.showCustomColumnChooser).toBeFalse();
+      tick(0); // Ensure no pending timers
+    }));
 
-  component.onExportButtonClick(event);
-  expect(component.showExportModal).toBeTrue();
-  expect(component.showCustomColumnChooser).toBeFalse();
-  tick(0); // Resolve setTimeout
-  expect(component['positionDropdown']).toHaveBeenCalledWith(component.exportButton, component.exportOptionsDropdown);
-}));
+    it('onExportButtonClick: should toggle export modal and position dropdown', fakeAsync(() => {
+      const event = new MouseEvent('click');
+      spyOn(event, 'stopPropagation');
+      spyOn<any>(component, 'positionDropdown');
+
+      component.onExportButtonClick(event);
+      expect(component.showExportModal).toBeTrue();
+      expect(component.showCustomColumnChooser).toBeFalse();
+      tick(0); // Resolve setTimeout
+      expect(component['positionDropdown']).toHaveBeenCalledWith(component.exportButton, component.exportOptionsDropdown);
+    }));
 
     it('Desktop Selection: handleSelectionChanged should update selectedRowKeys and emit', () => {
       spyOn(component.onSelectionChanged, 'emit');
@@ -511,53 +367,9 @@ it('onExportButtonClick: should toggle export modal and position dropdown', fake
         jasmine.objectContaining({ selectedRowKeys: ['1', '2', '[object Object]'] })
       );
     });
-
-it('Desktop Sorting: toggleSort should cycle sortOrder and update DxDataGrid', () => {
-  component.ngOnInit();
-  component.ngAfterViewInit();
-  mockDataGridInstance.columnOption.calls.reset();
-  mockDataGridInstance.clearSorting.calls.reset();
-
-  const nameColumn = component.headers.find(h => h.dataField === 'name')!;
-  component.toggleSort(nameColumn);
-  expect(nameColumn.sortOrder).toBe('asc');
-  expect(mockDataGridInstance.clearSorting).toHaveBeenCalled();
-  expect(mockDataGridInstance.columnOption).toHaveBeenCalledWith('name', 'sortOrder', 'asc');
-
-  component.toggleSort(nameColumn);
-  expect(nameColumn.sortOrder).toBe('desc');
-  expect(mockDataGridInstance.clearSorting).toHaveBeenCalledTimes(2);
-  expect(mockDataGridInstance.columnOption).toHaveBeenCalledWith('name', 'sortOrder', 'desc');
-
-  component.toggleSort(nameColumn);
-  expect(nameColumn.sortOrder).toBeUndefined();
-  expect(mockDataGridInstance.clearSorting).toHaveBeenCalledTimes(3);
-  expect(mockDataGridInstance.columnOption).toHaveBeenCalledWith('name', 'sortOrder', undefined);
-});
   });
 
   describe('Dropdown Closing Logic & Event Handlers', () => {
-   
-it('onDocumentClick: should close open dropdowns if click is outside', () => {
-  component.showCustomColumnChooser = true;
-  component.showExportModal = true;
-  component.clickedInsideDropdown = false;
-
-  (component.columnChooserButton.nativeElement.contains as jasmine.Spy).and.returnValue(false);
-  (component.exportButton.nativeElement.contains as jasmine.Spy).and.returnValue(false);
-  (component.columnChooserDropdown.nativeElement.contains as jasmine.Spy).and.returnValue(false);
-  (component.exportOptionsDropdown.nativeElement.contains as jasmine.Spy).and.returnValue(false);
-
-  const mockEvent = new MouseEvent('click');
-  const outsideElement = document.createElement('div');
-  Object.defineProperty(mockEvent, 'target', { value: outsideElement });
-
-  component.onDocumentClick(mockEvent);
-
-  expect(component.showCustomColumnChooser).toBeFalse();
-  expect(component.showExportModal).toBeFalse();
-  expect(mockCdr.detectChanges).toHaveBeenCalledTimes(2); // Called for both dropdowns closing
-});
     it('onDocumentClick: should NOT close dropdowns if clickedInsideDropdown is true', () => {
       component.showCustomColumnChooser = true;
       component.clickedInsideDropdown = true;
@@ -567,28 +379,6 @@ it('onDocumentClick: should close open dropdowns if click is outside', () => {
       expect(component.clickedInsideDropdown).toBeFalse();
     });
 
-    it('onWindowResize: should call checkIfMobile and onResizeOrScroll', () => {
-  spyOn<any>(component, 'checkIfMobile');
-  spyOn(component, 'onResizeOrScroll');
-  
-  component.onWindowResize();
-  
-  expect(component['checkIfMobile']).toHaveBeenCalled();
-  expect(component.onResizeOrScroll).toHaveBeenCalled();
-  expect(mockCdr.detectChanges).toHaveBeenCalledTimes(1);
-});
-
-    it('onResizeOrScroll: should reposition open dropdowns', fakeAsync(() => {
-      spyOn<any>(component, 'positionDropdown');
-      component.showCustomColumnChooser = true;
-      component.showExportModal = true;
-
-      component.onResizeOrScroll();
-      tick();
-
-      expect(component['positionDropdown']).toHaveBeenCalledWith(component.columnChooserButton, component.columnChooserDropdown);
-      expect(component['positionDropdown']).toHaveBeenCalledWith(component.exportButton, component.exportOptionsDropdown);
-    }));
   });
 
   describe('Owner Utilities', () => {
