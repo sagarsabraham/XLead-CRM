@@ -5,8 +5,8 @@ import { environment } from 'src/environments/environment';
 
 interface DealStage {
   id: number;
-  stageName: string;
-  displayName: string;
+  displayName?: string;
+  stageName?: string;
 }
 
 @Injectable({

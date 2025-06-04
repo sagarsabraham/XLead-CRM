@@ -57,7 +57,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() isVisible: boolean = false;
   @Input() mode: 'add' | 'edit' = 'add';
   @Input() dealToEdit: DealRead | null = null;
-  @Input() selectedStage: number = 1;
+  @Input() selectedStage: number | null = null;
   @Output() onClose = new EventEmitter<void>();
   @Output() onSubmitSuccess = new EventEmitter<DealRead>();
   @Output() onSubmitError = new EventEmitter<string>();
@@ -335,17 +335,17 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.dealStageService.getAllDealStages().subscribe({
       next: (data) => {
         this.dealStages = data.map(s => ({ ...s, displayName: s.displayName || s.stageName! }));
-        // Find the "Qualification" stage ID
+        // Find the "Qualification" stage ID for fallback
         const qualificationStage = this.dealStages.find(stage => stage.displayName === 'Qualification' || stage.stageName === 'Qualification');
         if (qualificationStage) {
           this.qualificationStageId = qualificationStage.id;
           console.log('Qualification stage ID found:', this.qualificationStageId);
-          // Set the default stage to "Qualification" if not in edit mode
-          if (this.mode !== 'edit' || !this.dealToEdit) {
-            this.newDeal.stage = this.qualificationStageId;
-          }
         } else {
           console.warn('Qualification stage not found in dealStages:', this.dealStages);
+        }
+        // Set the stage based on selectedStage or fallback to Qualification
+        if (this.mode !== 'edit' || !this.dealToEdit) {
+          this.setDefaultStage();
         }
         this.cdr.detectChanges();
       },
@@ -527,7 +527,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       region: null,
       contactName: '',
       domain: null,
-      stage: this.qualificationStageId,
+      stage: null,
       revenueType: null,
       department: null,
       country: null,
@@ -559,6 +559,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
 
     this.newDeal = resetData;
 
+    this.setDefaultStage();
+
     if (this.companies && this.companies.length > 0) {
       this.filteredCompanies = [...this.companies];
     } else {
@@ -568,6 +570,15 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.isLoading = false;
     this.dealFormInstance?.instance.resetValues();
     this.cdr.detectChanges();
+  }
+
+  private setDefaultStage() {
+    // Use selectedStage if provided, otherwise fall back to Qualification
+    if (this.selectedStage !== null && this.dealStages.some(stage => stage.id === this.selectedStage)) {
+      this.newDeal.stage = this.selectedStage;
+    } else if (this.qualificationStageId !== null) {
+      this.newDeal.stage = this.qualificationStageId;
+    }
   }
 
   onCompanyChange(companyName: string, clearContact: boolean = true) {
