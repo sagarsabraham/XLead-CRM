@@ -30,3 +30,4 @@ export class DealbodyComponent {
     this.onEdit.emit(deal);
   }
 }
+
