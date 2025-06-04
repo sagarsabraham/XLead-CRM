@@ -701,3 +701,4 @@ export class TableComponent implements AfterViewInit {
     this.dataGrid.instance.refresh();
   }
 }
+ 

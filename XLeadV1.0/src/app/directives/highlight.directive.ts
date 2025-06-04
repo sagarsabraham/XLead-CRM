@@ -4,23 +4,20 @@ import { Directive, ElementRef, Input, OnInit } from '@angular/core';
   selector: '[appHighlight]'
 })
 export class HighlightDirective implements OnInit {
-  @Input() appHighlightDate: Date | string | undefined; // For closing date
-  @Input() appHighlightProbability: number | string | undefined; // For probability
+  @Input() appHighlightDate: Date | string | undefined; 
+  @Input() appHighlightProbability: number | string | undefined; 
 
-  private today: Date = new Date(); // Dynamically get the current date
+  private today: Date = new Date(); 
 
   constructor(private el: ElementRef) {}
 
   ngOnInit() {
-    // Default color
     this.el.nativeElement.style.color = '#666666';
 
-    // Handle closing date
     if (this.appHighlightDate) {
       this.applyDateColor();
     }
 
-    // Handle probability
     if (this.appHighlightProbability !== undefined && this.appHighlightProbability !== null) {
       this.applyProbabilityColor();
     }
@@ -50,7 +47,6 @@ export class HighlightDirective implements OnInit {
       return;
     }
 
-    // Make the text bold
     this.el.nativeElement.style.fontWeight = 'bold';
 
     if (probability < 45) {
