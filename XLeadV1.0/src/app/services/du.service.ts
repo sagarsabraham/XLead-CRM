@@ -24,4 +24,5 @@ export class DuService {
     console.log('Calling API at:', url);
     return this.http.get<DU[]>(url);
   }
+  
 }

@@ -4,12 +4,15 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
  
-// Define an interface for the Deal data structure expected by the backend (DealCreateDto.cs)
+
 export interface DealCreatePayload {
   title: string;
   amount: number;
   companyName: string;
   contactFullName: string;
+  contactEmail: string; 
+  contactPhoneNumber: string | null; 
+  contactDesignation: string | null; 
   accountId: number | null;
   serviceId: number | null;
   regionId: number;
@@ -25,7 +28,6 @@ export interface DealCreatePayload {
   createdBy: number;
   customFields?: { [key: string]: any };
 }
- 
 // Define an interface for the Deal data structure returned by the backend (DealReadDto.cs)
 export interface DealRead {
   id: number;
@@ -65,7 +67,7 @@ export interface DealRead {
   providedIn: 'root'
 })
 export class DealService {
-  private apiUrl = 'https://localhost:7297/api/deals'; // Example: Update
+  private apiUrl = 'https://localhost:7297/api/Deals';
   private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
  
   constructor(private http: HttpClient) { }

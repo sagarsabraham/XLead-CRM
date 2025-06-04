@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { CompanyService } from '../../services/company.service';
 import { UserService } from '../../services/user.service';
+import { CompanyContactService } from 'src/app/services/company-contact.service';
 
 @Component({
   selector: 'app-company-page',
@@ -28,7 +29,7 @@ export class CompanyPageComponent implements OnInit {
   isLoading: boolean = true;
   error: string | null = null;
 
-  constructor(private companyService: CompanyService, private userService: UserService) {
+  constructor(private companyService: CompanyContactService, private userService: UserService) {
     this.checkIfMobile();
   }
 
@@ -139,25 +140,25 @@ private mapCompanyData(company: any): any {
   };
 }
 
-  // Add the missing method
+  
   private safeToString(value: any): string {
     return value !== undefined && value !== null ? String(value) : '';
   }
 
   private mapStatus(company: any): string {
-    // If status is already a string (like 'Active' or 'Not Active')
+    
     if (typeof company.status === 'string') {
       return company.status;
     }
     
-    // If status is a boolean from isActive property
+  
     if (company.isActive === true || company.isActive === 1) {
       return 'Active';
     } else if (company.isActive === false || company.isActive === 0) {
       return 'Not Active';
     }
     
-    // If we can't determine, return unknown
+    
     return 'Unknown';
   }
 
@@ -165,7 +166,7 @@ private mapCompanyData(company: any): any {
     // Count total companies
     const total = this.tableData.length;
     
-    // Count active and inactive companies - match both formats
+   
     const active = this.tableData.filter(company => 
       company.status === 'Active'
     ).length;
@@ -181,7 +182,7 @@ private mapCompanyData(company: any): any {
       { amount: inactive, title: 'Inactive Companies', icon: 'assets/company.svg' }
     ];
   }
-
+  
   @HostListener('window:resize')
   onResize(): void {
     this.checkIfMobile();
