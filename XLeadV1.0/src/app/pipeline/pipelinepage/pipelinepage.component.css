@@ -1,11 +1,7 @@
 :root {
-  --primary-gradient: linear-gradient(135deg, #6b48ff, #9b59b6);
   --secondary-gradient: linear-gradient(135deg, #3498db, #1abc9c);
   --hover-gradient: linear-gradient(135deg, #8e44ad, #3498db);
   --background-light: #f5f7fa;
-  --card-background: rgba(255, 255, 255, 0.9);
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --text-dark: #2c3e50;
   --text-light: #ecf0f1;
   --border-light: rgba(255, 255, 255, 0.2);
 }
@@ -197,7 +193,7 @@ app-button {
   }
 
   .card-container {
-    min-width: calc(100% - 6px); /* Maintain full width */
+    min-width: calc(100% - 6px); 
   }
 }
  
@@ -220,7 +216,7 @@ app-button {
   }
 
   .card-container {
-    min-width: 100%; /* Adjust for no margin-left */
+    min-width: 100%; 
     margin-left: 0;
   }
 }
@@ -233,45 +229,45 @@ app-button {
   }
   .topbar {
     display: flex;
-    flex-direction: column; /* Stack h1 and topbar-actions vertically */
-    align-items: center; /* Center everything horizontally */
+    flex-direction: column; 
+    align-items: center; 
     gap: 8px;
     padding: 10px 15px;
   }
   .topbar h1 {
     font-size: 22px;
-    margin: 0; /* Remove margins to center properly */
-    text-align: center; /* Ensure text is centered */
-    width: 100%; /* Take full width to center properly */
+    margin: 0; 
+    text-align: center;
+    width: 100%; 
   }
 
   .topbar-actions {
-    flex-wrap: nowrap; /* Prevent wrapping to ensure single line */
-    gap: 4px; /* Further reduce gap for mobile */
+    flex-wrap: nowrap; 
+    gap: 4px; 
   }
 
   .view-icons {
-    gap: 4px; /* Reduce gap between view icons */
+    gap: 4px; 
   }
 
   .view-icon {
-    padding: 6px 8px; /* Reduce padding for mobile */
-    gap: 4px; /* Reduce gap between icon and text */
+    padding: 6px 8px; 
+    gap: 4px; 
   }
 
   .view-icon img {
-    width: 16px; /* Smaller icon size for mobile */
+    width: 16px; 
     height: 16px;
   }
 
   .view-label {
-    font-size: 12px; /* Smaller text size for mobile */
+    font-size: 12px; 
   }
  
   app-button {
-    width: auto; /* Remove width: 100% to keep button inline */
-    padding: 6px 12px; /* Reduce padding for mobile */
-    font-size: 14px; /* Adjust font size for mobile */
+    width: auto; 
+    padding: 6px 12px; 
+    font-size: 14px; 
   }
  
   .card-container {
