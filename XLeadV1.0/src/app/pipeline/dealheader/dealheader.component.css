@@ -4,27 +4,28 @@
     padding: 12px;
     background-color: white;
     border-bottom: 1px solid #ccc;
-    border-top: 2px solid #1E90FF; 
+    border-top: 2px solid #1E90FF;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     font-family: "poppins";
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
-
+ 
 .deal-header.closed-won {
-    border-top: 2px solid #28a745; 
+    border-top: 2px solid #28a745;
 }
-
+ 
 .deal-header.closed-lost {
-    border-top: 2px solid #dc3545; 
+    border-top: 2px solid #dc3545;
 }
-  
+ 
 .title {
     font-weight: bold;
     font-size: 16px;
     margin-bottom: 8px;
     color: #333333;
 }
-  
+ 
 .summary {
     display: flex;
     justify-content: space-between;
@@ -32,17 +33,59 @@
     margin-top: 4px;
     color: #666666;
 }
-  
+ 
+/* Collapsed state */
+.deal-header.vertical {
+    background: linear-gradient(90deg, #f8f9fa 0%, #ffffff 100%);
+    padding: 8px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+ 
+.deal-header.vertical:hover {
+    background: linear-gradient(90deg, #e9ecef 0%, #f8f9fa 100%);
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+}
+ 
 .vertical-text {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-    white-space: nowrap;
-    font-weight: 650;
     display: flex;
     flex-direction: row;
-    gap: 20px;
+    gap: 15px;
     align-items: center;
     justify-content: center;
     height: 100%;
     font-family: 'poppins';
+    color: #333333;
 }
+ 
+.vertical-item {
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+ 
+.stage-name {
+    font-size: 16px;
+    font-weight: 700;
+}
+ 
+.deal-count {
+    color: #666666;
+}
+ 
+.amount {
+    color: #1E90FF;
+}
+ 
+.deal-header.closed-won .amount {
+    color: #28a745;
+}
+ 
+.deal-header.closed-lost .amount {
+    color: #dc3545;
+}
+ 

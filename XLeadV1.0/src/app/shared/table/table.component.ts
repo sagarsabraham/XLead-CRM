@@ -10,7 +10,7 @@ import { GridColumn, ExportFormat } from './table.interface';
   styleUrls: ['./table.component.css'],
 })
 export class TableComponent implements AfterViewInit {
-  // Inputs and Outputs
+
   @Input() data: any[] = [];
   @Input() headers: GridColumn[] = [];
   @Input() classNames: string = '';
@@ -21,7 +21,7 @@ export class TableComponent implements AfterViewInit {
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter<any>();
   @Output() onRowUpdating: EventEmitter<any> = new EventEmitter<any>();
  
-  // ViewChild References
+
   @ViewChild(DxDataGridComponent) dataGrid!: DxDataGridComponent;
   @ViewChild('columnChooserButton', { static: false }) columnChooserButton!: ElementRef;
   @ViewChild('exportButton', { static: false }) exportButton!: ElementRef;
@@ -67,7 +67,7 @@ export class TableComponent implements AfterViewInit {
   mobileAllowedPageSizes: number[] = [5, 10, 20];
   paginatedData: any[] = [];
  
-  // New properties for mobile card fields
+
   cardFields: string[] = [];
  
   constructor(private cdr: ChangeDetectorRef) {
@@ -96,17 +96,17 @@ export class TableComponent implements AfterViewInit {
  
   ngOnInit() {
     this.checkIfMobile();
-    // Add IDs if missing
+
     this.data = this.data.map((item, index) => ({
       ...item,
       id: item.id ?? `row-${index + 1}`,
     }));
-    // Compute the first three visible columns for mobile cards
+  
     this.cardFields = this.headers
       .filter(header => header.visible !== false)
       .slice(0, 3)
       .map(header => header.dataField);
-    // Reset selection when data changes
+  
     this.selectedRowKeys = [];
     this.updatePagination();
   }
@@ -118,7 +118,7 @@ export class TableComponent implements AfterViewInit {
       this.adjustFilterRowPosition();
     }
    
-    // Debug logging
+    
     console.log('=== TABLE COMPONENT INIT ===');
     console.log('Data sample:', this.data.slice(0, 2));
     console.log('Export filename:', this.exportFileName);
@@ -143,7 +143,7 @@ export class TableComponent implements AfterViewInit {
     phone: [{ type: 'pattern', pattern: /^[0-9-+\s()]*$/, message: 'Invalid phone number' }]
   };
  
-  // Helper to get display value with fallback
+ 
   getDisplayValue(item: any, field: string): string {
     return item[field] || `No ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`;
   }
@@ -152,7 +152,6 @@ export class TableComponent implements AfterViewInit {
     const wasMobile = this.isMobile;
     this.isMobile = window.innerWidth <= 576;
    
-    // Reset selection when switching between mobile/desktop
     if (wasMobile !== this.isMobile) {
       this.selectedRowKeys = [];
       this.emitSelectionChange();
@@ -286,10 +285,10 @@ export class TableComponent implements AfterViewInit {
     const allSelected = currentPageIds.every(id => this.selectedRowKeys.includes(id));
  
     if (allSelected) {
-      // Deselect all on current page
+   
       this.selectedRowKeys = this.selectedRowKeys.filter(id => !currentPageIds.includes(id));
     } else {
-      // Select all on current page
+    
       currentPageIds.forEach(id => {
         if (!this.selectedRowKeys.includes(id)) {
           this.selectedRowKeys.push(id);
@@ -389,7 +388,7 @@ export class TableComponent implements AfterViewInit {
     if (!this.isMobile && this.dataGrid?.instance) {
       this.dataGrid.instance.columnOption(dataField, 'visible', this.columnVisibility[dataField]);
     }
-    // Recompute cardFields
+  
     this.cardFields = this.headers
       .filter(header => header.visible !== false && this.columnVisibility[header.dataField])
       .slice(0, 3)
@@ -415,7 +414,7 @@ export class TableComponent implements AfterViewInit {
         this.dataGrid.instance.columnOption(header.dataField, 'visible', !allSelected);
       }
     });
-    // Recompute cardFields
+  
     this.cardFields = this.headers
       .filter(header => header.visible !== false && this.columnVisibility[header.dataField])
       .slice(0, 3)
@@ -489,7 +488,7 @@ export class TableComponent implements AfterViewInit {
     console.log('DevExtreme event:', event);
     console.log('Selected keys from DevExtreme:', event.selectedRowKeys);
    
-    // Ensure all keys are strings for consistency
+ 
     this.selectedRowKeys = (event.selectedRowKeys || []).map((key: any) => String(key));
    
     console.log('Normalized selected keys:', this.selectedRowKeys);

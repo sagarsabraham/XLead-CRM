@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { AuthServiceService } from './auth-service.service';
  
 
 export interface DealCreatePayload {
@@ -10,7 +11,7 @@ export interface DealCreatePayload {
   amount: number;
   customerName: string;
   contactFullName: string;
-  contactEmail: string | null; // Updated to allow null
+  contactEmail: string | null; 
   contactPhoneNumber: string | null; // Updated to allow null
   contactDesignation: string | null; // Updated to allow null
   accountId: number | null;
@@ -61,7 +62,15 @@ export interface DealRead {
   updatedAt?: string;
   customFields?: { [key: string]: any };
 }
-
+export interface StageHistoryReadDto {
+  id: number;
+  dealId: number;
+  stageName: string;
+  createdBy: number; // This is the userId
+  createdAt: string; // ISO date string
+  updatedBy?: number | null;
+  updatedAt?: string | null;
+}
  
 @Injectable({
   providedIn: 'root'
@@ -70,13 +79,13 @@ export class DealService {
   private apiUrl = 'https://localhost:7297/api/Deals';
   private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
  
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,private authService: AuthServiceService) { }
  
   createDeal(dealData: DealCreatePayload): Observable<DealRead> {
     return this.http.post<DealRead>(this.apiUrl, JSON.stringify(dealData), this.httpOptions)
       .pipe(catchError(this.handleError));
   }
- 
+
   getDealById(id: number): Observable<DealRead> {
     const url = `${this.apiUrl}/${id}`;
     return this.http.get<DealRead>(url, this.httpOptions)
@@ -87,12 +96,56 @@ export class DealService {
     return this.http.get<DealRead[]>(this.apiUrl, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
+  getDealsForCurrentUser(): Observable<DealRead[]> {
+    const currentUserId = this.authService.getUserId(); 
 
-  updateDealStage(id: number, stageName: string): Observable<DealRead[]> {
-    const url = `${this.apiUrl}/${id}/stage`;
-    return this.http.put<DealRead[]>(url, JSON.stringify({"stageName":stageName}), this.httpOptions)
+    if (!currentUserId) {
+    
+      console.error('User ID not found in AuthServiceService.');
+      return throwError(() => new Error('User ID is not available. Cannot fetch user-specific deals.'));
+    }
+
+   
+    const url = `${this.apiUrl}/byCreator/${currentUserId}`;
+    
+  
+
+    console.log(`Fetching deals for user ID: ${currentUserId} from URL: ${url}`);
+    return this.http.get<DealRead[]>(url, this.httpOptions) 
       .pipe(catchError(this.handleError));
   }
+  updateDealStage(id: number, stageName: string): Observable<DealRead> { 
+    const url = `${this.apiUrl}/${id}/stage`;
+    const userId = this.authService.getUserId();
+
+    if (!userId) {
+  
+      return throwError(() => new Error('User ID not found. Cannot perform action.'));
+    }
+
+    
+    if (!this.authService.hasPrivilege('StageUpdate')) {
+      return throwError(() => new Error('User lacks StageUpdate privilege.'));
+    }
+
+    const payload = {
+      stageName: stageName,
+      performedByUserId: userId 
+    };
+
+   
+    return this.http.put<DealRead>(url, payload, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+ 
+  getDealStageHistory(dealId: number): Observable<StageHistoryReadDto[]> {
+    const url = `${this.apiUrl}/${dealId}/history`;
+   
+    return this.http.get<StageHistoryReadDto[]>(url)
+      .pipe(catchError(this.handleError));
+  }
+
 
 
   private handleError(error: HttpErrorResponse) {

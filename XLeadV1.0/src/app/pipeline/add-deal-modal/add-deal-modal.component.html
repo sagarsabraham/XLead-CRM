@@ -13,14 +13,12 @@
       <app-modal-header title="Deal Information" [showOwner]="true"></app-modal-header>
 
       <dx-form
+      *ngIf="showForm"
         #dealFormInstance 
         [formData]="newDeal"
         [colCountByScreen]="{ xs: 1, sm: 1, md: 1, lg: 1 }">
  
-        <!-- <dxi-item dataField="salesperson">
-          <dxo-label text="SalesPerson" cssClass="bold-label"></dxo-label>
-          <dxi-validation-rule type="required" message="SalesPerson Name is required"></dxi-validation-rule>
-        </dxi-item> -->
+      
   <dxi-item
   dataField="amount"
   editorType="dxNumberBox"
@@ -53,7 +51,7 @@
               (onClick)="openQuickCreateCustomerModal()">
             </dx-button>
           </div>
-          <dxi-validation-rule type="required" message="Company Name is required"></dxi-validation-rule>
+          <dxi-validation-rule type="required" message="Customer Name is required"></dxi-validation-rule>
         </dxi-item>
        
         <dxi-item dataField="title">

@@ -124,7 +124,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   getPipelineRoute(): string {
-    console.log('Current privileges:', this.auth.privileges); // Debug line
+    console.log('Current privileges:', this.auth.privileges);
     if (this.auth.hasPrivilege('overview')) {
       return '/overview';
     } else if (this.auth.hasPrivilege('PipelineDetailAccess')) {
