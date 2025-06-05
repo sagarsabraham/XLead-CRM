@@ -56,7 +56,18 @@ export interface DealRead {
   contactId?: number | null;
   customFields?: { [key: string]: any };
 }
+export interface DashboardMetricItem {
+  value: string;
+  percentageChange: number;
+  isPositiveTrend: boolean;
+}
 
+export interface DashboardMetrics {
+  openPipelines: DashboardMetricItem;
+  pipelinesWon: DashboardMetricItem;
+  pipelinesLost: DashboardMetricItem;
+  revenueWon: DashboardMetricItem;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -86,6 +97,11 @@ export class DealService {
   updateDealStage(id: number, stageName: string): Observable<DealRead[]> {
     const url = `${this.apiUrl}/${id}/stage`;
     return this.http.put<DealRead[]>(url, JSON.stringify({"stageName":stageName}), this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+getDashboardMetrics(): Observable<DashboardMetrics> {
+    const url = `${this.apiUrl}/dashboard-metrics`;
+    return this.http.get<DashboardMetrics>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 
