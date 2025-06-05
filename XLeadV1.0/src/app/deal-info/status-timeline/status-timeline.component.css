@@ -1,27 +1,35 @@
 .status-timeline {
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  width: 100%;
-  padding: 0;
+  font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
-  font-family: 'poppins';
+  margin: 20px 0;
+  width: 100%;
+}
+
+/* Desktop: Horizontal Layout */
+.stage-list {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 .stage {
-  flex: 1; 
+  flex: 1;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   cursor: pointer;
-  margin-left: -70px;
+  min-width: 120px;
 }
 
 .circle {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background-color: #ffffff;
   display: flex;
@@ -29,37 +37,371 @@
   align-items: center;
   font-weight: bold;
   z-index: 1;
-  transition: background-color 0.3s ease;
-  border: 1px solid #ccc;
+  transition: all 0.3s ease;
+  border: 2px solid #e0e0e0;
+  font-size: 14px;
 }
 
 .circle.active {
   background-color: #1976d2;
   color: white;
+  border-color: #1976d2;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+}
+
+.circle.completed {
+  background-color: #1976d2;
+  color: white;
+  border-color: #1976d2;
+}
+
+/* Special styling for Closed Won when active */
+.circle.closed-won.active {
+  background-color: #4caf50;
+  border-color: #4caf50;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+/* Special styling for Closed Lost when active */
+.circle.closed-lost.active {
+  background-color: #f44336;
+  border-color: #f44336;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+.checkmark {
+  font-style: normal;
+  font-size: 18px;
+  font-weight: normal;
 }
 
 .label {
-  margin-top: 6px;
-  font-size: 12px;
-  color: #444;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #666;
   max-width: 150px;
+  word-wrap: break-word;
+  transition: color 0.3s ease;
 }
 
 .label.active {
-  font-weight: bold;
+  font-weight: 600;
   color: #1976d2;
+}
+
+.label.closed-won.active {
+  color: #4caf50;
+}
+
+.label.closed-lost.active {
+  color: #f44336;
 }
 
 .connector {
   position: absolute;
-  top: 16px;
+  top: 18px;
   width: 100%;
   height: 2px;
-  background-color: #ccc;
+  background-color: #e0e0e0;
   z-index: 0;
   transform: translateX(50%);
+  transition: background-color 0.3s ease;
+}
+
+.connector.completed {
+  background-color: #1976d2;
 }
 
 .stage:last-child .connector {
-  display: none; 
+  display: none;
+}
+
+/* Mobile: Vertical Layout */
+.mobile-stage-container {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+}
+
+.current-stage-card {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 0 16px 24px 16px;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+}
+
+.current-stage-card.closed-won {
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.current-stage-card.closed-lost {
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+}
+
+.current-stage-header {
+  font-size: 12px;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.current-stage-name {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.current-stage-number {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.vertical-stage-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px;
+}
+
+.vertical-stage {
+  display: flex;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+
+.vertical-stage:hover {
+  background-color: #f5f5f5;
+}
+
+.vertical-stage.active {
+  background-color: #e3f2fd;
+}
+
+.circle-container {
+  position: relative;
+  flex-shrink: 0;
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.vertical-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  border: 3px solid #e0e0e0;
+  transition: all 0.3s ease;
+  z-index: 1;
+  font-size: 16px;
+}
+
+.vertical-circle.active {
+  background-color: #1976d2;
+  color: white;
+  border-color: #1976d2;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+}
+
+.vertical-circle.completed {
+  background-color: #1976d2;
+  color: white;
+  border-color: #1976d2;
+}
+
+/* Special styling for mobile Closed Won when active */
+.vertical-circle.closed-won.active {
+  background-color: #4caf50;
+  border-color: #4caf50;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+/* Special styling for mobile Closed Lost when active */
+.vertical-circle.closed-lost.active {
+  background-color: #f44336;
+  border-color: #f44336;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+.vertical-connector {
+  position: absolute;
+  left: 50%;
+  top: 40px;
+  width: 3px;
+  height: 60px;
+  background-color: #e0e0e0;
+  transform: translateX(-50%);
+  transition: background-color 0.3s ease;
+}
+
+.vertical-connector.completed {
+  background-color: #1976d2;
+}
+
+/* Continue from previous CSS */
+.stage-content {
+  flex: 1;
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 60px;
+}
+
+.vertical-label {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 4px;
+  transition: color 0.3s ease;
+}
+
+.vertical-label.active {
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.vertical-label.closed-won.active {
+  color: #4caf50;
+}
+
+.vertical-label.closed-lost.active {
+  color: #f44336;
+}
+
+.stage-status {
+  font-size: 12px;
+}
+
+.status-completed {
+  color: #1976d2;
+}
+
+.status-current {
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.status-current.closed-lost {
+  color: #f44336;
+}
+
+.status-pending {
+  color: #999;
+}
+
+/* Hover effects */
+.stage:hover .circle:not(.active):not(.completed) {
+  border-color: #1976d2;
+  background-color: #f5f5f5;
+}
+
+.vertical-stage:hover .vertical-circle:not(.active):not(.completed) {
+  border-color: #1976d2;
+  background-color: #f5f5f5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .stage-list {
+    display: none;
+  }
+
+  .mobile-stage-container {
+    display: flex;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-stage-container {
+    display: none;
+  }
+
+  .stage-list {
+    display: flex;
+  }
+}
+
+/* Simple pulse animation for active stage */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(25, 118, 210, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(25, 118, 210, 0);
+  }
+}
+
+@keyframes pulse-green {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+@keyframes pulse-red {
+  0% {
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(244, 67, 54, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+  }
+}
+
+.circle.active:not(.closed-won):not(.closed-lost),
+.vertical-circle.active:not(.closed-won):not(.closed-lost) {
+  animation: pulse 2s infinite;
+}
+
+.circle.closed-won.active,
+.vertical-circle.closed-won.active {
+  animation: pulse-green 2s infinite;
+}
+
+.circle.closed-lost.active,
+.vertical-circle.closed-lost.active {
+  animation: pulse-red 2s infinite;
+}
+
+/* Ensure touch targets are large enough for mobile */
+.vertical-stage {
+  min-height: 48px;
+}
+
+/* Add some visual feedback for clickable stages */
+.stage {
+  transition: transform 0.2s ease;
+}
+
+.stage:hover {
+  transform: translateY(-2px);
+}
+
+.stage:active {
+  transform: translateY(0);
 }

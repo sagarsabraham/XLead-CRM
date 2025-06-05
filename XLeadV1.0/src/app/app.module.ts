@@ -15,6 +15,7 @@ import { CompanyPageComponent } from './company/company-page/company-page.compon
 import { SharedModule } from './shared/shared.module';
 import { DealInfoModule } from './deal-info/deal-info.module';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
  
 
@@ -44,6 +45,7 @@ const routes: Routes = [
     ContactsModule,
     SharedModule,
     AppRoutingModule,
+    FormsModule,
     DealInfoModule
   ],
   bootstrap: [AppComponent],

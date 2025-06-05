@@ -1,9 +1,32 @@
-/* .app-container {
-  position: relative;
+:host {
+  display: flex;
   height: 100vh;
-  width: 100%;
+  overflow: hidden;
+  background-color: black;;
 }
 
-.app-topbar {
-  margin: auto;
-} */
+app-sidebar {
+  flex-shrink: 0;
+}
+
+.top-and-body {
+  margin-left: 7px; /* Desktop sidebar width */
+  flex: 1;
+  overflow-y: auto;
+  background-color: #F8F9FA;
+  padding-top: 20px;
+}
+
+
+@media (max-width: 768px) {
+  :host {
+    display: block;
+    height: auto;
+    overflow: visible;
+  }
+  
+  .top-and-body {
+    margin-left: 0; /* Remove left margin on mobile */
+    padding-top: 80px; /* Add padding for mobile header */
+  } 
+}

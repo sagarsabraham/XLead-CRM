@@ -1,13 +1,13 @@
 .deal-header {
   display: flex;
-  /* justify-content: space-between; */
   align-items: center;
-  /* background-color: #f5f5f5; */
   padding: 16px 24px;
-  /* border: 1px solid #ddd; */
   border-radius: 6px;
   font-family: 'Poppins';
   color: #333;
+  background: #f8fafc; /* Consistent with deal-info-page mobile header background */
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .back-button {
@@ -15,11 +15,12 @@
   align-items: center;
   background-color: #f0f0f0;
   border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
+  padding: 8px 12px; /* Increased padding for better touch target */
+  border-radius: 6px; /* Softer corners */
   cursor: pointer;
-  font-size: 14px;
+  font-size: 15px; /* Slightly larger for readability */
   color: #333;
+  transition: background-color 0.3s;
 }
 
 .back-button:hover {
@@ -27,21 +28,22 @@
 }
 
 .dx-icon-back {
-  font-size: 18px;
+  font-size: 20px; /* Slightly larger for visibility */
 }
 
 .deal-left {
-  padding-left: 20px;
+  padding-left: 16px; /* Reduced slightly for balance, still spacious */
+  flex: 1; /* Allows it to take available space */
 }
 
 .deal-left h2 {
   font-size: 24px;
-  margin: 0;
-  font-weight: bold;
+  margin: 0 0 8px 0; /* Added bottom margin for spacing */
+  font-weight: 600; /* Slightly lighter than bold for modern look */
 }
 
 .deal-left p {
-  margin: 8px 0 0;
+  margin: 0;
   font-size: 16px;
   font-weight: 500;
 }
@@ -49,19 +51,69 @@
 .deal-right {
   margin-left: auto;
   text-align: right;
+  flex-shrink: 0; /* Prevents shrinking on smaller screens */
 }
 
 .deal-right p {
   margin: 4px 0;
-  padding-bottom: 8px;
   font-size: 16px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 4px;
+  gap: 6px; /* Slightly increased gap for clarity */
   font-weight: 500;
 }
 
 .dx-icon-group {
   font-size: 18px;
+}
+
+/* Mobile-Specific Styles */
+@media (max-width: 768px) {
+  .deal-header {
+    padding: 12px 16px; /* Matches deal-info-page mobile padding */
+    border-radius: 10px; /* Matches deal-info-page mobile border-radius */
+    flex-wrap: wrap; /* Allows wrapping for very small screens */
+    gap: 12px; /* Adds spacing between elements if wrapped */
+  }
+
+  .back-button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 8px; /* Slightly larger for mobile */
+  }
+
+  .dx-icon-back {
+    font-size: 18px; /* Slightly smaller for mobile proportionality */
+  }
+
+  .deal-left {
+    padding-left: 12px; /* Adjusted for mobile */
+    flex: 1;
+  }
+
+  .deal-left h2 {
+    font-size: 22px; /* Matches deal-info-page mobile h2 size */
+    margin-bottom: 8px;
+  }
+
+  .deal-left p {
+    font-size: 14px; /* Slightly smaller for mobile readability */
+    margin: 4px 0; /* Consistent spacing */
+  }
+
+  .deal-right {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .deal-right p {
+    font-size: 14px; /* Matches deal-info-page mobile text size */
+    gap: 6px;
+    margin: 4px 0;
+  }
+
+  .dx-icon-group {
+    font-size: 16px; /* Slightly smaller for mobile */
+  }
 }

@@ -228,8 +228,6 @@ dx-data-grid {
     font-size: 12px;
   }
 }
-
-/* Add to contact-page.component.css */
 .loading-state, .error-state {
   display: flex;
   flex-direction: column;
@@ -238,6 +236,24 @@ dx-data-grid {
   min-height: 200px;
   padding: 20px;
   text-align: center;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: #007bff;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-state p {

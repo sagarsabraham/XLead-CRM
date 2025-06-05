@@ -9,6 +9,9 @@ export interface GridColumn {
   cellTemplate?: string;
   headerCellTemplate?: string;
   sortOrder?: 'asc' | 'desc' | undefined;
+   dataType?: 'string' | 'number' | 'date' | 'boolean';
+     format?: { type?: string; currency?: string; precision?: number } | string;
+      minWidth?: number; 
 }
 
 export interface ExportFormat {

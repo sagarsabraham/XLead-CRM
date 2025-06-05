@@ -19,6 +19,7 @@ import { HistoryTimelineComponent } from './history-timeline/history-timeline.co
 import { DealInfoCardComponent } from './deal-info-card/deal-info-card.component';
 import { SharedModule } from '../shared/shared.module';
 import { DocUploadComponent } from './doc-upload/doc-upload.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { DocUploadComponent } from './doc-upload/doc-upload.component';
     DxFileUploaderModule,
     DxListModule,
     DxTextBoxModule,
-    DxTabsModule
+    DxTabsModule,
+    FormsModule,
   ]
 })
 export class DealInfoModule { }
