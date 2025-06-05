@@ -1,98 +1,17 @@
-.upload-container {
-  max-width: 600px;
-  margin: 20px auto;
+.file-upload-container {
   padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 0 auto;
+}
 
-  .upload-title {
-    color: #333;
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-    font-weight: 500;
-    text-align: center;
-  }
-
-  .custom-uploader {
-    border: none;
-    background: transparent;
-    
-    ::ng-deep .dx-fileuploader-wrapper {
-      padding: 0;
-    }
-    
-    ::ng-deep .dx-fileuploader-input-wrapper {
-      display: none;
-    }
-  }
-
-  .drop-zone {
-    border: 2px dashed #ccc;
-    border-radius: 6px;
-    padding: 40px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: #f9f9f9;
-    margin-bottom: 20px;
-
-    &:hover {
-      border-color: #4a90e2;
-      background: #f0f7ff;
-    }
-
-    &.dx-fileuploader-dropzone-active {
-      border-color: #4a90e2;
-      background: #f0f7ff;
-    }
-
-    .drop-zone-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-
-      .upload-icon {
-        font-size: 48px;
-        color: #4a90e2;
-      }
-
-      .upload-text {
-        .main-text {
-          font-size: 1.1rem;
-          font-weight: 500;
-          color: #333;
-          margin-bottom: 5px;
-        }
-
-        .sub-text {
-          font-size: 0.9rem;
-          color: #666;
-        }
-      }
-    }
-  }
-
-  .status-message {
-    padding: 12px 15px;
+:host ::ng-deep .dx-fileuploader-wrapper {
+  .dx-fileuploader-upload-button {
+    background-color: #007bff;
+    color: white;
     border-radius: 4px;
-    margin-top: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.95rem;
+  }
 
-    &.success {
-      background-color: #e6f7e6;
-      color: #2e7d32;
-      border: 1px solid #c8e6c9;
-    }
-
-    &.error {
-      background-color: #ffebee;
-      color: #c62828;
-      border: 1px solid #ffcdd2;
-    }
+  .dx-fileuploader-upload-button:hover {
+    background-color: #0056b3;
   }
 }

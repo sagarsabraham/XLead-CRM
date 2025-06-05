@@ -1,35 +1,11 @@
-<div class="upload-container">
-  <h2 class="upload-title">Document Upload</h2>
-  
+<div class="file-upload-container">
   <dx-file-uploader
-    class="custom-uploader"
-    [accept]="allowedFileTypes"
-    [uploadMode]="'useForm'"
-    [multiple]="true"
-    [allowedFileExtensions]="allowedExtensions"
-    [maxFileSize]="maxFileSize"
     [uploadUrl]="uploadUrl"
-    (onUploaded)="onUploadSuccess($event)"
+    [multiple]="true"
+    accept="*"
+    uploadMode="instantly"
+    (onUploaded)="onUploaded($event)"
     (onUploadError)="onUploadError($event)"
-    [showFileList]="true"
-    fileListMode="onClick"
-    dropZone=".drop-zone">
-    
-    <div class="drop-zone">
-      <div class="drop-zone-content">
-        <i class="upload-icon dx-icon-upload"></i>
-        <div class="upload-text">
-          <div class="main-text">Drag & Drop files here</div>
-          <div class="sub-text">or click to browse</div>
-        </div>
-      </div>
-    </div>
-    
-    <dxo-label text=""></dxo-label>
+  >
   </dx-file-uploader>
-  
-  <div *ngIf="uploadStatus" class="status-message" [class.success]="isSuccess" [class.error]="!isSuccess">
-    <i [class]="isSuccess ? 'dx-icon-check' : 'dx-icon-close'"></i>
-    {{ uploadStatus }}
-  </div>
 </div>
