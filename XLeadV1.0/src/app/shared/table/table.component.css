@@ -403,7 +403,7 @@
 }
  
 .sort-icon.active {
-  color: #3b82f6; /* Accent color for active sort */
+  color: #3b82f6; 
 }
  
 /* Custom Dropdown Styles - Modernized */
@@ -416,12 +416,12 @@
   min-width: 220px;
   overflow-y: auto;
   position: absolute;
-  z-index: 1100; /* Increase to ensure above sticky toolbar (z-index: 3) */
+  z-index: 1100; 
 }
  
 .column-chooser-dropdown {
-  top: 60px; /* Approximate toolbar height + padding */
-  right: 180px; /* Adjust based on button position */
+  top: 60px; 
+  right: 180px; 
   width: 200px;
 }
  
@@ -434,7 +434,7 @@
 .table-scroll-container {
   position: relative;
   width: 100%;
-  overflow-x: visible; /* Prevent clipping */
+  overflow-x: visible; 
   overflow-y: visible;
 }
  
@@ -442,7 +442,7 @@
  
 @media (max-width: 1200px) {
   .column-chooser-dropdown {
-    right: 150px; /* Adjust for narrower toolbar */
+    right: 150px; 
     width: 180px;
   }
   .export-options-dropdown {
@@ -464,7 +464,7 @@
  
 @media (max-width: 600px) {
   .column-chooser-dropdown {
-    right: 80px; /* Closer to button on small screens */
+    right: 80px; 
     width: 140px;
   }
   .export-options-dropdown {
@@ -474,13 +474,13 @@
 }
  
 .dropdown-header {
-  background-color: #f9fafb; /* Light bg for header */
+  background-color: #f9fafb; 
   border-bottom: 1px solid #e5e7eb;
-  font-size: 0.875rem; /* 14px */
+  font-size: 0.875rem; 
   font-weight: 500;
-  padding: 0.75rem 1rem; /* More padding */
+  padding: 0.75rem 1rem; 
   color: #374151;
-  position: relative; /* For close button positioning */
+  position: relative; 
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -491,14 +491,14 @@
   cursor: pointer;
   display: flex;
   font-size: 0.875rem;
-  gap: 0.75rem; /* More space for checkbox */
+  gap: 0.75rem; 
   padding: 0.75rem 1rem;
   transition: background-color 0.15s ease, color 0.15s ease;
   color: #4b5563;
 }
  
 .dropdown-item:hover {
-  background-color: #f3f4f6; /* Lighter hover */
+  background-color: #f3f4f6; 
   color: #1f2937;
 }
  
@@ -506,21 +506,18 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  width: 100%; /* Make label clickable area wider */
+  width: 100%; 
   cursor: pointer;
 }
  
 .dropdown-item input[type="checkbox"] {
   margin: 0;
-  width: 1rem; /* 16px */
-  height: 1rem; /* 16px */
-  accent-color: #3b82f6; /* Use accent color for checkbox */
+  width: 1rem; 
+  height: 1rem; 
+  accent-color: #3b82f6; 
   border-radius: 0.25rem;
   border: 1px solid #d1d5db;
 }
-/* Indeterminate style if needed, often handled by browser */
-/* .dropdown-item input[type="checkbox"]:indeterminate { } */
- 
  
 .select-all-item {
   border-bottom: 1px solid #e5e7eb;
@@ -532,24 +529,24 @@
   align-items: center;
   background: none;
   border: none;
-  color: #4b5563; /* Consistent item color */
+  color: #4b5563; 
   cursor: pointer;
   display: flex;
   font-size: 0.875rem;
-  font-weight: 400; /* Normal weight for options */
+  font-weight: 400; 
   gap: 0.75rem;
-  padding: 0; /* Padding handled by .dropdown-item */
-  text-align: left; /* Ensure text aligns left */
+  padding: 0; 
+  text-align: left; 
   width: 100%;
 }
  
 .export-options-dropdown .dropdown-item:hover .export-button {
-  color: #1f2937; /* Match item hover text color */
+  color: #1f2937; 
 }
  
 .export-options-dropdown .export-button .dx-icon {
-  font-size: 1.125rem; /* 18px, slightly larger for visual cue */
-  color: #9ca3af; /* Default icon color */
+  font-size: 1.125rem; 
+  color: #9ca3af; 
   transition: color 0.15s ease;
 }
  
@@ -558,14 +555,14 @@
 }
  
 .export-options-dropdown .export-button.excel .dx-icon {
-  color: #10b981; /* Green for Excel */
+  color: #10b981;
 }
 .export-options-dropdown .dropdown-item:hover .export-button.excel .dx-icon {
   color: #059669;
 }
  
 .export-options-dropdown .export-button.csv .dx-icon {
-  color: #3b82f6; /* Blue for CSV/Doc */
+  color: #3b82f6;
 }
 .export-options-dropdown .dropdown-item:hover .export-button.csv .dx-icon {
   color: #2563eb;
@@ -575,17 +572,17 @@
 /* Export Message Styles - Modernized */
 .export-message {
   animation: fadeInOut 3s ease-in-out;
-  background-color: #10b981; /* Success green */
+  background-color: #10b981; 
   border-radius: 0.375rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   color: #ffffff;
   font-size: 0.875rem;
   left: 50%;
   padding: 0.75rem 1.25rem;
-  position: fixed; /* Use fixed for viewport positioning */
-  top: 20px; /* Distance from top of viewport */
+  position: fixed; 
+  top: 20px;
   transform: translateX(-50%);
-  z-index: 2000; /* High z-index */
+  z-index: 2000; 
 }
  
 /* Keyframes remain the same */
@@ -598,17 +595,16 @@
  
 /* Close Button in Dropdowns - More Subtle */
 .close-button {
-  color: #9ca3af; /* Lighter color */
+  color: #9ca3af; 
   cursor: pointer;
-  font-size: 1.5rem; /* Larger, easier to click */
-  font-weight: 300; /* Lighter weight for 'x' */
+  font-size: 1.5rem; 
+  font-weight: 300; 
   line-height: 1;
-  padding: 0.25rem; /* Clickable area */
-  /* position: absolute; right: 12px; top: 50%; transform: translateY(-50%); - Handled by flex in .dropdown-header */
+  padding: 0.25rem; 
 }
  
 .close-button:hover {
-  color: #ef4444; /* Red for close hover */
+  color: #ef4444; 
 }
  
  
@@ -616,7 +612,7 @@
 .owner-cell {
   align-items: center;
   display: flex;
-  gap: 0.5rem; /* 8px */
+  gap: 0.5rem; 
 }
  
 .owner-avatar {
@@ -624,12 +620,12 @@
   border-radius: 50%;
   color: white;
   display: flex;
-  font-size: 0.875rem; /* 14px */
+  font-size: 0.875rem;
   font-weight: 500;
   height: 32px;
   justify-content: center;
   width: 32px;
-  flex-shrink: 0; /* Prevent avatar from shrinking */
+  flex-shrink: 0; 
 }
  
 .owner-name {
@@ -645,15 +641,14 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 1rem; /* Add some padding to mobile view */
-  gap: 1rem; /* Space between sections */
+  padding: 1rem; 
+  gap: 1rem; 
 }
  
 .mobile-toolbar {
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* Consistent gap */
-  /* margin-bottom: 16px; - Handled by parent gap */
+  gap: 1rem; 
   padding: 0.75rem;
   background-color: #f9fafb;
   border-radius: 0.5rem;
@@ -663,7 +658,7 @@
 .mobile-selection {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Space out select all and count */
+  justify-content: space-between; 
   gap: 0.75rem;
 }
  
@@ -683,7 +678,7 @@
   border-radius: 0.25rem;
 }
  
-.mobile-selection .selection-info { /* Re-style for mobile context */
+.mobile-selection .selection-info { 
   font-size: 0.875rem;
   color: #4b5563;
   font-weight: 500;
@@ -696,7 +691,7 @@
  
 .mobile-search {
   width: 100%;
-  padding: 0.625rem 0.875rem; /* 10px 14px */
+  padding: 0.625rem 0.875rem; 
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   font-size: 0.875rem;
@@ -711,25 +706,25 @@
  
 .mobile-actions {
   display: flex;
-  gap: 0.5rem; /* 8px */
-  justify-content: space-around; /* Distribute buttons more evenly */
+  gap: 0.5rem; 
+  justify-content: space-around;
   flex-wrap: wrap;
 }
  
 .mobile-action-btn {
   display: flex;
   align-items: center;
-  gap: 0.375rem; /* 6px */
-  padding: 0.5rem 0.75rem; /* 8px 12px */
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem; 
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   background-color: #ffffff;
-  font-size: 0.875rem; /* 14px */
+  font-size: 0.875rem; 
   color: #374151;
   cursor: pointer;
   transition: background-color 0.2s, border-color 0.2s;
-  flex-grow: 1; /* Allow buttons to grow */
-  justify-content: center; /* Center content in button */
+  flex-grow: 1;
+  justify-content: center;
 }
  
 .mobile-action-btn:hover {
@@ -738,29 +733,28 @@
 }
  
 .mobile-action-btn i.fas {
-  font-size: 0.875rem; /* 14px, slightly smaller to fit text */
+  font-size: 0.875rem; 
   color: #6b7280;
   margin-right: 0.25rem;
 }
  
 /* Mobile Modals/Popovers (Column Chooser, Filter, Export) - Consistent Styling */
 .mobile-column-chooser,
-.mobile-filter-options, /* Assuming this is the class for filter builder panel */
+.mobile-filter-options, 
 .mobile-sort-options,
 .mobile-export-options {
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  /* margin-bottom: 16px; - Handled by parent gap */
-  overflow: hidden; /* To contain border-radius with header */
-  position: relative; /* If any absolute children */
+  overflow: hidden; 
+  position: relative; 
   z-index: 100;
 }
  
 .column-chooser-header,
 .filter-header,
-.sort-header, /* Assuming .sort-header exists for sort options title */
+.sort-header, 
 .export-header {
   display: flex;
   justify-content: space-between;
@@ -772,16 +766,16 @@
  
 .column-chooser-title,
 .filter-title,
-.export-title { /* .sort-header is just text, style directly or add a title class */
+.export-title { 
   font-weight: 500;
-  font-size: 1rem; /* 16px */
+  font-size: 1rem; 
   color: #1f2937;
 }
-.sort-header { /* Direct style for sort-header text */
+.sort-header { 
   font-weight: 500;
   font-size: 1rem;
   color: #1f2937;
-  width: 100%; /* Take full width if no close button */
+  width: 100%; 
 }
  
  
@@ -802,17 +796,17 @@
 }
  
 .column-chooser-actions,
-.filter-actions, /* Ensure this is the content wrapper for filter builder */
+.filter-actions, 
 .sort-options,
 .export-actions {
-  max-height: 250px; /* Adjust as needed */
+  max-height: 250px; 
   overflow-y: auto;
-  padding: 0.5rem 0; /* Vertical padding, items will have horizontal */
+  padding: 0.5rem 0; 
 }
  
 .column-chooser-item,
 .sort-option,
-.export-actions .export-button { /* Target export buttons inside actions */
+.export-actions .export-button { 
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
   cursor: pointer;
@@ -822,7 +816,7 @@
 }
 .column-chooser-item:hover,
 .sort-option:hover,
-.export-actions .dropdown-item:hover { /* If export buttons are wrapped in items */
+.export-actions .dropdown-item:hover { 
   background-color: #f3f4f6;
 }
 .export-actions .export-button {
@@ -832,9 +826,9 @@
 }
 .export-actions .export-button:hover {
     color: #1f2937;
-    background-color: #f3f4f6; /* Add hover to the button itself if not wrapped */
+    background-color: #f3f4f6; 
 }
-.export-actions .export-button i.fas { /* Ensure FontAwesome icons are styled */
+.export-actions .export-button i.fas {
     color: #9ca3af;
     font-size: 1rem;
 }
@@ -863,7 +857,7 @@
  
 /* Mobile Filter Builder Specifics (inside .filter-actions) */
 :host ::ng-deep .mobile-filter-options .dx-filterbuilder {
-  padding: 1rem; /* Add padding around the filter builder itself */
+  padding: 1rem; 
   font-size: 0.875rem;
 }
 :host ::ng-deep .mobile-filter-options .dx-filterbuilder .dx-texteditor,
@@ -900,11 +894,11 @@
   justify-content: flex-end;
   gap: 0.75rem;
   margin-top: 1rem;
-  padding: 1rem; /* Padding for the footer itself */
+  padding: 1rem; 
   border-top: 1px solid #e5e7eb;
 }
  
-.filter-action-btn { /* General button style for filter actions */
+.filter-action-btn { 
   padding: 0.625rem 1rem;
   border-radius: 0.375rem;
   font-size: 0.875rem;
@@ -915,27 +909,27 @@
  
 .filter-action-btn.clear {
   background-color: #ffffff;
-  color: #ef4444; /* Red for clear/danger */
-  border: 1px solid #fca5a5; /* Light red border */
+  color: #ef4444; 
+  border: 1px solid #fca5a5; 
 }
 .filter-action-btn.clear:hover {
-  background-color: #fee2e2; /* Lighter red bg on hover */
+  background-color: #fee2e2; 
   border-color: #f87171;
 }
  
 .filter-action-btn.apply {
-  background-color: #3b82f6; /* Accent blue */
+  background-color: #3b82f6; 
   color: #ffffff;
   border: 1px solid #3b82f6;
 }
 .filter-action-btn.apply:hover {
-  background-color: #2563eb; /* Darker blue on hover */
+  background-color: #2563eb; 
   border-color: #2563eb;
 }
  
 .sort-indicator {
   font-size: 0.875rem;
-  color: #3b82f6; /* Accent for sort direction */
+  color: #3b82f6;
   font-weight: bold;
 }
  
@@ -948,14 +942,14 @@
  
 .contact-card {
   display: flex;
-  align-items: center; /* Vertically align items */
+  align-items: center; 
   background-color: #ffffff;
-  border: 1px solid #e5e7eb; /* Subtle border */
-  border-radius: 0.5rem; /* Consistent radius */
-  padding: 1rem; /* More padding */
+  border: 1px solid #e5e7eb; 
+  border-radius: 0.5rem; 
+  padding: 1rem; 
   cursor: pointer;
   transition: box-shadow 0.2s, border-color 0.2s;
-  gap: 0.75rem; /* Gap between selection and content */
+  gap: 0.75rem; 
 }
  
 .contact-card:hover {
@@ -964,8 +958,7 @@
 }
  
 .card-selection {
-  /* margin-right: 12px; - Handled by parent gap */
-  flex-shrink: 0; /* Prevent checkbox from shrinking */
+  flex-shrink: 0; 
 }
  
 .card-selection input[type="checkbox"] {
@@ -980,14 +973,14 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem; /* Small gap between text lines */
-  overflow: hidden; /* For text ellipsis */
+  gap: 0.25rem;
+  overflow: hidden; 
 }
  
 .card-primary {
-  font-size: 1rem; /* 16px */
+  font-size: 1rem;
   font-weight: 500;
-  color: #1f2937; /* Darker text */
+  color: #1f2937; 
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -995,8 +988,8 @@
  
 .card-secondary,
 .card-tertiary {
-  font-size: 0.875rem; /* 14px */
-  color: #6b7280; /* Medium gray */
+  font-size: 0.875rem; 
+  color: #6b7280;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1005,14 +998,14 @@
 .card-owner {
   display: flex;
   align-items: center;
-  gap: 0.5rem; /* 8px */
-  margin-top: 0.25rem; /* Small top margin */
+  gap: 0.5rem; 
+  margin-top: 0.25rem; 
 }
  
 .card-owner .owner-avatar.small {
   width: 24px;
   height: 24px;
-  font-size: 0.75rem; /* 12px */
+  font-size: 0.75rem; 
 }
 .card-owner .owner-name {
   font-size: 0.875rem;
@@ -1020,20 +1013,19 @@
 }
  
 .card-chevron {
-  color: #9ca3af; /* Lighter chevron */
-  font-size: 1rem; /* 16px */
+  color: #9ca3af; 
+  font-size: 1rem; 
   flex-shrink: 0;
 }
 .contact-card:hover .card-chevron {
   color: #6b7280;
 }
- 
-/* Mobile Pagination - Cleaner Look */
+
 .mobile-pagination {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem; /* Increased gap */
+  gap: 1rem; 
   margin-top: 1rem;
   padding: 0.75rem;
   background-color: #f9fafb;
@@ -1073,7 +1065,7 @@
   border-color: #adb5bd;
 }
 .pagination-btn i.fas {
-  font-size: 0.75rem; /* Smaller icons for prev/next */
+  font-size: 0.75rem; 
 }
  
 .pagination-info {
@@ -1087,7 +1079,7 @@
   align-items: center;
   gap: 0.5rem;
   width: 100%;
-  justify-content: center; /* Center page size selector */
+  justify-content: center; 
 }
  
 .page-size-label {
@@ -1103,7 +1095,7 @@
   background-color: #ffffff;
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s;
-  min-width: 70px; /* Ensure select has some width */
+  min-width: 70px; 
 }
  
 .page-size-selector select:focus {
@@ -1122,7 +1114,7 @@
   z-index: 1000;
   display: flex;
   justify-content: center;
-  align-items: flex-end; /* Slide from bottom */
+  align-items: flex-end; 
 }
  
 .modal-overlay {
@@ -1131,21 +1123,21 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4); /* Slightly less dark overlay */
-  backdrop-filter: blur(2px); /* Subtle blur for modern feel */
+  background-color: rgba(0, 0, 0, 0.4); 
+  backdrop-filter: blur(2px); 
 }
  
 .modal-container {
   background-color: #ffffff;
-  border-top-left-radius: 1rem; /* Softer, larger radius for modal top */
+  border-top-left-radius: 1rem; 
   border-top-right-radius: 1rem;
   width: 100%;
-  max-height: 85vh; /* A bit more height */
+  max-height: 85vh; 
   overflow-y: auto;
-  padding: 0; /* Remove padding, header/body will handle */
+  padding: 0; 
   position: relative;
   animation: slideUp 0.3s ease-out;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.1); /* Shadow for modal popping up */
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1); 
 }
  
 /* Keyframes slideUp remains the same */
@@ -1159,16 +1151,15 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #e5e7eb;
-  padding: 1rem 1.25rem; /* More padding */
-  position: sticky; /* Sticky header for scrollable modal content */
-  top: 0;
+  padding: 1rem 1.25rem; 
+  position: sticky;
   background-color: #ffffff;
   z-index: 1;
 }
  
 .modal-header h2 {
   margin: 0;
-  font-size: 1.125rem; /* 18px */
+  font-size: 1.125rem; 
   font-weight: 500;
   color: #1f2937;
 }
@@ -1176,7 +1167,7 @@
 .close-modal-btn {
   background: none;
   border: none;
-  font-size: 1.75rem; /* Larger close icon */
+  font-size: 1.75rem; 
   cursor: pointer;
   color: #9ca3af;
   padding: 0.25rem;
@@ -1188,40 +1179,40 @@
 .modal-body {
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* Consistent gap */
-  padding: 1.25rem; /* Padding for modal content */
+  gap: 1rem; 
+  padding: 1.25rem; 
 }
  
 .detail-item {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem; /* Space between label and value */
-  padding: 0.5rem 0; /* Vertical padding for each item */
-  border-bottom: 1px dashed #e5e7eb; /* Dashed separator for a lighter feel */
+  gap: 0.25rem; 
+  padding: 0.5rem 0; 
+  border-bottom: 1px dashed #e5e7eb; 
 }
 .detail-item:last-child {
   border-bottom: none;
 }
  
 .detail-label {
-  font-size: 0.875rem; /* 14px */
+  font-size: 0.875rem; 
   font-weight: 500;
-  color: #4b5563; /* Medium gray for labels */
+  color: #4b5563; 
 }
  
 .detail-value {
-  font-size: 0.9375rem; /* 15px, slightly larger for values */
-  color: #1f2937; /* Darker for values */
+  font-size: 0.9375rem; 
+  color: #1f2937; 
 }
  
 .modal-actions {
-  display: grid; /* Use grid for equal width buttons */
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Responsive grid */
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
   gap: 0.75rem;
   padding: 1rem 1.25rem;
   border-top: 1px solid #e5e7eb;
-  background-color: #f9fafb; /* Slight bg for actions area */
-  position: sticky; /* Sticky footer for actions */
+  background-color: #f9fafb; 
+  position: sticky; 
   bottom: 0;
   z-index: 1;
 }
@@ -1229,7 +1220,7 @@
 .modal-action-btn {
   display: flex;
   align-items: center;
-  justify-content: center; /* Center content */
+  justify-content: center; 
   gap: 0.5rem;
   padding: 0.625rem 0.75rem;
   border: 1px solid #d1d5db;
@@ -1270,7 +1261,7 @@
 }
  
 /* Destructive action button in modal (e.g., Delete, Cancel) */
-.modal-action-btn.cancel-btn { /* Renamed from .delete-btn to .cancel-btn as per example */
+.modal-action-btn.cancel-btn { 
   background-color: #EF4444;
   color: white;
   border-color: #EF4444;
@@ -1283,20 +1274,15 @@
   color: white;
 }
  
-/* Adjustments for Desktop Responsiveness (Media queries for dropdowns) */
-/* These seem fine, minor tweaks if necessary based on new sizes */
 @media (min-width: 769px) {
   .column-chooser-dropdown {
-    width: 240px; /* Matched base style */
+    width: 240px; 
   }
   .export-options-dropdown {
-    width: 200px; /* Matched base style */
+    width: 200px; 
   }
 }
  
- 
-/* Ensure the width of scrollable matches headers (DevExtreme specifics) */
-/* These rules are important for DX grid layout, largely keep them */
 :host ::ng-deep .dx-scrollable-container,
 :host ::ng-deep .dx-scrollable-content,
 :host ::ng-deep .dx-datagrid-rowsview .dx-datagrid-table {
@@ -1306,21 +1292,18 @@
 }
  
 :host ::ng-deep .dx-datagrid-rowsview .dx-datagrid-content {
-  width: auto !important; /* This is crucial for horizontal scroll */
+  width: auto !important; 
 }
  
 /* Maintain column alignment between header and filter */
 :host ::ng-deep .dx-datagrid-headers .dx-datagrid-table .dx-row > td,
 :host ::ng-deep .dx-datagrid-filter-row .dx-datagrid-table > td {
-  width: auto !important; /* Let content or minWidth dictate */
-  min-width: 120px !important; /* Ensure a minimum width */
-  overflow: visible !important; /* Usually fine */
+  width: auto !important; 
+  min-width: 120px !important; 
+  overflow: visible !important; 
 }
  
- 
-/* Validation & Edit Input Styles (DevExtreme) */
-/* Re-using styles from filter inputs for consistency */
-.detail-input { /* If this is a custom input, not DX */
+.detail-input { 
   width: 100%;
   padding: 0.5rem 0.75rem;
   border: 1px solid #d1d5db;
@@ -1333,22 +1316,21 @@
   outline: none;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
 }
-.detail-input.dx-invalid { /* Assuming dx-invalid class is added */
-  border-color: #ef4444; /* Red for error */
+.detail-input.dx-invalid { 
+  border-color: #ef4444;
 }
 .validation-message {
   color: #ef4444;
-  font-size: 0.75rem; /* 12px */
+  font-size: 0.75rem;
   margin-top: 0.25rem;
 }
  
-/* Style for DevExtreme Edit Inputs (e.g., in-grid editing) */
-:host ::ng-deep .dx-texteditor-input { /* General DX input */
+:host ::ng-deep .dx-texteditor-input { 
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
-  background-color: #ffffff; /* Ensure bg for inputs */
+  background-color: #ffffff; 
 }
 :host ::ng-deep .dx-texteditor-input:focus {
   border-color: #3b82f6;
@@ -1356,7 +1338,7 @@
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
 }
 :host ::ng-deep .dx-invalid .dx-texteditor-input {
-  border-color: #ef4444 !important; /* Use important if DX styles are strong */
+  border-color: #ef4444 !important; 
 }
 :host ::ng-deep .dx-validator.dx-validity-invalid .dx-texteditor {
   position: relative;
@@ -1371,36 +1353,34 @@
 :host ::ng-deep .dx-datagrid-edit-button,
 :host ::ng-deep .dx-datagrid-save-button,
 :host ::ng-deep .dx-datagrid-cancel-button {
-  color: #6b7280; /* Default icon color */
-  font-size: 1.125rem; /* 18px */
-  padding: 0.25rem; /* Clickable area */
+  color: #6b7280; 
+  font-size: 1.125rem; 
+  padding: 0.25rem; 
 }
 :host ::ng-deep .dx-datagrid-save-button {
-  color: #10b981; /* Green for save */
+  color: #10b981; 
 }
 :host ::ng-deep .dx-datagrid-cancel-button {
-  color: #ef4444; /* Red for cancel */
+  color: #ef4444;
 }
  
-/* No Data Message */
 .no-data-message {
   text-align: center;
-  padding: 2rem 1rem; /* More padding for emphasis */
-  font-size: 1rem; /* Larger text */
-  color: #6b7280; /* Medium gray */
-  background-color: #f9fafb; /* Light background */
-  border: 1px dashed #e5e7eb; /* Dashed border for "empty" state */
+  padding: 2rem 1rem; 
+  font-size: 1rem; 
+  color: #6b7280; 
+  background-color: #f9fafb; 
+  border: 1px dashed #e5e7eb; 
   border-radius: 0.5rem;
   margin: 1rem 0;
 }
  
-/* Add vertical lines between all columns */
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td,
 :host ::ng-deep .dx-datagrid-rowsview .dx-row > td {
-  border-right: 1px solid #e5e7eb !important; /* Vertical separator */
+  border-right: 1px solid #e5e7eb !important; 
 }
  
-/* Remove the right border from the last column */
+
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td:last-child,
 :host ::ng-deep .dx-datagrid-rowsview .dx-row > td:last-child {
   border-right: none !important;
@@ -1437,11 +1417,10 @@
 /* Fixed column separator - make it more prominent */
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td[role="columnheader"].dx-column-fixed,
 :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td.dx-column-fixed {
-  border-right: 2px solid #dee2e6 !important; /* Thicker border for fixed columns */
+  border-right: 2px solid #dee2e6 !important;
   padding: 0.75rem;
 }
  
-/* Ensure the grid has borders enabled */
 :host ::ng-deep .dx-datagrid {
   border: none !important;
   background: transparent;
@@ -1452,10 +1431,10 @@
 :host ::ng-deep .dx-datagrid-borders > .dx-datagrid-rowsview,
 :host ::ng-deep .dx-datagrid-borders > .dx-datagrid-filter-panel,
 :host ::ng-deep .dx-datagrid-borders > .dx-datagrid-pager {
-  border: none !important; /* Remove default borders as we're handling them */
+  border: none !important; 
 }
  
-/* Make sure the header cells have proper styling */
+
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td {
   background-color: #f9fafb;
   color: #374151;

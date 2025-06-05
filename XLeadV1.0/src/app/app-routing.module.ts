@@ -7,14 +7,16 @@ const routes: Routes = [
      import('./dashboard/dashboard.module').then(m => m.DashboardModule),
      data : {title : 'Dashboard'}
   },
+ 
+    { path: 'dashboard', loadChildren: () =>
+     import('./dashboard/dashboard.module').then(m => m.DashboardModule),
+     data : {title : 'Dashboard'}
+  },
   {path: 'pipeline', loadChildren: () =>
     import('./pipeline/pipeline.module').then(m => m.PipelineModule),
     data : {title : 'Pipelines'}
   },
-  { path: 'dashboard', loadChildren: () =>
-     import('./dashboard/dashboard.module').then(m => m.DashboardModule),
-     data : {title : 'Dashboard'}
-  },
+
   { path: 'contacts', loadChildren: () => 
     import('./contacts/contacts.module').then(m => m.ContactsModule),
     data : {title : 'Contacts'}

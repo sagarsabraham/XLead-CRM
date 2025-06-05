@@ -3,7 +3,13 @@
   width: 100%;
   
 }
-
+ h2 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: left;
+}
 .page-container {
   display: flex;
   width: 100%;
@@ -69,6 +75,7 @@ Topbar
  
 /* Desktop-specific adjustments */
 @media (min-width: 577px) {
+
   .metric-cards-section {
     margin-bottom: 50px; /* Increased separation */
     padding-bottom: 1px; /* Prevent margin collapsing */
@@ -88,6 +95,7 @@ Topbar
 @media (max-width: 576px) {
   .page-container.mobile-view {
     flex-direction: column;
+   
   }
 
   app-sidebar {
@@ -96,12 +104,14 @@ Topbar
   }
 
   .container {
+       margin-top: 50px;
     margin-left: 0; /* Remove sidebar offset on mobile */
     width: 100%; /* Full width */
     padding: 10px; /* Reduced padding */
   }
 
   .topbar {
+     
     flex-direction: column; /* Stack vertically on mobile */
     align-items: flex-start;
     gap: 8px; /* Space between title and total count */

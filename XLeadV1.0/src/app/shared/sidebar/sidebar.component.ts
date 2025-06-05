@@ -1,88 +1,99 @@
-import { Component, Input, Output, EventEmitter, OnInit, HostListener, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
- 
+import { filter } from 'rxjs/operators';
+import { AuthServiceService } from 'src/app/services/auth-service.service';
+import{ PrivilegeServiceService } from 'src/app/services/privilege-service.service';
+
+interface NavItem {
+  iconPath: string;
+  text: string;
+  route: string;
+  isActive: boolean;
+}
+
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  @Input() icons: string[] = [];
   logoPath = 'assets/logo.png';
   isMobileMenuOpen = false;
   isMobileView = false;
   private routerSubscription: Subscription | null = null;
- 
-  navItems = [
-    {
-      iconPath: 'assets/Dashboard.png',
-      text: 'Dashboard',
-      route: '/dashboard',
-      isActive: false,
-    },
-    {
-      iconPath: 'assets/Pipeline.png',
-      text: 'Pipeline',
-      route: '/pipeline',
-      isActive: false,
-    },
-    {
-      iconPath: 'assets/Contact.png',
-      text: 'Contacts',
-      route: '/contacts',
-      isActive: false,
-    },
-    {
-      iconPath: 'assets/customer.png',
-      text: 'Customers',
-      route: '/companies',
-      isActive: false,
-    },
-  ];
- 
-  profile = {
-    name: 'Subash Joseph',
-    role: 'Admin',
-  };
- 
-  constructor(private router: Router) {
+  navItems: NavItem[] = [];
+
+  constructor(
+    private router: Router, 
+    private auth: AuthServiceService,
+    private privilegeService: PrivilegeServiceService
+  ) {
     this.checkScreenSize();
   }
- 
+
   ngOnInit() {
- 
-    this.updateActiveRoute(this.router.url);
    
- 
+    this.privilegeService.getPrivileges(this.auth.userId).subscribe(privs => {
+      this.auth.setPrivileges(privs);
+      this.initializeNavItems();
+    });
+  }
+
+  private initializeNavItems() {
+    const pipelineRoute = this.getPipelineRoute();
+    console.log('Pipeline route:', pipelineRoute);
+    
+    this.navItems = [
+      {
+        iconPath: 'assets/Dashboard.png',
+        text: 'Dashboard',
+        route: '/dashboard',
+        isActive: false,
+      },
+      {
+        iconPath: 'assets/Pipeline.png',
+        text: 'Pipeline',
+        route: pipelineRoute,
+        isActive: false,
+      },
+      {
+        iconPath: 'assets/Contact.png',
+        text: 'Contacts',
+        route: '/contacts',
+        isActive: false,
+      },
+      {
+        iconPath: 'assets/customer.png',
+        text: 'Customers',
+        route: '/companies',
+        isActive: false,
+      },
+    ];
+
+    this.updateActiveRoute(this.router.url);
+
     this.routerSubscription = this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       this.updateActiveRoute(event.urlAfterRedirects);
     });
-   
- 
+
     this.checkScreenSize();
   }
- 
+
   ngOnDestroy() {
- 
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
-    }
+    if (this.routerSubscription) this.routerSubscription.unsubscribe();
   }
- 
-updateActiveRoute(url: string) {
-  const normalizedUrl = url === '/' ? '/dashboard' : url;
- 
-  this.navItems = this.navItems.map(item => ({
-    ...item,
-    isActive: normalizedUrl === item.route || normalizedUrl.startsWith(item.route + '/'),
-  }));
-}
- 
- 
+
+  updateActiveRoute(url: string) {
+    const normalizedUrl = url === '/' ? '/dashboard' : url;
+    this.navItems = this.navItems.map(item => ({
+      ...item,
+      isActive: normalizedUrl === item.route || normalizedUrl.startsWith(item.route + '/'),
+    }));
+  }
+
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.checkScreenSize();
@@ -91,8 +102,6 @@ updateActiveRoute(url: string) {
   checkScreenSize() {
     const prevMobileView = this.isMobileView;
     this.isMobileView = window.innerWidth <= 768;
-   
-    // Close mobile menu when transitioning from mobile to desktop
     if (prevMobileView && !this.isMobileView) {
       this.isMobileMenuOpen = false;
     }
@@ -100,13 +109,7 @@ updateActiveRoute(url: string) {
  
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
-   
-    // Prevent scrolling on body when menu is open
-    if (this.isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    document.body.style.overflow = this.isMobileMenuOpen ? 'hidden' : '';
   }
  
   closeMobileMenuIfOpen() {
@@ -115,19 +118,19 @@ updateActiveRoute(url: string) {
       document.body.style.overflow = '';
     }
   }
- 
-  get initials(): string {
-    if (!this.profile.name) return '';
-    const nameParts = this.profile.name.trim().split(' ');
-    if (nameParts.length === 1) {
-      return nameParts[0].charAt(0).toUpperCase();
-    }
-    const firstInitial = nameParts[0].charAt(0).toUpperCase();
-    const lastInitial = nameParts[nameParts.length - 1].charAt(0).toUpperCase();
-    return `${firstInitial}${lastInitial}`;
-  }
- 
+
   navigate(route: string) {
     this.router.navigate([route]);
+  }
+
+  getPipelineRoute(): string {
+    console.log('Current privileges:', this.auth.privileges);
+    if (this.auth.hasPrivilege('overview')) {
+      return '/overview';
+    } else if (this.auth.hasPrivilege('PipelineDetailAccess')) {
+      return '/pipeline';
+    } else {
+      return '/access-denied';
+    }
   }
 }

@@ -38,12 +38,12 @@ export class OverviewPageComponent {
       caption: 'Amount',
       dataType: 'number',
       format: { type: 'currency', currency: 'USD', precision: 2 },
-      visible: true, // Changed to true
-      allowSorting: true, // Changed to true
-      allowFiltering: true // Changed to true
+      visible: true, 
+      allowSorting: true, 
+      allowFiltering: true 
     },
     {
-      dataField: 'closingDate', // Changed to match data field
+      dataField: 'closingDate', 
       caption: 'Closing Date',
       dataType: 'date',
       format: 'dd-MMM-yyyy',
@@ -66,7 +66,7 @@ export class OverviewPageComponent {
     { id: '10', SalesPerson: 'Julia Stone', DealName: 'Network Infrastructure Upgrade', Stage: 'Negotiation', amount: 30000, closingDate: new Date('2021-07-05') }
   ];
  
-topcardData = [
+  topcardData = [
     { amount: 14, title: 'Qualification', icon: 'assets/qualification.svg' },
     { amount: 5, title: 'Need Analysis', icon: 'assets/needanalysis.svg' },
     { amount: 4, title: 'Proposal', icon: 'assets/proposal.svg' },
@@ -77,12 +77,12 @@ topcardData = [
  
   getIconColor(index: number): string {
     switch (index) {
-      case 0: return '#F8A978'; // Orange
-      case 1: return '#92BEFA'; // Light blue
-      case 2: return '#B0A3E2'; // Purple
-      case 3: return '#D0D0D0'; // Grey
-      case 4: return '#87DEB2'; // Green
-      case 5: return '#F48F9F'; // Pink
+      case 0: return '#F8A978';
+      case 1: return '#92BEFA';
+      case 2: return '#B0A3E2';
+      case 3: return '#D0D0D0';
+      case 4: return '#87DEB2';
+      case 5: return '#F48F9F';
       default: return '#000000';
     }
   }

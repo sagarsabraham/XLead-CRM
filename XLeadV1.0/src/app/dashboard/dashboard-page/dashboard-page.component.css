@@ -8,6 +8,15 @@
   box-sizing: border-box;
 }
 
+ h2 {
+    font-size: 32px;
+
+    padding: 8px 0;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-left: 20px;
+  }
+
 .metric-wrapper {
   width: 100%;
   box-sizing: border-box;
@@ -99,6 +108,7 @@
 
 @media (max-width: 480px) {
   :host {
+    margin-top: 50px;
     padding: 0.25rem;
   }
 
