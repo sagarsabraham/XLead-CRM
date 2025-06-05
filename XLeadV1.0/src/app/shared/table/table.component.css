@@ -1214,9 +1214,6 @@
   font-size: 0.9375rem; /* 15px, slightly larger for values */
   color: #1f2937; /* Darker for values */
 }
-.detail-value .owner-cell {
-  /* margin-top: 4px; - Handled by parent gap if needed */
-}
 
 .modal-actions {
   display: grid; /* Use grid for equal width buttons */
