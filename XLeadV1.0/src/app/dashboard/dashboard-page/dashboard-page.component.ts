@@ -1,6 +1,6 @@
 // dashboard-page.component.ts
 import { Component, OnInit } from '@angular/core'; // Added OnInit
-import { DealService, MonthlyRevenueData, PipelineStageData } from '../../services/dealcreation.service'; // Adjust path if needed
+import { DealService, MonthlyRevenueData, PipelineStageData, TopCustomerData } from '../../services/dealcreation.service'; // Adjust path if needed
 
 @Component({
   selector: 'app-dashboard-page',
@@ -13,15 +13,9 @@ export class DashboardPageComponent implements OnInit { // Implemented OnInit
   revenueDataError: string | null = null;
 
 
-  companyData = [
-    { Account: 'Harley Davidson', revenue: 5000 },
-    { Account: 'Kim Group', revenue: 4500 },
-    { Account: 'Java Co', revenue: 2000 },
-    { Account: 'Java Co', revenue: 2000 },
-    { Account: 'Java Co', revenue: 2000 },
-    { Account: 'Java Co', revenue: 2000 },
-  ];
-
+   companyData: { Account: string, revenue: number }[] = []; // Initialize as empty
+  isLoadingTopCompanies: boolean = true;
+  topCompaniesError: string | null = null;
   
   stages: { stage: string, amount: number }[] = []; // Initialize as empty for dynamic data
   isLoadingPipelineStages: boolean = true;
@@ -33,7 +27,29 @@ export class DashboardPageComponent implements OnInit { // Implemented OnInit
   ngOnInit(): void {
     this.loadPipelineStageData();
      this.loadMonthlyRevenueData();
+       this.loadTopCompanyData();
   
+  }
+
+   loadTopCompanyData(count: number = 5): void {
+    this.isLoadingTopCompanies = true;
+    this.topCompaniesError = null;
+    this.dealService.getTopCustomersByRevenue(count).subscribe({
+      next: (data: TopCustomerData[]) => {
+        
+        this.companyData = data.map(item => ({
+          Account: item.customerName, 
+          revenue: item.totalRevenueWon
+        }));
+        this.isLoadingTopCompanies = false;
+      },
+      error: (err) => {
+        console.error('Error fetching top company data:', err);
+        this.topCompaniesError = err.message || 'Failed to load top company data.';
+        this.isLoadingTopCompanies = false;
+        this.companyData = []; // Clear data or set to default on error
+      }
+    });
   }
 
   loadPipelineStageData(): void {
@@ -77,5 +93,7 @@ export class DashboardPageComponent implements OnInit { // Implemented OnInit
         this.revenueData = []; // Clear data or set to default on error
       }
     });
+
+    
   }
 }

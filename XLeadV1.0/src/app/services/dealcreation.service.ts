@@ -86,6 +86,11 @@ export interface MonthlyRevenueData {
   totalRevenue: number;  // Matches TotalRevenue from backend DTO
 }
 
+export interface TopCustomerData {
+  customerName: string;     // Matches AccountName from backend DTO
+  totalRevenueWon: number; // Matches TotalRevenueWon from backend DTO
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -137,6 +142,12 @@ export class DealService {
    getMonthlyRevenueWon(months: number = 12): Observable<MonthlyRevenueData[]> {
     const url = `${this.apiUrl}/monthly-revenue-won?months=${months}`;
     return this.http.get<MonthlyRevenueData[]>(url, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+   getTopCustomersByRevenue(count: number = 5): Observable<TopCustomerData[]> {
+    const url = `${this.apiUrl}/top-customers-by-revenue?count=${count}`;
+    return this.http.get<TopCustomerData[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 
