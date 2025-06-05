@@ -9,7 +9,7 @@ interface Privilege {
   providedIn: 'root'
 })
 export class AuthServiceService {
-  userId: number = 5;
+  userId: number = 6;
   privileges: Privilege[] = [];
 
   setPrivileges(privs: Privilege[]) {
@@ -21,5 +21,8 @@ export class AuthServiceService {
     const hasIt = this.privileges.some(priv => priv.privilegeName === privilegeName);
     console.log(`Checking privilege '${privilegeName}':`, hasIt); 
     return hasIt;
+  }
+   getUserId(): number {
+    return this.userId;
   }
 }

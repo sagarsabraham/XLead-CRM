@@ -288,25 +288,36 @@ export class PipelinepageComponent implements OnInit {
   }
 
   onDealDropped(event: { previousStage: string, currentStage: string, previousIndex: number, currentIndex: number }): void {
-    const { previousStage, currentStage, previousIndex, currentIndex } = event;
-    const previousStageName = this.stages.find(s => s.name === previousStage);
-    const currentStageName = this.stages.find(s => s.name === currentStage);
-    const deal = previousStageName?.deals[previousIndex];
-    if (previousStageName && currentStageName && deal && deal.id) {
-      const dealIndexInPrev = previousStageName.deals.findIndex(d => d.id === deal.id);
-      if (dealIndexInPrev > -1) {
-        const [movedDeal] = previousStageName.deals.splice(dealIndexInPrev, 1);
-        currentStageName.deals.splice(currentIndex, 0, movedDeal);
+  const { previousStage, currentStage, previousIndex, currentIndex } = event;
+  const previousStageName = this.stages.find(s => s.name === previousStage);
+  const currentStageName = this.stages.find(s => s.name === currentStage);
+  const deal = previousStageName?.deals[previousIndex];
+  if (previousStageName && currentStageName && deal && deal.id) {
+    const dealIndexInPrev = previousStageName.deals.findIndex(d => d.id === deal.id);
+    if (dealIndexInPrev > -1) {
+      const [movedDeal] = previousStageName.deals.splice(dealIndexInPrev, 1);
+      currentStageName.deals.splice(currentIndex, 0, movedDeal);
 
-        console.log(`PipelinePage: Deal "${movedDeal.title}" (ID: ${movedDeal.id}) moved to stage "${currentStage}". Backend update needed.`);
-        this.dealService.updateDealStage(deal.id, currentStageName.name).subscribe();
-
-        this.updateStageAmountsAndTopCards();
-        this.cdr.detectChanges();
-      }
+      console.log(`PipelinePage: Deal "${movedDeal.title}" (ID: ${movedDeal.id}) moved to stage "${currentStage}". Backend update needed.`);
+      this.dealService.updateDealStage(deal.id, currentStageName.name).subscribe({
+        next: (updatedDeal) => {
+          console.log(`Deal stage updated successfully:`, updatedDeal);
+          this.updateStageAmountsAndTopCards();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error(`Failed to update deal stage: ${err.message}`);
+          // Revert UI changes on failure
+          currentStageName.deals.splice(currentIndex, 1);
+          previousStageName.deals.splice(previousIndex, 0, movedDeal);
+          this.updateStageAmountsAndTopCards();
+          this.cdr.detectChanges();
+          alert(`Error: ${err.message}`);
+        }
+      });
     }
   }
-
+}
   onAddDeal(stageId?: number): void {
     this.isEditMode = false;
     this._selectedDealForModalInput = null;

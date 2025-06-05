@@ -7,7 +7,14 @@ interface HistoryEntry {
   fromStage: string;
   toStage: string;
 }
- 
+ export interface TimelineDisplayEntry {
+  timestamp: string;
+  editedByUserId: number; // Store the ID, you might want to resolve to a name later
+  editedByUserName?: string; // Optional: if you fetch user names
+  fromStage: string;
+  toStage: string;
+  isInitial?: boolean; // Flag for the very first stage
+}
 @Component({
   selector: 'app-history-timeline',
   templateUrl: './history-timeline.component.html',
