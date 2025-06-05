@@ -10,7 +10,7 @@ export interface DealCreatePayload {
   amount: number;
   customerName: string;
   contactFullName: string;
-  contactEmail: string | null; // Updated to allow null
+  contactEmail: string | null; 
   contactPhoneNumber: string | null; // Updated to allow null
   contactDesignation: string | null; // Updated to allow null
   accountId: number | null;
@@ -76,7 +76,7 @@ export class DealService {
     return this.http.post<DealRead>(this.apiUrl, JSON.stringify(dealData), this.httpOptions)
       .pipe(catchError(this.handleError));
   }
- 
+
   getDealById(id: number): Observable<DealRead> {
     const url = `${this.apiUrl}/${id}`;
     return this.http.get<DealRead>(url, this.httpOptions)

@@ -6,7 +6,7 @@ export interface QuickContactFormData {
   FirstName: string;
   LastName: string;
   Designation: string;
-  customerName: string; // Updated to match backend
+  customerName: string; 
   Email: string;
   phoneNo: string;
   countryCode: string;
@@ -14,7 +14,7 @@ export interface QuickContactFormData {
 
 interface NewDeal {
   amount: number;
-  customerName: string; // Updated to match backend
+  customerName: string; 
   title: string;
   account: number | null;
   serviceline: number | null; 
@@ -59,7 +59,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() isVisible: boolean = false;
   @Input() mode: 'add' | 'edit' = 'add';
   @Input() dealToEdit: DealRead | null = null;
-  @Input() selectedStage: number = 1;
+  @Input() selectedStage: number|null = null;
   @Output() onClose = new EventEmitter<void>();
   @Output() onSubmitSuccess = new EventEmitter<DealRead>();
   @Output() onSubmitError = new EventEmitter<string>();
@@ -97,16 +97,16 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   dus: { id: number; duName: string }[] = [];
   countries: { id: number; countryName: string }[] = [];
   
-  customers: string[] = []; // Updated to match backend
-  customerContactMap: { [customer: string]: string[] } = {}; // Updated to match backend
-  filteredCustomers: string[] = []; // Updated to match backend
+  customers: string[] = []; 
+  customerContactMap: { [customer: string]: string[] } = {}; 
+  filteredCustomers: string[] = []; 
   filteredContacts: string[] = [];
 
   customFields: { fieldLabel: string; fieldType: string; dataField: string; required?: boolean }[] = [];
 
   newDeal: NewDeal = {
     amount: 0,
-    customerName: '', // Updated to match backend
+    customerName: '', 
     title: '',
     account: null,
     serviceline: null,
@@ -123,8 +123,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     probability: null,
   };
 
-  isCustomerModalVisible: boolean = false; // Updated to match backend
-  customerData = { // Updated to match backend
+  isCustomerModalVisible: boolean = false; 
+  customerData = { 
     customerName: '', 
     phoneNo: '', 
     website: '', 
@@ -132,7 +132,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     countryCode: '+91'
   };
 
-  customerFields: { // Updated to match backend
+  customerFields: { 
     dataField: string;
     label: string;
     editorType?: string;
@@ -205,7 +205,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     FirstName: '', 
     LastName: '', 
     Designation: '', 
-    customerName: '', // Updated to match backend
+    customerName: '', 
     Email: '', 
     phoneNo: '',
     countryCode: '+91'
@@ -300,7 +300,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     { dataField: 'fieldLabel', label: 'Field Label', required: true },
     { dataField: 'fieldType', label: 'Field Type', editorType: 'dxSelectBox', editorOptions: { items: ['Text', 'Numerical', 'Boolean', 'Date'], placeholder: 'Select field type' }, required: true }
   ];
-
+  private qualificationStageId: number | null = null;
   selectedContactDetails: Contact | null = null;
 
   constructor(
@@ -426,37 +426,92 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   loadServiceLines() {
-    this.serviceLine.getServiceTypes().subscribe(data => this.serviceline = data, err => console.error('Error accounts', err));
+    this.serviceLine.getServiceTypes().subscribe(
+    data => {
+      this.serviceline = data;
+      this.cdr.detectChanges();
+    },
+       err => console.error('Error accounts', err));
   }
 
-  loadAccounts() {
-    this.accountService.getAllAccounts().subscribe(data => this.accounts = data, err => console.error('Error accounts', err));
+ loadAccounts() {
+    this.accountService.getAllAccounts().subscribe(
+    data => {
+      this.accounts = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error accounts', err)
+  );
   }
 
   loadRegions() {
-    this.regionService.getAllRegions().subscribe(data => this.regions = data, err => console.error('Error regions', err));
+    this.regionService.getAllRegions().subscribe(
+    data => {
+      this.regions = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error regions', err)
+  );
   }
 
-  loadDomains() {
-    this.domainService.getAllDomains().subscribe(data => this.domains = data, err => console.error('Error domains', err));
+ loadDomains() {
+    this.domainService.getAllDomains().subscribe(
+    data => {
+      this.domains = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error domains', err)
+  );
+  }
+loadStages() {
+    this.dealStageService.getAllDealStages().subscribe({
+      next: (data) => {
+        this.dealStages = data.map(s => ({ ...s, displayName: s.displayName || s.stageName! }));
+       
+        const qualificationStage = this.dealStages.find(stage => stage.displayName === 'Qualification' || stage.stageName === 'Qualification');
+        if (qualificationStage) {
+          this.qualificationStageId = qualificationStage.id;
+          console.log('Qualification stage ID found:', this.qualificationStageId);
+        } else {
+          console.warn('Qualification stage not found in dealStages:', this.dealStages);
+        }
+        if (this.mode !== 'edit' || !this.dealToEdit) {
+          this.setDefaultStage();
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error stages', err)
+    });
   }
 
-  loadStages() {
-    this.dealStageService.getAllDealStages().subscribe(data => this.dealStages = data.map(s => ({...s, displayName: s.displayName || s.stageName!})), err => console.error('Error stages', err));
+loadDus() {
+    this.duService.getDU().subscribe(
+    data => {
+      this.dus = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error DUs', err)
+  );
+  }
+ loadRevenueTypes() {
+    this.revenuetypeService.getRevenueTypes().subscribe(
+    data => {
+      this.revenueTypes = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error revenue types', err)
+  );
   }
 
-  loadDus() {
-    this.duService.getDU().subscribe(data => this.dus = data, err => console.error('Error DUs', err));
+ loadCountries() {
+    this.countryService.getCountries().subscribe(
+    data => {
+      this.countries = data;
+      this.cdr.detectChanges();
+    },
+    err => console.error('Error countries', err)
+  );
   }
-
-  loadRevenueTypes() {
-    this.revenuetypeService.getRevenueTypes().subscribe(data => this.revenueTypes = data, err => console.error('Error revenue types', err));
-  }
-
-  loadCountries() {
-    this.countryService.getCountries().subscribe(data => this.countries = data, err => console.error('Error countries', err));
-  }
-
   loadCustomerContactData() {
     this.companyContactService.getCompanyContactMap().subscribe(data => {
       this.customerContactMap = data;
@@ -474,14 +529,14 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     
     this.newDeal = {
       amount: deal.dealAmount || 0,
-      customerName: '', // Updated to match backend
+      customerName: '', 
       title: deal.dealName || '',
       account: deal.accountId || null,
       serviceline: deal.serviceId || null,
       region: deal.regionId || null,
       contactName: deal.contactName || '',
       domain: deal.domainId || null,
-      stage: deal.dealStageId || null,
+      stage: deal.dealStageId || this.qualificationStageId,
       revenueType: deal.revenueTypeId || null,
       department: deal.duId || null,
       country: deal.countryId || null,
@@ -687,6 +742,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.newDeal = resetData;
     this.selectedContactDetails = null;
     this.isContactLoading = false;
+this.setDefaultStage();
 
     if (this.customers && this.customers.length > 0) {
       this.filteredCustomers = [...this.customers];
@@ -698,7 +754,13 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.dealFormInstance?.instance.resetValues();
     this.cdr.detectChanges();
   }
-
+private setDefaultStage() {
+    if (this.selectedStage !== null && this.dealStages.some(stage => stage.id === this.selectedStage)) {
+      this.newDeal.stage = this.selectedStage;
+    } else if (this.qualificationStageId !== null) {
+      this.newDeal.stage = this.qualificationStageId;
+    }
+  }
   onCustomerChange(customerName: string, clearContact: boolean = true) {
     console.log('onCustomerChange called with customerName:', customerName);
     this.newDeal.customerName = customerName;
@@ -887,7 +949,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   closeCustomizeFieldModal() {
     this.isCustomizeFieldModalVisible = false;
   }
-
+showForm = true;
   addCustomField(newField: any) {
     console.log('Custom Field Added:', newField);
     const dataField = `custom_${newField.fieldLabel.toLowerCase().replace(/\s+/g, '_')}`;
@@ -897,6 +959,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       dataField: dataField,
       required: false,
     });
+    this.newDeal[dataField] = '';
     console.log("Custom field array", this.customFields);
     switch (newField.fieldType.toLowerCase()) {
       case 'text':
@@ -914,6 +977,9 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       default:
         this.newDeal[dataField] = '';
     }
+    this.showForm = false;
+    this.cdr.detectChanges();
+    this.showForm = true;
     this.cdr.detectChanges();
     console.log("Custom field array", this.customFields);
     this.closeCustomizeFieldModal();

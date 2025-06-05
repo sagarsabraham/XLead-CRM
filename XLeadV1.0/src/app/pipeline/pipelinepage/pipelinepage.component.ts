@@ -2,6 +2,8 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DealRead, DealService } from 'src/app/services/dealcreation.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 import { forkJoin } from 'rxjs';
+import { DealstageService } from 'src/app/services/dealstage.service';
+
  
  
 export interface PipelineDeal {
@@ -33,7 +35,11 @@ export interface PipelineStage {
   deals: PipelineDeal[];
   id?: number;
 }
- 
+ export interface DealStage {
+  id: number;
+  displayName?: string;
+  stageName?: string;
+}
 @Component({
   selector: 'app-pipelinepage',
   templateUrl: './pipelinepage.component.html',
@@ -75,25 +81,23 @@ export class PipelinepageComponent implements OnInit {
 
   private _tableData: any[] = [];
 
-  onTabChange(event: any) {
-    const tabId = event.itemData?.id;
-    this.selectedTabId = tabId;
-
-    this.selectedTabIndex = tabId === 'card' ? 0 : 1;
-
-    if (tabId === 'table') {
+  switchView(view: 'card' | 'table'): void {
+    this.selectedTabId = view;
+    this.selectedTabIndex = view === 'card' ? 0 : 1;
+ 
+    if (view === 'table') {
       this.refreshTableData();
       setTimeout(() => {
         this.cdr.detectChanges();
       }, 50);
     }
+    this.cdr.detectChanges();
   }
-
   stageNames: string[] = this.stages.map(s => s.name);
-
   isLoadingInitialData: boolean = false;
   isModalVisible: boolean = false;
   isEditMode: boolean = false;
+  selectedStageId: number | null = null;
 
   _selectedDealForModalInput: DealRead | null = null;
   _currentlyEditingPipelineDeal: PipelineDeal | null = null;
@@ -107,8 +111,9 @@ export class PipelinepageComponent implements OnInit {
   }
 
   constructor(
-    private dealService: DealService,
+   private dealService: DealService,
     private companyContactService: CompanyContactService,
+    private dealStageService: DealstageService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -123,9 +128,23 @@ export class PipelinepageComponent implements OnInit {
 
     forkJoin({
       deals: this.dealService.getAllDeals(), 
-      contactMap: this.companyContactService.getCompanyContactMap()
+      contactMap: this.companyContactService.getCompanyContactMap(),
+      stages: this.dealStageService.getAllDealStages()
     }).subscribe({
-      next: (results) => {
+      next: (results: {
+        deals: DealRead[];
+        contactMap: { [company: string]: string[] };
+        stages: DealStage[];
+      }) => {
+        console.log('PipelinePage: Successfully fetched deals, contact map, and stages.');
+       
+        // Update stage IDs
+        this.stages.forEach(stage => {
+          const backendStage = results.stages.find(s => s.displayName === stage.name || s.stageName === stage.name);
+          if (backendStage) {
+            stage.id = backendStage.id;
+          }
+        });
         console.log('PipelinePage: Successfully fetched deals and contact map.', results);
         this.customerContactMap = results.contactMap; 
         this.processFetchedDeals(results.deals);
@@ -288,18 +307,23 @@ export class PipelinepageComponent implements OnInit {
     }
   }
 
-  onAddDeal(): void {
+  onAddDeal(stageId?: number): void {
     this.isEditMode = false;
     this._selectedDealForModalInput = null;
     this._currentlyEditingPipelineDeal = null;
     this.isModalVisible = true;
+    this.selectedStageId = stageId || null;
   }
-
+onButtonClick(event: { label: string, stageId?: number }) {
+    if (event.label === 'Deal') {
+      this.onAddDeal(event.stageId);
+    }
+  }
   onEditDeal(dealFromCard: PipelineDeal, stageName: string): void {
     this.isEditMode = true;
     this._currentlyEditingPipelineDeal = dealFromCard;
     this._originalStageNameOfEditingDeal = stageName;
-
+    this.selectedStageId = null;
     if (dealFromCard.originalData) {
         this._selectedDealForModalInput = { ...dealFromCard.originalData };
     } else {
@@ -353,6 +377,7 @@ export class PipelinepageComponent implements OnInit {
     this._selectedDealForModalInput = null;
     this._currentlyEditingPipelineDeal = null;
     this._originalStageNameOfEditingDeal = '';
+    this.selectedStageId = null;
   }
 
   onDealSubmitSuccess(updatedBackendDeal: DealRead): void {
