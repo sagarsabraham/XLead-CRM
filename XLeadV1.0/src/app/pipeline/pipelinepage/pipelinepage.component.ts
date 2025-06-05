@@ -127,7 +127,7 @@ export class PipelinepageComponent implements OnInit {
     this.stages.forEach(stage => stage.deals = []);
 
     forkJoin({
-      deals: this.dealService.getAllDeals(), 
+       deals: this.dealService.getDealsForCurrentUser(), 
       contactMap: this.companyContactService.getCompanyContactMap(),
       stages: this.dealStageService.getAllDealStages()
     }).subscribe({

@@ -96,7 +96,27 @@ export class DealService {
     return this.http.get<DealRead[]>(this.apiUrl, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
+  getDealsForCurrentUser(): Observable<DealRead[]> {
+    const currentUserId = this.authService.getUserId(); // Get the hardcoded userId (e.g., 6)
 
+    if (!currentUserId) {
+      // This should ideally not happen if AuthServiceService always provides a userId
+      console.error('User ID not found in AuthServiceService.');
+      return throwError(() => new Error('User ID is not available. Cannot fetch user-specific deals.'));
+    }
+
+    // Construct the URL for the specific endpoint
+    const url = `${this.apiUrl}/byCreator/${currentUserId}`;
+    
+    // Optional: Client-side privilege check (if you have one like 'ViewOwnDeals')
+    // if (!this.authService.hasPrivilege('ViewOwnDeals')) {
+    //   return throwError(() => new Error('User lacks privilege to view their own deals.'));
+    // }
+
+    console.log(`Fetching deals for user ID: ${currentUserId} from URL: ${url}`);
+    return this.http.get<DealRead[]>(url, this.httpOptions) // No body needed for GET
+      .pipe(catchError(this.handleError));
+  }
   updateDealStage(id: number, stageName: string): Observable<DealRead> { // Return single DealReadDto
     const url = `${this.apiUrl}/${id}/stage`;
     const userId = this.authService.getUserId();
