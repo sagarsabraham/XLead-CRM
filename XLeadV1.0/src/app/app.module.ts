@@ -28,9 +28,10 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
+    DxLoadIndicatorModule,
     BrowserModule,
     RouterModule.forRoot(routes),
     DxButtonModule,

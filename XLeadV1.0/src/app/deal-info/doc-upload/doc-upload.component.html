@@ -1,54 +1,35 @@
-<div class="document-upload-container">
-  <span>Upload Documents</span>
-  <div
-    id="doc-dropzone"
-    class="dropzone flex-box"
-    [ngClass]="{'dropzone-active': isDropZoneActive, 'has-file': selectedFile}"
-  >
-    <!-- File preview section -->
-    <div class="file-preview" *ngIf="selectedFile">
-      <i class="file-icon" [ngClass]="getFileIconClass(selectedFile.name)"></i>
-      <div class="file-info">
-        <span class="file-name">{{ selectedFile.name }}</span>
-        <span class="file-size">{{ getFileSize(selectedFile.size) }}</span>
-      </div>
-      <button class="remove-btn" (click)="removeFile()">×</button>
-    </div>
-
-    <!-- Dropzone instructions -->
-    <div class="dropzone-instructions" *ngIf="!selectedFile">
-      <i class="upload-icon dx-icon-upload"></i>
-      <span class="instruction-main">Drag & Drop your document here</span>
-      <span class="instruction-secondary">or click to browse files (PDF, DOC, XLS, etc.)</span>
-    </div>
-
-    <!-- Upload progress -->
-    <dx-progress-bar
-      [min]="0"
-      [max]="100"
-      width="100%"
-      [showStatus]="false"
-      [visible]="uploadInProgress"
-      [value]="uploadProgress"
-    ></dx-progress-bar>
-  </div>
-
-  <!-- Hidden file uploader -->
+<div class="upload-container">
+  <h2 class="upload-title">Document Upload</h2>
+  
   <dx-file-uploader
-    #fileUploader
-    dialogTrigger="#doc-dropzone"
-    dropZone="#doc-dropzone"
-    [multiple]="false"
-    [allowedFileExtensions]="allowedFileExtensions"
-    uploadMode="useButtons"
-    [visible]="false"
-    (onDropZoneEnter)="onDropZoneEnter($event)"
-    (onDropZoneLeave)="onDropZoneLeave($event)"
-    (onValueChanged)="onFilesSelected($event)"
-  ></dx-file-uploader>
-
-  <!-- Error message -->
-  <div class="error-message" *ngIf="errorMessage">
-    {{ errorMessage }}
+    class="custom-uploader"
+    [accept]="allowedFileTypes"
+    [uploadMode]="'useForm'"
+    [multiple]="true"
+    [allowedFileExtensions]="allowedExtensions"
+    [maxFileSize]="maxFileSize"
+    [uploadUrl]="uploadUrl"
+    (onUploaded)="onUploadSuccess($event)"
+    (onUploadError)="onUploadError($event)"
+    [showFileList]="true"
+    fileListMode="onClick"
+    dropZone=".drop-zone">
+    
+    <div class="drop-zone">
+      <div class="drop-zone-content">
+        <i class="upload-icon dx-icon-upload"></i>
+        <div class="upload-text">
+          <div class="main-text">Drag & Drop files here</div>
+          <div class="sub-text">or click to browse</div>
+        </div>
+      </div>
+    </div>
+    
+    <dxo-label text=""></dxo-label>
+  </dx-file-uploader>
+  
+  <div *ngIf="uploadStatus" class="status-message" [class.success]="isSuccess" [class.error]="!isSuccess">
+    <i [class]="isSuccess ? 'dx-icon-check' : 'dx-icon-close'"></i>
+    {{ uploadStatus }}
   </div>
 </div>

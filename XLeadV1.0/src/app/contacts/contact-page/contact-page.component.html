@@ -1,32 +1,32 @@
 <div class="page-container" [ngClass]="{'mobile-view': isMobile}">
-
+ 
   <!-- Sidebar (uncomment if needed) -->
   <!-- <app-sidebar [ngClass]="{'sidebar-hidden': !isSidebarVisible, 'sidebar-visible': isSidebarVisible}"></app-sidebar> -->
-
+ 
   <div class="container">
     <div class="topbar">
       <div class="total-count">
         Total Contacts: {{ totalContacts }}
       </div>
     </div>
-    
-    <div class="content">
-      <!-- Loading state -->
-      <div *ngIf="isLoading" class="loading-state">
-        <dx-load-indicator [visible]="true"></dx-load-indicator>
-        <p>Loading contacts...</p>
+ 
+      <div class="content">
+    <!-- Loading state -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading contacts...</p>
+    </div>
+   
+     <!-- Error state -->
+    <div *ngIf="error" class="error-state">
+      <div class="error-message">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
       </div>
-
-      <!-- Error state -->
-      <div *ngIf="error" class="error-state">
-        <div class="error-message">
-          <i class="fas fa-exclamation-circle"></i> {{ error }}
-        </div>
-        <button class="retry-button" (click)="loadContacts()">
-          Retry
-        </button>
-      </div>
-
+      <button class="retry-button" (click)="loadContacts()">
+        Retry
+      </button>
+    </div>
+ 
       <!-- Data table - only shown when data is loaded successfully -->
 <app-table
   *ngIf="!isLoading && !error"
@@ -36,7 +36,7 @@
   [ownerField]="'owner'"
   [exportFileName]="'Contacts'"
   (onSelectionChanged)="handleSelectionChanged($event)"
-  #contactsTable
+  [entityType]="'Company'"
 ></app-table>
     </div>
   </div>
