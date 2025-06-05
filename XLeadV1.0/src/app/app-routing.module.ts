@@ -3,13 +3,17 @@ import { RouterModule, Routes } from '@angular/router';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 
 const routes: Routes = [
+  { path: '', loadChildren: () =>
+     import('./dashboard/dashboard.module').then(m => m.DashboardModule),
+     data : {title : 'Dashboard'}
+  },
   {path: 'pipeline', loadChildren: () =>
     import('./pipeline/pipeline.module').then(m => m.PipelineModule),
     data : {title : 'Pipelines'}
   },
   { path: 'dashboard', loadChildren: () =>
      import('./dashboard/dashboard.module').then(m => m.DashboardModule),
-     data : {title : 'Pipeline Analytics'}
+     data : {title : 'Dashboard'}
   },
   { path: 'contacts', loadChildren: () => 
     import('./contacts/contacts.module').then(m => m.ContactsModule),
@@ -18,7 +22,7 @@ const routes: Routes = [
   { 
     path: 'companies', loadChildren: () => 
     import('./company/company.module').then(m => m.CompanyModule),
-    data : {title : 'Companies'}
+    data : {title : 'Customers'}
   },
   { 
     path: 'overview', loadChildren: () => 

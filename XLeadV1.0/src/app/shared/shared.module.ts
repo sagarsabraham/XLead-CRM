@@ -59,6 +59,7 @@ import { FormsModule } from '@angular/forms';
   ],
   
   imports: [
+    FormsModule,
     HttpClientModule,
     CommonModule,
     DevExtremeModule,

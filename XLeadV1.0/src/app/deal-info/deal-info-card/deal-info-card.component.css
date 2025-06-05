@@ -12,7 +12,7 @@
   box-sizing: border-box;
   margin: 0; /* Ensure no margins interfere with parent gap */
 }
-
+ 
 :host {
   display: block;
   width: 100%;
@@ -20,7 +20,7 @@
   overflow-wrap: break-word;
   box-sizing: border-box;
 }
-
+ 
 /* Mobile-Specific Styles */
 @media (max-width: 768px) {
   .deal-info-card {

@@ -1,3 +1,6 @@
+
+ 
+ 
 .topbar {
     margin: auto;
     display: flex;
@@ -5,14 +8,14 @@
     align-items: center;
     animation: fadeIn 0.5s ease-in-out;
 }
-
+ 
 .topbar h5 {
     margin-left: 15vh;
     font-weight: 700;
     color: #1f2937;
     transition: color 0.3s ease;
 }
-
+ 
 /* Mobile styles - Center the title */
 @media (max-width: 768px) {
     .topbar {
@@ -20,7 +23,7 @@
         position: relative;
         padding: 15px 0;
     }
-    
+   
     .topbar h5 {
         margin-left: 0;
         margin: 0 auto;
@@ -33,7 +36,7 @@
         max-width: 80%;
     }
 }
-
+ 
 /* Small mobile screens */
 @media (max-width: 480px) {
     .topbar h5 {
@@ -41,7 +44,7 @@
         max-width: 70%;
     }
 }
-
+ 
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -52,3 +55,4 @@
     transform: translateY(0);
   }
 }
+ 

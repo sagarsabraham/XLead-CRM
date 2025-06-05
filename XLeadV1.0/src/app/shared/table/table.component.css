@@ -3,7 +3,7 @@
   position: relative;
   width: 100%;
 }
-
+ 
 .table-container {
   display: flex;
   flex-direction: column;
@@ -13,43 +13,43 @@
   background-color: #ffffff;
   border-radius: 0.75rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  overflow: hidden; /* Changed from visible to hidden */
+  overflow: hidden; 
   border: 1px solid #e5e7eb;
 }
-
+ 
 .table-scroll-container {
   position: relative;
   width: 100%;
-  overflow: hidden; /* Keep hidden to maintain border radius */
-  border-radius: 1.75rem; /* Match parent radius */
+  overflow: hidden; 
+  border-radius: 1.75rem; 
 }
-
+ 
 .table-wrapper {
   width: 100%;
   min-width: 100%;
   position: relative;
 }
-
+ 
 :host ::ng-deep dx-data-grid {
   width: 100% !important;
   min-width: 100%;
   display: block;
   border: none !important;
-  border-radius: 0; /* Remove any default radius */
+  border-radius: 0; 
 }
-
+ 
 :host ::ng-deep .dx-datagrid-header-panel {
   border-top-left-radius: 1.75rem;
   border-top-right-radius: 1.75rem;
   overflow: hidden;
 }
-
+ 
 :host ::ng-deep .dx-datagrid {
   border: none !important;
   background: transparent;
   border-radius: 0;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-headers {
   position: sticky;
   top: 0;
@@ -58,7 +58,7 @@
   width: 100% !important;
   border-bottom: 1px solid #e5e7eb;
 }
-
+ 
 /* Toolbar - Consistent with Headers */
 :host ::ng-deep .dx-toolbar {
   position: sticky;
@@ -69,13 +69,13 @@
   padding: 0.75rem 1rem;
   width: 100% !important;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-header-panel .dx-toolbar:first-child {
   border-top-left-radius: 1.75rem;
   border-top-right-radius: 1.75rem;
 }
-
-
+ 
+ 
 :host ::ng-deep .dx-datagrid-filter-row {
   position: sticky;
   top: var(--header-height, 48px);
@@ -84,133 +84,133 @@
   width: 100% !important;
   border-bottom: 1px solid #e5e7eb;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-headers .dx-datagrid-table,
 :host ::ng-deep .dx-datagrid-filter-row .dx-datagrid-table {
   width: 100% !important;
   table-layout: fixed;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-filter-row td {
   box-sizing: border-box;
   overflow: visible;
-  border-right: 1px solid #e5e7eb; /* Maintain vertical lines */
+  border-right: 1px solid #e5e7eb; 
 }
 :host ::ng-deep .dx-datagrid-filter-row td:last-child {
   border-right: none;
 }
-
-
+ 
+ 
 :host ::ng-deep .dx-datagrid-rowsview {
   overflow-x: auto !important;
   overflow-y: auto !important;
   position: relative;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-content {
   overflow-x: hidden !important;
 }
-
+ 
 :host ::ng-deep .dx-scrollable {
   overflow-x: hidden !important;
 }
-
+ 
 :host ::ng-deep .dx-scrollable-content {
   width: 100% !important;
   min-width: fit-content !important;
 }
-
+ 
 /* Sticky Column Styling */
 :host ::ng-deep .dx-datagrid .dx-column-fixed {
-  background-color: #fdfdff; /* Slightly off-white for fixed columns */
+  background-color: #fdfdff; 
   z-index: 1;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td[role="columnheader"].dx-column-fixed,
 :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td.dx-column-fixed {
-  border-right: 1px solid #dee2e6; /* Slightly darker border for fixed column separator */
-  padding: 0.75rem; /* Consistent padding */
+  border-right: 1px solid #dee2e6; 
+  padding: 0.75rem; 
 }
-
+ 
 /* Cell Padding */
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td,
 :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td {
-  padding: 0.75rem; /* Consistent padding */
-  vertical-align: middle; /* Align content vertically */
+  padding: 0.75rem; 
+  vertical-align: middle; 
 }
-
+ 
 /* Checkbox Cell Styling */
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td.dx-selection,
 :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td.dx-selection {
   padding: 0.75rem;
   text-align: center;
 }
-
+ 
 /* Row Styling - Increased Height and Font Size */
 :host ::ng-deep .dx-datagrid-rowsview .dx-row {
-  font-size: 0.875rem; /* 14px */
-  height: auto; /* Allow content to determine height with padding */
-  min-height: 52px; /* Ensure minimum touch target / visual space */
-  border-bottom: 1px solid #e5e7eb; /* Subtle row separator */
+  font-size: 0.875rem; 
+  height: auto; 
+  min-height: 52px; 
+  border-bottom: 1px solid #e5e7eb; 
 }
 :host ::ng-deep .dx-datagrid-rowsview .dx-row:last-child {
   border-bottom: none;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-rowsview .dx-row:hover {
-  background-color: #f4f6f8; /* Softer hover color */
+  background-color: #f4f6f8; 
 }
-
+ 
 :host ::ng-deep .dx-datagrid-rowsview .dx-selection .dx-checkbox {
   margin: 0 auto;
 }
-
+ 
 /* Header Cell Text - Refined Typography */
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td {
-  background-color: #f9fafb; /* Consistent with header bg */
-  color: #374151; /* Darker gray for better contrast */
-  font-weight: 500; /* Medium weight for headers */
+  background-color: #f9fafb; 
+  color: #374151; 
+  font-weight: 500;
   font-size: 0.875rem;
-  border-right: 1px solid #e5e7eb; /* Vertical lines */
+  border-right: 1px solid #e5e7eb; 
 }
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td:last-child {
   border-right: none;
 }
-
+ 
 /* Header Filter Icon */
 :host ::ng-deep .dx-header-filter {
-  color: #9ca3af !important; /* Lighter default color */
-  font-size: 1rem !important; /* 16px */
+  color: #9ca3af !important; 
+  font-size: 1rem !important; 
 }
-
+ 
 :host ::ng-deep .dx-header-filter:hover,
 :host ::ng-deep .dx-header-filter-active .dx-header-filter {
-  color: #3b82f6 !important; /* Accent color on hover/active */
+  color: #3b82f6 !important; 
 }
-
+ 
 /* Filter Row Input Styling */
 :host ::ng-deep .dx-datagrid-filter-row .dx-editor-cell {
   padding: 0.5rem;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-filter-row input,
 :host ::ng-deep .dx-datagrid-filter-row .dx-texteditor-input {
   border: 1px solid #d1d5db;
-  border-radius: 0.375rem; /* Softer radius */
+  border-radius: 0.375rem; 
   color: #1f2937;
   font-size: 0.875rem;
-  padding: 0.5rem 0.75rem; /* Better padding */
+  padding: 0.5rem 0.75rem;
   background-color: #ffffff;
   line-height: 1.25rem;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-filter-row input:focus,
 :host ::ng-deep .dx-datagrid-filter-row .dx-texteditor-input:focus {
-  border-color: #3b82f6; /* Accent color for focus */
+  border-color: #3b82f6; 
   outline: none;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); /* Focus ring */
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); 
 }
-
+ 
 /* Filter Panel Styling */
 :host ::ng-deep .dx-datagrid-filter-panel {
   background-color: #f9fafb;
@@ -218,20 +218,20 @@
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-filter-panel .dx-filter-panel-text {
   color: #4b5563;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-filter-panel .dx-filter-panel-clear-filter {
   color: #3b82f6;
   cursor: pointer;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-filter-panel .dx-filter-panel-clear-filter:hover {
-  color: #2563eb; /* Darker accent on hover */
+  color: #2563eb; 
 }
-
+ 
 /* Pager Styling */
 :host ::ng-deep .dx-datagrid-pager {
   background-color: #ffffff;
@@ -243,31 +243,31 @@
 :host ::ng-deep .dx-datagrid-pager .dx-pages .dx-selectbox {
     border-radius: 0.375rem;
 }
-
-
+ 
+ 
 /* Search Panel Styling */
 :host ::ng-deep .dx-datagrid-search-panel {
-  margin: 0; /* Integrated into toolbar, remove standalone margin */
-  width: auto !important; /* Allow it to flex */
+  margin: 0; 
+  width: auto !important; 
   flex-grow: 1;
-  max-width: 320px; /* Max width for search */
+  max-width: 320px; 
 }
-
+ 
 :host ::ng-deep .dx-datagrid-search-panel input {
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
-  height: 38px; /* Match button height */
+  height: 38px; 
   background-color: #ffffff;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-search-panel input:focus {
   border-color: #3b82f6;
   outline: none;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
 }
-
+ 
 /* Toolbar Items Container */
 :host ::ng-deep .dx-toolbar-items-container {
   width: 100% !important;
@@ -276,54 +276,54 @@
   align-items: center !important;
   gap: 0.75rem;
 }
-
+ 
 /* Toolbar Buttons - Modernized */
 :host ::ng-deep .dx-toolbar .dx-button {
   align-items: center;
   background-color: #ffffff;
-  border: 1px solid #d1d5db; /* Standard border */
+  border: 1px solid #d1d5db; 
   border-radius: 0.375rem;
-  display: inline-flex; /* Use inline-flex for better alignment */
-  height: 38px; /* Consistent height */
-  padding: 0 0.75rem; /* Horizontal padding */
+  display: inline-flex; 
+  height: 38px;
+  padding: 0 0.75rem; 
   justify-content: center;
   transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
-  color: #374151; /* Default text color */
+  color: #374151; 
   font-size: 0.875rem;
   font-weight: 500;
 }
-
+ 
 :host ::ng-deep .dx-toolbar .dx-button:hover {
-  background-color: #f9fafb; /* Lighter hover */
+  background-color: #f9fafb; 
   border-color: #adb5bd;
 }
-
+ 
 :host ::ng-deep .dx-toolbar .dx-button .dx-icon {
-  color: #6b7280; /* Medium gray for icons */
-  font-size: 1rem; /* 16px */
-  margin-right: 0.25rem; /* Space between icon and text if text exists */
+  color: #6b7280;
+  font-size: 1rem; 
+  margin-right: 0.25rem; 
 }
 :host ::ng-deep .dx-toolbar .dx-button:hover .dx-icon {
   color: #4b5563;
 }
 :host ::ng-deep .dx-toolbar .dx-button .dx-button-text {
-  font-size: 0.875rem; /* 14px */
-  line-height: 1; /* Ensure text is centered */
+  font-size: 0.875rem;
+  line-height: 1; 
 }
-
+ 
 /* Icon-only buttons in toolbar */
 :host ::ng-deep .dx-toolbar .dx-button[hint="Show Column Chooser"] .dx-button-text {
-  display: none; /* Assuming it's icon only from your HTML */
+  display: none; 
 }
 :host ::ng-deep .dx-toolbar .dx-button[hint="Show Column Chooser"] .dx-icon {
   margin-right: 0;
 }
-
-
+ 
+ 
 /* Export Button in Toolbar (Primary/Success Style) */
 :host ::ng-deep .dx-toolbar .dx-button[icon="export"],
 :host ::ng-deep .dx-toolbar .dx-button[aria-label="Export Data"] {
-  background-color: #059669 !important; /* Refined Green */
+  background-color: #059669 !important; 
   border-color: #059669 !important;
   color: #ffffff !important;
 }
@@ -335,13 +335,13 @@
 }
 :host ::ng-deep .dx-toolbar .dx-button[icon="export"]:hover,
 :host ::ng-deep .dx-toolbar .dx-button[aria-label="Export Data"]:hover {
-  background-color: #047857 !important; /* Darker green on hover */
+  background-color: #047857 !important; 
   border-color: #047857 !important;
 }
-
+ 
 /* Edit button specific style (example, if you have one) */
 :host ::ng-deep .dx-toolbar .dx-button[icon="edit"] {
-  background-color: #2563eb !important; /* Refined Blue */
+  background-color: #2563eb !important;
   border-color: #2563eb !important;
   color: #ffffff !important;
 }
@@ -350,26 +350,25 @@
   color: #ffffff !important;
 }
 :host ::ng-deep .dx-toolbar .dx-button[icon="edit"]:hover {
-  background-color: #1d4ed8 !important; /* Darker blue on hover */
+  background-color: #1d4ed8 !important;
   border-color: #1d4ed8 !important;
 }
-
-
+ 
+ 
 /* Selection Info */
 :host ::ng-deep .dx-toolbar-before {
   align-items: center;
   display: flex;
-  min-width: auto; /* Allow to shrink */
+  min-width: auto;
 }
-.selection-info { /* This is your custom template, not ::ng-deep */
+.selection-info { 
   font-size: 0.875rem;
   font-weight: 500;
-  color: #4b5563; /* Medium gray */
-  /* padding-left: 12px; - Handled by toolbar gap */
-  line-height: 38px; /* Match button height */
+  color: #4b5563; 
+  line-height: 38px;
 }
-
-
+ 
+ 
 /* Custom Header Cell Template (Sort Icons) */
 .header-cell {
   align-items: center;
@@ -378,35 +377,35 @@
   width: 100%;
   gap: 0.5rem;
 }
-
+ 
 .header-text {
   color: #374151;
   font-weight: 500;
-  flex-grow: 1; /* Allow text to take available space */
+  flex-grow: 1; 
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+ 
 .sort-icon {
-  color: #9ca3af; /* Lighter, less prominent */
+  color: #9ca3af; 
   cursor: pointer;
-  display: inline-flex; /* For better alignment */
+  display: inline-flex; 
   align-items: center;
   justify-content: center;
-  font-size: 1rem; /* 16px */
+  font-size: 1rem;
   transition: color 0.2s;
-  flex-shrink: 0; /* Prevent shrinking */
+  flex-shrink: 0; 
 }
-
+ 
 .sort-icon:hover {
   color: #6b7280;
 }
-
+ 
 .sort-icon.active {
   color: #3b82f6; /* Accent color for active sort */
 }
-
+ 
 /* Custom Dropdown Styles - Modernized */
 .custom-dropdown {
   background: #ffffff;
@@ -419,28 +418,28 @@
   position: absolute;
   z-index: 1100; /* Increase to ensure above sticky toolbar (z-index: 3) */
 }
-
+ 
 .column-chooser-dropdown {
   top: 60px; /* Approximate toolbar height + padding */
   right: 180px; /* Adjust based on button position */
   width: 200px;
 }
-
+ 
 .export-options-dropdown {
   top: 60px;
   right: 12px;
   width: 150px;
 }
-
+ 
 .table-scroll-container {
   position: relative;
   width: 100%;
   overflow-x: visible; /* Prevent clipping */
   overflow-y: visible;
 }
-
-
-
+ 
+ 
+ 
 @media (max-width: 1200px) {
   .column-chooser-dropdown {
     right: 150px; /* Adjust for narrower toolbar */
@@ -451,7 +450,7 @@
     width: 140px;
   }
 }
-
+ 
 @media (max-width: 900px) {
   .column-chooser-dropdown {
     right: 120px;
@@ -462,7 +461,7 @@
     width: 130px;
   }
 }
-
+ 
 @media (max-width: 600px) {
   .column-chooser-dropdown {
     right: 80px; /* Closer to button on small screens */
@@ -473,7 +472,7 @@
     width: 120px;
   }
 }
-
+ 
 .dropdown-header {
   background-color: #f9fafb; /* Light bg for header */
   border-bottom: 1px solid #e5e7eb;
@@ -486,7 +485,7 @@
   justify-content: space-between;
   align-items: center;
 }
-
+ 
 .dropdown-item {
   align-items: center;
   cursor: pointer;
@@ -497,12 +496,12 @@
   transition: background-color 0.15s ease, color 0.15s ease;
   color: #4b5563;
 }
-
+ 
 .dropdown-item:hover {
   background-color: #f3f4f6; /* Lighter hover */
   color: #1f2937;
 }
-
+ 
 .dropdown-item label {
   display: flex;
   align-items: center;
@@ -510,7 +509,7 @@
   width: 100%; /* Make label clickable area wider */
   cursor: pointer;
 }
-
+ 
 .dropdown-item input[type="checkbox"] {
   margin: 0;
   width: 1rem; /* 16px */
@@ -521,13 +520,13 @@
 }
 /* Indeterminate style if needed, often handled by browser */
 /* .dropdown-item input[type="checkbox"]:indeterminate { } */
-
-
+ 
+ 
 .select-all-item {
   border-bottom: 1px solid #e5e7eb;
   font-weight: 500;
 }
-
+ 
 /* Export Dropdown Button Styles */
 .export-options-dropdown .export-button {
   align-items: center;
@@ -543,36 +542,36 @@
   text-align: left; /* Ensure text aligns left */
   width: 100%;
 }
-
+ 
 .export-options-dropdown .dropdown-item:hover .export-button {
   color: #1f2937; /* Match item hover text color */
 }
-
+ 
 .export-options-dropdown .export-button .dx-icon {
   font-size: 1.125rem; /* 18px, slightly larger for visual cue */
   color: #9ca3af; /* Default icon color */
   transition: color 0.15s ease;
 }
-
+ 
 .export-options-dropdown .dropdown-item:hover .export-button .dx-icon {
   color: #6b7280;
 }
-
+ 
 .export-options-dropdown .export-button.excel .dx-icon {
   color: #10b981; /* Green for Excel */
 }
 .export-options-dropdown .dropdown-item:hover .export-button.excel .dx-icon {
   color: #059669;
 }
-
+ 
 .export-options-dropdown .export-button.csv .dx-icon {
   color: #3b82f6; /* Blue for CSV/Doc */
 }
 .export-options-dropdown .dropdown-item:hover .export-button.csv .dx-icon {
   color: #2563eb;
 }
-
-
+ 
+ 
 /* Export Message Styles - Modernized */
 .export-message {
   animation: fadeInOut 3s ease-in-out;
@@ -588,7 +587,7 @@
   transform: translateX(-50%);
   z-index: 2000; /* High z-index */
 }
-
+ 
 /* Keyframes remain the same */
 @keyframes fadeInOut {
   0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
@@ -596,7 +595,7 @@
   90% { opacity: 1; transform: translateX(-50%) translateY(0); }
   100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
 }
-
+ 
 /* Close Button in Dropdowns - More Subtle */
 .close-button {
   color: #9ca3af; /* Lighter color */
@@ -607,19 +606,19 @@
   padding: 0.25rem; /* Clickable area */
   /* position: absolute; right: 12px; top: 50%; transform: translateY(-50%); - Handled by flex in .dropdown-header */
 }
-
+ 
 .close-button:hover {
   color: #ef4444; /* Red for close hover */
 }
-
-
+ 
+ 
 /* Owner Cell and Avatar Styles - Maintain but ensure consistency */
 .owner-cell {
   align-items: center;
   display: flex;
   gap: 0.5rem; /* 8px */
 }
-
+ 
 .owner-avatar {
   align-items: center;
   border-radius: 50%;
@@ -632,7 +631,7 @@
   width: 32px;
   flex-shrink: 0; /* Prevent avatar from shrinking */
 }
-
+ 
 .owner-name {
   color: #374151;
   font-size: 0.875rem;
@@ -640,7 +639,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+ 
 /* === MOBILE VIEW STYLES === */
 .mobile-view {
   display: flex;
@@ -649,7 +648,7 @@
   padding: 1rem; /* Add some padding to mobile view */
   gap: 1rem; /* Space between sections */
 }
-
+ 
 .mobile-toolbar {
   display: flex;
   flex-direction: column;
@@ -660,14 +659,14 @@
   border-radius: 0.5rem;
   border: 1px solid #e5e7eb;
 }
-
+ 
 .mobile-selection {
   display: flex;
   align-items: center;
   justify-content: space-between; /* Space out select all and count */
   gap: 0.75rem;
 }
-
+ 
 .select-all-label {
   display: flex;
   align-items: center;
@@ -675,7 +674,7 @@
   font-size: 0.875rem;
   color: #374151;
 }
-
+ 
 .select-all-label input[type="checkbox"] {
   width: 1rem;
   height: 1rem;
@@ -683,18 +682,18 @@
   accent-color: #3b82f6;
   border-radius: 0.25rem;
 }
-
+ 
 .mobile-selection .selection-info { /* Re-style for mobile context */
   font-size: 0.875rem;
   color: #4b5563;
   font-weight: 500;
 }
-
-
+ 
+ 
 .search-container {
   width: 100%;
 }
-
+ 
 .mobile-search {
   width: 100%;
   padding: 0.625rem 0.875rem; /* 10px 14px */
@@ -709,14 +708,14 @@
   outline: none;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
 }
-
+ 
 .mobile-actions {
   display: flex;
   gap: 0.5rem; /* 8px */
   justify-content: space-around; /* Distribute buttons more evenly */
   flex-wrap: wrap;
 }
-
+ 
 .mobile-action-btn {
   display: flex;
   align-items: center;
@@ -732,18 +731,18 @@
   flex-grow: 1; /* Allow buttons to grow */
   justify-content: center; /* Center content in button */
 }
-
+ 
 .mobile-action-btn:hover {
   background-color: #f3f4f6;
   border-color: #adb5bd;
 }
-
+ 
 .mobile-action-btn i.fas {
   font-size: 0.875rem; /* 14px, slightly smaller to fit text */
   color: #6b7280;
   margin-right: 0.25rem;
 }
-
+ 
 /* Mobile Modals/Popovers (Column Chooser, Filter, Export) - Consistent Styling */
 .mobile-column-chooser,
 .mobile-filter-options, /* Assuming this is the class for filter builder panel */
@@ -758,7 +757,7 @@
   position: relative; /* If any absolute children */
   z-index: 100;
 }
-
+ 
 .column-chooser-header,
 .filter-header,
 .sort-header, /* Assuming .sort-header exists for sort options title */
@@ -770,7 +769,7 @@
   border-bottom: 1px solid #e5e7eb;
   background-color: #f9fafb;
 }
-
+ 
 .column-chooser-title,
 .filter-title,
 .export-title { /* .sort-header is just text, style directly or add a title class */
@@ -784,8 +783,8 @@
   color: #1f2937;
   width: 100%; /* Take full width if no close button */
 }
-
-
+ 
+ 
 .column-chooser-close,
 .filter-close,
 .export-close {
@@ -801,7 +800,7 @@
 .export-close:hover {
   color: #ef4444;
 }
-
+ 
 .column-chooser-actions,
 .filter-actions, /* Ensure this is the content wrapper for filter builder */
 .sort-options,
@@ -810,7 +809,7 @@
   overflow-y: auto;
   padding: 0.5rem 0; /* Vertical padding, items will have horizontal */
 }
-
+ 
 .column-chooser-item,
 .sort-option,
 .export-actions .export-button { /* Target export buttons inside actions */
@@ -844,8 +843,8 @@
 .export-actions .export-button:hover i.fas { color: #6b7280; }
 .export-actions .export-button.excel:hover i.fas { color: #059669; }
 .export-actions .export-button.csv:hover i.fas { color: #2563eb; }
-
-
+ 
+ 
 .column-chooser-item label {
   display: flex;
   align-items: center;
@@ -853,7 +852,7 @@
   width: 100%;
   cursor: pointer;
 }
-
+ 
 .column-chooser-item input[type="checkbox"] {
   width: 1rem;
   height: 1rem;
@@ -861,7 +860,7 @@
   accent-color: #3b82f6;
   border-radius: 0.25rem;
 }
-
+ 
 /* Mobile Filter Builder Specifics (inside .filter-actions) */
 :host ::ng-deep .mobile-filter-options .dx-filterbuilder {
   padding: 1rem; /* Add padding around the filter builder itself */
@@ -895,7 +894,7 @@
 :host ::ng-deep .mobile-filter-options .dx-filterbuilder .dx-icon {
   color: #6b7280;
 }
-
+ 
 .filter-actions-footer {
   display: flex;
   justify-content: flex-end;
@@ -904,7 +903,7 @@
   padding: 1rem; /* Padding for the footer itself */
   border-top: 1px solid #e5e7eb;
 }
-
+ 
 .filter-action-btn { /* General button style for filter actions */
   padding: 0.625rem 1rem;
   border-radius: 0.375rem;
@@ -913,7 +912,7 @@
   cursor: pointer;
   transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
-
+ 
 .filter-action-btn.clear {
   background-color: #ffffff;
   color: #ef4444; /* Red for clear/danger */
@@ -923,7 +922,7 @@
   background-color: #fee2e2; /* Lighter red bg on hover */
   border-color: #f87171;
 }
-
+ 
 .filter-action-btn.apply {
   background-color: #3b82f6; /* Accent blue */
   color: #ffffff;
@@ -933,20 +932,20 @@
   background-color: #2563eb; /* Darker blue on hover */
   border-color: #2563eb;
 }
-
+ 
 .sort-indicator {
   font-size: 0.875rem;
   color: #3b82f6; /* Accent for sort direction */
   font-weight: bold;
 }
-
+ 
 /* Mobile Card List - Modernized Cards */
 .mobile-card-list {
   display: flex;
   flex-direction: column;
   gap: 0.75rem; /* 12px */
 }
-
+ 
 .contact-card {
   display: flex;
   align-items: center; /* Vertically align items */
@@ -958,17 +957,17 @@
   transition: box-shadow 0.2s, border-color 0.2s;
   gap: 0.75rem; /* Gap between selection and content */
 }
-
+ 
 .contact-card:hover {
   border-color: #d1d5db;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
 }
-
+ 
 .card-selection {
   /* margin-right: 12px; - Handled by parent gap */
   flex-shrink: 0; /* Prevent checkbox from shrinking */
 }
-
+ 
 .card-selection input[type="checkbox"] {
   width: 1rem;
   height: 1rem;
@@ -976,7 +975,7 @@
   accent-color: #3b82f6;
   border-radius: 0.25rem;
 }
-
+ 
 .card-content {
   flex: 1;
   display: flex;
@@ -984,7 +983,7 @@
   gap: 0.25rem; /* Small gap between text lines */
   overflow: hidden; /* For text ellipsis */
 }
-
+ 
 .card-primary {
   font-size: 1rem; /* 16px */
   font-weight: 500;
@@ -993,7 +992,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+ 
 .card-secondary,
 .card-tertiary {
   font-size: 0.875rem; /* 14px */
@@ -1002,14 +1001,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+ 
 .card-owner {
   display: flex;
   align-items: center;
   gap: 0.5rem; /* 8px */
   margin-top: 0.25rem; /* Small top margin */
 }
-
+ 
 .card-owner .owner-avatar.small {
   width: 24px;
   height: 24px;
@@ -1019,7 +1018,7 @@
   font-size: 0.875rem;
   color: #4b5563;
 }
-
+ 
 .card-chevron {
   color: #9ca3af; /* Lighter chevron */
   font-size: 1rem; /* 16px */
@@ -1028,7 +1027,7 @@
 .contact-card:hover .card-chevron {
   color: #6b7280;
 }
-
+ 
 /* Mobile Pagination - Cleaner Look */
 .mobile-pagination {
   display: flex;
@@ -1041,14 +1040,14 @@
   border-radius: 0.5rem;
   border: 1px solid #e5e7eb;
 }
-
+ 
 .pagination-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 }
-
+ 
 .pagination-btn {
   display: flex;
   align-items: center;
@@ -1062,13 +1061,13 @@
   cursor: pointer;
   transition: background-color 0.2s, border-color 0.2s;
 }
-
+ 
 .pagination-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   background-color: #f3f4f6;
 }
-
+ 
 .pagination-btn:hover:not(:disabled) {
   background-color: #e5e7eb;
   border-color: #adb5bd;
@@ -1076,13 +1075,13 @@
 .pagination-btn i.fas {
   font-size: 0.75rem; /* Smaller icons for prev/next */
 }
-
+ 
 .pagination-info {
   font-size: 0.875rem;
   color: #4b5563;
   font-weight: 500;
 }
-
+ 
 .page-size-selector {
   display: flex;
   align-items: center;
@@ -1090,12 +1089,12 @@
   width: 100%;
   justify-content: center; /* Center page size selector */
 }
-
+ 
 .page-size-label {
   font-size: 0.875rem;
   color: #4b5563;
 }
-
+ 
 .page-size-selector select {
   padding: 0.5rem 0.75rem;
   border: 1px solid #d1d5db;
@@ -1106,13 +1105,13 @@
   transition: border-color 0.2s, box-shadow 0.2s;
   min-width: 70px; /* Ensure select has some width */
 }
-
+ 
 .page-size-selector select:focus {
   border-color: #3b82f6;
   outline: none;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
 }
-
+ 
 /* Mobile Details Modal - Modernized */
 .mobile-details-modal {
   position: fixed;
@@ -1125,7 +1124,7 @@
   justify-content: center;
   align-items: flex-end; /* Slide from bottom */
 }
-
+ 
 .modal-overlay {
   position: absolute;
   top: 0;
@@ -1135,7 +1134,7 @@
   background-color: rgba(0, 0, 0, 0.4); /* Slightly less dark overlay */
   backdrop-filter: blur(2px); /* Subtle blur for modern feel */
 }
-
+ 
 .modal-container {
   background-color: #ffffff;
   border-top-left-radius: 1rem; /* Softer, larger radius for modal top */
@@ -1148,13 +1147,13 @@
   animation: slideUp 0.3s ease-out;
   box-shadow: 0 -4px 20px rgba(0,0,0,0.1); /* Shadow for modal popping up */
 }
-
+ 
 /* Keyframes slideUp remains the same */
 @keyframes slideUp {
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
 }
-
+ 
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -1166,14 +1165,14 @@
   background-color: #ffffff;
   z-index: 1;
 }
-
+ 
 .modal-header h2 {
   margin: 0;
   font-size: 1.125rem; /* 18px */
   font-weight: 500;
   color: #1f2937;
 }
-
+ 
 .close-modal-btn {
   background: none;
   border: none;
@@ -1185,14 +1184,14 @@
 .close-modal-btn:hover {
   color: #ef4444;
 }
-
+ 
 .modal-body {
   display: flex;
   flex-direction: column;
   gap: 1rem; /* Consistent gap */
   padding: 1.25rem; /* Padding for modal content */
 }
-
+ 
 .detail-item {
   display: flex;
   flex-direction: column;
@@ -1203,18 +1202,18 @@
 .detail-item:last-child {
   border-bottom: none;
 }
-
+ 
 .detail-label {
   font-size: 0.875rem; /* 14px */
   font-weight: 500;
   color: #4b5563; /* Medium gray for labels */
 }
-
+ 
 .detail-value {
   font-size: 0.9375rem; /* 15px, slightly larger for values */
   color: #1f2937; /* Darker for values */
 }
-
+ 
 .modal-actions {
   display: grid; /* Use grid for equal width buttons */
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Responsive grid */
@@ -1226,7 +1225,7 @@
   bottom: 0;
   z-index: 1;
 }
-
+ 
 .modal-action-btn {
   display: flex;
   align-items: center;
@@ -1242,12 +1241,12 @@
   cursor: pointer;
   transition: background-color 0.2s, border-color 0.2s;
 }
-
+ 
 .modal-action-btn:hover {
   background-color: #f3f4f6;
   border-color: #adb5bd;
 }
-
+ 
 .modal-action-btn i.fas {
   font-size: 0.875rem;
   color: #6b7280;
@@ -1255,7 +1254,7 @@
 .modal-action-btn:hover i.fas {
   color: #4b5563;
 }
-
+ 
 /* Primary action button in modal (e.g., Save) */
 .modal-action-btn.save-btn {
   background-color: #3b82f6;
@@ -1269,7 +1268,7 @@
 .modal-action-btn.save-btn i.fas {
   color: white;
 }
-
+ 
 /* Destructive action button in modal (e.g., Delete, Cancel) */
 .modal-action-btn.cancel-btn { /* Renamed from .delete-btn to .cancel-btn as per example */
   background-color: #EF4444;
@@ -1283,7 +1282,7 @@
 .modal-action-btn.cancel-btn i.fas {
   color: white;
 }
-
+ 
 /* Adjustments for Desktop Responsiveness (Media queries for dropdowns) */
 /* These seem fine, minor tweaks if necessary based on new sizes */
 @media (min-width: 769px) {
@@ -1294,8 +1293,8 @@
     width: 200px; /* Matched base style */
   }
 }
-
-
+ 
+ 
 /* Ensure the width of scrollable matches headers (DevExtreme specifics) */
 /* These rules are important for DX grid layout, largely keep them */
 :host ::ng-deep .dx-scrollable-container,
@@ -1305,11 +1304,11 @@
   min-width: 100%;
   table-layout: fixed;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-rowsview .dx-datagrid-content {
   width: auto !important; /* This is crucial for horizontal scroll */
 }
-
+ 
 /* Maintain column alignment between header and filter */
 :host ::ng-deep .dx-datagrid-headers .dx-datagrid-table .dx-row > td,
 :host ::ng-deep .dx-datagrid-filter-row .dx-datagrid-table > td {
@@ -1317,8 +1316,8 @@
   min-width: 120px !important; /* Ensure a minimum width */
   overflow: visible !important; /* Usually fine */
 }
-
-
+ 
+ 
 /* Validation & Edit Input Styles (DevExtreme) */
 /* Re-using styles from filter inputs for consistency */
 .detail-input { /* If this is a custom input, not DX */
@@ -1342,7 +1341,7 @@
   font-size: 0.75rem; /* 12px */
   margin-top: 0.25rem;
 }
-
+ 
 /* Style for DevExtreme Edit Inputs (e.g., in-grid editing) */
 :host ::ng-deep .dx-texteditor-input { /* General DX input */
   border: 1px solid #d1d5db;
@@ -1367,7 +1366,7 @@
   font-size: 0.75rem;
   margin-top: 0.25rem;
 }
-
+ 
 /* Edit Icons in Grid (Save/Cancel) */
 :host ::ng-deep .dx-datagrid-edit-button,
 :host ::ng-deep .dx-datagrid-save-button,
@@ -1382,7 +1381,7 @@
 :host ::ng-deep .dx-datagrid-cancel-button {
   color: #ef4444; /* Red for cancel */
 }
-
+ 
 /* No Data Message */
 .no-data-message {
   text-align: center;
@@ -1394,30 +1393,30 @@
   border-radius: 0.5rem;
   margin: 1rem 0;
 }
-
+ 
 /* Add vertical lines between all columns */
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td,
 :host ::ng-deep .dx-datagrid-rowsview .dx-row > td {
   border-right: 1px solid #e5e7eb !important; /* Vertical separator */
 }
-
+ 
 /* Remove the right border from the last column */
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td:last-child,
 :host ::ng-deep .dx-datagrid-rowsview .dx-row > td:last-child {
   border-right: none !important;
 }
-
+ 
 /* Ensure filter row cells also have vertical lines */
 :host ::ng-deep .dx-datagrid-filter-row td {
   box-sizing: border-box;
   overflow: visible;
   border-right: 1px solid #e5e7eb !important;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-filter-row td:last-child {
   border-right: none !important;
 }
-
+ 
 /* Row bottom borders for horizontal lines */
 :host ::ng-deep .dx-datagrid-rowsview .dx-row {
   font-size: 0.875rem;
@@ -1425,37 +1424,37 @@
   min-height: 52px;
   border-bottom: 1px solid #e5e7eb !important;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-rowsview .dx-row:last-child {
   border-bottom: none !important;
 }
-
+ 
 /* Ensure alternating row colors work with borders */
 :host ::ng-deep .dx-datagrid-rowsview .dx-row-alt {
   background-color: #fafbfc;
 }
-
+ 
 /* Fixed column separator - make it more prominent */
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td[role="columnheader"].dx-column-fixed,
 :host ::ng-deep .dx-datagrid-rowsview .dx-data-row > td.dx-column-fixed {
   border-right: 2px solid #dee2e6 !important; /* Thicker border for fixed columns */
   padding: 0.75rem;
 }
-
+ 
 /* Ensure the grid has borders enabled */
 :host ::ng-deep .dx-datagrid {
   border: none !important;
   background: transparent;
   border-radius: 0;
 }
-
+ 
 :host ::ng-deep .dx-datagrid-borders > .dx-datagrid-header-panel,
 :host ::ng-deep .dx-datagrid-borders > .dx-datagrid-rowsview,
 :host ::ng-deep .dx-datagrid-borders > .dx-datagrid-filter-panel,
 :host ::ng-deep .dx-datagrid-borders > .dx-datagrid-pager {
   border: none !important; /* Remove default borders as we're handling them */
 }
-
+ 
 /* Make sure the header cells have proper styling */
 :host ::ng-deep .dx-datagrid-headers .dx-header-row > td {
   background-color: #f9fafb;

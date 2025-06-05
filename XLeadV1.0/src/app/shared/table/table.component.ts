@@ -3,7 +3,7 @@ import { DxDataGridComponent } from 'devextreme-angular';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { GridColumn, ExportFormat } from './table.interface';
-
+ 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
@@ -19,9 +19,9 @@ export class TableComponent implements AfterViewInit {
   @Input() entityType: string = 'Item';
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter<any>();
   @Output() onRowUpdating: EventEmitter<any> = new EventEmitter<any>();
-
+ 
   @ViewChild(DxDataGridComponent) dataGrid!: DxDataGridComponent;
-
+ 
   pageSize: number = 10;
   allowedPageSizes: number[] = [5, 10, 20];
   selectedRowKeys: string[] = [];
@@ -35,12 +35,12 @@ export class TableComponent implements AfterViewInit {
   showSearchPanel: boolean = true;
   columnVisibility: { [key: string]: boolean } = {};
   exportColumnVisibility: { [key: string]: boolean } = {};
-
+ 
   private readonly ownerColors: readonly string[] = [
     '#2196f3', '#4caf50', '#9c27b0', '#1976d2',
     '#d32f2f', '#ff9800', '#673ab7', '#009688',
   ];
-
+ 
   isMobile: boolean = false;
   showSortOptions: boolean = false;
   showColumnChooserMobile: boolean = false;
@@ -58,19 +58,19 @@ export class TableComponent implements AfterViewInit {
   paginatedData: any[] = [];
   cardFields: string[] = [];
   filterBuilderValue: any[] = [];
-
+ 
   constructor(private cdr: ChangeDetectorRef) {
     this.initializeHeaders();
   }
-
+ 
   get modalHeading(): string {
     return `${this.entityType} Details`;
   }
-
+ 
   get searchPlaceholder(): string {
     return `Search ${this.entityType.toLowerCase()}s...`;
   }
-
+ 
   private adjustFilterRowPosition(): void {
     if (!this.dataGrid?.instance) return;
     setTimeout(() => {
@@ -81,7 +81,7 @@ export class TableComponent implements AfterViewInit {
       }
     }, 100);
   }
-
+ 
   ngOnInit() {
     console.log('=== NG ON INIT ===');
     console.log('Input data length:', this.data.length);
@@ -101,7 +101,7 @@ export class TableComponent implements AfterViewInit {
     this.selectedRowKeys = [];
     this.updateMobileData();
   }
-
+ 
   ngAfterViewInit(): void {
     if (!this.isMobile && this.dataGrid?.instance) {
       this.configureDataGrid();
@@ -116,7 +116,7 @@ export class TableComponent implements AfterViewInit {
     console.log('Export column visibility:', this.exportColumnVisibility);
     console.log('=====================================');
   }
-
+ 
   @HostListener('window:resize')
   onWindowResize(): void {
     console.log('=== WINDOW RESIZE EVENT ===');
@@ -124,7 +124,7 @@ export class TableComponent implements AfterViewInit {
     this.checkIfMobile();
     this.cdr.detectChanges();
   }
-
+ 
   private normalizeData(): void {
     this.data = this.data.map(item => {
       const normalizedItem = { ...item };
@@ -156,7 +156,7 @@ export class TableComponent implements AfterViewInit {
       return normalizedItem;
     });
   }
-
+ 
   getDisplayValue(item: any, field: string): string {
     if (item[field] == null) {
       return `No ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`;
@@ -184,7 +184,7 @@ export class TableComponent implements AfterViewInit {
     }
     return String(item[field]);
   }
-
+ 
   private checkIfMobile(): void {
     const wasMobile = this.isMobile;
     this.isMobile = window.innerWidth <= 576;
@@ -205,7 +205,7 @@ export class TableComponent implements AfterViewInit {
     }
     console.log('=====================');
   }
-
+ 
   private updateMobileData(): void {
     console.log('=== UPDATE MOBILE DATA ===');
     console.log('Input data length:', this.data.length);
@@ -219,14 +219,14 @@ export class TableComponent implements AfterViewInit {
     console.log('Column visibility:', this.columnVisibility);
     console.log('Export column visibility:', this.exportColumnVisibility);
     console.log('Card fields:', this.cardFields);
-
+ 
     if (!this.data || this.data.length === 0) {
       console.log('No input data available');
       this.paginatedData = [];
       this.cdr.detectChanges();
       return;
     }
-
+ 
     if (!this.headers || this.headers.length === 0) {
       console.log('No headers provided, using raw data');
       this.paginatedData = this.data.slice(0, this.mobilePageSize);
@@ -234,7 +234,7 @@ export class TableComponent implements AfterViewInit {
       this.cdr.detectChanges();
       return;
     }
-
+ 
     if (!this.cardFields.length) {
       console.log('Initializing card fields with visible headers');
       this.cardFields = this.headers
@@ -242,16 +242,16 @@ export class TableComponent implements AfterViewInit {
         .slice(0, 3)
         .map(header => header.dataField);
     }
-
+ 
     let filteredData = [...this.data];
-
+ 
     if (this.filterBuilderValue && this.filterBuilderValue.length > 0) {
       console.log('Applying filter builder filters');
       filteredData = this.applyDevExtremeFilter(filteredData, this.filterBuilderValue);
     } else {
       console.log('No filter builder filters applied');
     }
-
+ 
     if (this.searchQuery) {
       console.log('Applying search query:', this.searchQuery);
       filteredData = filteredData.filter(item => {
@@ -264,7 +264,7 @@ export class TableComponent implements AfterViewInit {
     } else {
       console.log('No search query applied');
     }
-
+ 
     if (this.sortField) {
       console.log('Applying sort:', this.sortField, this.sortDirection);
       const header = this.headers.find(h => h.dataField === this.sortField);
@@ -288,11 +288,11 @@ export class TableComponent implements AfterViewInit {
     } else {
       console.log('No sorting applied');
     }
-
+ 
     const startIndex = (this.currentPage - 1) * this.mobilePageSize;
     const endIndex = startIndex + this.mobilePageSize;
     this.paginatedData = filteredData.slice(startIndex, endIndex);
-
+ 
     console.log('Filtered data length:', filteredData.length);
     console.log('Paginated data length:', this.paginatedData.length);
     console.log('Paginated data sample:', this.paginatedData.slice(0, 2));
@@ -300,7 +300,7 @@ export class TableComponent implements AfterViewInit {
     console.log('========================');
     this.cdr.detectChanges();
   }
-
+ 
   private parseDateString(dateInput: any): Date | null {
     if (dateInput instanceof Date) {
       return new Date(dateInput.getFullYear(), dateInput.getMonth(), dateInput.getDate());
@@ -346,7 +346,7 @@ export class TableComponent implements AfterViewInit {
     console.warn('Invalid date format:', dateInput);
     return null;
   }
-
+ 
   private applyDevExtremeFilter(data: any[], filter: any): any[] {
     if (!filter) {
       console.log('No filter provided, returning unfiltered data');
@@ -354,7 +354,7 @@ export class TableComponent implements AfterViewInit {
     }
     console.log('=== APPLYING DEVEXTREME FILTER ===');
     console.log('Filter structure:', JSON.stringify(filter, null, 2));
-
+ 
     const applyFilter = (item: any, f: any): boolean => {
       if (Array.isArray(f[0])) {
         const operation = f[1]?.toLowerCase();
@@ -380,7 +380,7 @@ export class TableComponent implements AfterViewInit {
         const dataType = header.dataType || 'string';
         let normalizedItemValue = itemValue;
         let normalizedValue = value;
-
+ 
         if (dataType === 'date') {
           console.log(`Date filter for ${field}: value=${value}, type=${typeof value}, itemValue=`, itemValue);
           // Normalize itemValue to midnight
@@ -408,7 +408,7 @@ export class TableComponent implements AfterViewInit {
           normalizedItemValue = String(itemValue).toLowerCase();
           normalizedValue = String(value).toLowerCase();
         }
-
+ 
         console.log(`Comparing ${field}: item=${normalizedItemValue}, filter=${normalizedValue}, operator=${operator}`);
         switch (operator) {
           case '=': return normalizedItemValue === normalizedValue;
@@ -426,16 +426,16 @@ export class TableComponent implements AfterViewInit {
         }
       }
     };
-
+ 
     const result = data.filter(item => applyFilter(item, filter));
     console.log('Filtered result length:', result.length);
     console.log('Sample filtered result:', result.slice(0, 2));
     console.log('================================');
     return result;
   }
-
+ 
   private emitSelectionChange(): void {
-    const selectedRowsData = this.data.filter(row => 
+    const selectedRowsData = this.data.filter(row =>
       this.selectedRowKeys.includes(String(row.id))
     );
     const event = {
@@ -449,19 +449,19 @@ export class TableComponent implements AfterViewInit {
     console.log('================================');
     this.onSelectionChanged.emit(event);
   }
-
+ 
   openDetailsModal(contact: any): void {
     this.selectedContact = contact;
     this.isDetailsModalOpen = true;
     this.cdr.detectChanges();
   }
-
+ 
   closeDetailsModal(): void {
     this.isDetailsModalOpen = false;
     this.selectedContact = null;
     this.cdr.detectChanges();
   }
-
+ 
   toggleSortMobile(field: string): void {
     const header = this.headers.find(h => h.dataField === field);
     if (!header || header.allowSorting === false) return;
@@ -480,12 +480,12 @@ export class TableComponent implements AfterViewInit {
     this.updateMobileData();
     this.cdr.detectChanges();
   }
-
+ 
   getSortIndicator(field: string): string {
     if (this.sortField !== field) return '';
     return this.sortDirection === 'asc' ? '↑' : '↓';
   }
-
+ 
   searchMobile(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.searchQuery = input.value.toLowerCase();
@@ -493,7 +493,7 @@ export class TableComponent implements AfterViewInit {
     this.updateMobileData();
     this.cdr.detectChanges();
   }
-
+ 
   toggleMobileFilterOptions(): void {
     this.showMobileFilterOptions = !this.showMobileFilterOptions;
     if (this.showMobileFilterOptions) {
@@ -506,7 +506,7 @@ export class TableComponent implements AfterViewInit {
     this.showMobileExportOptions = false;
     this.cdr.detectChanges();
   }
-
+ 
   applyMobileFilters(): void {
     console.log('=== APPLY MOBILE FILTERS ===');
     console.log('Filter builder value:', this.filterBuilderValue);
@@ -514,7 +514,7 @@ export class TableComponent implements AfterViewInit {
     this.updateMobileData();
     this.cdr.detectChanges();
   }
-
+ 
   clearMobileFilters(): void {
     console.log('=== CLEAR MOBILE FILTERS ===');
     this.filterBuilderValue = [];
@@ -524,7 +524,7 @@ export class TableComponent implements AfterViewInit {
     this.updateMobileData();
     this.cdr.detectChanges();
   }
-
+ 
   onFilterBuilderValueChanged(event: any): void {
     console.log('=== FILTER BUILDER VALUE CHANGED ===');
     console.log('New filter value:', JSON.stringify(event.value, null, 2));
@@ -533,7 +533,7 @@ export class TableComponent implements AfterViewInit {
     this.filterBuilderValue = event.value || [];
     this.applyMobileFilters();
   }
-
+ 
   get totalPages(): number {
     if (!this.data || this.data.length === 0) {
       console.log('No data for totalPages calculation');
@@ -552,7 +552,7 @@ export class TableComponent implements AfterViewInit {
     console.log('Total pages:', total);
     return total || 1;
   }
-
+ 
   goToNextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
@@ -560,7 +560,7 @@ export class TableComponent implements AfterViewInit {
       this.cdr.detectChanges();
     }
   }
-
+ 
   goToPreviousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
@@ -568,12 +568,12 @@ export class TableComponent implements AfterViewInit {
       this.cdr.detectChanges();
     }
   }
-
+ 
   toggleSelectAllOnPage(): void {
     const currentPageItems = this.paginatedData;
     const currentPageIds = currentPageItems.map(item => String(item.id));
     const allSelected = currentPageIds.every(id => this.selectedRowKeys.includes(id));
-
+ 
     if (allSelected) {
       this.selectedRowKeys = this.selectedRowKeys.filter(id => !currentPageIds.includes(id));
     } else {
@@ -583,45 +583,45 @@ export class TableComponent implements AfterViewInit {
         }
       });
     }
-
+ 
     this.emitSelectionChange();
     this.cdr.detectChanges();
   }
-
+ 
   areAllOnPageSelected(): boolean {
     const currentPageItems = this.paginatedData;
     const currentPageIds = currentPageItems.map(item => String(item.id));
     return currentPageIds.length > 0 && currentPageIds.every(id => this.selectedRowKeys.includes(id));
   }
-
+ 
   areSomeOnPageSelected(): boolean {
     const currentPageItems = this.paginatedData;
     const currentPageIds = currentPageItems.map(item => String(item.id));
     const selectedCount = currentPageIds.filter(id => this.selectedRowKeys.includes(id)).length;
     return selectedCount > 0 && selectedCount < currentPageIds.length;
   }
-
+ 
   toggleSelection(id: string): void {
     const stringId = String(id);
     const index = this.selectedRowKeys.indexOf(stringId);
-    
+   
     if (index === -1) {
       this.selectedRowKeys.push(stringId);
     } else {
       this.selectedRowKeys.splice(index, 1);
     }
-
+ 
     this.emitSelectionChange();
     this.cdr.detectChanges();
   }
-
+ 
   setPageSize(size: number): void {
     this.mobilePageSize = size;
     this.currentPage = 1;
     this.updateMobileData();
     this.cdr.detectChanges();
   }
-
+ 
   toggleColumnChooserMobile(): void {
     this.showColumnChooserMobile = !this.showColumnChooserMobile;
     this.showSortOptions = false;
@@ -629,7 +629,7 @@ export class TableComponent implements AfterViewInit {
     this.showMobileFilterOptions = false;
     this.cdr.detectChanges();
   }
-
+ 
   toggleMobileExportOptions(): void {
     this.showMobileExportOptions = !this.showMobileExportOptions;
     this.showSortOptions = false;
@@ -637,13 +637,13 @@ export class TableComponent implements AfterViewInit {
     this.showMobileFilterOptions = false;
     this.cdr.detectChanges();
   }
-
+ 
   exportMobile(format: 'excel' | 'csv'): void {
     this.exportData(format);
     this.showMobileExportOptions = false;
     this.cdr.detectChanges();
   }
-
+ 
   private initializeHeaders(): void {
     this.headers = this.headers.map((header) => ({
       ...header,
@@ -654,7 +654,7 @@ export class TableComponent implements AfterViewInit {
       dataType: header.dataType || 'string',
     }));
   }
-
+ 
   private initializeColumnVisibility(): void {
     console.log('=== INITIALIZE COLUMN VISIBILITY ===');
     this.headers.forEach((header) => {
@@ -670,14 +670,14 @@ export class TableComponent implements AfterViewInit {
     console.log('Card fields:', this.cardFields);
     console.log('==================================');
   }
-
+ 
   toggleColumnChooser(event: Event): void {
     event.stopPropagation();
     this.showCustomColumnChooser = !this.showCustomColumnChooser;
     this.showExportModal = false;
     this.cdr.detectChanges();
   }
-
+ 
   toggleColumnVisibility(dataField: string): void {
     if (this.isMobile) {
       this.exportColumnVisibility[dataField] = !this.exportColumnVisibility[dataField];
@@ -697,18 +697,18 @@ export class TableComponent implements AfterViewInit {
       this.updateMobileData();
     }
   }
-
+ 
   areAllColumnsSelected(): boolean {
     const visibility = this.isMobile ? this.exportColumnVisibility : this.columnVisibility;
     return this.headers.every(header => visibility[header.dataField]);
   }
-
+ 
   areSomeColumnsSelected(): boolean {
     const visibility = this.isMobile ? this.exportColumnVisibility : this.columnVisibility;
     const visibleCount = this.headers.filter(header => visibility[header.dataField]).length;
     return visibleCount > 0 && visibleCount < this.headers.length;
   }
-
+ 
   toggleAllColumns(): void {
     const allSelected = this.areAllColumnsSelected();
     const visibility = this.isMobile ? this.exportColumnVisibility : this.columnVisibility;
@@ -728,37 +728,37 @@ export class TableComponent implements AfterViewInit {
       this.updateMobileData();
     }
   }
-
+ 
   onExportButtonClick(event: Event): void {
     event.stopPropagation();
     this.showExportModal = !this.showExportModal;
     this.showCustomColumnChooser = false;
     this.cdr.detectChanges();
   }
-
+ 
   exportData(format: 'excel' | 'csv'): void {
     this.closeDropdowns();
-
+ 
     const exportFormats: { [key: string]: ExportFormat } = {
       excel: { format: 'excel', fileType: 'xlsx', fileExtension: 'xlsx' },
       csv: { format: 'csv', fileType: 'csv', fileExtension: 'csv' },
     };
-
+ 
     const { fileType, fileExtension } = exportFormats[format];
     const workbook = XLSX.utils.book_new();
     const exportData: any[] = [];
-
-    const visibleHeaders = this.headers.filter((header) => 
+ 
+    const visibleHeaders = this.headers.filter((header) =>
       this.isMobile ? this.exportColumnVisibility[header.dataField] : this.columnVisibility[header.dataField]
     );
     const headerRow = visibleHeaders.map((header) => header.caption);
     exportData.push(headerRow);
-
+ 
     let rowsToExport = this.data;
     if (this.selectedRowKeys.length > 0) {
       rowsToExport = this.data.filter((row) => this.selectedRowKeys.includes(String(row.id)));
     }
-
+ 
     rowsToExport.forEach((row) => {
       const rowData = visibleHeaders.map((header) => {
         const value = row[header.dataField] ?? 'N/A';
@@ -769,9 +769,9 @@ export class TableComponent implements AfterViewInit {
       });
       exportData.push(rowData);
     });
-
+ 
     const worksheet = XLSX.utils.aoa_to_sheet(exportData);
-
+ 
     if (format === 'excel') {
       for (let col = 0; col < headerRow.length; col++) {
         const cellAddress = XLSX.utils.encode_cell({ r: 0, c: col });
@@ -784,27 +784,27 @@ export class TableComponent implements AfterViewInit {
       }
       worksheet['!cols'] = headerRow.map(() => ({ wpx: 120 }));
     }
-
+ 
     XLSX.utils.book_append_sheet(workbook, worksheet, this.exportFileName);
-
+ 
     const fileName = `${this.exportFileName}.${fileExtension}`;
     const excelBuffer = XLSX.write(workbook, { bookType: fileType, type: 'array' });
     const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(data, fileName);
-
+ 
     this.exportMessage = 'Export Completed';
     this.showExportMessage = true;
     setTimeout(() => {
       this.showExportMessage = false;
     }, 3000);
-
+ 
     this.cdr.detectChanges();
   }
-
+ 
   onExporting(event: any): void {
     event.cancel = true;
   }
-
+ 
   private hashString(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -814,24 +814,24 @@ export class TableComponent implements AfterViewInit {
     }
     return Math.abs(hash);
   }
-
+ 
   getOwnerColor(owner: string): string {
     if (!owner || typeof owner !== 'string') {
       return this.ownerColors[0];
     }
-
+ 
     const hash = this.hashString(owner.toLowerCase());
     const colorIndex = hash % this.ownerColors.length;
     return this.ownerColors[colorIndex];
   }
-
+ 
   getOwnerInitial(owner: string): string {
     if (!owner || typeof owner !== 'string') {
       return '';
     }
     return owner.charAt(0).toUpperCase();
   }
-
+ 
   getSortIcon(column: GridColumn): string {
     const sortOrder = column.sortOrder;
     if (sortOrder === 'asc') {
@@ -841,12 +841,12 @@ export class TableComponent implements AfterViewInit {
     }
     return '↕';
   }
-
+ 
   getSortIconClass(column: GridColumn): string {
     const sortOrder = column.sortOrder;
     return sortOrder ? 'sort-icon active' : 'sort-icon';
   }
-
+ 
   closeDropdowns(): void {
     this.showCustomColumnChooser = false;
     this.showExportModal = false;
@@ -856,7 +856,7 @@ export class TableComponent implements AfterViewInit {
     this.showMobileFilterOptions = false;
     this.cdr.detectChanges();
   }
-
+ 
   private configureDataGrid(): void {
     if (!this.dataGrid?.instance) return;
     this.dataGrid.instance.option('columnResizingMode', 'widget');
@@ -884,7 +884,7 @@ export class TableComponent implements AfterViewInit {
     this.dataGrid.instance.option('width', '100%');
     this.dataGrid.instance.refresh();
   }
-
+ 
   handleSelectionChanged(event: any): void {
     console.log('=== DESKTOP SELECTION EVENT ===');
     console.log('DevExtreme event:', event);
@@ -896,12 +896,12 @@ export class TableComponent implements AfterViewInit {
     this.emitSelectionChange();
     this.cdr.detectChanges();
   }
-
+ 
   toggleSort(column: GridColumn): void {
     if (column.allowSorting === false) return;
     const currentSortOrder = column.sortOrder;
     let newSortOrder: 'asc' | 'desc' | undefined;
-
+ 
     if (!currentSortOrder || currentSortOrder === 'desc') {
       newSortOrder = 'asc';
     } else if (currentSortOrder === 'asc') {
@@ -909,7 +909,7 @@ export class TableComponent implements AfterViewInit {
     } else {
       newSortOrder = 'desc';
     }
-
+ 
     column.sortOrder = newSortOrder;
     if (!this.isMobile && this.dataGrid?.instance) {
       this.dataGrid.instance.clearSorting();

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { GridColumn } from '../../shared/table/table.interface';
-
+ 
 @Component({
   selector: 'app-overview-page',
   templateUrl: './overview-page.component.html',
@@ -8,51 +8,51 @@ import { GridColumn } from '../../shared/table/table.interface';
 })
 export class OverviewPageComponent {
   tableHeaders: GridColumn[] = [
-    { 
-      dataField: 'SalesPerson', 
-      caption: 'Salesperson', 
-      dataType: 'string', 
-      cellTemplate: 'ownerCellTemplate', 
-      visible: true, 
-      allowSorting: true, 
-      allowFiltering: true 
+    {
+      dataField: 'SalesPerson',
+      caption: 'Salesperson',
+      dataType: 'string',
+      cellTemplate: 'ownerCellTemplate',
+      visible: true,
+      allowSorting: true,
+      allowFiltering: true
     },
-    { 
-      dataField: 'DealName', 
-      caption: 'Deal Name', 
-      dataType: 'string', 
-      visible: true, 
-      allowSorting: true, 
-      allowFiltering: true 
+    {
+      dataField: 'DealName',
+      caption: 'Deal Name',
+      dataType: 'string',
+      visible: true,
+      allowSorting: true,
+      allowFiltering: true
     },
-    { 
-      dataField: 'Stage', 
-      caption: 'Stage', 
-      dataType: 'string', 
-      visible: true, 
-      allowSorting: true, 
-      allowFiltering: true 
+    {
+      dataField: 'Stage',
+      caption: 'Stage',
+      dataType: 'string',
+      visible: true,
+      allowSorting: true,
+      allowFiltering: true
     },
-    { 
-      dataField: 'amount', 
-      caption: 'Amount', 
-      dataType: 'number', 
-      format: { type: 'currency', currency: 'USD', precision: 2 }, 
+    {
+      dataField: 'amount',
+      caption: 'Amount',
+      dataType: 'number',
+      format: { type: 'currency', currency: 'USD', precision: 2 },
       visible: true, // Changed to true
       allowSorting: true, // Changed to true
       allowFiltering: true // Changed to true
     },
-    { 
+    {
       dataField: 'closingDate', // Changed to match data field
-      caption: 'Closing Date', 
-      dataType: 'date', 
-      format: 'dd-MMM-yyyy', 
-      visible: true, 
-      allowSorting: true, 
-      allowFiltering: true 
+      caption: 'Closing Date',
+      dataType: 'date',
+      format: 'dd-MMM-yyyy',
+      visible: true,
+      allowSorting: true,
+      allowFiltering: true
     }
   ];
-
+ 
   tableData = [
     { id: '1', SalesPerson: 'Alice Johnson', DealName: 'Enterprise Cloud Migration', Stage: 'Qualification', amount: 25000, closingDate: new Date('2021-06-30') },
     { id: '2', SalesPerson: 'Bob Smith', DealName: 'AI Analytics Suite', Stage: 'Needs Analysis', amount: 18000, closingDate: new Date('2021-07-01') },
@@ -65,7 +65,7 @@ export class OverviewPageComponent {
     { id: '9', SalesPerson: 'Ian Black', DealName: 'SaaS Subscription Renewal', Stage: 'Closed Lost', amount: 10000, closingDate: new Date('2021-05-15') },
     { id: '10', SalesPerson: 'Julia Stone', DealName: 'Network Infrastructure Upgrade', Stage: 'Negotiation', amount: 30000, closingDate: new Date('2021-07-05') }
   ];
-
+ 
   topcardData = [
     { amount: 14, title: 'Qualification', icon: 'plus' },
     { amount: 5, title: 'Need Analysis', icon: 'doc' },
@@ -74,7 +74,7 @@ export class OverviewPageComponent {
     { amount: 14, title: 'Closed Won', icon: 'check' },
     { amount: 14, title: 'Closed Lost', icon: 'close' }
   ];
-
+ 
   getIconColor(index: number): string {
     switch (index) {
       case 0: return '#F8A978'; // Orange
@@ -87,3 +87,4 @@ export class OverviewPageComponent {
     }
   }
 }
+ 

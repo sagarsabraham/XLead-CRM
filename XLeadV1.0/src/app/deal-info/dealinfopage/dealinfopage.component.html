@@ -1,15 +1,13 @@
 <div class="deal-info-page">
-  <!-- Header -->
   <app-deal-header [deal]="deal"></app-deal-header>
-
-  <!-- Status Timeline -->
+ 
   <div class="timeline-wrapper">
     <app-status-timeline
       [currentStage]="deal?.stage"
       (stageChange)="onStageChange($event)"
     ></app-status-timeline>
   </div>
-
+ 
   <!-- Mobile Tabs -->
   <div class="mobile-tab-bar" *ngIf="isMobile">
     <div class="tab-bar-wrapper">
@@ -23,11 +21,9 @@
       </div>
     </div>
   </div>
-
-  <!-- Content Wrapper with Max Width -->
+ 
   <div class="content-wrapper">
     <div class="content">
-      <!-- Desktop: Two-column layout -->
       <div class="desktop-layout">
         <div class="left-column">
           <app-deal-info-card
@@ -41,7 +37,7 @@
             [selectedIndex]="0"
             (onItemClick)="onDesktopTabSelect($event)"
           ></dx-tabs>
-
+ 
           <app-history-timeline
             *ngIf="desktopSelectedTabId === 'history'"
             [history]="history"
@@ -51,7 +47,7 @@
           ></app-doc-upload>
         </div>
       </div>
-
+ 
       <!-- Mobile: Single-column layout -->
       <div class="mobile-layout" *ngIf="isMobile">
         <div class="section-content">

@@ -10,7 +10,7 @@
       <img [src]="logoPath" alt="Logo" />
     </div>
   </div>
-
+ 
   <div class="sidebar" [class.mobile-open]="isMobileMenuOpen">
     <div class="logo desktop-logo">
       <img [src]="logoPath" alt="Logo" />
@@ -30,7 +30,7 @@
       </div>
     </div>
   </div>
-  
+ 
   <!-- Overlay for mobile (appears when menu is open) -->
   <div class="sidebar-overlay" *ngIf="isMobileMenuOpen" (click)="toggleMobileMenu()"></div>
 </div>
