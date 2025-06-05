@@ -705,3 +705,4 @@ export class TableComponent implements AfterViewInit {
     this.cdr.detectChanges();
   }
 }
+ 

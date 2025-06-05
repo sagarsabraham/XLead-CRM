@@ -26,6 +26,10 @@ import { DuService } from '../services/du.service';
 import { RegionService } from '../services/region.service';
 import { RevenuetypeService } from '../services/revenuetype.service';
 import { DealstageService } from '../services/dealstage.service';
+import { AuthServiceService } from '../services/auth-service.service';
+import { IndustryVerticalService } from '../services/industry-vertical.service';
+import { PrivilegeServiceService } from '../services/privilege-service.service';
+import { SeviceLineService } from '../services/sevice-line.service';
 
 
 @NgModule({
@@ -71,7 +75,11 @@ import { DealstageService } from '../services/dealstage.service';
     CountryService,
     DuService,
     DealstageService,
-    RevenuetypeService
+    RevenuetypeService,
+    AuthServiceService,
+    IndustryVerticalService,
+    PrivilegeServiceService,
+    SeviceLineService
   ],
   
   exports: [

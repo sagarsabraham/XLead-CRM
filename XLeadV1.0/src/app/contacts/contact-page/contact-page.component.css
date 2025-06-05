@@ -34,17 +34,18 @@ app-sidebar.sidebar-visible {
   margin-left: 100px; /* 80px sidebar width + 20px gap */
   width: calc(100% - 100px); /* Adjust width to account for sidebar and gap */
   box-sizing: border-box;
+ 
 }
  
 .topbar {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
   animation: fadeIn 0.5s ease;
 }
  
-.topbar h1 {
+ h2 {
   margin: 0;
   font-size: 2rem;
   font-weight: 700;
@@ -57,6 +58,7 @@ app-sidebar.sidebar-visible {
   color: #666;
   font-weight: 500;
   text-align: right;
+  margin-top: 10px;
 }
  
 .metric-cards-section {
@@ -69,7 +71,7 @@ app-sidebar.sidebar-visible {
 }
  
 .topcard-container app-topcard {
-  flex: 1; /* Ensure each card takes equal space */
+  flex: 1; 
 }
  
  
@@ -136,7 +138,7 @@ dx-data-grid {
 /* Desktop-specific adjustments */
 @media (min-width: 577px) {
   .metric-cards-section {
-    margin-bottom: 90px; /* Increase separation between top cards and table in desktop view */
+    margin-bottom: 90px;
   }
 }
  
@@ -147,30 +149,34 @@ dx-data-grid {
   }
  
   app-sidebar {
-    width: 200px; /* Wider sidebar on mobile when visible */
-    z-index: 999; /* Ensure sidebar is above content */
+    width: 200px; 
+    z-index: 999; 
   }
  
   .container {
-    margin-left: 0; /* Remove sidebar offset on mobile */
-    width: 100%; /* Full width */
-    padding: 10px; /* Reduced padding */
+    margin-top: 50px;
+    margin-left: 0; 
+    width: 100%; 
+    padding: 10px;
   }
  
   .topbar {
-    flex-direction: column; /* Stack vertically on mobile */
-    align-items: flex-start;
-    gap: 8px; /* Space between title and total count */
+    display: flex;
+    justify-content: space-between;
+  
+    gap: 8px; 
     margin-bottom: 10px;
   }
  
   .topbar h1 {
-    font-size: 24px; /* Smaller heading on mobile */
+    margin-top: 5px;
+    font-size: 24px;
   }
  
   .total-count {
-    font-size: 16px; /* Smaller font size */
-    text-align: left; /* Align left for consistency */
+    font-size: 16px;
+    text-align: left;
+    margin-top: 15px; 
   }
  
   .metric-cards-section {
@@ -187,15 +193,15 @@ dx-data-grid {
   }
  
   .content {
-    padding-top: 0; /* No extra padding needed without hamburger menu */
+    padding-top: 0; 
   }
  
   .table-container {
-    max-width: 100%; /* Full width on mobile */
+    max-width: 100%; 
   }
  
   dx-data-grid {
-    max-width: 100%; /* Full width on mobile */
+    max-width: 100%;
   }
  
   /* Adjust owner cell for mobile */
