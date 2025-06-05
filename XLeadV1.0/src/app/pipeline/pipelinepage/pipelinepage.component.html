@@ -30,8 +30,8 @@
       ></app-button>
     </div>
   </div>
-    
-
+   
+ 
   <div class="topcard-container">
     <app-topcard
       *ngFor="let card of topcardData; let i = index"
@@ -42,7 +42,7 @@
       [iconColor]="getIconColor(i)">
     </app-topcard>
   </div>
-
+ 
   <!-- Card View -->
   <div *ngIf="selectedTabId === 'card'" class="card-container" cdkDropListGroup [class.content-loading]="isLoadingInitialData">
     <div
@@ -93,7 +93,7 @@
       #pipelineTable>
     </app-table>
   </div>
-
+ 
   <!-- Add Deal Modal -->
   <app-add-deal-modal
     [isVisible]="isModalVisible"

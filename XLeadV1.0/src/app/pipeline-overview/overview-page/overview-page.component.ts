@@ -77,12 +77,12 @@ export class OverviewPageComponent {
  
   getIconColor(index: number): string {
     switch (index) {
-      case 0: return '#F8A978'; 
-      case 1: return '#92BEFA'; 
-      case 2: return '#B0A3E2'; 
-      case 3: return '#D0D0D0'; 
-      case 4: return '#87DEB2'; 
-      case 5: return '#F48F9F'; 
+      case 0: return '#F8A978';
+      case 1: return '#92BEFA';
+      case 2: return '#B0A3E2';
+      case 3: return '#D0D0D0';
+      case 4: return '#87DEB2';
+      case 5: return '#F48F9F';
       default: return '#000000';
     }
   }

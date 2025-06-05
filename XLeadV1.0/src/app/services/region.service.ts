@@ -18,7 +18,7 @@ export class RegionService {
       constructor(private http: HttpClient) { }
       
       getAllRegions(): Observable<Region[]> {
-        // Add the full path here
+      
         const url = `${this.apiUrl}/api/Region`;
         console.log('Calling API at:', url);
         return this.http.get<Region[]>(url);

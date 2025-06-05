@@ -6,44 +6,49 @@
   [height]="'auto'"
   [dragEnabled]="false"
   [showCloseButton]="true"
-  (onHidden)="handleClose()"> 
+  (onHidden)="handleClose()">
  
   <div *dxTemplate="let data of 'content'" class="popup-content">
     <div #formContainer class="form-container" (wheel)="onMouseWheel($event)">
       <app-modal-header title="Deal Information" [showOwner]="true"></app-modal-header>
+
       <dx-form
       *ngIf="showForm"
         #dealFormInstance 
         [formData]="newDeal"
         [colCountByScreen]="{ xs: 1, sm: 1, md: 1, lg: 1 }">
-        <dxi-item
-        dataField="amount"
-        editorType="dxNumberBox"
-        [editorOptions]="{
-          showSpinButtons: true,
-          min: 0,
-          max: 100000000,
-          format: { type: 'fixedPoint', precision: 2 }
-        }"
-      >
-          <dxo-label text="Amount" cssClass="bold-label"></dxo-label>
-          <dxi-validation-rule type="required" message="Amount is required"></dxi-validation-rule>
-        </dxi-item>
-        <dxi-item dataField="companyName">
+ 
+      
+  <dxi-item
+  dataField="amount"
+  editorType="dxNumberBox"
+  [editorOptions]="{
+    showSpinButtons: true,
+    min: 0,
+    max: 100000000,
+    format: { type: 'fixedPoint', precision: 2 }
+  }"
+>
+  <dxo-label text="Amount" cssClass="bold-label"></dxo-label>
+  <dxi-validation-rule type="required" message="Amount is required"></dxi-validation-rule>
+</dxi-item>
+ 
+ 
+        <dxi-item dataField="customerName">
           <dxo-label text="Customer Name" cssClass="bold-label"></dxo-label>
           <div class="company-name-container">
             <dx-select-box
-              id="companySelect"
-              [(value)]="newDeal.companyName"
-              [dataSource]="filteredCompanies"
+              id="customerSelect"
+              [(value)]="newDeal.customerName"
+              [dataSource]="filteredCustomers"
               [searchEnabled]="true"
               placeholder="Select or search a customer"
-              (onValueChanged)="onCompanyChange($event.value)">
+              (onValueChanged)="onCustomerChange($event.value)">
             </dx-select-box>
             <dx-button
-              text="+"
+              text="+" 
               type="default"
-              (onClick)="openQuickCreateCompanyModal()">
+              (onClick)="openQuickCreateCustomerModal()">
             </dx-button>
           </div>
           <dxi-validation-rule type="required" message="Customer Name is required"></dxi-validation-rule>
@@ -62,6 +67,17 @@
           valueExpr="id"
           [searchEnabled]="true"
           placeholder="Select Account (Optional)">
+        </dx-select-box>
+      </dxi-item>
+       <dxi-item dataField="account">
+        <dxo-label text="Service Line" cssClass="bold-label"></dxo-label>
+        <dx-select-box
+          [(value)]="newDeal.serviceline"
+          [dataSource]="serviceline"
+          displayExpr="serviceName"
+          valueExpr="id"
+          [searchEnabled]="true"
+          placeholder="Select Service Line (Optional)">
         </dx-select-box>
       </dxi-item>
       <dxi-item dataField="region">
@@ -205,15 +221,16 @@
   </div>
 </dx-popup>
  
-<!-- Quick Create Company Modal -->
+
+
 <app-form-modal
-  *ngIf="isCompanyModalVisible"
-  [isVisible]="isCompanyModalVisible"
+  *ngIf="isCustomerModalVisible"
+  [isVisible]="isCustomerModalVisible"
   [title]="'Add New Customer'"
-  [formData]="companyData"
-  [fields]="companyFields"
-  (onClose)="closeQuickCreateCompanyModal()"
-  (onSubmit)="addNewCompany($event)">
+  [formData]="customerData"
+  [fields]="customerFields"
+  (onClose)="closeQuickCreateCustomerModal()"
+  (onSubmit)="addNewCustomer($event)">
 </app-form-modal>
  
 <!-- Quick Create Contact Modal -->
