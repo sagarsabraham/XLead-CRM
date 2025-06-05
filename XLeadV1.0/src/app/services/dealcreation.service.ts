@@ -97,57 +97,51 @@ export class DealService {
       .pipe(catchError(this.handleError));
   }
   getDealsForCurrentUser(): Observable<DealRead[]> {
-    const currentUserId = this.authService.getUserId(); // Get the hardcoded userId (e.g., 6)
+    const currentUserId = this.authService.getUserId(); 
 
     if (!currentUserId) {
-      // This should ideally not happen if AuthServiceService always provides a userId
+    
       console.error('User ID not found in AuthServiceService.');
       return throwError(() => new Error('User ID is not available. Cannot fetch user-specific deals.'));
     }
 
-    // Construct the URL for the specific endpoint
+   
     const url = `${this.apiUrl}/byCreator/${currentUserId}`;
     
-    // Optional: Client-side privilege check (if you have one like 'ViewOwnDeals')
-    // if (!this.authService.hasPrivilege('ViewOwnDeals')) {
-    //   return throwError(() => new Error('User lacks privilege to view their own deals.'));
-    // }
+  
 
     console.log(`Fetching deals for user ID: ${currentUserId} from URL: ${url}`);
-    return this.http.get<DealRead[]>(url, this.httpOptions) // No body needed for GET
+    return this.http.get<DealRead[]>(url, this.httpOptions) 
       .pipe(catchError(this.handleError));
   }
-  updateDealStage(id: number, stageName: string): Observable<DealRead> { // Return single DealReadDto
+  updateDealStage(id: number, stageName: string): Observable<DealRead> { 
     const url = `${this.apiUrl}/${id}/stage`;
     const userId = this.authService.getUserId();
 
     if (!userId) {
-      // This check is good for immediate feedback, but the backend must re-validate
+  
       return throwError(() => new Error('User ID not found. Cannot perform action.'));
     }
 
-    // Client-side privilege check (optional, backend MUST enforce this)
+    
     if (!this.authService.hasPrivilege('StageUpdate')) {
       return throwError(() => new Error('User lacks StageUpdate privilege.'));
     }
 
     const payload = {
       stageName: stageName,
-      performedByUserId: userId // <--- CHANGED FROM updatedBy to match backend DTO
+      performedByUserId: userId 
     };
 
-    // HttpClient stringifies the object by default when Content-Type is application/json
+   
     return this.http.put<DealRead>(url, payload, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 
-  // NEW: getDealStageHistory
+ 
   getDealStageHistory(dealId: number): Observable<StageHistoryReadDto[]> {
     const url = `${this.apiUrl}/${dealId}/history`;
-    // Add privilege check if viewing history requires one, e.g., 'ViewDealHistory'
-    // if (!this.authService.hasPrivilege('ViewDealHistory')) { // Example
-    //   return throwError(() => new Error('User lacks privilege to view history.'));
-    // }
+   
     return this.http.get<StageHistoryReadDto[]>(url)
       .pipe(catchError(this.handleError));
   }
