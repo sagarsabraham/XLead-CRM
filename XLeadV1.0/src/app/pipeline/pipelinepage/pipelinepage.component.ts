@@ -118,7 +118,29 @@ export class PipelinepageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.updateCollapsedState(); 
     this.loadInitialData();
+    window.addEventListener('resize', this.handleResize.bind(this));
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.handleResize.bind(this));
+  }
+
+  private updateCollapsedState(): void {
+    const isMobile = window.innerWidth <= 480;
+    if (isMobile) {
+      // Always collapse all stages in mobile view
+      this.stages.forEach(stage => stage.collapsed = true);
+    } else {
+      // Uncollapse all stages in desktop view
+      this.stages.forEach(stage => stage.collapsed = false);
+    }
+    this.cdr.detectChanges();
+  }
+
+  private handleResize(): void {
+    this.updateCollapsedState(); 
   }
 
   loadInitialData(): void {
@@ -276,7 +298,17 @@ export class PipelinepageComponent implements OnInit {
   }
 
   toggleCollapse(index: number): void {
-    this.stages[index].collapsed = !this.stages[index].collapsed;
+    const isMobile = window.innerWidth <= 480;
+    if (isMobile) {
+      // In mobile view, collapse all stages except the clicked one
+      this.stages.forEach((stage, i) => {
+        stage.collapsed = i !== index;
+      });
+    } else {
+      // In desktop view, toggle the clicked stage as before
+      this.stages[index].collapsed = !this.stages[index].collapsed;
+    }
+    this.cdr.detectChanges();
   }
 
   onMouseEnter(index: number): void {
@@ -313,7 +345,6 @@ export class PipelinepageComponent implements OnInit {
     this._currentlyEditingPipelineDeal = null;
     this.selectedStageId = stageId || null; 
     this.isModalVisible = true;
-    this.selectedStageId = stageId || null;
   }
 onButtonClick(event: { label: string, stageId?: number }) {
     if (event.label === 'Deal') {

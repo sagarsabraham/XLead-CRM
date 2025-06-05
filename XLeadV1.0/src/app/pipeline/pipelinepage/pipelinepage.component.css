@@ -164,6 +164,12 @@ app-button {
   flex-shrink: 0;
  
 }
+
+.content-loading {
+  opacity: 0.5;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
  
 /* ========== Responsive Breakpoints ========== */
  
