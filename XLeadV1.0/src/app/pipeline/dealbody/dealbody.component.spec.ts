@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DealbodyComponent } from './dealbody.component';
-import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, DragDropModule, CdkDropList } from '@angular/cdk/drag-drop';
 import { By } from '@angular/platform-browser';
+import { ElementRef, Component, Input, Output, EventEmitter } from '@angular/core';
 
 describe('DealbodyComponent', () => {
   let component: DealbodyComponent;
@@ -14,9 +15,34 @@ describe('DealbodyComponent', () => {
 
   const mockConnectedTo = ['stage-1', 'stage-2'];
 
+  // Stub for app-dealcard
+  @Component({
+    selector: 'app-dealcard',
+    template: '',
+  })
+  class DealcardStubComponent {
+    @Input() deal: any;
+    @Output() onEdit = new EventEmitter<any>();
+  }
+
+  // Helper function to create a mock CdkDropList
+  function createMockCdkDropList(id: string): Partial<CdkDropList<any[]>> {
+    return {
+      id,
+      element: new ElementRef(document.createElement('div')),
+      data: [],
+      disabled: false,
+      lockAxis: undefined,
+      connectedTo: [],
+      enterPredicate: () => true,
+      sortPredicate: () => true,
+      sortingDisabled: false,
+    };
+  }
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DealbodyComponent],
+      declarations: [DealbodyComponent, DealcardStubComponent],
       imports: [DragDropModule],
     }).compileComponents();
   });
@@ -56,33 +82,34 @@ describe('DealbodyComponent', () => {
 
   describe('Drag and Drop Functionality', () => {
     it('should not emit dealDropped if dropped in same container', () => {
-  spyOn(component.dealDropped, 'emit');
-  const mockEvent: Partial<CdkDragDrop<any[]>> = {
-    previousContainer: { id: 'stage-1', data: [] } as any,
-    container: { id: 'stage-1', data: [] } as any,
-    previousIndex: 0,
-    currentIndex: 1,
-  };
-  component.drop(mockEvent as CdkDragDrop<any[]>);
-  expect(component.dealDropped.emit).not.toHaveBeenCalled();
-});
+      spyOn(component.dealDropped, 'emit');
+      const dropList = createMockCdkDropList('stage-1') as CdkDropList<any[]>;
+      const mockEvent: Partial<CdkDragDrop<any[]>> = {
+        previousContainer: dropList,
+        container: dropList, // Use same instance
+        previousIndex: 0,
+        currentIndex: 1,
+      };
+      component.drop(mockEvent as CdkDragDrop<any[]>);
+      expect(component.dealDropped.emit).not.toHaveBeenCalled();
+    });
 
-it('should emit dealDropped with correct data when dropped in different container', () => {
-  spyOn(component.dealDropped, 'emit');
-  const mockEvent: Partial<CdkDragDrop<any[]>> = {
-    previousContainer: { id: 'stage-1', data: [] } as any,
-    container: { id: 'stage-2', data: [] } as any,
-    previousIndex: 0,
-    currentIndex: 0,
-  };
-  component.drop(mockEvent as CdkDragDrop<any[]>);
-  expect(component.dealDropped.emit).toHaveBeenCalledWith({
-    previousStage: 'stage-1',
-    currentStage: 'stage-2',
-    previousIndex: 0,
-    currentIndex: 0,
-  });
-});
+    it('should emit dealDropped with correct data when dropped in different container', () => {
+      spyOn(component.dealDropped, 'emit');
+      const mockEvent: Partial<CdkDragDrop<any[]>> = {
+        previousContainer: createMockCdkDropList('stage-1') as CdkDropList<any[]>,
+        container: createMockCdkDropList('stage-2') as CdkDropList<any[]>,
+        previousIndex: 0,
+        currentIndex: 0,
+      };
+      component.drop(mockEvent as CdkDragDrop<any[]>);
+      expect(component.dealDropped.emit).toHaveBeenCalledWith({
+        previousStage: 'stage-1',
+        currentStage: 'stage-2',
+        previousIndex: 0,
+        currentIndex: 0,
+      });
+    });
   });
 
   describe('Edit Functionality', () => {
