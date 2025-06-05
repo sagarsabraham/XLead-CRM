@@ -12,6 +12,7 @@
     <div #formContainer class="form-container" (wheel)="onMouseWheel($event)">
       <app-modal-header title="Deal Information" [showOwner]="true"></app-modal-header>
       <dx-form
+      *ngIf="showForm"
         #dealFormInstance 
         [formData]="newDeal"
         [colCountByScreen]="{ xs: 1, sm: 1, md: 1, lg: 1 }">
@@ -29,14 +30,14 @@
           <dxi-validation-rule type="required" message="Amount is required"></dxi-validation-rule>
         </dxi-item>
         <dxi-item dataField="companyName">
-          <dxo-label text="Company Name" cssClass="bold-label"></dxo-label>
+          <dxo-label text="Customer Name" cssClass="bold-label"></dxo-label>
           <div class="company-name-container">
             <dx-select-box
               id="companySelect"
               [(value)]="newDeal.companyName"
               [dataSource]="filteredCompanies"
               [searchEnabled]="true"
-              placeholder="Select or search a company"
+              placeholder="Select or search a customer"
               (onValueChanged)="onCompanyChange($event.value)">
             </dx-select-box>
             <dx-button
@@ -45,7 +46,7 @@
               (onClick)="openQuickCreateCompanyModal()">
             </dx-button>
           </div>
-          <dxi-validation-rule type="required" message="Company Name is required"></dxi-validation-rule>
+          <dxi-validation-rule type="required" message="Customer Name is required"></dxi-validation-rule>
         </dxi-item>
        
         <dxi-item dataField="title">
@@ -208,7 +209,7 @@
 <app-form-modal
   *ngIf="isCompanyModalVisible"
   [isVisible]="isCompanyModalVisible"
-  [title]="'Add New Company'"
+  [title]="'Add New Customer'"
   [formData]="companyData"
   [fields]="companyFields"
   (onClose)="closeQuickCreateCompanyModal()"

@@ -17,6 +17,15 @@ import { ModalButtonsComponent } from './modal-buttons/modal-buttons.component';
 import { DealInfoModule } from '../deal-info/deal-info.module';
 import { RouterModule } from '@angular/router';
 import { HighlightDirective } from '../directives/highlight.directive';
+import { AccountService } from '../services/account.service';
+import { CompanyContactService } from '../services/company-contact.service';
+import { CountryService } from '../services/country.service';
+import { DealService } from '../services/dealcreation.service';
+import { DomainService } from '../services/domain.service';
+import { DuService } from '../services/du.service';
+import { RegionService } from '../services/region.service';
+import { RevenuetypeService } from '../services/revenuetype.service';
+import { DealstageService } from '../services/dealstage.service';
 
 
 @NgModule({
@@ -52,6 +61,19 @@ import { HighlightDirective } from '../directives/highlight.directive';
     DealInfoModule,
     RouterModule
   ],
+
+  providers: [
+    DealService,
+    CompanyContactService,
+    AccountService,
+    RegionService,
+    DomainService,
+    CountryService,
+    DuService,
+    DealstageService,
+    RevenuetypeService
+  ],
+  
   exports: [
     PipelinepageComponent 
   ]

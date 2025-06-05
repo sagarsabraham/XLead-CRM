@@ -1,4 +1,5 @@
-import { Component, HostListener } from '@angular/core';
+import { Component } from '@angular/core';
+import { GridColumn } from '../../shared/table/table.interface';
  
 @Component({
   selector: 'app-overview-page',
@@ -6,44 +7,72 @@ import { Component, HostListener } from '@angular/core';
   styleUrls: ['./overview-page.component.css']
 })
 export class OverviewPageComponent {
-  tableHeaders = [
-    { dataField: 'SalesPerson', caption: 'Salesperson', cellTemplate: 'ownerCellTemplate' },
-    { dataField: 'DealName', caption: 'Deal Name' },
-    { dataField: 'Stage', caption: 'Stage' },
+  tableHeaders: GridColumn[] = [
     {
-      dataField: 'Amount',
-      caption: 'Amount',
-      dataType: 'number',
-      format: { type: 'currency', currency: 'USD' }
+      dataField: 'SalesPerson',
+      caption: 'Salesperson',
+      dataType: 'string',
+      cellTemplate: 'ownerCellTemplate',
+      visible: true,
+      allowSorting: true,
+      allowFiltering: true
     },
     {
-      dataField: 'ClosingDate',
+      dataField: 'DealName',
+      caption: 'Deal Name',
+      dataType: 'string',
+      visible: true,
+      allowSorting: true,
+      allowFiltering: true
+    },
+    {
+      dataField: 'Stage',
+      caption: 'Stage',
+      dataType: 'string',
+      visible: true,
+      allowSorting: true,
+      allowFiltering: true
+    },
+    {
+      dataField: 'amount',
+      caption: 'Amount',
+      dataType: 'number',
+      format: { type: 'currency', currency: 'USD', precision: 2 },
+      visible: true, // Changed to true
+      allowSorting: true, // Changed to true
+      allowFiltering: true // Changed to true
+    },
+    {
+      dataField: 'closingDate', // Changed to match data field
       caption: 'Closing Date',
       dataType: 'date',
-      format: 'dd-MMM-yyyy'
+      format: 'dd-MMM-yyyy',
+      visible: true,
+      allowSorting: true,
+      allowFiltering: true
     }
   ];
  
-tableData = [
-  { id: '1', SalesPerson: 'Alice Johnson', DealName: 'Enterprise Cloud Migration', Stage: 'Qualification', Amount: 25000, ClosingDate: '2025-06-15' },
-  { id: '2', SalesPerson: 'Bob Smith', DealName: 'AI Analytics Suite', Stage: 'Needs Analysis', Amount: 18000, ClosingDate: '2025-07-01' },
-  { id: '3', SalesPerson: 'Charlie Davis', DealName: 'E-commerce Platform', Stage: 'Proposal', Amount: 32000, ClosingDate: '2025-06-30' },
-  { id: '4', SalesPerson: 'Dana White', DealName: 'Mobile App Revamp', Stage: 'Negotiation', Amount: 27000, ClosingDate: '2025-07-10' },
-  { id: '5', SalesPerson: 'Eli Brown', DealName: 'CRM Integration', Stage: 'Closed Won', Amount: 15000, ClosingDate: '2025-05-20' },
-  { id: '6', SalesPerson: 'Fiona Green', DealName: 'Custom ERP System', Stage: 'Proposal', Amount: 40000, ClosingDate: '2025-07-25' },
-  { id: '7', SalesPerson: 'George King', DealName: 'Marketing Automation', Stage: 'Qualification', Amount: 22000, ClosingDate: '2025-06-18' },
-  { id: '8', SalesPerson: 'Hannah Scott', DealName: 'Data Lake Setup', Stage: 'Needs Analysis', Amount: 36000, ClosingDate: '2025-06-28' },
-  { id: '9', SalesPerson: 'Ian Black', DealName: 'SaaS Subscription Renewal', Stage: 'Closed Lost', Amount: 10000, ClosingDate: '2025-05-15' },
-  { id: '10', SalesPerson: 'Julia Stone', DealName: 'Network Infrastructure Upgrade', Stage: 'Negotiation', Amount: 30000, ClosingDate: '2025-07-05' }
-];
+  tableData = [
+    { id: '1', SalesPerson: 'Alice Johnson', DealName: 'Enterprise Cloud Migration', Stage: 'Qualification', amount: 25000, closingDate: new Date('2021-06-30') },
+    { id: '2', SalesPerson: 'Bob Smith', DealName: 'AI Analytics Suite', Stage: 'Needs Analysis', amount: 18000, closingDate: new Date('2021-07-01') },
+    { id: '3', SalesPerson: 'Charlie Davis', DealName: 'E-commerce Platform', Stage: 'Proposal', amount: 32000, closingDate: new Date('2021-06-30') },
+    { id: '4', SalesPerson: 'Dana White', DealName: 'Mobile App Revamp', Stage: 'Negotiation', amount: 27000, closingDate: new Date('2021-07-10') },
+    { id: '5', SalesPerson: 'Eli Brown', DealName: 'CRM Integration', Stage: 'Closed Won', amount: 15000, closingDate: new Date('2021-05-20') },
+    { id: '6', SalesPerson: 'Fiona Green', DealName: 'Custom ERP System', Stage: 'Proposal', amount: 40000, closingDate: new Date('2021-07-25') },
+    { id: '7', SalesPerson: 'George King', DealName: 'Marketing Automation', Stage: 'Qualification', amount: 22000, closingDate: new Date('2021-06-18') },
+    { id: '8', SalesPerson: 'Hannah Scott', DealName: 'Data Lake Setup', Stage: 'Needs Analysis', amount: 36000, closingDate: new Date('2021-06-28') },
+    { id: '9', SalesPerson: 'Ian Black', DealName: 'SaaS Subscription Renewal', Stage: 'Closed Lost', amount: 10000, closingDate: new Date('2021-05-15') },
+    { id: '10', SalesPerson: 'Julia Stone', DealName: 'Network Infrastructure Upgrade', Stage: 'Negotiation', amount: 30000, closingDate: new Date('2021-07-05') }
+  ];
  
   topcardData = [
-    { amount: 14, title: 'Qualification', icon: 'assets/qualification.svg' },
-    { amount: 5, title: 'Need Analysis', icon: 'assets/needanalysis.svg' },
-    { amount: 4, title: 'Proposal', icon: 'assets/proposal.svg' },
-    { amount: 14, title: 'Negotiation', icon: 'assets/negotiation.svg' },
-    { amount: 14, title: 'Closed Won', icon: 'assets/closedwon.svg' },
-    { amount: 14, title: 'Closed Lost', icon: 'assets/closedlost.svg' }
+    { amount: 14, title: 'Qualification', icon: 'plus' },
+    { amount: 5, title: 'Need Analysis', icon: 'doc' },
+    { amount: 4, title: 'Proposal', icon: 'money' },
+    { amount: 14, title: 'Negotiation', icon: 'overflow' },
+    { amount: 14, title: 'Closed Won', icon: 'check' },
+    { amount: 14, title: 'Closed Lost', icon: 'close' }
   ];
  
   getIconColor(index: number): string {
@@ -58,3 +87,4 @@ tableData = [
     }
   }
 }
+ 

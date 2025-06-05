@@ -1,10 +1,19 @@
+:root {
+  --secondary-gradient: linear-gradient(135deg, #3498db, #1abc9c);
+  --hover-gradient: linear-gradient(135deg, #8e44ad, #3498db);
+  --background-light: #f5f7fa;
+  --text-light: #ecf0f1;
+  --border-light: rgba(255, 255, 255, 0.2);
+}
+
 .container {
     margin-left: 11.5vh;
     padding: 16px;
     font-family: 'poppins';
     overflow-x: hidden;
-    /* margin-left: 100px;
-    width: calc(100% - 100px);  */
+    background-color: var(--background-light);
+    width: calc(100% - 11.5vh); 
+    box-sizing: border-box;
   }
  
  
@@ -18,20 +27,70 @@
  
   .topbar h1 {
     font-size: 32px;
- 
-    padding: 8px 0;
     font-weight: bold;
-    margin-top: 20px;
-    margin-left: 20px;
-  }
- 
+    margin-top: 10px;
+    margin-left: 10px;
+    letter-spacing: 0.5px;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+}
+
+.view-icons {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+}
+
+.view-icon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  color: var(--text-light);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-light);
+}
+
+.view-icon:hover {
+  background: var(--hover-gradient);
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(142, 68, 173, 0.5);
+  color: var(--text-light);
+}
+
+.view-icon.active {
+  background: var(--secondary-gradient);
+  border: 2px solid #fff;
+  box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+  color: var(--text-light);
+}
+
+.view-icon img {
+  transition: transform 0.3s ease;
+}
+
+.view-icon:hover img {
+  transform: rotate(5deg);
+}
+
+.view-label {
+  font-size: 14px;
+  font-weight: 500;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
  
   .topcard-container {
     display: flex;
+    gap: 20px;
     flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 16px;
-    padding: 16px 0;
+    margin-top: 10px;
   }
  
 .topcard-container app-topcard {
@@ -51,7 +110,9 @@
   gap: 10px;
   padding: 16px 0;
   scroll-snap-type: x mandatory;
-  padding-top: 35px;
+  margin-left: 6px;
+  min-width: calc(100% - 6px);
+  box-sizing: border-box;
 }
  
 .stage-card {
@@ -114,13 +175,15 @@ app-button {
  
   .stage-card {
     min-width: 240px;
-.container {
-    margin-left: 10vh;
-    overflow-x: auto;
-    padding: 16px;
-    font-family: 'poppins';
-}
-.topcard-container {
+
+    .container {
+        margin-left: 10vh;
+        overflow-x: auto;
+        padding: 16px;
+        font-family: 'poppins';
+        width: calc(100% - 10vh);
+    }
+  .topcard-container {
     display: flex;
     gap: 30px;
     flex-wrap: nowrap;
@@ -128,11 +191,16 @@ app-button {
     justify-content: space-between;
     padding-left: 16px;
   }
+
+  .card-container {
+    min-width: calc(100% - 6px); 
+  }
 }
  
 @media (max-width: 768px) {
     .container {
     margin-left: 0;
+    width: 100%; 
   }
   .topcard-container app-topcard {
     flex: 1 1 100%;
@@ -146,30 +214,66 @@ app-button {
   .topbar h1 {
     font-size: 20px;
   }
+
+  .card-container {
+    min-width: 100%; 
+    margin-left: 0;
+  }
 }
  
 @media (max-width: 480px) {
   .container {
     margin-left: 0;
+    padding: 8px;
+    width: 100%;
   }
   .topbar {
     display: flex;
-   
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
+    flex-direction: column; 
+    align-items: center; 
+    gap: 8px;
+    padding: 10px 15px;
   }
   .topbar h1 {
-    font-size: 18px;
+    font-size: 22px;
+    margin: 0; 
+    text-align: center;
+    width: 100%; 
+  }
+
+  .topbar-actions {
+    flex-wrap: nowrap; 
+    gap: 4px; 
+  }
+
+  .view-icons {
+    gap: 4px; 
+  }
+
+  .view-icon {
+    padding: 6px 8px; 
+    gap: 4px; 
+  }
+
+  .view-icon img {
+    width: 16px; 
+    height: 16px;
+  }
+
+  .view-label {
+    font-size: 12px; 
   }
  
   app-button {
-    width: 100%;
-    padding: 10px;
+    width: auto; 
+    padding: 6px 12px; 
+    font-size: 14px; 
   }
  
   .card-container {
     gap: 8px;
+    margin-left: 0;
+    min-width: 100%;
   }
  
   .stage-card {
@@ -177,24 +281,7 @@ app-button {
   }
 }
 }
-.toggle-view {
-  margin: 20px 0;
-  text-align: right;
-}
- 
-.toggle-view button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
- 
-.toggle-view button:hover {
-  background-color: #0056b3;
-}
- 
+
 .table-view {
   margin-top: 20px;
   width: 100%;
