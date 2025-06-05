@@ -62,12 +62,22 @@ export class PipelineStageGraphComponent implements OnChanges {
   // }
 
   customizeTooltip(arg: any) {
-    return {
-      text: `${arg.argument}: ₹${arg.value.toLocaleString('en-IN')}`
-    };
+  const formattedValue = arg.value.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0, // Optional: to display $123 instead of $123.00
+    maximumFractionDigits: 0  // Optional: to display $123 instead of $123.00
+  });
+  return {
+    text: `${arg.argument}: ${formattedValue}`
+  };
+}
+   customizeValueAxisText(arg: any) {
+    return arg.value.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
   }
-
-  // customizeValueAxisText(arg: any) {
-  //   return `₹${arg.value.toLocaleString('en-IN')}`;
-  // }
 }

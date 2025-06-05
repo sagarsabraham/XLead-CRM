@@ -76,6 +76,11 @@ export interface DashboardMetrics {
 }
 // --- END: Added for Dashboard Metrics ---
 
+export interface PipelineStageData {
+  stageName: string; // Matches StageName from PipelineStageDataDto
+  totalAmount: number; // Matches TotalAmount from PipelineStageDataDto (number is appropriate for decimal from C#)
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -117,6 +122,14 @@ export class DealService {
       .pipe(catchError(this.handleError));
   }
   // --- END: Added for Dashboard Metrics ---
+
+    getOpenPipelineAmountsByStage(): Observable<PipelineStageData[]> {
+    const url = `${this.apiUrl}/open-pipeline-stages`;
+    return this.http.get<PipelineStageData[]>(url, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred!';
