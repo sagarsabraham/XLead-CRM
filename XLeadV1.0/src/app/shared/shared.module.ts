@@ -55,6 +55,7 @@ import { FormsModule } from '@angular/forms';
     PageNotFoundComponent,
     TableComponent,
     TopbarComponent,
+    TopcardComponent
     
   ],
   

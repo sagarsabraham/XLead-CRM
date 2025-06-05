@@ -4,12 +4,11 @@
   max-width: 1200px;
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  padding-left: 24PX;
+  padding-left: 85px;
   box-sizing: border-box;
 }
 
 .metric-wrapper {
-  /* padding: 1rem 0; */
   width: 100%;
   box-sizing: border-box;
 }

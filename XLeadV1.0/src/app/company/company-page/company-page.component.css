@@ -1,6 +1,7 @@
 :host {
   display: block;
   width: 100%;
+  
 }
 
 .page-container {
@@ -9,15 +10,7 @@
   min-height: 100vh; /* Ensure full viewport height */
 }
 
-app-sidebar {
-  width: 80px; /* Fixed width for the sidebar */
-  height: 100vh; /* Full height of the viewport */
-  position: fixed; /* Fixed position to stay on the left */
-  top: 0;
-  left: 0;
-  background-color: #f5f5f5; /* Placeholder background color */
-  transition: transform 0.3s ease; /* Smooth transition for hiding/showing */
-}
+
 
 app-sidebar.sidebar-hidden {
   transform: translateX(-100%); /* Slide out to the left */
