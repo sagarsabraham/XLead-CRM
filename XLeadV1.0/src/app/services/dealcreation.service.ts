@@ -81,6 +81,11 @@ export interface PipelineStageData {
   totalAmount: number; // Matches TotalAmount from PipelineStageDataDto (number is appropriate for decimal from C#)
 }
 
+export interface MonthlyRevenueData {
+  monthYear: string;     // Matches MonthYear from backend DTO
+  totalRevenue: number;  // Matches TotalRevenue from backend DTO
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -126,6 +131,12 @@ export class DealService {
     getOpenPipelineAmountsByStage(): Observable<PipelineStageData[]> {
     const url = `${this.apiUrl}/open-pipeline-stages`;
     return this.http.get<PipelineStageData[]>(url, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+   getMonthlyRevenueWon(months: number = 12): Observable<MonthlyRevenueData[]> {
+    const url = `${this.apiUrl}/monthly-revenue-won?months=${months}`;
+    return this.http.get<MonthlyRevenueData[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 
