@@ -54,10 +54,10 @@ import { FormsModule } from '@angular/forms';
     TopcardComponent,
     PageNotFoundComponent,
     TableComponent,
-    TopbarComponent,
+    TopbarComponent
+
     
   ],
-  
   imports: [
     FormsModule,
     HttpClientModule,

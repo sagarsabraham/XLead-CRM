@@ -1,107 +1,149 @@
 .smart-notes-container {
-  max-width: 900px;          /* from notes-container max-width */
-  margin: 30px auto;
-  padding: 24px;
-  background-color: #fff;
-  border: 1px solid #d6d6d6; /* lighter border */
-  border-radius: 6px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  max-width: 960px;
+  margin: 40px auto;
+  padding: 32px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  transition: box-shadow 0.3s ease;
+}
+
+.smart-notes-container:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
 }
 
 /* Header */
 .smart-notes-container h3 {
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 26px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 24px;
+  font-size: 28px;
+  letter-spacing: 0.5px;
 }
 
 /* DevExtreme Text Box */
 dx-text-box {
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   width: 100%;
   font-family: inherit;
 }
 
-/* DevExtreme Button default */
+/* Add Note Button Styling */
 .dx-button.dx-button-mode-contained.dx-button-default {
-  background-color: #c0c0c0;
-  color: #000;
-  border: none;
-  border-radius: 4px;
+  background-color: #d0d0d0;
+  color: #222;
+  border-radius: 6px;
   font-weight: 600;
-  cursor: pointer;
-  padding: 8px 16px;
+  padding: 10px 20px;
   user-select: none;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Hover on default button */
 .dx-button.dx-button-mode-contained.dx-button-default:hover {
-  background-color: #a9a9a9;
+  background-color: #b3b3b3;
 }
 
 /* Disabled button */
 .dx-button:disabled {
-  background-color: #a1a1a1 !important;
+  background-color: #b0b0b0 !important;
+  color: #f5f5f5 !important;
   cursor: not-allowed !important;
-  color: #f0f0f0 !important;
 }
 
 /* Highlighted Add Note button - when typing */
 .highlighted-add-button {
-  background-color: #007acc !important;  /* your blue highlight */
+  background-color: #0078d4 !important;
   color: white !important;
   font-weight: 600;
-  box-shadow: 0 2px 6px rgba(0, 122, 204, 0.4);
-  transition: background-color 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0, 120, 212, 0.4);
+  transform: translateY(-1px);
 }
 
-/* Hover on highlighted button */
 .highlighted-add-button:hover {
-  background-color: #005a9e !important;
+  background-color: #005fa3 !important;
 }
 
-/* Note entry styling - adapting your note-template */
+/* Note card template */
 .note-template {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 18px;
-  margin-bottom: 12px;
-  background-color: #f9f9f9;
-  border-left: 4px solid #007acc;
-  border-radius: 6px;
+  padding: 16px 20px;
+  margin-bottom: 14px;
+  background-color: #fdfdfd;
+  border-left: 4px solid #0078d4;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   transition: background-color 0.3s ease;
-  font-family: inherit;
 }
 
 .note-template:hover {
-  background-color: #f1f1f1;
+  background-color: #f2f8fc;
 }
 
 .note-template strong {
-  font-size: 16px;
-  color: #222;
+  font-size: 17px;
+  color: #333;
 }
 
 .note-template small {
-  font-size: 12px;
-  color: #777;
+  font-size: 13px;
+  color: #666;
+  margin-top: 4px;
+  display: block;
 }
 
-/* Danger button style */
+/* Delete Button */
 .dx-button.dx-button-mode-text.dx-button-danger {
-  color: #888 !important;
+  color: #999 !important;
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
 .dx-button.dx-button-mode-text.dx-button-danger:hover {
-  color: red !important;
+  color: #e81123 !important;
 }
 
-/* Smooth transitions */
+/* General Button Transition */
 .dx-button {
   transition: all 0.3s ease;
+}
+
+/* Highlight fix for inner content */
+::ng-deep .highlighted-add-button .dx-button-content {
+  background-color: #0078d4 !important;
+  color: white !important;
+  font-weight: 600;
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(0, 120, 212, 0.4);
+}
+
+::ng-deep .highlighted-add-button:hover .dx-button-content {
+  background-color: #005fa3 !important;
+}
+.dx-button.dx-button-mode-contained.dx-button-default {
+  margin-bottom: 24px; /* 👈 Add this to create space below the button */
+}
+.chatbot-float-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 999;
+}
+
+.chatbot-float-btn .dx-button-content {
+  justify-content: center;
+  padding: 0;
+}
+
+.chatbot-float-btn .dx-icon {
+  font-size: 22px;
+  color: white;
 }

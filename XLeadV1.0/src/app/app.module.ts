@@ -1,7 +1,7 @@
-import { NgModule, Pipe } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, Pipe } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
-import { DxButtonModule, DxDrawerModule, DxListModule, DxLoadIndicatorModule } from 'devextreme-angular';
+import { DxButtonModule, DxDrawerModule, DxListModule, DxLoadIndicatorModule, DxTextBoxComponent } from 'devextreme-angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardModule } from './dashboard/dashboard.module';
@@ -16,6 +16,8 @@ import { SharedModule } from './shared/shared.module';
 import { DealInfoModule } from './deal-info/deal-info.module';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { ChatbotComponent } from './chatbot/chatbot.component';
+
 
 
  
@@ -30,8 +32,11 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent
-  ],
+    AppComponent,ChatbotComponent
+
+  ],  
+   // Add this line
+
   imports: [
     DxLoadIndicatorModule,
     BrowserModule,

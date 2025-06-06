@@ -1,0 +1,41 @@
+<div class="chatbot-widget" [ngClass]="{ 'collapsed': isCollapsed }">
+  <div class="chatbot-header" (click)="toggleCollapse()">
+    💬
+    <h4>Chat Assistant</h4>
+    <div class="header-actions">
+      <button class="clear-btn" (click)="clearChat(); $event.stopPropagation()" title="Clear chat">🗑️</button>
+      <button class="collapse-btn" title="Toggle chat">
+        <span>{{ isCollapsed ? '▲' : '▼' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="chatbot-body" [ngClass]="{ 'hidden': isCollapsed }">
+    <div class="chat-messages">
+      <div *ngFor="let message of messages" class="message" [ngClass]="{ 'user-message': message.isUser, 'bot-message': !message.isUser }">
+        <div class="message-content">
+          <p>{{ message.text }}</p>
+          <span class="timestamp">{{ getTimeString(message.timestamp) }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="isTyping" class="message bot-message typing">
+        <div class="message-content">
+          <p>Bot is typing...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input
+        type="text"
+        [(ngModel)]="userInput"
+        class="chat-input-field"
+        placeholder="Type your message..."
+        (keydown)="onInputKeyDown($event)"
+        [disabled]="isTyping"
+      />
+      <button (click)="sendMessage()" [disabled]="!userInput.trim() || isTyping" class="send-btn">Send</button>
+    </div>
+  </div>
+</div>

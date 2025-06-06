@@ -1,12 +1,11 @@
 <div class="dx-card smart-notes-container">
   <h3>Smart Notes</h3>
 
- <dx-text-box
-  [value]="newNoteContent"
-  (onValueChanged)="newNoteContent = $event.value"
-  placeholder="Write a note..."
-  stylingMode="outlined">
-</dx-text-box>
+  <dx-text-box
+    [(value)]="newNoteContent"
+    placeholder="Write a note..."
+    stylingMode="outlined">
+  </dx-text-box>
 
  <dx-button
   text="Add Note"
@@ -27,5 +26,6 @@
       stylingMode="text"
       (onClick)="deleteNote(i)">
     </dx-button>
-  </div>
+  
+</div>
 </div>

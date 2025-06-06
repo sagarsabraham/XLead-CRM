@@ -33,4 +33,9 @@ export class NotesTabComponent {
   formatDate(date: Date): string {
     return new Date(date).toLocaleString();
   }
+  openChatbot() {
+  // Open a chatbot modal or widget
+  console.log('Chatbot opened');
+}
+
 }
