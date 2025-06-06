@@ -153,10 +153,8 @@ export class DealService {
  
  
   getDashboardMetrics(userId: number): Observable<DashboardMetrics> { // Added userId parameter
-    // Optional: Client-side privilege check (e.g., 'ViewOwnDashboard')
-    // if (!this.authService.hasPrivilege('ViewOwnDashboard')) {
-    //   return throwError(() => new Error('User lacks privilege to view dashboard metrics.'));
-    // }
+    
+   
     const url = `${this.apiUrl}/dashboard-metrics/${userId}`; // Append userId
     console.log(`DealService: Fetching dashboard metrics from ${url}`);
     return this.http.get<DashboardMetrics>(url, this.httpOptions)

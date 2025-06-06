@@ -173,7 +173,7 @@ export class PipelinepageComponent implements OnInit {
     console.log('Table data refreshed:', this._tableData.length, 'deals');
   }
 
-  findCustomerByContact(contactFullName: string | null | undefined): string | null { // Updated to match backend
+  findCustomerByContact(contactFullName: string | null | undefined): string | null { 
     if (!contactFullName || !this.customerContactMap || Object.keys(this.customerContactMap).length === 0) {
       if (!contactFullName) console.warn('findCustomerByContact: called with null/undefined contactFullName.');
       if (!this.customerContactMap || Object.keys(this.customerContactMap).length === 0) console.warn('findCustomerByContact: customerContactMap is empty or null.');
@@ -307,7 +307,7 @@ export class PipelinepageComponent implements OnInit {
         },
         error: (err) => {
           console.error(`Failed to update deal stage: ${err.message}`);
-          // Revert UI changes on failure
+        
           currentStageName.deals.splice(currentIndex, 1);
           previousStageName.deals.splice(previousIndex, 0, movedDeal);
           this.updateStageAmountsAndTopCards();
