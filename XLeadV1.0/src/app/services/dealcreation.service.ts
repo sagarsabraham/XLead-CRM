@@ -58,24 +58,24 @@ export interface DashboardMetricItem {
   isPositiveTrend: boolean;
 }
 
-export interface DashboardMetrics { // Changed DTO name from DashboardMetricsDto
+export interface DashboardMetrics {
   openPipelines: DashboardMetricItem;
   pipelinesWon: DashboardMetricItem;
   pipelinesLost: DashboardMetricItem;
   revenueWon: DashboardMetricItem;
 }
 
-export interface PipelineStageData { // Changed DTO name from PipelineStageDataDto
+export interface PipelineStageData { 
   stageName: string;
   totalAmount: number;
 }
 
-export interface MonthlyRevenueData { // Changed DTO name from MonthlyRevenueDto
+export interface MonthlyRevenueData { 
   monthYear: string;
   totalRevenue: number;
 }
 
-export interface TopCustomerData { // Changed DTO name from TopCustomerDto
+export interface TopCustomerData { 
   customerName: string;
   totalRevenueWon: number;
 }
@@ -152,34 +152,34 @@ export class DealService {
 
  
  
-  getDashboardMetrics(userId: number): Observable<DashboardMetrics> { // Added userId parameter
+  getDashboardMetrics(userId: number): Observable<DashboardMetrics> { 
     
    
-    const url = `${this.apiUrl}/dashboard-metrics/${userId}`; // Append userId
+    const url = `${this.apiUrl}/dashboard-metrics/${userId}`; 
     console.log(`DealService: Fetching dashboard metrics from ${url}`);
     return this.http.get<DashboardMetrics>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 
-  getOpenPipelineAmountsByStage(userId: number): Observable<PipelineStageData[]> { // Added userId parameter
-    // Optional: Client-side privilege check
-    const url = `${this.apiUrl}/open-pipeline-stages/${userId}`; // Append userId
+  getOpenPipelineAmountsByStage(userId: number): Observable<PipelineStageData[]> { 
+
+    const url = `${this.apiUrl}/open-pipeline-stages/${userId}`;
     console.log(`DealService: Fetching open pipeline amounts from ${url}`);
     return this.http.get<PipelineStageData[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 
-  getMonthlyRevenueWon(userId: number, months: number = 12): Observable<MonthlyRevenueData[]> { // Added userId parameter
-    // Optional: Client-side privilege check
-    const url = `${this.apiUrl}/monthly-revenue-won/${userId}?months=${months}`; // Append userId
+  getMonthlyRevenueWon(userId: number, months: number = 12): Observable<MonthlyRevenueData[]> { 
+   
+    const url = `${this.apiUrl}/monthly-revenue-won/${userId}?months=${months}`; 
     console.log(`DealService: Fetching monthly revenue from ${url}`);
     return this.http.get<MonthlyRevenueData[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 
-  getTopCustomersByRevenue(userId: number, count: number = 5): Observable<TopCustomerData[]> { // Added userId parameter
-    // Optional: Client-side privilege check
-    const url = `${this.apiUrl}/top-customers-by-revenue/${userId}?count=${count}`; // Append userId
+  getTopCustomersByRevenue(userId: number, count: number = 5): Observable<TopCustomerData[]> { 
+    
+    const url = `${this.apiUrl}/top-customers-by-revenue/${userId}?count=${count}`; 
     console.log(`DealService: Fetching top customers from ${url}`);
     return this.http.get<TopCustomerData[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
