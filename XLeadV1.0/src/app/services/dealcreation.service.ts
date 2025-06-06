@@ -1,4 +1,4 @@
-// src/app/services/deal.service.ts
+
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -12,8 +12,8 @@ export interface DealCreatePayload {
   customerName: string;
   contactFullName: string;
   contactEmail: string | null; 
-  contactPhoneNumber: string | null; // Updated to allow null
-  contactDesignation: string | null; // Updated to allow null
+  contactPhoneNumber: string | null; 
+  contactDesignation: string | null; 
   accountId: number | null;
   serviceId: number | null;
   regionId: number;
@@ -29,7 +29,56 @@ export interface DealCreatePayload {
   createdBy: number;
   customFields?: { [key: string]: any };
 }
+export interface DealManagerOverview { 
+  id: number;
+  dealName: string;
+  dealAmount: number;
+  stageName?: string;
+  closingDate?: string | null;
+  salespersonId: number;
+  salespersonName: string;
 
+
+  accountName?: string;
+  regionName?: string;
+  duName?: string; 
+  contactName?: string;
+  startingDate?: string | null;
+}
+
+
+export interface ManagerStageCount {
+  stageName: string;
+  dealCount: number;
+ 
+}
+export interface DashboardMetricItem {
+  value: string;
+  percentageChange: number;
+  isPositiveTrend: boolean;
+}
+
+export interface DashboardMetrics { // Changed DTO name from DashboardMetricsDto
+  openPipelines: DashboardMetricItem;
+  pipelinesWon: DashboardMetricItem;
+  pipelinesLost: DashboardMetricItem;
+  revenueWon: DashboardMetricItem;
+}
+
+export interface PipelineStageData { // Changed DTO name from PipelineStageDataDto
+  stageName: string;
+  totalAmount: number;
+}
+
+export interface MonthlyRevenueData { // Changed DTO name from MonthlyRevenueDto
+  monthYear: string;
+  totalRevenue: number;
+}
+
+export interface TopCustomerData { // Changed DTO name from TopCustomerDto
+  customerName: string;
+  totalRevenueWon: number;
+}
 export interface DealRead {
   id: number;
   dealName: string;
@@ -66,8 +115,8 @@ export interface StageHistoryReadDto {
   id: number;
   dealId: number;
   stageName: string;
-  createdBy: number; // This is the userId
-  createdAt: string; // ISO date string
+  createdBy: number;
+  createdAt: string; 
   updatedBy?: number | null;
   updatedAt?: string | null;
 }
@@ -91,7 +140,63 @@ export class DealService {
     return this.http.get<DealRead>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
+  getManagerOverviewDeals(managerId: number): Observable<DealManagerOverview[]> {
+    if (!this.authService.hasPrivilege('overview')) { 
+        return throwError(() => new Error('Current user lacks Overview privilege.'));
+    }
+    const url = `${this.apiUrl}/manager-overview-deals/${managerId}`;
+    console.log(`DealService: Fetching manager overview deals from ${url}`);
+    return this.http.get<DealManagerOverview[]>(url, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
  
+ 
+  getDashboardMetrics(userId: number): Observable<DashboardMetrics> { // Added userId parameter
+    // Optional: Client-side privilege check (e.g., 'ViewOwnDashboard')
+    // if (!this.authService.hasPrivilege('ViewOwnDashboard')) {
+    //   return throwError(() => new Error('User lacks privilege to view dashboard metrics.'));
+    // }
+    const url = `${this.apiUrl}/dashboard-metrics/${userId}`; // Append userId
+    console.log(`DealService: Fetching dashboard metrics from ${url}`);
+    return this.http.get<DashboardMetrics>(url, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  getOpenPipelineAmountsByStage(userId: number): Observable<PipelineStageData[]> { // Added userId parameter
+    // Optional: Client-side privilege check
+    const url = `${this.apiUrl}/open-pipeline-stages/${userId}`; // Append userId
+    console.log(`DealService: Fetching open pipeline amounts from ${url}`);
+    return this.http.get<PipelineStageData[]>(url, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  getMonthlyRevenueWon(userId: number, months: number = 12): Observable<MonthlyRevenueData[]> { // Added userId parameter
+    // Optional: Client-side privilege check
+    const url = `${this.apiUrl}/monthly-revenue-won/${userId}?months=${months}`; // Append userId
+    console.log(`DealService: Fetching monthly revenue from ${url}`);
+    return this.http.get<MonthlyRevenueData[]>(url, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  getTopCustomersByRevenue(userId: number, count: number = 5): Observable<TopCustomerData[]> { // Added userId parameter
+    // Optional: Client-side privilege check
+    const url = `${this.apiUrl}/top-customers-by-revenue/${userId}?count=${count}`; // Append userId
+    console.log(`DealService: Fetching top customers from ${url}`);
+    return this.http.get<TopCustomerData[]>(url, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+ 
+  getManagerOverviewStageCounts(managerId: number): Observable<ManagerStageCount[]> {
+     if (!this.authService.hasPrivilege('overview')) { 
+        return throwError(() => new Error('Current user lacks Overview privilege.'));
+    }
+    const url = `${this.apiUrl}/manager-overview-stage-counts/${managerId}`;
+    console.log(`DealService: Fetching manager overview stage counts from ${url}`);
+    return this.http.get<ManagerStageCount[]>(url, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
   getAllDeals(): Observable<DealRead[]> {
     return this.http.get<DealRead[]>(this.apiUrl, this.httpOptions)
       .pipe(catchError(this.handleError));
