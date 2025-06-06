@@ -16,7 +16,20 @@ export class CompanyPageComponent implements OnInit {
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'website', caption: 'Website', visible: true },
     { dataField: 'industryVertical', caption: 'Industry Vertical', visible: true },
-    { dataField: 'status', caption: 'Status', visible: true },
+   { 
+      dataField: 'status', 
+      caption: 'Status', 
+      visible: true,
+      // This lookup configuration tells the grid to use a dropdown for editing.
+      lookup: {
+        dataSource: [
+          { value: 'Active', displayValue: 'Active' },
+          { value: 'Inactive', displayValue: 'Inactive' }
+        ],
+        valueExpr: 'value',
+        displayExpr: 'displayValue'
+      }
+    },
     // { dataField: 'owner', caption: 'Owner', visible: true }
   ];
 
@@ -173,38 +186,38 @@ export class CompanyPageComponent implements OnInit {
     return entry ? parseInt(entry[0], 10) : null;
   }
 
-   handleUpdate(event: any): void {
+    handleUpdate(event: any): void {
     const companyId = event.key;
-    const updatedData = event.newData;
+    // The event now contains the full old data and just the changed new data.
+    // Merging them gives us the complete final object.
+    const finalData = { ...event.oldData, ...event.newData };
 
     // Construct the DTO payload for the backend API
     const updatePayload = {
-      customerName: updatedData.customerName,
-      phoneNo: updatedData.phone, // Map 'phone' from table back to 'phoneNo'
-      website: updatedData.website,
-      industryVerticalId: this.getIndustryIdByName(updatedData.industryVertical),
-      isActive: updatedData.status === 'Active',
-      
+      customerName: finalData.customerName,
+      phoneNo: finalData.phone,
+      website: finalData.website,
+      industryVerticalId: this.getIndustryIdByName(finalData.industryVertical),
+      // The status from the dropdown is now directly a string 'Active' or 'Inactive'.
+      // We convert it back to the required boolean for the API.
+      isActive: finalData.status === 'Active',
+      updatedBy: 3 // Hardcoded user ID for demo.
     };
 
     this.companyService.updateCompany(companyId, updatePayload).subscribe({
       next: (response) => {
         console.log('Company updated successfully', response);
-        // Find the index of the item in our local array
         const index = this.tableData.findIndex(c => c.id === companyId);
         if (index !== -1) {
-         
-          this.tableData[index] = { ...this.tableData[index], ...updatedData };
-          
+          // Update the local data with the merged data from the event
+          this.tableData[index] = finalData;
           this.tableData = [...this.tableData];
-        
           this.updateMetrics();
         }
       },
       error: (err) => {
         console.error('Failed to update company', err);
         alert('Failed to update company. Please check the console for details.');
-       
       }
     });
   }

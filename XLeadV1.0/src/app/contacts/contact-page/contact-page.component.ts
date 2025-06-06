@@ -14,7 +14,20 @@ export class ContactPageComponent implements OnInit {
     { dataField: 'email', caption: 'Email', visible: true },
     { dataField: 'customerName', caption: 'Customer', visible: true },
     { dataField: 'designation', caption: 'Designation', visible: true }, 
-    { dataField: 'status', caption: 'Status', visible: true }
+    { 
+      dataField: 'status', 
+      caption: 'Status', 
+      visible: true,
+      // Add the same lookup configuration here
+      lookup: {
+        dataSource: [
+          { value: 'Active', displayValue: 'Active' },
+          { value: 'Inactive', displayValue: 'Inactive' }
+        ],
+        valueExpr: 'value',
+        displayExpr: 'displayValue'
+      }
+    }
   ];
 
   tableData: any[] = [];
@@ -105,40 +118,36 @@ export class ContactPageComponent implements OnInit {
     
     this.selectedContactIds = event.selectedRowKeys || [];
   }
-   handleUpdate(event: any): void {
+    handleUpdate(event: any): void {
     const contactId = event.key;
-    const updatedData = event.newData;
+    const finalData = { ...event.oldData, ...event.newData };
 
-    
     const updatePayload = {
-      firstName: updatedData.name.split(' ')[0], 
-      lastName: updatedData.name.split(' ').slice(1).join(' '),
-      designation: updatedData.designation,
-      email: updatedData.email,
-      phoneNumber: updatedData.phone,
-      isActive: updatedData.status === 'Active',
-      // updatedBy: 3 
+      firstName: finalData.name.split(' ')[0],
+      lastName: finalData.name.split(' ').slice(1).join(' '),
+      designation: finalData.designation,
+      email: finalData.email,
+      phoneNumber: finalData.phone,
+      // Convert the status string from the dropdown back to the required boolean
+      isActive: finalData.status === 'Active',
+      updatedBy: 3 // Hardcoded user ID
     };
 
     this.contactService.updateContact(contactId, updatePayload).subscribe({
       next: (response) => {
         console.log('Contact updated successfully', response);
-       
         const index = this.tableData.findIndex(c => c.id === contactId);
         if (index !== -1) {
-          // Update the local data array to reflect changes immediately
-          this.tableData[index] = { ...this.tableData[index], ...updatedData };
-          this.tableData = [...this.tableData]; // Trigger change detection
+          this.tableData[index] = finalData;
+          this.tableData = [...this.tableData];
         }
       },
       error: (err) => {
         console.error('Failed to update contact', err);
-        
         this.loadContacts(); 
       }
     });
   }
-
  
   handleDelete(event: any): void {
     const contactId = event.key;
