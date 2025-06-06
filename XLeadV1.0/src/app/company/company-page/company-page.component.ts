@@ -168,6 +168,68 @@ export class CompanyPageComponent implements OnInit {
       { amount: inactive, title: 'Inactive Customers', icon: 'assets/company.svg' }
     ];
   }
+   private getIndustryIdByName(name: string): number | null {
+    const entry = Object.entries(this.industryVerticalMap).find(([id, value]) => value === name);
+    return entry ? parseInt(entry[0], 10) : null;
+  }
+
+   handleUpdate(event: any): void {
+    const companyId = event.key;
+    const updatedData = event.newData;
+
+    // Construct the DTO payload for the backend API
+    const updatePayload = {
+      customerName: updatedData.customerName,
+      phoneNo: updatedData.phone, // Map 'phone' from table back to 'phoneNo'
+      website: updatedData.website,
+      industryVerticalId: this.getIndustryIdByName(updatedData.industryVertical),
+      isActive: updatedData.status === 'Active',
+      
+    };
+
+    this.companyService.updateCompany(companyId, updatePayload).subscribe({
+      next: (response) => {
+        console.log('Company updated successfully', response);
+        // Find the index of the item in our local array
+        const index = this.tableData.findIndex(c => c.id === companyId);
+        if (index !== -1) {
+         
+          this.tableData[index] = { ...this.tableData[index], ...updatedData };
+          
+          this.tableData = [...this.tableData];
+        
+          this.updateMetrics();
+        }
+      },
+      error: (err) => {
+        console.error('Failed to update company', err);
+        alert('Failed to update company. Please check the console for details.');
+       
+      }
+    });
+  }
+
+
+  
+
+  handleDelete(event: any): void {
+    const companyId = event.key;
+
+    if (confirm('Are you sure you want to delete this company? ')) {
+      
+      this.companyService.deleteCompany(companyId).subscribe({
+        next: () => {
+          console.log('Company deleted successfully');
+          this.tableData = this.tableData.filter(c => c.id !== companyId);
+          this.updateMetrics();
+        },
+        error: (err) => {
+          console.error('Failed to delete company', err);
+          alert(err.error?.message || 'Could not delete the company. Please try again.');
+        }
+      });
+    }
+  }
   
   @HostListener('window:resize')
   onResize(): void {

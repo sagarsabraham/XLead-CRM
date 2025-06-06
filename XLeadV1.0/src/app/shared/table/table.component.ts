@@ -18,8 +18,10 @@ export class TableComponent implements AfterViewInit {
   @Input() ownerField: string = 'owner';
   @Input() exportFileName: string = 'Data';
   @Input() entityType: string = 'Item';
+  @Input() allowEditing: boolean = true; 
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter<any>();
   @Output() onRowUpdating: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onRowRemoving: EventEmitter<any> = new EventEmitter<any>(); 
 
   @ViewChild(DxDataGridComponent) dataGrid!: DxDataGridComponent;
   @ViewChild('columnChooserButton', { static: false }) columnChooserButton!: ElementRef;
@@ -57,6 +59,8 @@ export class TableComponent implements AfterViewInit {
   showColumnChooserMobile: boolean = false;
   showMobileExportOptions: boolean = false;
   selectedContact: any = null;
+  editedContact: any = null; 
+  isEditingMobile: boolean = false;
   isDetailsModalOpen: boolean = false;
   sortField: string = '';
   sortDirection: string = '';
@@ -186,14 +190,77 @@ export class TableComponent implements AfterViewInit {
 
   openDetailsModal(contact: any): void {
     this.selectedContact = contact;
+    this.editedContact = { ...contact }; // Create a copy for editing
     this.isDetailsModalOpen = true;
+    this.isEditingMobile = false;
     this.cdr.detectChanges();
   }
 
   closeDetailsModal(): void {
     this.isDetailsModalOpen = false;
     this.selectedContact = null;
+    this.editedContact = null;
+    this.isEditingMobile = false;
     this.cdr.detectChanges();
+  }
+  
+  // --- Mobile Edit/Delete ---
+  editMobileContact(): void {
+    this.isEditingMobile = true;
+    this.cdr.detectChanges();
+  }
+
+  cancelMobileEdit(): void {
+    this.isEditingMobile = false;
+    this.editedContact = { ...this.selectedContact }; // Revert changes
+    this.cdr.detectChanges();
+  }
+
+  saveMobileContact(): void {
+    const updateEvent = {
+      key: this.selectedContact.id,
+      newData: this.editedContact,
+    };
+    this.onRowUpdating.emit(updateEvent);
+    this.isEditingMobile = false;
+    // The parent component is responsible for updating the data array
+    // and then we can close the modal.
+    this.closeDetailsModal();
+  }
+
+  deleteMobileContact(): void {
+    if (window.confirm(`Are you sure you want to delete this ${this.entityType}?`)) {
+      const removeEvent = {
+        key: this.selectedContact.id,
+        data: this.selectedContact,
+      };
+      this.onRowRemoving.emit(removeEvent);
+      // The parent component is responsible for updating the data array.
+      this.closeDetailsModal();
+    }
+  }
+
+  // --- Grid Event Handlers ---
+  handleRowUpdating(e: any): void {
+    e.cancel = true; // Prevent grid's default update
+    const updatePayload = {
+      key: e.key,
+      newData: { ...e.oldData, ...e.newData },
+    };
+    this.onRowUpdating.emit(updatePayload);
+    // Let parent handle data update and grid will refresh on [data] change
+    this.dataGrid.instance.cancelEditData();
+  }
+
+  handleRowRemoving(e: any): void {
+    e.cancel = true; // Prevent grid's default removal
+    const removePayload = {
+      key: e.key,
+      data: e.data,
+    };
+    this.onRowRemoving.emit(removePayload);
+    // Let parent handle data update and grid will refresh on [data] change
+    this.dataGrid.instance.cancelEditData();
   }
 
   toggleSortMobile(field: string): void {
@@ -692,6 +759,13 @@ export class TableComponent implements AfterViewInit {
       this.dataGrid.instance.columnOption(firstColumnDataField, 'fixedPosition', 'left');
     }
 
+    // Fix the command column to the right if editing is enabled
+    if (this.allowEditing) {
+      this.dataGrid.instance.columnOption('command:edit', 'fixed', true);
+      this.dataGrid.instance.columnOption('command:edit', 'fixedPosition', 'right');
+      this.dataGrid.instance.columnOption('command:edit', 'width', 110);
+    }
+
     this.dataGrid.instance.option('scrolling', {
       mode: 'standard',
       showScrollbar: 'always',
@@ -705,4 +779,3 @@ export class TableComponent implements AfterViewInit {
     this.cdr.detectChanges();
   }
 }
- 

@@ -41,6 +41,10 @@
   [exportFileName]="'Contacts'"
   (onSelectionChanged)="handleSelectionChanged($event)"
   [entityType]="'Customer'"
+   [allowEditing]="true" 
+   (onRowUpdating)="handleUpdate($event)"
+   (onRowRemoving)="handleDelete($event)"
+
 ></app-table>
     </div>
   </div>

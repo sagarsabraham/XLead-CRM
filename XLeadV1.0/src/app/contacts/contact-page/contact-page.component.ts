@@ -105,6 +105,62 @@ export class ContactPageComponent implements OnInit {
     
     this.selectedContactIds = event.selectedRowKeys || [];
   }
+   handleUpdate(event: any): void {
+    const contactId = event.key;
+    const updatedData = event.newData;
+
+    
+    const updatePayload = {
+      firstName: updatedData.name.split(' ')[0], 
+      lastName: updatedData.name.split(' ').slice(1).join(' '),
+      designation: updatedData.designation,
+      email: updatedData.email,
+      phoneNumber: updatedData.phone,
+      isActive: updatedData.status === 'Active',
+      // updatedBy: 3 
+    };
+
+    this.contactService.updateContact(contactId, updatePayload).subscribe({
+      next: (response) => {
+        console.log('Contact updated successfully', response);
+       
+        const index = this.tableData.findIndex(c => c.id === contactId);
+        if (index !== -1) {
+          // Update the local data array to reflect changes immediately
+          this.tableData[index] = { ...this.tableData[index], ...updatedData };
+          this.tableData = [...this.tableData]; // Trigger change detection
+        }
+      },
+      error: (err) => {
+        console.error('Failed to update contact', err);
+        
+        this.loadContacts(); 
+      }
+    });
+  }
+
+ 
+  handleDelete(event: any): void {
+    const contactId = event.key;
+
+    if (confirm('Are you sure you want to delete this contact?')) {
+      // No longer need to pass a userId
+      this.contactService.deleteContact(contactId).subscribe({
+        next: () => {
+          console.log('Contact deleted successfully');
+          this.tableData = this.tableData.filter(c => c.id !== contactId);
+          this.totalContacts = this.tableData.length;
+        },
+        error: (err) => {
+          console.error('Failed to delete contact', err);
+          alert(err.error?.message || 'Could not delete the contact. Please try again.');
+        }
+      });
+    }
+  }
+
+ 
+
 
   toggleSidebar(): void {
     this.isSidebarVisible = !this.isSidebarVisible;
