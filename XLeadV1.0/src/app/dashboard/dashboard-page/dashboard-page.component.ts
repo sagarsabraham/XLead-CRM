@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import { DxResponsiveBoxModule } from 'devextreme-angular';
-import { SharedModule } from 'src/app/shared/shared.module';
-import { DashboardModule } from '../dashboard.module';
+
 
 
 @Component({
@@ -12,10 +10,16 @@ import { DashboardModule } from '../dashboard.module';
 })
 export class DashboardPageComponent {
   revenueData = [
-    { month: 'April 2024', amount: 34567 },
-    { month: 'April 2025', amount: 123457 },
-    { month: 'May 2025', amount: 456786 },
-    { month: 'June 2025', amount: 567190 }
+ 
+    { month: 'March 2024', amount: 14567890 },
+    { month: 'January 2025', amount: 16885671 },
+    { month: 'February 2025', amount: 1897190 },
+     { month: 'March 2025', amount: 1897090 },
+    { month: 'April 2024', amount: 1234567 },
+    { month: 'April 2025', amount: 563457 },
+    { month: 'May 2025', amount: 566786 },
+    { month: 'June 2025', amount: 56567190 }
+     
   ];
 
   companyData = [

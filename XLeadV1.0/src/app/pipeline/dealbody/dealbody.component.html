@@ -1,4 +1,4 @@
-<div 
+<div
     cdkDropList
     [cdkDropListData]="deals"
     [cdkDropListConnectedTo]="connectedTo"
@@ -9,10 +9,10 @@
         This stage is empty
     </div>
     <div class="deal-cards-wrapper" *ngIf="deals.length > 0">
-        <app-dealcard 
-            *ngFor="let deal of deals" 
-            [deal]="deal" 
-            cdkDrag 
+        <app-dealcard
+            *ngFor="let deal of deals"
+            [deal]="deal"
+            cdkDrag
             (onEdit)="onEditDeal($event)">
         </app-dealcard>
     </div>

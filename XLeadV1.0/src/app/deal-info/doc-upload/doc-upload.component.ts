@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { AuthServiceService } from 'src/app/services/auth-service.service';
 import { DocumentService } from 'src/app/services/document.service';
 
 @Component({
@@ -9,8 +10,7 @@ import { DocumentService } from 'src/app/services/document.service';
 export class DocUploadComponent implements OnInit {
   @Input() dealId: string | null = null;
   uploadUrl: string = '';
-
-  constructor(private uploadService: DocumentService) {}
+  constructor(private uploadService: DocumentService, private authService: AuthServiceService) {}
 
   ngOnInit(): void {
     if (this.dealId) {
@@ -19,9 +19,22 @@ export class DocUploadComponent implements OnInit {
   }
 
   onUploaded(event: any): void {
-    const response = event.request.response;
-    this.uploadService.handleUploadResponse(response);
-  }
+  const response = JSON.parse(event.request.response);
+  const fileName = response.fileName;
+  const storedAs = response.storedAs;
+
+  const attachment = {
+    fileName: fileName,
+    s3UploadName: storedAs,
+    dealId: this.dealId ? Number(this.dealId) : 0,
+    createdBy: this.authService.getUserId()
+  };
+
+  this.uploadService.saveAttachmentMetadata(attachment).subscribe(() => {
+    console.log('File metadata saved to DB');
+  });
+}
+
 
   onUploadError(event: any): void {
     const error = event.error;

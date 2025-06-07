@@ -3,14 +3,18 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+ 
 
-// Define an interface for the Deal data structure expected by the backend (DealCreateDto.cs)
 export interface DealCreatePayload {
   title: string;
   amount: number;
-  companyName: string;
+  customerName: string;
   contactFullName: string;
+  contactEmail: string | null; 
+  contactPhoneNumber: string | null; // Updated to allow null
+  contactDesignation: string | null; // Updated to allow null
   accountId: number | null;
+  serviceId: number | null;
   regionId: number;
   domainId: number | null;
   dealStageId: number;
@@ -25,48 +29,49 @@ export interface DealCreatePayload {
   customFields?: { [key: string]: any };
 }
 
-// Define an interface for the Deal data structure returned by the backend (DealReadDto.cs)
 export interface DealRead {
   id: number;
   dealName: string;
   dealAmount: number;
+  customerName?: string;
+  contactName?: string;
   salespersonName?: string | null;
   startingDate?: string | null;
   closingDate?: string | null;
-  description?: string | null;
-  probability?: number | null;
-  stageName?: string | null;
-  duName?: string | null;
-  regionName?: string | null;
-  accountName?: string | null;
-  contactName?: string | null;
-  domainName?: string | null;
-  revenueTypeName?: string | null;
-  countryName?: string | null;
-  companyName?: string | null;
-  accountId?: number | null;
-  regionId?: number | null;
+  regionName?: string;
+  regionId?: number;
+  domainName?: string;
   domainId?: number | null;
-  revenueTypeId?: number | null;
-  duId?: number | null;
-  countryId?: number | null;
-  dealStageId?: number | null;
-  createdAt?: string | null;
-  createdBy?: number | null;
-  contactId?: number | null;
+  stageName?: string;
+  dealStageId?: number;
+  revenueTypeName?: string;
+  revenueTypeId?: number;
+  duName?: string;
+  duId?: number;
+  countryName?: string;
+  countryId?: number;
+  description?: string;
+  probability?: number | null;
+  accountName?: string;
+  accountId?: number | null;
+  serviceName?: string;
+  serviceId?: number | null;
+  createdBy?: number;
+  createdAt?: string;
+  updatedAt?: string;
   customFields?: { [key: string]: any };
 }
 
-
+ 
 @Injectable({
   providedIn: 'root'
 })
 export class DealService {
-  private apiUrl = 'https://localhost:7297/api/deals'; // Example: Update
+  private apiUrl = 'https://localhost:7297/api/Deals';
   private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
-
+ 
   constructor(private http: HttpClient) { }
-
+ 
   createDeal(dealData: DealCreatePayload): Observable<DealRead> {
     return this.http.post<DealRead>(this.apiUrl, JSON.stringify(dealData), this.httpOptions)
       .pipe(catchError(this.handleError));
@@ -77,7 +82,7 @@ export class DealService {
     return this.http.get<DealRead>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
-
+ 
   getAllDeals(): Observable<DealRead[]> {
     return this.http.get<DealRead[]>(this.apiUrl, this.httpOptions)
       .pipe(catchError(this.handleError));
@@ -89,9 +94,9 @@ export class DealService {
       .pipe(catchError(this.handleError));
   }
 
-  // Basic error handling
+
   private handleError(error: HttpErrorResponse) {
-    // ... (your existing handleError logic) ...
+
     let errorMessage = 'An unknown error occurred!';
     if (error.error instanceof ErrorEvent) {
       errorMessage = `Error: ${error.error.message}`;
@@ -117,3 +122,4 @@ export class DealService {
     return throwError(() => new Error(errorMessage));
   }
 }
+ 

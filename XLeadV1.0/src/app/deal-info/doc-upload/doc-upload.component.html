@@ -1,11 +1,39 @@
-<div class="file-upload-container">
+<div class="upload-section">
+  <label class="upload-label">
+    <span style="font-size: 1.5rem; margin-right: 0.5rem;"></span>
+    Upload your document
+  </label>
+
   <dx-file-uploader
-    [uploadUrl]="uploadUrl"
-    [multiple]="true"
-    accept="*"
+    class="custom-uploader"
+    [multiple]="false"
     uploadMode="instantly"
+    [uploadUrl]="'https://localhost:7297/api/upload/file'"
+    name="file"
     (onUploaded)="onUploaded($event)"
     (onUploadError)="onUploadError($event)"
-  >
-  </dx-file-uploader>
+    [showFileList]="true"
+    [allowedFileExtensions]="['.pdf', '.docx', '.xlsx', '.jpg', '.png']"
+    [maxFileSize]="10485760"
+    selectButtonText="Choose File"
+    uploadButtonText="Upload Document"
+    labelText="Drop files here or click to browse"
+    [hoverStateEnabled]="true"
+    [chunkSize]="200000"
+    [allowCanceling]="true"
+  ></dx-file-uploader>
+
+  <!-- <dx-file-uploader
+  [uploadUrl]="'https://localhost:5001/api/upload/file'"
+  uploadMode="instantly"
+  name="file"
+  [allowedFileExtensions]="['.pdf', '.docx', '.png']"
+  (onUploaded)="onFileUploaded($event)"
+  [multiple]="false"
+  selectButtonText="Choose File"
+  uploadButtonText="Upload Now"></dx-file-uploader> -->
+  
+  <div style="margin-top: 1rem; font-size: 0.8rem; color: #94a3b8;">
+    <p>Supported formats: PDF, DOCX, XLSX, JPG, PNG</p>
+  </div>
 </div>

@@ -15,7 +15,7 @@ export interface PipelineDeal {
   probability: string;
   region: string;
   salesperson?: string | null;
-  companyName: string;
+  customerName: string; 
   account: string;
   contactName: string;
   domain: string;
@@ -34,20 +34,18 @@ export interface PipelineStage {
   deals: PipelineDeal[];
   id?: number;
 }
-
-export interface DealStage {
+ export interface DealStage {
   id: number;
   displayName?: string;
   stageName?: string;
 }
- 
 @Component({
   selector: 'app-pipelinepage',
   templateUrl: './pipelinepage.component.html',
   styleUrls: ['./pipelinepage.component.css']
 })
 export class PipelinepageComponent implements OnInit {
- topcardData = [
+   topcardData = [
     { amount: 0, title: 'Total Return', isCurrency: true, icon: 'assets/dollar-sign-svgrepo-com.svg' },
     { amount: 0, title: 'Total Count of Deals', isCurrency: false, icon: 'assets/count.svg' },
   ];
@@ -70,21 +68,22 @@ export class PipelinepageComponent implements OnInit {
     { dataField: 'department', caption: 'Department', visible: true },
     { dataField: 'probability', caption: 'Probability', visible: true },
     { dataField: 'region', caption: 'Region', visible: true },
-    { dataField: 'companyName', caption: 'Company', visible: true },
+    { dataField: 'customerName', caption: 'Customer', visible: true },
     { dataField: 'contactName', caption: 'Contact', visible: true },
     { dataField: 'stageName', caption: 'Stage', visible: true }
   ];
+
+  customerContactMap: { [customer: string]: string[] } = {}; 
 
   selectedTabId: string = 'card';
   selectedTabIndex: number = 0;
 
   private _tableData: any[] = [];
 
-  // Method to handle view switching when icons are clicked
   switchView(view: 'card' | 'table'): void {
     this.selectedTabId = view;
     this.selectedTabIndex = view === 'card' ? 0 : 1;
-
+ 
     if (view === 'table') {
       this.refreshTableData();
       setTimeout(() => {
@@ -93,9 +92,7 @@ export class PipelinepageComponent implements OnInit {
     }
     this.cdr.detectChanges();
   }
-
   stageNames: string[] = this.stages.map(s => s.name);
-
   isLoadingInitialData: boolean = false;
   isModalVisible: boolean = false;
   isEditMode: boolean = false;
@@ -105,7 +102,6 @@ export class PipelinepageComponent implements OnInit {
   _currentlyEditingPipelineDeal: PipelineDeal | null = null;
   _originalStageNameOfEditingDeal: string = '';
 
-  companyContactMap: { [company: string]: string[] } = {};
   selectedDealIds: string[] = [];
 
   handleSelectionChanged(event: any): void {
@@ -114,7 +110,7 @@ export class PipelinepageComponent implements OnInit {
   }
 
   constructor(
-    private dealService: DealService,
+   private dealService: DealService,
     private companyContactService: CompanyContactService,
     private dealStageService: DealstageService,
     private cdr: ChangeDetectorRef
@@ -130,7 +126,7 @@ export class PipelinepageComponent implements OnInit {
     this.stages.forEach(stage => stage.deals = []);
 
     forkJoin({
-      deals: this.dealService.getAllDeals(),
+      deals: this.dealService.getAllDeals(), 
       contactMap: this.companyContactService.getCompanyContactMap(),
       stages: this.dealStageService.getAllDealStages()
     }).subscribe({
@@ -140,7 +136,7 @@ export class PipelinepageComponent implements OnInit {
         stages: DealStage[];
       }) => {
         console.log('PipelinePage: Successfully fetched deals, contact map, and stages.');
-        
+       
         // Update stage IDs
         this.stages.forEach(stage => {
           const backendStage = results.stages.find(s => s.displayName === stage.name || s.stageName === stage.name);
@@ -148,8 +144,8 @@ export class PipelinepageComponent implements OnInit {
             stage.id = backendStage.id;
           }
         });
-
-        this.companyContactMap = results.contactMap;
+        console.log('PipelinePage: Successfully fetched deals and contact map.', results);
+        this.customerContactMap = results.contactMap; 
         this.processFetchedDeals(results.deals);
         this.updateStageAmountsAndTopCards();
         this.refreshTableData();
@@ -176,21 +172,21 @@ export class PipelinepageComponent implements OnInit {
     console.log('Table data refreshed:', this._tableData.length, 'deals');
   }
 
-  findCompanyByContact(contactFullName: string | null | undefined): string | null {
-    if (!contactFullName || !this.companyContactMap || Object.keys(this.companyContactMap).length === 0) {
-      if (!contactFullName) console.warn('findCompanyByContact: called with null/undefined contactFullName.');
-      if (!this.companyContactMap || Object.keys(this.companyContactMap).length === 0) console.warn('findCompanyByContact: companyContactMap is empty or null.');
+  findCustomerByContact(contactFullName: string | null | undefined): string | null { // Updated to match backend
+    if (!contactFullName || !this.customerContactMap || Object.keys(this.customerContactMap).length === 0) {
+      if (!contactFullName) console.warn('findCustomerByContact: called with null/undefined contactFullName.');
+      if (!this.customerContactMap || Object.keys(this.customerContactMap).length === 0) console.warn('findCustomerByContact: customerContactMap is empty or null.');
       return null;
     }
 
     const normalizedSearchContact = contactFullName.trim();
 
-    for (const companyName in this.companyContactMap) {
-      if (Object.prototype.hasOwnProperty.call(this.companyContactMap, companyName)) {
-        const contactsInCompany = this.companyContactMap[companyName];
-        
-        if (Array.isArray(contactsInCompany)) {
-          const found = contactsInCompany.some(mappedContact => {
+    for (const customerName in this.customerContactMap) {
+      if (Object.prototype.hasOwnProperty.call(this.customerContactMap, customerName)) {
+        const contactsInCustomer = this.customerContactMap[customerName];
+       
+        if (Array.isArray(contactsInCustomer)) {
+          const found = contactsInCustomer.some(mappedContact => {
             if (typeof mappedContact === 'string') {
               return mappedContact.trim() === normalizedSearchContact;
             }
@@ -198,7 +194,7 @@ export class PipelinepageComponent implements OnInit {
           });
 
           if (found) {
-            return companyName;
+            return customerName;
           }
         }
       }
@@ -210,15 +206,18 @@ export class PipelinepageComponent implements OnInit {
   processFetchedDeals(fetchedDeals: DealRead[]): void {
     console.log('PipelinePage: processFetchedDeals called with', fetchedDeals.length, 'deals.');
     fetchedDeals.forEach(backendDeal => {
+      console.log('Processing deal:', backendDeal.dealName, 'Customer:', backendDeal.customerName, 'Contact:', backendDeal.contactName);
       const targetStage = this.stages.find(s => s.name === backendDeal.stageName);
       if (targetStage) {
-        let determinedCompanyName = backendDeal.companyName;
+        let determinedCustomerName = backendDeal.customerName;
 
-        if (!determinedCompanyName && backendDeal.contactName) {
-          determinedCompanyName = this.findCompanyByContact(backendDeal.contactName) ?? undefined;
+        if (!determinedCustomerName && backendDeal.contactName) {
+          determinedCustomerName = this.findCustomerByContact(backendDeal.contactName) ?? undefined;
+          console.log('Customer name from contact lookup:', determinedCustomerName);
         }
 
-        const finalCompanyName = determinedCompanyName || this.extractCompanyNameFallback(backendDeal) || 'Unknown Co.';
+        const finalCustomerName = determinedCustomerName || this.extractCustomerNameFallback(backendDeal) || 'Unknown Customer';
+        console.log('Final customer name:', finalCustomerName);
 
         const pipelineDeal: PipelineDeal = {
           id: backendDeal.id,
@@ -230,7 +229,7 @@ export class PipelinepageComponent implements OnInit {
           probability: backendDeal.probability?.toString() + '%' || '0%',
           region: backendDeal.regionName || 'N/A',
           salesperson: backendDeal.salespersonName,
-          companyName: finalCompanyName,
+          customerName: finalCustomerName,
           account: backendDeal.accountName || 'N/A',
           contactName: backendDeal.contactName || 'N/A',
           domain: backendDeal.domainName || 'N/A',
@@ -245,7 +244,7 @@ export class PipelinepageComponent implements OnInit {
     });
   }
 
-  extractCompanyNameFallback(deal: DealRead): string {
+  extractCustomerNameFallback(deal: DealRead): string {
     const match = deal.contactName?.match(/\(([^)]+)\)$/);
     return match ? match[1].trim() : '';
   }
@@ -313,20 +312,18 @@ export class PipelinepageComponent implements OnInit {
     this._currentlyEditingPipelineDeal = null;
     this.selectedStageId = stageId || null; 
     this.isModalVisible = true;
+    this.selectedStageId = stageId || null;
   }
-
-  onButtonClick(event: { label: string, stageId?: number }) {
+onButtonClick(event: { label: string, stageId?: number }) {
     if (event.label === 'Deal') {
       this.onAddDeal(event.stageId);
     }
   }
-
   onEditDeal(dealFromCard: PipelineDeal, stageName: string): void {
     this.isEditMode = true;
     this._currentlyEditingPipelineDeal = dealFromCard;
     this._originalStageNameOfEditingDeal = stageName;
-    this.selectedStageId = null; 
-
+    this.selectedStageId = null;
     if (dealFromCard.originalData) {
         this._selectedDealForModalInput = { ...dealFromCard.originalData };
     } else {
@@ -361,7 +358,7 @@ export class PipelinepageComponent implements OnInit {
           domainName: pipelineDeal.domain,
           revenueTypeName: pipelineDeal.revenueType,
           countryName: pipelineDeal.country,
-          companyName: pipelineDeal.companyName,
+          customerName: pipelineDeal.customerName,
           accountId: pipelineDeal.originalData?.accountId,
           regionId: pipelineDeal.originalData?.regionId,
           domainId: pipelineDeal.originalData?.domainId,
@@ -371,7 +368,6 @@ export class PipelinepageComponent implements OnInit {
           dealStageId: stageId,
           createdAt: pipelineDeal.originalData?.createdAt || new Date().toISOString(),
           createdBy: pipelineDeal.originalData?.createdBy || 1,
-          contactId: pipelineDeal.originalData?.contactId,
       };
   }
 
@@ -396,11 +392,13 @@ export class PipelinepageComponent implements OnInit {
 
     console.log('PipelinePage: Processing edited deal in existing view.');
     if (this._currentlyEditingPipelineDeal && this._currentlyEditingPipelineDeal.id === updatedBackendDeal.id) {
-      let determinedCompanyName = updatedBackendDeal.companyName;
-      if (!determinedCompanyName && updatedBackendDeal.contactName) {
-        determinedCompanyName = this.findCompanyByContact(updatedBackendDeal.contactName) ?? undefined;
+      let determinedCustomerName = updatedBackendDeal.customerName;
+      if (!determinedCustomerName && updatedBackendDeal.contactName) {
+        determinedCustomerName = this.findCustomerByContact(updatedBackendDeal.contactName) ?? undefined;
+        console.log('Customer name from contact lookup:', determinedCustomerName);
       }
-      const finalCompanyName = determinedCompanyName || this.extractCompanyNameFallback(updatedBackendDeal) || 'Unknown Co.';
+      const finalCustomerName = determinedCustomerName || this.extractCustomerNameFallback(updatedBackendDeal) || 'Unknown Customer';
+      console.log('Final customer name:', finalCustomerName);
 
       const updatedPipelineDeal: PipelineDeal = {
         id: updatedBackendDeal.id,
@@ -412,7 +410,7 @@ export class PipelinepageComponent implements OnInit {
         probability: updatedBackendDeal.probability?.toString() + '%' || '0%',
         region: updatedBackendDeal.regionName || 'N/A',
         salesperson: updatedBackendDeal.salespersonName,
-        companyName: finalCompanyName,
+        customerName: finalCustomerName,
         account: updatedBackendDeal.accountName || 'N/A',
         contactName: updatedBackendDeal.contactName || 'N/A',
         domain: updatedBackendDeal.domainName || 'N/A',
@@ -476,4 +474,3 @@ export class PipelinepageComponent implements OnInit {
     return this._tableData;
   }
 }
- 
