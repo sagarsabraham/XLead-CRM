@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AuthServiceService } from './auth-service.service';
@@ -217,38 +217,49 @@ export class DealService {
     return this.http.get<DealRead[]>(url, this.httpOptions) 
       .pipe(catchError(this.handleError));
   }
-  updateDealStage(id: number, stageName: string): Observable<DealRead> { 
+ updateDealStage(id: number, stageName: string): Observable<DealRead> {
     const url = `${this.apiUrl}/${id}/stage`;
-    const userId = this.authService.getUserId();
-
-    if (!userId) {
-  
-      return throwError(() => new Error('User ID not found. Cannot perform action.'));
-    }
-
-    
-    if (!this.authService.hasPrivilege('StageUpdate')) {
-      return throwError(() => new Error('User lacks StageUpdate privilege.'));
-    }
-
-    const payload = {
+    const updateDto = {
       stageName: stageName,
-      performedByUserId: userId 
+      updatedBy: this.authService.userId
     };
-
    
-    return this.http.put<DealRead>(url, payload, this.httpOptions)
-      .pipe(catchError(this.handleError));
+    return this.http.put<DealRead>(url, updateDto, this.httpOptions)
+      .pipe(
+        map(response => {
+          console.log('Stage update response:', response);
+          return response;
+        }),
+        catchError(this.handleError));
   }
 
+  getDealStageHistory(id: number): Observable<any[]> {
+    const url = `${this.apiUrl}/${id}/stage-history`;
+    const params = new HttpParams().set('userId', this.authService.userId.toString());
+    const options = { ...this.httpOptions, params };
+   
+    return this.http.get<any[]>(url, options)
+      .pipe(catchError(this.handleError));
+  }
  
-  getDealStageHistory(dealId: number): Observable<StageHistoryReadDto[]> {
-    const url = `${this.apiUrl}/${dealId}/history`;
-   
-    return this.http.get<StageHistoryReadDto[]>(url)
-      .pipe(catchError(this.handleError));
-  }
-
+ 
+  updateDealDescription(id: number, description: string): Observable<DealRead> {
+  const url = `${this.apiUrl}/${id}/description`;
+  const updateDto = {
+    description: description,
+    updatedBy: this.authService.userId
+  };
+ 
+  return this.http.put<DealRead>(url, updateDto, this.httpOptions)
+    .pipe(
+      map(response => {
+        console.log('Description update response:', response);
+        return response;
+      }),
+      catchError(this.handleError)
+    );
+}
+ 
 
 
   private handleError(error: HttpErrorResponse) {

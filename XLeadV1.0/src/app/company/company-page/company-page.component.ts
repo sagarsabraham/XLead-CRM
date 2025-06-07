@@ -181,11 +181,11 @@ export class CompanyPageComponent implements OnInit {
   getIconColor(index: number): string {
     switch (index) {
       case 0:
-        return '#8a2be2'; // Violet
+        return '#8a2be2'; 
       case 1:
-        return '#28a745'; // Green
+        return '#28a745'; 
       case 2:
-        return '#dc3545'; // Red
+        return '#dc3545'; 
       default:
         return '#000000';
     }
