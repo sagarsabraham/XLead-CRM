@@ -11,3 +11,4 @@ export class MetricCardComponent {
   @Input() percentage: number = 0;
   @Input() isPositive: boolean = true;
 }
+

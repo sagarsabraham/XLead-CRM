@@ -948,4 +948,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         return {};
     }
   }
+    trackByDataField(index: number, field: { dataField: string }): string {
+    return field.dataField;
+  }
+
 }
