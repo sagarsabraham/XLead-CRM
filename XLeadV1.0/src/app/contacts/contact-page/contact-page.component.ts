@@ -1,6 +1,7 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
+import { TableComponent } from 'src/app/shared/table/table.component';
 
 @Component({
   selector: 'app-contact-page',
@@ -8,6 +9,7 @@ import { CompanyContactService } from 'src/app/services/company-contact.service'
   styleUrls: ['./contact-page.component.css']
 })
 export class ContactPageComponent implements OnInit {
+  // @ViewChild('appTable') tableComponent!: TableComponent;
   tableHeaders = [
     { dataField: 'name', caption: 'Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
@@ -130,7 +132,7 @@ export class ContactPageComponent implements OnInit {
       phoneNumber: finalData.phone,
       // Convert the status string from the dropdown back to the required boolean
       isActive: finalData.status === 'Active',
-      updatedBy: 3 // Hardcoded user ID
+      // updatedBy: 3 // Hardcoded user ID
     };
 
     this.contactService.updateContact(contactId, updatePayload).subscribe({
@@ -141,6 +143,7 @@ export class ContactPageComponent implements OnInit {
           this.tableData[index] = finalData;
           this.tableData = [...this.tableData];
         }
+        
       },
       error: (err) => {
         console.error('Failed to update contact', err);

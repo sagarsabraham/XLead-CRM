@@ -33,6 +33,7 @@
  
       <!-- Data table - only shown when data is loaded successfully -->
 <app-table
+#apptable
   *ngIf="!isLoading && !error"
   [data]="tableData"
   [headers]="tableHeaders"

@@ -344,15 +344,23 @@
           </ng-container>
 
           <!-- Edit Mode -->
-          <ng-container *ngIf="isEditingMobile && editedContact">
-            <div *ngFor="let header of headers" class="detail-item" [hidden]="!columnVisibility[header.dataField]">
-              <div class="detail-label">{{ header.caption }}</div>
-              <div class="detail-value">
-                <input 
-                  *ngIf="header.allowEditing !== false"
-                  type="text" 
-                  class="mobile-edit-input"
-                  [(ngModel)]="editedContact[header.dataField]">
+         <ng-container *ngIf="isEditingMobile && editedContact">
+      <div *ngFor="let header of headers" class="detail-item" [hidden]="!columnVisibility[header.dataField]">
+        <div class="detail-label">{{ header.caption }}</div>
+        <div class="detail-value">
+           <ng-container *ngIf="header.dataField === 'status' && header.allowEditing !== false">
+            <select class="mobile-edit-select" [(ngModel)]="editedContact.status">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </ng-container>
+            <ng-container *ngIf="header.dataField !== 'status' && header.allowEditing !== false">
+            <input 
+              type="text" 
+              class="mobile-edit-input"
+              [(ngModel)]="editedContact[header.dataField]">
+          </ng-container>
+              
                 <span *ngIf="header.allowEditing === false">{{ editedContact[header.dataField] || 'N/A' }}</span>
               </div>
             </div>

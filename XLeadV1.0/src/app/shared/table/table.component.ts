@@ -148,6 +148,27 @@ export class TableComponent implements AfterViewInit {
     return item[field] || `No ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`;
   }
 
+
+  // public refreshData(): void {
+   
+  //   console.log('TableComponent: refreshData() called.');
+    
+   
+  //   const filtered = this.filteredData;
+    
+  //   const startIndex = (this.currentPage - 1) * this.mobilePageSize;
+  //   const endIndex = startIndex + this.mobilePageSize;
+  //   this.paginatedData = filtered.slice(startIndex, endIndex);
+
+   
+  //   this.cdr.detectChanges();
+  // }
+
+
+  
+  
+  
+
   private checkIfMobile(): void {
     const wasMobile = this.isMobile;
     this.isMobile = window.innerWidth <= 576;
@@ -216,30 +237,49 @@ export class TableComponent implements AfterViewInit {
     this.cdr.detectChanges();
   }
 
+ 
+
+
+
   saveMobileContact(): void {
+  
+    const newData: { [key: string]: any } = {};
+    for (const key in this.editedContact) {
+      if (this.editedContact[key] !== this.selectedContact[key]) {
+        newData[key] = this.editedContact[key];
+      }
+    }
+    
+    
     const updateEvent = {
-      key: this.selectedContact.id,
-      newData: this.editedContact,
+      key: this.selectedContact.id, // The ID of the row being updated
+      oldData: this.selectedContact, // The original data
+      newData: newData // An object containing only the fields that changed
     };
+    
+    // Emit the event. The parent component will handle the rest.
     this.onRowUpdating.emit(updateEvent);
+    
     this.isEditingMobile = false;
-    // The parent component is responsible for updating the data array
-    // and then we can close the modal.
     this.closeDetailsModal();
   }
 
   deleteMobileContact(): void {
+    // This logic also needs to be corrected to be generic.
     if (window.confirm(`Are you sure you want to delete this ${this.entityType}?`)) {
+      
+      // Construct a generic remove event.
       const removeEvent = {
         key: this.selectedContact.id,
-        data: this.selectedContact,
+        data: this.selectedContact
       };
+      
+      // Emit the event. The parent component's `handleDelete` will take care of it.
       this.onRowRemoving.emit(removeEvent);
-      // The parent component is responsible for updating the data array.
+      
       this.closeDetailsModal();
     }
   }
-
   // --- Grid Event Handlers ---
   handleRowUpdating(e: any): void {
     e.cancel = true; // Prevent grid's default update
