@@ -4,8 +4,8 @@
   <div class="timeline-wrapper">
     <app-status-timeline
       [currentStage]="deal?.stage"
-      (stageChange)="onStageChange($event)"
-    ></app-status-timeline>
+      (stageChange)="onStageChange($event)">
+    </app-status-timeline>
   </div>
  
   <!-- Mobile Tabs -->
@@ -45,6 +45,10 @@
           <app-doc-upload
             *ngIf="desktopSelectedTabId === 'documents'"
           ></app-doc-upload>
+       <app-notes-tab
+  *ngIf="desktopSelectedTabId === 'notes' && dealId"
+  [dealId]="dealId"
+></app-notes-tab>
         </div>
       </div>
  
@@ -67,10 +71,14 @@
             <app-history-timeline [history]="history"></app-history-timeline>
           </div>
           <div *ngIf="mobileSelectedTabId === 'documents'" class="tab-section">
-            <app-doc-upload [dealId]="deal.Id"></app-doc-upload>
+            <app-doc-upload></app-doc-upload>
           </div>
+        <div *ngIf="mobileSelectedTabId === 'notes' && dealId" class="tab-section">
+  <app-notes-tab [dealId]="dealId"></app-notes-tab>
+</div>
         </div>
       </div>
     </div>
   </div>
 </div>
+ 

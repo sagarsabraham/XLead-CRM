@@ -12,6 +12,7 @@
         <app-dealcard
             *ngFor="let deal of deals"
             [deal]="deal"
+            [stageName]="stageName"
             cdkDrag
             (onEdit)="onEditDeal($event)">
         </app-dealcard>

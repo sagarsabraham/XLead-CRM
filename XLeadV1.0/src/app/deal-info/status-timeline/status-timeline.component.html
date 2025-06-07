@@ -3,14 +3,14 @@
   <div class="stage-list" *ngIf="!isMobile">
     <ng-container *ngFor="let stage of stages; let i = index">
       <div class="stage" (click)="onStageClick(stage)">
-        <div class="circle"
-             [class.active]="stage === currentStage"
-             [class.completed]="isStageCompleted(i)"
-             [class.closed-lost]="stage === 'Closed Lost'"
-             [class.closed-won]="stage === 'Closed Won'">
-          <i class="checkmark" *ngIf="stage === 'Closed Won' && stage === currentStage">✓</i>
-          <span *ngIf="stage !== 'Closed Won' || stage !== currentStage">{{ i + 1 }}</span>
-        </div>
+    <div class="circle"
+     [class.active]="stage === currentStage"
+     [class.completed]="isStageCompleted(i)"
+     [class.closed-lost]="stage === 'Closed Lost' && stage === currentStage"
+     [class.closed-won]="stage === 'Closed Won' && stage === currentStage">
+  <i class="checkmark" *ngIf="stage === 'Closed Won' && stage === currentStage">✓</i>
+  <span *ngIf="!(stage === 'Closed Won' && stage === currentStage)">{{ i + 1 }}</span>
+</div>
         <div class="label"
              [class.active]="stage === currentStage"
              [class.closed-lost]="stage === 'Closed Lost'"
@@ -45,14 +45,14 @@
          
           <!-- Circle and Connector Container -->
           <div class="circle-container">
-            <div class="vertical-circle"
-                 [class.active]="stage === currentStage"
-                 [class.completed]="isStageCompleted(i)"
-                 [class.closed-lost]="stage === 'Closed Lost'"
-                 [class.closed-won]="stage === 'Closed Won'">
-              <i class="checkmark" *ngIf="stage === 'Closed Won' && stage === currentStage">✓</i>
-              <span *ngIf="stage !== 'Closed Won' || stage !== currentStage">{{ i + 1 }}</span>
-            </div>
+       <div class="vertical-circle"
+     [class.active]="stage === currentStage"
+     [class.completed]="isStageCompleted(i)"
+     [class.closed-lost]="stage === 'Closed Lost' && stage === currentStage"
+     [class.closed-won]="stage === 'Closed Won' && stage === currentStage">
+  <i class="checkmark" *ngIf="stage === 'Closed Won' && stage === currentStage">✓</i>
+  <span *ngIf="!(stage === 'Closed Won' && stage === currentStage)">{{ i + 1 }}</span>
+</div>
             <!-- Connector line -->
             <div class="vertical-connector"
                  *ngIf="i < stages.length - 1"
@@ -82,3 +82,4 @@
     </div>
   </div>
 </div>
+ 
