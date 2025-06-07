@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core'; // Added OnInit
+import { Component, OnInit } from '@angular/core'; 
 import { AuthServiceService } from 'src/app/services/auth-service.service';
-// DxResponsiveBoxModule is likely not needed here unless you explicitly use dx-responsive-box in this component's HTML
-// import { DxResponsiveBoxModule } from 'devextreme-angular';
+
 import { DealService,DashboardMetricItem,DashboardMetrics } from 'src/app/services/dealcreation.service';// Adjust path if needed
  
 interface MetricCardData {
@@ -16,12 +15,12 @@ interface MetricCardData {
   templateUrl: './metric-card-outline.component.html',
   styleUrls: ['./metric-card-outline.component.css'],
 })
-export class MetricCardOutlineComponent implements OnInit { // Implemented OnInit
-  cards: MetricCardData[] = []; // Initialize as empty
+export class MetricCardOutlineComponent implements OnInit { 
+  cards: MetricCardData[] = [];
   isLoading: boolean = true;
   errorMessage: string | null = null;
   currentUserId: number; 
-  // Original hardcoded titles, can be used if API doesn't provide them directly
+
   private cardTitles = {
     openPipelines: 'Open Pipelines - This Month',
     pipelinesWon: 'Pipeline Won - This Month',
@@ -31,7 +30,7 @@ export class MetricCardOutlineComponent implements OnInit { // Implemented OnIni
  
   constructor(private dealService: DealService, private authService: AuthServiceService ) {
     this.currentUserId = this.authService.getUserId();
-  } // Injected DealService
+  } 
  
   ngOnInit(): void {
     this.isLoading = true;
@@ -77,13 +76,8 @@ export class MetricCardOutlineComponent implements OnInit { // Implemented OnIni
         console.error('Error fetching dashboard metrics:', err);
         this.errorMessage = err.message || 'Failed to load dashboard metrics.';
         this.isLoading = false;
-        // Optionally, initialize with default/empty cards
-        this.cards = [ // Default empty state on error
-            { title: this.cardTitles.openPipelines, value: 'N/A', percentage: 0, isPositive: true },
-            { title: this.cardTitles.pipelinesWon, value: 'N/A', percentage: 0, isPositive: true },
-            { title: this.cardTitles.pipelinesLost, value: 'N/A', percentage: 0, isPositive: true },
-            { title: this.cardTitles.revenueWon, value: 'N/A', percentage: 0, isPositive: true }
-        ];
+        
+        this.setDefaultCardsOnError();
       }
     });
 
