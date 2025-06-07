@@ -1,8 +1,8 @@
-// src/app/services/deal.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { AuthServiceService } from './auth-service.service';
  
 
 export interface DealCreatePayload {
@@ -11,8 +11,8 @@ export interface DealCreatePayload {
   customerName: string;
   contactFullName: string;
   contactEmail: string | null; 
-  contactPhoneNumber: string | null; // Updated to allow null
-  contactDesignation: string | null; // Updated to allow null
+  contactPhoneNumber: string | null; 
+  contactDesignation: string | null;
   accountId: number | null;
   serviceId: number | null;
   regionId: number;
@@ -29,12 +29,35 @@ export interface DealCreatePayload {
   customFields?: { [key: string]: any };
 }
 
+export interface DealEditPayload {
+  title: string;
+  amount: number;
+  customerName: string;
+  contactFullName: string;
+  contactEmail: string | null;
+  contactPhoneNumber: string | null;
+  contactDesignation: string | null;
+  serviceId: number | null;
+  accountId: number | null;
+  regionId: number;
+  domainId: number | null;
+  dealStageId: number;
+  revenueTypeId: number;
+  duId: number;
+  countryId: number;
+  description: string | null;
+  probability: number | null;
+  startingDate: string | null;
+  closingDate: string | null;
+}
+
 export interface DealRead {
   id: number;
   dealName: string;
   dealAmount: number;
   customerName?: string;
   contactName?: string;
+  contactId?: number | null;
   salespersonName?: string | null;
   startingDate?: string | null;
   closingDate?: string | null;
@@ -60,6 +83,7 @@ export interface DealRead {
   createdAt?: string;
   updatedAt?: string;
   customFields?: { [key: string]: any };
+  isHidden: boolean;
 }
 
  
@@ -70,7 +94,7 @@ export class DealService {
   private apiUrl = 'https://localhost:7297/api/Deals';
   private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
  
-  constructor(private http: HttpClient) { }
+   constructor(private http: HttpClient,private authService: AuthServiceService) { }
  
   createDeal(dealData: DealCreatePayload): Observable<DealRead> {
     return this.http.post<DealRead>(this.apiUrl, JSON.stringify(dealData), this.httpOptions)
@@ -88,9 +112,34 @@ export class DealService {
       .pipe(catchError(this.handleError));
   }
 
-  updateDealStage(id: number, stageName: string): Observable<DealRead[]> {
+  updateDealStage(id: number, stageName: string): Observable<DealRead> {
     const url = `${this.apiUrl}/${id}/stage`;
-    return this.http.put<DealRead[]>(url, JSON.stringify({"stageName":stageName}), this.httpOptions)
+    const userId = this.authService.getUserId();
+ 
+    if (!userId) {
+ 
+      return throwError(() => new Error('User ID not found. Cannot perform action.'));
+    }
+ 
+   
+    if (!this.authService.hasPrivilege('StageUpdate')) {
+      return throwError(() => new Error('User lacks StageUpdate privilege.'));
+    }
+ 
+    const payload = {
+      stageName: stageName,
+      performedByUserId: userId
+    };
+ 
+   
+    return this.http.put<DealRead>(url, payload, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+ 
+
+  updateDeal(id: number, dealData: DealEditPayload): Observable<DealRead> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.put<DealRead>(url, JSON.stringify(dealData), this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 

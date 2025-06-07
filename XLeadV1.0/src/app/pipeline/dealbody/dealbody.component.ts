@@ -1,5 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { PipelineDeal } from '../pipelinepage/pipelinepage.component';
  
 @Component({
   selector: 'app-dealbody',
@@ -7,11 +8,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./dealbody.component.css']
 })
 export class DealbodyComponent {
-   @Input() deals: any[] = [];
+  @Input() deals: PipelineDeal[] = [];
   @Input() stageName: string = '';
   @Input() connectedTo: string[] = [];
   @Output() dealDropped = new EventEmitter<any>();
-  @Output() onEdit = new EventEmitter<any>();
+  @Output() onEdit = new EventEmitter<PipelineDeal>();
  
   drop(event: CdkDragDrop<any[]>) {
     if (event.previousContainer === event.container) {
@@ -26,7 +27,7 @@ export class DealbodyComponent {
     });
   }
  
-  onEditDeal(deal: any) {
+  onEditDeal(deal: PipelineDeal) {
     this.onEdit.emit(deal);
   }
 }

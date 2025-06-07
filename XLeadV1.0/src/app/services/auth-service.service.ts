@@ -22,4 +22,8 @@ export class AuthServiceService {
     console.log(`Checking privilege '${privilegeName}':`, hasIt); 
     return hasIt;
   }
+
+  getUserId(): number {
+    return this.userId;
+  }
 }

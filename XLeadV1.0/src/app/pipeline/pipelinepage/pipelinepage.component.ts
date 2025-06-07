@@ -130,10 +130,8 @@ export class PipelinepageComponent implements OnInit {
   private updateCollapsedState(): void {
     const isMobile = window.innerWidth <= 480;
     if (isMobile) {
-      // Always collapse all stages in mobile view
       this.stages.forEach(stage => stage.collapsed = true);
     } else {
-      // Uncollapse all stages in desktop view
       this.stages.forEach(stage => stage.collapsed = false);
     }
     this.cdr.detectChanges();
@@ -159,8 +157,6 @@ export class PipelinepageComponent implements OnInit {
         stages: DealStage[];
       }) => {
         console.log('PipelinePage: Successfully fetched deals, contact map, and stages.');
-       
-        // Update stage IDs
         this.stages.forEach(stage => {
           const backendStage = results.stages.find(s => s.displayName === stage.name || s.stageName === stage.name);
           if (backendStage) {
@@ -195,7 +191,7 @@ export class PipelinepageComponent implements OnInit {
     console.log('Table data refreshed:', this._tableData.length, 'deals');
   }
 
-  findCustomerByContact(contactFullName: string | null | undefined): string | null { // Updated to match backend
+  findCustomerByContact(contactFullName: string | null | undefined): string | null { 
     if (!contactFullName || !this.customerContactMap || Object.keys(this.customerContactMap).length === 0) {
       if (!contactFullName) console.warn('findCustomerByContact: called with null/undefined contactFullName.');
       if (!this.customerContactMap || Object.keys(this.customerContactMap).length === 0) console.warn('findCustomerByContact: customerContactMap is empty or null.');
@@ -227,45 +223,47 @@ export class PipelinepageComponent implements OnInit {
   }
 
   processFetchedDeals(fetchedDeals: DealRead[]): void {
-    console.log('PipelinePage: processFetchedDeals called with', fetchedDeals.length, 'deals.');
-    fetchedDeals.forEach(backendDeal => {
-      console.log('Processing deal:', backendDeal.dealName, 'Customer:', backendDeal.customerName, 'Contact:', backendDeal.contactName);
-      const targetStage = this.stages.find(s => s.name === backendDeal.stageName);
-      if (targetStage) {
-        let determinedCustomerName = backendDeal.customerName;
+  console.log('PipelinePage: processFetchedDeals called with', fetchedDeals.length, 'deals.');
+  fetchedDeals.forEach(backendDeal => {
+    console.log('Processing deal:', backendDeal.dealName, 'Customer:', backendDeal.customerName, 'Contact:', backendDeal.contactName);
+    const targetStage = this.stages.find(s => s.name === backendDeal.stageName);
+    if (targetStage) {
+      let determinedCustomerName = backendDeal.customerName;
 
-        if (!determinedCustomerName && backendDeal.contactName) {
-          determinedCustomerName = this.findCustomerByContact(backendDeal.contactName) ?? undefined;
-          console.log('Customer name from contact lookup:', determinedCustomerName);
-        }
-
-        const finalCustomerName = determinedCustomerName || this.extractCustomerNameFallback(backendDeal) || 'Unknown Customer';
-        console.log('Final customer name:', finalCustomerName);
-
-        const pipelineDeal: PipelineDeal = {
-          id: backendDeal.id,
-          title: backendDeal.dealName,
-          amount: backendDeal.dealAmount,
-          startDate: this.formatDateForDisplay(backendDeal.startingDate),
-          closeDate: this.formatDateForDisplay(backendDeal.closingDate),
-          department: backendDeal.duName || 'N/A',
-          probability: backendDeal.probability?.toString() + '%' || '0%',
-          region: backendDeal.regionName || 'N/A',
-          salesperson: backendDeal.salespersonName,
-          customerName: finalCustomerName,
-          account: backendDeal.accountName || 'N/A',
-          contactName: backendDeal.contactName || 'N/A',
-          domain: backendDeal.domainName || 'N/A',
-          revenueType: backendDeal.revenueTypeName || 'N/A',
-          country: backendDeal.countryName || 'N/A',
-          description: backendDeal.description || '',
-          doc: '',
-          originalData: backendDeal,
-        };
-        targetStage.deals.push(pipelineDeal);
+      if (!determinedCustomerName && backendDeal.contactName) {
+        determinedCustomerName = this.findCustomerByContact(backendDeal.contactName) ?? undefined;
+        console.log('Customer name from contact lookup:', determinedCustomerName);
       }
-    });
-  }
+
+      const finalCustomerName = determinedCustomerName || this.extractCustomerNameFallback(backendDeal) || 'Unknown Customer';
+      console.log('Final customer name:', finalCustomerName);
+
+      const pipelineDeal: PipelineDeal = {
+        id: backendDeal.id,
+        title: backendDeal.dealName,
+        amount: backendDeal.dealAmount,
+        startDate: this.formatDateForDisplay(backendDeal.startingDate),
+        closeDate: this.formatDateForDisplay(backendDeal.closingDate),
+        department: backendDeal.duName || 'N/A',
+        probability: backendDeal.probability?.toString() + '%' || '0%',
+        region: backendDeal.regionName || 'N/A',
+        salesperson: backendDeal.salespersonName,
+        customerName: finalCustomerName,
+        account: backendDeal.accountName || 'N/A',
+        contactName: backendDeal.contactName || 'N/A',
+        domain: backendDeal.domainName || 'N/A',
+        revenueType: backendDeal.revenueTypeName || 'N/A',
+        country: backendDeal.countryName || 'N/A',
+        description: backendDeal.description || '',
+        doc: '',
+        originalData: { ...backendDeal }, 
+      };
+      targetStage.deals.push(pipelineDeal);
+    } else {
+      console.warn(`Stage not found for deal: ${backendDeal.dealName} with stageName: ${backendDeal.stageName}`);
+    }
+  });
+}
 
   extractCustomerNameFallback(deal: DealRead): string {
     const match = deal.contactName?.match(/\(([^)]+)\)$/);
@@ -300,12 +298,10 @@ export class PipelinepageComponent implements OnInit {
   toggleCollapse(index: number): void {
     const isMobile = window.innerWidth <= 480;
     if (isMobile) {
-      // In mobile view, collapse all stages except the clicked one
       this.stages.forEach((stage, i) => {
         stage.collapsed = i !== index;
       });
     } else {
-      // In desktop view, toggle the clicked stage as before
       this.stages[index].collapsed = !this.stages[index].collapsed;
     }
     this.cdr.detectChanges();
@@ -331,10 +327,44 @@ export class PipelinepageComponent implements OnInit {
         currentStageName.deals.splice(currentIndex, 0, movedDeal);
 
         console.log(`PipelinePage: Deal "${movedDeal.title}" (ID: ${movedDeal.id}) moved to stage "${currentStage}". Backend update needed.`);
-        this.dealService.updateDealStage(deal.id, currentStageName.name).subscribe();
-
-        this.updateStageAmountsAndTopCards();
-        this.cdr.detectChanges();
+        this.dealService.updateDealStage(deal.id, currentStageName.name).subscribe({
+        next: (updatedDeal) => {
+            const updatedPipelineDeal: PipelineDeal = {
+              id: updatedDeal.id,
+              title: updatedDeal.dealName,
+              amount: updatedDeal.dealAmount,
+              startDate: this.formatDateForDisplay(updatedDeal.startingDate),
+              closeDate: this.formatDateForDisplay(updatedDeal.closingDate),
+              department: updatedDeal.duName || 'N/A',
+              probability: updatedDeal.probability?.toString() + '%' || '0%',
+              region: updatedDeal.regionName || 'N/A',
+              salesperson: updatedDeal.salespersonName,
+              customerName: updatedDeal.customerName || this.findCustomerByContact(updatedDeal.contactName) || this.extractCustomerNameFallback(updatedDeal) || 'Unknown Customer',
+              account: updatedDeal.accountName || 'N/A',
+              contactName: updatedDeal.contactName || 'N/A',
+              domain: updatedDeal.domainName || 'N/A',
+              revenueType: updatedDeal.revenueTypeName || 'N/A',
+              country: updatedDeal.countryName || 'N/A',
+              description: updatedDeal.description || '',
+              doc: movedDeal.doc,
+              originalData: updatedDeal,
+            };
+            currentStageName.deals[currentIndex] = updatedPipelineDeal;
+            console.log(`Deal "${updatedPipelineDeal.title}" isHidden: ${updatedDeal.isHidden} after moving to stage "${currentStage}".`);
+            this.updateStageAmountsAndTopCards();
+            this.refreshTableData();
+            this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error(`Failed to update deal stage: ${err.message}`);
+            currentStageName.deals.splice(currentIndex, 1);
+            previousStageName.deals.splice(previousIndex, 0, movedDeal);
+            this.updateStageAmountsAndTopCards();
+            this.refreshTableData();
+            this.cdr.detectChanges();
+            alert(`Error: ${err.message}`);
+        }
+      });
       }
     }
   }
@@ -352,18 +382,19 @@ onButtonClick(event: { label: string, stageId?: number }) {
     }
   }
   onEditDeal(dealFromCard: PipelineDeal, stageName: string): void {
-    this.isEditMode = true;
-    this._currentlyEditingPipelineDeal = dealFromCard;
-    this._originalStageNameOfEditingDeal = stageName;
-    this.selectedStageId = null;
-    if (dealFromCard.originalData) {
-        this._selectedDealForModalInput = { ...dealFromCard.originalData };
-    } else {
-        console.error("PipelinePage CRITICAL: Original backend data (originalData) is missing from PipelineDeal for editing.", dealFromCard);
-        this._selectedDealForModalInput = this.transformPipelineDealToModalInputFallback(dealFromCard);
-    }
-    this.isModalVisible = true;
+  this.isEditMode = true;
+  this._currentlyEditingPipelineDeal = dealFromCard;
+  this._originalStageNameOfEditingDeal = stageName;
+  this.selectedStageId = null;
+  if (dealFromCard.originalData) {
+    this._selectedDealForModalInput = { ...dealFromCard.originalData };
+    console.log('Data passed to modal for editing:', this._selectedDealForModalInput);
+  } else {
+    console.error("PipelinePage CRITICAL: Original backend data (originalData) is missing from PipelineDeal for editing.", dealFromCard);
+    this._selectedDealForModalInput = this.transformPipelineDealToModalInputFallback(dealFromCard);
   }
+  this.isModalVisible = true;
+}
 
   selectedDealForModal(): DealRead | null {
       return this._selectedDealForModalInput;
@@ -400,6 +431,7 @@ onButtonClick(event: { label: string, stageId?: number }) {
           dealStageId: stageId,
           createdAt: pipelineDeal.originalData?.createdAt || new Date().toISOString(),
           createdBy: pipelineDeal.originalData?.createdBy || 1,
+          isHidden: pipelineDeal.originalData?.isHidden || false,
       };
   }
 
@@ -413,46 +445,51 @@ onButtonClick(event: { label: string, stageId?: number }) {
   }
 
   onDealSubmitSuccess(updatedBackendDeal: DealRead): void {
-    console.log('PipelinePage: onDealSubmitSuccess called. Edit Mode:', this.isEditMode, 'Deal:', updatedBackendDeal);
+  console.log('PipelinePage: onDealSubmitSuccess called. Edit Mode:', this.isEditMode, 'Deal:', updatedBackendDeal);
+  console.log('ServiceId in updatedBackendDeal:', updatedBackendDeal.serviceId);
+  let determinedCustomerName = updatedBackendDeal.customerName;
+  if (!determinedCustomerName && updatedBackendDeal.contactName) {
+    determinedCustomerName = this.findCustomerByContact(updatedBackendDeal.contactName) ?? undefined;
+    console.log('Customer name from contact lookup:', determinedCustomerName);
+  }
+  const finalCustomerName = determinedCustomerName || this.extractCustomerNameFallback(updatedBackendDeal) || 'Unknown Customer';
+  console.log('Final customer name:', finalCustomerName);
 
-    if (!this.isEditMode) {
-      console.log('PipelinePage: New deal submitted. Reloading all initial data to ensure map and deal details are fresh.');
+  const updatedPipelineDeal: PipelineDeal = {
+    id: updatedBackendDeal.id,
+    title: updatedBackendDeal.dealName,
+    amount: updatedBackendDeal.dealAmount,
+    startDate: this.formatDateForDisplay(updatedBackendDeal.startingDate),
+    closeDate: this.formatDateForDisplay(updatedBackendDeal.closingDate),
+    department: updatedBackendDeal.duName || 'N/A',
+    probability: updatedBackendDeal.probability?.toString() + '%' || '0%',
+    region: updatedBackendDeal.regionName || 'N/A',
+    salesperson: updatedBackendDeal.salespersonName,
+    customerName: finalCustomerName,
+    account: updatedBackendDeal.accountName || 'N/A',
+    contactName: updatedBackendDeal.contactName || 'N/A',
+    domain: updatedBackendDeal.domainName || 'N/A',
+    revenueType: updatedBackendDeal.revenueTypeName || 'N/A',
+    country: updatedBackendDeal.countryName || 'N/A',
+    description: updatedBackendDeal.description || '',
+    doc: this._currentlyEditingPipelineDeal?.doc || '',
+    originalData: updatedBackendDeal,
+  };
+
+  if (!this.isEditMode) {
+    const targetStage = this.stages.find(s => s.id === this.selectedStageId) || this.stages.find(s => s.name === updatedBackendDeal.stageName);
+    if (targetStage) {
+      targetStage.deals.push(updatedPipelineDeal);
+      targetStage.deals.sort((a, b) =>
+        new Date(a.originalData.closingDate!).getTime() - new Date(b.originalData.closingDate!).getTime()
+      );
+      alert('Deal created successfully!');
+    } else {
+      console.warn('Target stage not found for new deal. Reloading data.');
       this.loadInitialData();
-      this.onModalClose();
-      return;
     }
-
-    console.log('PipelinePage: Processing edited deal in existing view.');
+  } else {
     if (this._currentlyEditingPipelineDeal && this._currentlyEditingPipelineDeal.id === updatedBackendDeal.id) {
-      let determinedCustomerName = updatedBackendDeal.customerName;
-      if (!determinedCustomerName && updatedBackendDeal.contactName) {
-        determinedCustomerName = this.findCustomerByContact(updatedBackendDeal.contactName) ?? undefined;
-        console.log('Customer name from contact lookup:', determinedCustomerName);
-      }
-      const finalCustomerName = determinedCustomerName || this.extractCustomerNameFallback(updatedBackendDeal) || 'Unknown Customer';
-      console.log('Final customer name:', finalCustomerName);
-
-      const updatedPipelineDeal: PipelineDeal = {
-        id: updatedBackendDeal.id,
-        title: updatedBackendDeal.dealName,
-        amount: updatedBackendDeal.dealAmount,
-        startDate: this.formatDateForDisplay(updatedBackendDeal.startingDate),
-        closeDate: this.formatDateForDisplay(updatedBackendDeal.closingDate),
-        department: updatedBackendDeal.duName || 'N/A',
-        probability: updatedBackendDeal.probability?.toString() + '%' || '0%',
-        region: updatedBackendDeal.regionName || 'N/A',
-        salesperson: updatedBackendDeal.salespersonName,
-        customerName: finalCustomerName,
-        account: updatedBackendDeal.accountName || 'N/A',
-        contactName: updatedBackendDeal.contactName || 'N/A',
-        domain: updatedBackendDeal.domainName || 'N/A',
-        revenueType: updatedBackendDeal.revenueTypeName || 'N/A',
-        country: updatedBackendDeal.countryName || 'N/A',
-        description: updatedBackendDeal.description || '',
-        doc: this._currentlyEditingPipelineDeal.doc,
-        originalData: updatedBackendDeal,
-      };
-
       const originalStage = this.stages.find(s => s.name === this._originalStageNameOfEditingDeal);
       const newTargetStage = this.stages.find(s => s.name === updatedBackendDeal.stageName);
 
@@ -465,21 +502,25 @@ onButtonClick(event: { label: string, stageId?: number }) {
 
       if (newTargetStage) {
         newTargetStage.deals.push(updatedPipelineDeal);
-        newTargetStage.deals.sort((a,b) =>
-            new Date(a.originalData.closingDate!).getTime() - new Date(b.originalData.closingDate!).getTime()
+        newTargetStage.deals.sort((a, b) =>
+          new Date(a.originalData.closingDate!).getTime() - new Date(b.originalData.closingDate!).getTime()
         );
+        alert('Deal updated successfully!');
+      } else {
+        console.warn('Target stage not found for updated deal. Reloading data.');
+        this.loadInitialData();
       }
-      alert('Deal updated successfully!');
     } else {
       console.warn('PipelinePage: onDealSubmitSuccess in edit mode, but _currentlyEditingPipelineDeal is mismatched or missing. Reloading data.');
       this.loadInitialData();
     }
-
-    this.updateStageAmountsAndTopCards();
-    this.refreshTableData();
-    this.onModalClose();
-    this.cdr.detectChanges();
   }
+
+  this.updateStageAmountsAndTopCards();
+  this.refreshTableData();
+  this.onModalClose();
+  this.cdr.detectChanges();
+}
 
   onDealSubmitError(errorMessage: string): void {
     console.error('PipelinePage: Error from deal modal:', errorMessage);

@@ -6,6 +6,7 @@
   [height]="'auto'"
   [dragEnabled]="false"
   [showCloseButton]="true"
+  [hideOnOutsideClick]="false"
   (onHidden)="handleClose()">
  
   <div *dxTemplate="let data of 'content'" class="popup-content">
@@ -69,7 +70,7 @@
           placeholder="Select Account (Optional)">
         </dx-select-box>
       </dxi-item>
-       <dxi-item dataField="account">
+       <dxi-item dataField="serviceline">
         <dxo-label text="Service Line" cssClass="bold-label"></dxo-label>
         <dx-select-box
           [(value)]="newDeal.serviceline"

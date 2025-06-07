@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { PipelineDeal } from '../pipelinepage/pipelinepage.component';
  
 @Component({
   selector: 'app-dealcard',
@@ -7,8 +8,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./dealcard.component.css']
 })
 export class DealcardComponent {
-  @Input() deal: any;
-  @Output() onEdit = new EventEmitter<any>();
+  @Input() deal!: PipelineDeal;
+  @Output() onEdit = new EventEmitter<PipelineDeal>();
   hover = false;
  
   constructor(private router: Router) {}
