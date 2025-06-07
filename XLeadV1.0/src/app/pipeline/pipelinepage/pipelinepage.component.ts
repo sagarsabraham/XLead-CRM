@@ -1,8 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DealRead, DealService } from 'src/app/services/dealcreation.service';
-import { CompanyContactService } from 'src/app/services/company-contact.service';
+import { CompanyContactService, CustomerContactMap } from 'src/app/services/company-contact.service'; // Import the new interface
 import { forkJoin } from 'rxjs';
- 
+
+// The CustomerContactMapItem interface can also be defined here if you prefer
+// export interface CustomerContactMapItem {
+//   isActive: boolean;
+//   isHidden: boolean | null;
+//   contacts: string[];
+// }
  
 export interface PipelineDeal {
   id: number;
@@ -68,7 +74,8 @@ export class PipelinepageComponent implements OnInit {
     { dataField: 'stageName', caption: 'Stage', visible: true }
   ];
 
-  customerContactMap: { [customer: string]: string[] } = {}; 
+  // --- THIS IS THE CORRECTED PROPERTY TYPE ---
+  customerContactMap: { [customer: string]: CustomerContactMap } = {}; 
 
   selectedTabId: string = 'card';
   selectedTabIndex: number = 0;
@@ -127,6 +134,7 @@ export class PipelinepageComponent implements OnInit {
     }).subscribe({
       next: (results) => {
         console.log('PipelinePage: Successfully fetched deals and contact map.', results);
+        // This assignment will now work without a type error
         this.customerContactMap = results.contactMap; 
         this.processFetchedDeals(results.deals);
         this.updateStageAmountsAndTopCards();
@@ -154,10 +162,9 @@ export class PipelinepageComponent implements OnInit {
     console.log('Table data refreshed:', this._tableData.length, 'deals');
   }
 
-  findCustomerByContact(contactFullName: string | null | undefined): string | null { // Updated to match backend
+  // --- THIS IS THE CORRECTED METHOD ---
+  findCustomerByContact(contactFullName: string | null | undefined): string | null {
     if (!contactFullName || !this.customerContactMap || Object.keys(this.customerContactMap).length === 0) {
-      if (!contactFullName) console.warn('findCustomerByContact: called with null/undefined contactFullName.');
-      if (!this.customerContactMap || Object.keys(this.customerContactMap).length === 0) console.warn('findCustomerByContact: customerContactMap is empty or null.');
       return null;
     }
 
@@ -165,10 +172,13 @@ export class PipelinepageComponent implements OnInit {
 
     for (const customerName in this.customerContactMap) {
       if (Object.prototype.hasOwnProperty.call(this.customerContactMap, customerName)) {
-        const contactsInCustomer = this.customerContactMap[customerName];
+        // 1. Get the customer info object from the map.
+        const customerInfo = this.customerContactMap[customerName];
        
-        if (Array.isArray(contactsInCustomer)) {
-          const found = contactsInCustomer.some(mappedContact => {
+        // 2. Safely access the 'contacts' array within the object.
+        if (customerInfo && Array.isArray(customerInfo.contacts)) {
+          // 3. Perform the 'some' check on the contacts array.
+          const found = customerInfo.contacts.some(mappedContact => {
             if (typeof mappedContact === 'string') {
               return mappedContact.trim() === normalizedSearchContact;
             }
@@ -226,6 +236,7 @@ export class PipelinepageComponent implements OnInit {
     });
   }
 
+  // ... (The rest of your component's methods are unchanged) ...
   extractCustomerNameFallback(deal: DealRead): string {
     const match = deal.contactName?.match(/\(([^)]+)\)$/);
     return match ? match[1].trim() : '';

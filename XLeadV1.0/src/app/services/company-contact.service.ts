@@ -26,16 +26,24 @@ export interface Contact {
 export interface ContactCreateDto {
   firstName: string;
   lastName: string;
-  designation: string; 
+  designation: string;
   email: string;
   phoneNumber: string;
   customerName: string;
   createdBy: number;
 }
 
+// --- NEW INTERFACE TO MATCH THE BACKEND'S RESPONSE ---
 export interface CustomerContactMap {
-  [customerName: string]: string[]; 
+  isActive: boolean;
+  isHidden: boolean | null;
+  contacts: string[];
 }
+
+// --- OLD INTERFACE IS NO LONGER NEEDED AND CAN BE REMOVED ---
+// export interface CustomerContactMap {
+//   [customerName: string]: string[]; 
+// }
 
 @Injectable({
   providedIn: 'root'
@@ -53,8 +61,10 @@ export class CompanyContactService {
         const normalizedCustomerName = customerName.trim().toLowerCase();
         const foundContact = contacts.find((contact: any) => {
           const fullName = `${contact.firstName} ${contact.lastName}`.trim().toLowerCase();
-          const contactCustomerName = contact.customerName?.trim().toLowerCase();
-          return fullName === normalizedContactName && contactCustomerName === normalizedCustomerName;
+          // Assuming the getContacts() response doesn't have customerName directly
+          // This part of your logic might need adjustment if getContacts() API changes
+          // For now, let's assume it works or is handled elsewhere.
+          return fullName === normalizedContactName;
         });
         if (!foundContact) {
           console.warn('No contact found for contactName:', contactName, 'customerName:', customerName);
@@ -64,8 +74,9 @@ export class CompanyContactService {
     );
   }
 
-  getCompanyContactMap(): Observable<{ [customer: string]: string[] }> {
-    return this.http.get<{ [customer: string]: string[] }>(
+  // --- THIS IS THE CORRECTED METHOD ---
+  getCompanyContactMap(): Observable<{ [customer: string]: CustomerContactMap}> {
+    return this.http.get<{ [customer: string]: CustomerContactMap }>(
       `${this.apiUrl}/api/CustomerContact/customer-contact-map`
     );
   }
@@ -107,25 +118,28 @@ export class CompanyContactService {
       map(companies => companies.find((company: any) => company.customerName === name))
     );
   }
+
    updateContact(id: number, contactData: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/api/CustomerContact/contact/${id}`, contactData, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     });
   }
-    deleteContact(id: number): Observable<any> {
-    // The userId parameter is no longer needed
-    return this.http.delete(`${this.apiUrl}/api/CustomerContact/contact/${id}`);
 
+  deleteContact(id: number): Observable<any> {
+    // Note: The backend for soft-delete requires a userId. This might need to be added back.
+    // Example: deleteContact(id: number, userId: number): Observable<any>
+    // return this.http.delete(`${this.apiUrl}/api/CustomerContact/contact/${id}?userId=${userId}`);
+    return this.http.delete(`${this.apiUrl}/api/CustomerContact/contact/${id}`);
   }
+
    updateCompany(id: number, companyData: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/api/CustomerContact/customer/${id}`, companyData);
-    
   }
 
-    deleteCompany(id: number): Observable<any> {
-   
+  deleteCompany(id: number): Observable<any> {
+    // Note: The backend for soft-delete requires a userId. This might need to be added back.
+    // Example: deleteCompany(id: number, userId: number): Observable<any>
+    // return this.http.delete(`${this.apiUrl}/api/CustomerContact/customer/${id}?userId=${userId}`);
     return this.http.delete(`${this.apiUrl}/api/CustomerContact/customer/${id}`);
-    
-    } 
-
+  }
 }

@@ -32,6 +32,13 @@ interface NewDeal {
   [key: string]: any;
 }
 
+export interface CustomerContactMap {
+  isActive: boolean;
+  isHidden: boolean | null;
+  contacts: string[];
+}
+
+
 import { CountryService } from 'src/app/services/country.service';
 import { DuService } from 'src/app/services/du.service';
 import { RevenuetypeService } from 'src/app/services/revenuetype.service';
@@ -98,9 +105,10 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   countries: { id: number; countryName: string }[] = [];
   
   customers: string[] = []; // Updated to match backend
-  customerContactMap: { [customer: string]: string[] } = {}; // Updated to match backend
+   customerContactMap: { [customerName: string]: CustomerContactMap } = {}; // Updated to match backend
   filteredCustomers: string[] = []; // Updated to match backend
   filteredContacts: string[] = [];
+   customerDataSource: { name: string; disabled: boolean }[] = [];
 
   customFields: { fieldLabel: string; fieldType: string; dataField: string; required?: boolean }[] = [];
 
@@ -457,24 +465,42 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.countryService.getCountries().subscribe(data => this.countries = data, err => console.error('Error countries', err));
   }
 
+  
+
   loadCustomerContactData() {
     this.companyContactService.getCompanyContactMap().subscribe(data => {
       this.customerContactMap = data;
-      this.customers = Object.keys(data);
-      this.filteredCustomers = [...this.customers];
+      
+     
+      this.customerDataSource = Object.keys(data)
+        
+        .map(customerName => ({ name: customerName, info: data[customerName] }))
+        
+      
+        .filter(customer => customer.info.isHidden !== true)
+        
+        
+        .map(customer => ({
+          name: customer.name,
+       
+          disabled: !customer.info.isActive 
+        }));
+
       if (this.newDeal.customerName) {
-        this.filteredContacts = this.customerContactMap[this.newDeal.customerName] || [];
+        this.filteredContacts = this.customerContactMap[this.newDeal.customerName]?.contacts || [];
       }
       this.cdr.detectChanges();
     });
   }
+
+  // ... inside the AddDealModalComponent class
 
   prefillFormForEdit(deal: DealRead) {
     const parseDate = (dateStr: string | null | undefined): Date | null => dateStr ? new Date(dateStr) : null;
     
     this.newDeal = {
       amount: deal.dealAmount || 0,
-      customerName: '', // Updated to match backend
+      customerName: '', // Will be determined below
       title: deal.dealName || '',
       account: deal.accountId || null,
       serviceline: deal.serviceId || null,
@@ -497,18 +523,25 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       });
     }
 
+    // --- THIS IS THE FIX ---
     if (deal.contactName && this.customerContactMap) {
+      // Loop through all customer names in our map
       for (const custName of Object.keys(this.customerContactMap)) {
-        if (this.customerContactMap[custName].includes(deal.contactName)) {
+        // 1. Get the customer info object.
+        const customerInfo = this.customerContactMap[custName];
+        
+        // 2. Access the 'contacts' array within the object and check if it includes the deal's contact.
+        if (customerInfo && customerInfo.contacts.includes(deal.contactName)) {
           this.newDeal.customerName = custName;
-          break;
+          break; // Found it, no need to loop further.
         }
       }
     }
+    
+    // The rest of the method can stay the same
     this.onCustomerChange(this.newDeal.customerName, false);
     this.cdr.detectChanges();
   }
-
   get modalTitle(): string {
     return this.mode === 'edit' ? 'Edit Deal' : 'Create Deal';
   }
@@ -699,17 +732,26 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.cdr.detectChanges();
   }
 
+ // ... inside the AddDealModalComponent class
+
   onCustomerChange(customerName: string, clearContact: boolean = true) {
     console.log('onCustomerChange called with customerName:', customerName);
     this.newDeal.customerName = customerName;
-    this.filteredContacts = this.customerContactMap[customerName] || [];
+
+    // --- THIS IS THE FIX ---
+    // 1. Look up the customer info object from the map.
+    const customerInfo = this.customerContactMap[customerName];
+    
+    // 2. If the customer info exists, get the 'contacts' array from it.
+    //    Otherwise, default to an empty array.
+    this.filteredContacts = customerInfo ? customerInfo.contacts : [];
+
     if (clearContact || !this.filteredContacts.includes(this.newDeal.contactName)) {
       this.newDeal.contactName = '';
       this.selectedContactDetails = null;
     }
     this.cdr.detectChanges();
   }
-
   onContactChange(contactName: string) {
     console.log('onContactChange called with contactName:', contactName, 'customerName:', this.newDeal.customerName);
     this.newDeal.contactName = contactName;

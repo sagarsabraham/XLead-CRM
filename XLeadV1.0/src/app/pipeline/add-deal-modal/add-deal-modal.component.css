@@ -59,4 +59,14 @@ app-modal-buttons {
 .company-name-container dx-button {
   flex-shrink: 0; 
 }
+.disabled-item {
+  color: #aaa; /* Faded text color */
+  cursor: not-allowed; /* Show a "not allowed" cursor on hover */
+}
+
+.disabled-text {
+  font-style: italic;
+  font-size: 0.9em;
+  margin-left: 5px;
+}
 
