@@ -10,7 +10,7 @@
       <span>{{ toastMessage }}</span>
     </div>
   </dx-toast>
-  
+
   <div class="topbar">
     <h1>Pipelines</h1>
     <div class="topbar-actions">
@@ -84,7 +84,7 @@
         </app-dealbody>
       </div>
 
-      <div *ngIf="stage.hover && !stage.collapsed">
+      <div *ngIf="!stage.collapsed">
         <app-dealfooter
           [buttons]="dealButton"
           [stageId]="stage.id"

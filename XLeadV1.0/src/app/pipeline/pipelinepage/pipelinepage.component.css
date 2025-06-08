@@ -156,6 +156,11 @@ app-dealfooter {
   left: 0;
   right: 0;
   z-index: 10;
+  display: none;
+}
+
+.stage-card:hover app-dealfooter {
+  display: block; 
 }
  
  
@@ -300,6 +305,16 @@ app-button {
  
   .stage-card {
     min-width: 180px;
+  }
+  app-dealfooter {
+    display: block; 
+  }
+  
+  :host ::ng-deep app-dealfooter app-button,
+  :host ::ng-deep app-dealfooter dx-button {
+    max-width: 150px; 
+    font-size: 14px; 
+    padding: 6px 10px; 
   }
 }
 }
