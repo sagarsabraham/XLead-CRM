@@ -170,6 +170,22 @@ app-button {
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
+
+:host ::ng-deep .dx-toast {
+  z-index: 2000;
+}
+
+:host ::ng-deep .dx-toast-content {
+  font-size: 14px;
+  padding: 10px 15px;
+}
+
+:host ::ng-deep .dx-toast-message {
+  display: block !important;
+  color: #333;
+  font-size: 14px;
+  padding: 5px 10px;
+}
  
 /* ========== Responsive Breakpoints ========== */
  

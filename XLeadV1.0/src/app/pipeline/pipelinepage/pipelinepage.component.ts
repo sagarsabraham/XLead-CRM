@@ -1,8 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { DealRead, DealService } from 'src/app/services/dealcreation.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 import { forkJoin } from 'rxjs';
 import { DealstageService } from 'src/app/services/dealstage.service';
+import { DxToastComponent } from 'devextreme-angular';
 
  
  
@@ -46,6 +47,8 @@ export interface PipelineStage {
   styleUrls: ['./pipelinepage.component.css']
 })
 export class PipelinepageComponent implements OnInit {
+  @ViewChild('toastInstance', { static: false }) toastInstance!: DxToastComponent;
+  
    topcardData = [
     { amount: 0, title: 'Total Return', isCurrency: true, icon: 'assets/dollar-sign-svgrepo-com.svg' },
     { amount: 0, title: 'Total Count of Deals', isCurrency: false, icon: 'assets/count.svg' },
@@ -105,6 +108,10 @@ export class PipelinepageComponent implements OnInit {
 
   selectedDealIds: string[] = [];
 
+  toastMessage: string = '';
+  toastType: 'info' | 'success' | 'error' | 'warning' = 'info';
+  toastVisible: boolean = false;
+
   handleSelectionChanged(event: any): void {
     console.log('Selection changed:', event);
     this.selectedDealIds = event.selectedRowKeys || [];
@@ -116,6 +123,13 @@ export class PipelinepageComponent implements OnInit {
     private dealStageService: DealstageService,
     private cdr: ChangeDetectorRef
   ) {}
+
+  showToast(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.toastVisible = true;
+    this.cdr.detectChanges();
+  }
 
   ngOnInit(): void {
     this.updateCollapsedState(); 
@@ -173,7 +187,7 @@ export class PipelinepageComponent implements OnInit {
       },
       error: (err) => {
         console.error('PipelinePage: Error fetching initial data (deals, contact map, or stages):', err);
-        alert('Failed to load pipeline data. Please try again.');
+        this.showToast('Failed to load pipeline data. Please try again', 'error');
         this.isLoadingInitialData = false;
         this.cdr.detectChanges();
       }
@@ -362,7 +376,8 @@ export class PipelinepageComponent implements OnInit {
             this.updateStageAmountsAndTopCards();
             this.refreshTableData();
             this.cdr.detectChanges();
-            alert(`Error: ${err.message}`);
+            this.showToast(`Error: ${err.message}`, 'error');
+            
         }
       });
       }
@@ -483,7 +498,7 @@ onButtonClick(event: { label: string, stageId?: number }) {
       targetStage.deals.sort((a, b) =>
         new Date(a.originalData.closingDate!).getTime() - new Date(b.originalData.closingDate!).getTime()
       );
-      alert('Deal created successfully!');
+      this.showToast('Deal created successfully!', 'success');
     } else {
       console.warn('Target stage not found for new deal. Reloading data.');
       this.loadInitialData();
@@ -505,7 +520,7 @@ onButtonClick(event: { label: string, stageId?: number }) {
         newTargetStage.deals.sort((a, b) =>
           new Date(a.originalData.closingDate!).getTime() - new Date(b.originalData.closingDate!).getTime()
         );
-        alert('Deal updated successfully!');
+        this.showToast('Deal updated successfully!', 'success');
       } else {
         console.warn('Target stage not found for updated deal. Reloading data.');
         this.loadInitialData();

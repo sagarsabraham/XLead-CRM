@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, AfterViewInit, HostListener, ChangeDetectorRef } from '@angular/core';
-import { DxFormComponent, DxPopupComponent } from 'devextreme-angular';
+import { DxFormComponent, DxPopupComponent, DxToastComponent } from 'devextreme-angular';
 
 export interface DxValidationRule {
   type: 'required' | 'numeric' | 'range' | 'stringLength' | 'custom' | 'compare' | 'pattern' | 'email';
@@ -36,8 +36,13 @@ export class FormModalComponent implements AfterViewInit {
   @ViewChild(DxFormComponent, { static: false }) dxFormInstance!: DxFormComponent;
   @ViewChild('formContainer', { static: false }) formContainer!: ElementRef<HTMLDivElement>;
   @ViewChild(DxPopupComponent, { static: false }) dxPopup!: DxPopupComponent;
+  @ViewChild('toastInstance', { static: false }) toastInstance!: DxToastComponent;
 
   private isViewInitialized: boolean = false;
+
+  toastMessage: string = '';
+  toastType: 'info' | 'success' | 'error' | 'warning' = 'info';
+  toastVisible: boolean = false;
 
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -56,6 +61,13 @@ export class FormModalComponent implements AfterViewInit {
     }
   }
 
+  showToast(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.toastVisible = true;
+    this.cdr.detectChanges();
+  }
+
   handleClose() {
     this.onClose.emit();
     this.resetForm();
@@ -68,7 +80,7 @@ export class FormModalComponent implements AfterViewInit {
       if (validationResult.isValid) {
         this.onSubmit.emit(this.formData);
       } else {
-        alert('Please correct errors.');
+        this.showToast('Please correct errors.', 'error');
       }
     }
   }

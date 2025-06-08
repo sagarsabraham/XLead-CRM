@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
-import { DxFormComponent, DxPopupComponent } from 'devextreme-angular';
+import { DxFormComponent, DxPopupComponent, DxToastComponent } from 'devextreme-angular';
 import { finalize } from 'rxjs/operators';
 import { forkJoin } from 'rxjs'; 
 
@@ -57,6 +57,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild('dealFormInstance', { static: false }) dealFormInstance!: DxFormComponent;
   @ViewChild('popupInstanceRef', { static: false }) dxPopupInstance!: DxPopupComponent;
   @ViewChild('formContainer', { static: false }) formContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('toastInstance', { static: false }) toastInstance!: DxToastComponent;
 
   @Input() isVisible: boolean = false;
   @Input() mode: 'add' | 'edit' = 'add';
@@ -289,6 +290,10 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   private qualificationStageId: number | null = null;
   selectedContactDetails: Contact | null = null;
 
+  toastMessage: string = '';
+  toastType: 'info' | 'success' | 'error' | 'warning' = 'info';
+  toastVisible: boolean = false;
+
   constructor(
     private cdr: ChangeDetectorRef,
     private accountService: AccountService,
@@ -306,6 +311,13 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     private countryCodeService: CountryCodeService
   ) {}
 
+  showToast(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.toastVisible = true;
+    this.cdr.detectChanges();
+  }
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.popupWidth = event.target.innerWidth < 600 ? '90%' : 500;
@@ -322,8 +334,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnInit() {
     console.log('AddDealModal ngOnInit - dealFormInstance:', this.dealFormInstance);
-    this.loadDropdownData();
-    
+    this.loadDropdownData(); 
   }
 
   ngAfterViewInit() {
@@ -338,7 +349,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
           this.isFormReady = true;
         } else {
           console.error('CRITICAL: dealFormInstance is NOT available even after popup "shown" and detectChanges.');
-          alert('Form failed to initialize. Please try again.');
+          this.showToast('Form failed to initialize. Please try again.', 'error');
         }
         this.cdr.detectChanges();
       });
@@ -537,39 +548,37 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       let message = "The form is not ready for submission. ";
       if (!this.isFormReady) message += "Popup content might not be fully initialized. ";
       if (!this.dealFormInstance || !this.dealFormInstance.instance) message += "Form component reference is missing. ";
-      alert(message + "Please wait a moment. If the problem persists, try closing and reopening the modal.");
-      this.onSubmitError.emit('Form not ready for submission.');
+      this.showToast(message + "Please wait a moment. If the problem persists, try closing and reopening the modal.", 'error');
+      
       this.isLoading = false;
       return;
     }
 
     const validationResult = this.dealFormInstance.instance.validate();
     if (!validationResult.isValid) {
-      alert('Please correct the validation errors before saving.');
-      this.onSubmitError.emit('Validation failed. Please check the form.');
+      this.showToast('Please correct the validation errors before saving.', 'error');
+      
       return;
     }
 
     if (this.isContactLoading) {
-      alert("Contact details are still loading. Please wait a moment.");
+      this.showToast("Contact details are still loading. Please wait a moment.", 'warning');
       this.isLoading = false;
-      this.onSubmitError.emit("Contact details are still loading.");
+      
       return;
     }
 
     this.isLoading = true;
 
     if (!this.newDeal.customerName) {
-      alert("Please select a customer.");
+      this.showToast("Please select a contact.", 'error');
       this.isLoading = false;
-      this.onSubmitError.emit("Customer not selected.");
       return;
     }
 
     if (!this.newDeal.contactName) {
-      alert("Please select a contact.");
+      this.showToast("Please select a contact.", 'error');
       this.isLoading = false;
-      this.onSubmitError.emit("Contact not selected.");
       return;
     }
 
@@ -581,16 +590,14 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         !this.newDeal.department ? "DU" : null,
         !this.newDeal.country ? "Country" : null
       ].filter(Boolean).join(', ');
-      alert(`Required fields missing: ${missing}`);
+      this.showToast(`Required fields missing: ${missing}`, 'error');
       this.isLoading = false;
-      this.onSubmitError.emit(`Required fields missing: ${missing}`);
       return;
     }
 
     if (!this.newDeal.startDate || !this.newDeal.closeDate) {
-      alert("Starting and Closing dates are required.");
+      this.showToast("Starting and Closing dates are required.", 'error');
       this.isLoading = false;
-      this.onSubmitError.emit("Starting and Closing dates are required.");
       return;
     }
 
@@ -639,14 +646,13 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         .pipe(finalize(() => { this.isLoading = false; this.cdr.detectChanges(); }))
         .subscribe({
           next: (updatedDeal: DealRead) => {
-            alert('Deal updated successfully!');
+            this.showToast('Deal updated successfully!', 'success');
             this.onSubmitSuccess.emit(updatedDeal);
             this.handleClose();
           },
           error: (err: Error) => {
             console.error('Error updating deal:', err);
-            alert(`Error: ${err.message || 'Failed to update deal. Please try again.'}`);
-            this.onSubmitError.emit(err.message || 'Failed to update deal. Please try again.');
+            this.showToast(err.message || 'Failed to update deal. Please try again.', 'error');
             this.isLoading = false;
           }
         });
@@ -681,14 +687,13 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         .pipe(finalize(() => { this.isLoading = false; this.cdr.detectChanges(); }))
         .subscribe({
           next: (createdDeal: DealRead) => {
-            alert('Deal created successfully!');
+            this.showToast('Deal created successfully!', 'success');
             this.onSubmitSuccess.emit(createdDeal);
             this.handleClose();
           },
           error: (err: Error) => {
             console.error('Error creating deal:', err);
-            alert(`Error: ${err.message || 'Failed to create deal. Please try again.'}`);
-            this.onSubmitError.emit(err.message || 'Failed to create deal. Please try again.');
+            this.showToast(err.message || 'Failed to create deal. Please try again.', 'error');
             this.isLoading = false;
           }
         });
@@ -852,7 +857,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       })
     ).subscribe({
       next: () => {
-        alert('Customer added successfully!');
+        this.showToast('Customer added successfully!', 'success');
         this.loadDropdownData();
         this.newDeal.customerName = payload.customerName;
         this.onCustomerChange(payload.customerName);
@@ -860,14 +865,14 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       },
       error: (err) => {
         console.error('Customer creation failed:', err);
-        alert(err.message || 'Failed to create customer.');
+        this.showToast(err.message || 'Failed to create customer.', 'error');
       }
     });
   }
 
   openQuickCreateContactModal() {
     if (!this.newDeal.customerName) {
-      alert('Please select a customer first.');
+      this.showToast('Please select a customer first.', 'error');
       return;
     }
     this.contactData = { 
@@ -925,7 +930,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       })
     ).subscribe({
       next: () => {
-        alert('Contact added successfully!');
+        this.showToast('Contact added successfully!', 'success');
         this.loadDropdownData();
         const fullName = `${payload.firstName} ${payload.lastName}`.trim();
         setTimeout(() => {
@@ -938,7 +943,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       },
       error: (err) => {
         console.error('Contact creation failed:', err);
-        alert(err.message || 'Failed to create contact.');
+        this.showToast(err.message || 'Failed to create contact.', 'error');
       }
     });
   }
@@ -984,6 +989,7 @@ showForm = true;
     this.showForm = true;
     this.cdr.detectChanges();
     console.log("Custom field array", this.customFields);
+    this.showToast('Custom field added successfully!', 'success');
     this.closeCustomizeFieldModal();
   }
 
