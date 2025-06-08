@@ -1,44 +1,35 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-// Optional: define interfaces or import DTOs if available
-export interface AttachmentCreateDto {
+// Match this interface with your .NET Attachment model
+export interface Attachment {
+  id: number;
   fileName: string;
   s3UploadName: string;
   dealId: number;
   createdBy: number;
-}
-
-export interface AttachmentReadDto {
-  fileName: string;
-  s3UploadName: string;
-  dealId: number;
-  createdBy: number;
+  createdAt: string; // ISO date string
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class DocumentService {
-  private apiUrl = `${environment.apiUrl}/api/attachment`;
+  private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  saveAttachmentMetadata(data: AttachmentCreateDto): Observable<AttachmentReadDto> {
-    const url = this.apiUrl;
-    console.log('Posting attachment metadata to:', url);
-    return this.http.post<AttachmentReadDto>(url, data);
+  getAttachments(dealId: number): Observable<Attachment[]> {
+    return this.http.get<Attachment[]>(`${this.apiUrl}/deal/${dealId}`);
   }
 
-  handleUploadResponse(response: any): void {
-    console.log('File uploaded successfully:', response);
-    // Extend this method to show toast/snackbar, refresh UI, etc.
-  }
+  uploadAttachment(file: File, dealId: number): Observable<Attachment> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    formData.append('dealId', dealId.toString());
 
-  handleUploadError(error: any): void {
-    console.error('File upload failed:', error);
-    // Extend this method to show error message or retry option
+    return this.http.post<Attachment>(`${this.apiUrl}/upload`, formData);
   }
 }

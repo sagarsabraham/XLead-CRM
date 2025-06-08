@@ -29,6 +29,31 @@ export interface DealCreatePayload {
   createdBy: number;
   customFields?: { [key: string]: any };
 }
+
+export interface DealEditPayload {
+  title: string;
+  amount: number;
+  customerName: string;
+  contactFullName: string;
+  contactEmail: string | null;
+  contactPhoneNumber: string | null;
+  contactDesignation: string | null;
+  serviceId: number | null;
+  accountId: number | null;
+  regionId: number;
+  domainId: number | null;
+  dealStageId: number;
+  revenueTypeId: number;
+  duId: number;
+  countryId: number;
+  description: string | null;
+  probability: number | null;
+  startingDate: string | null;
+  closingDate: string | null;
+}
+
+
+
 export interface DealManagerOverview { 
   id: number;
   dealName: string;
@@ -79,12 +104,14 @@ export interface TopCustomerData {
   customerName: string;
   totalRevenueWon: number;
 }
+
 export interface DealRead {
   id: number;
   dealName: string;
   dealAmount: number;
   customerName?: string;
   contactName?: string;
+  contactId?: number | null;
   salespersonName?: string | null;
   startingDate?: string | null;
   closingDate?: string | null;
@@ -110,6 +137,7 @@ export interface DealRead {
   createdAt?: string;
   updatedAt?: string;
   customFields?: { [key: string]: any };
+  isHidden: boolean;
 }
 export interface StageHistoryReadDto {
   id: number;
@@ -217,20 +245,29 @@ export class DealService {
     return this.http.get<DealRead[]>(url, this.httpOptions) 
       .pipe(catchError(this.handleError));
   }
- updateDealStage(id: number, stageName: string): Observable<DealRead> {
+
+updateDealStage(id: number, stageName: string): Observable<DealRead> {
     const url = `${this.apiUrl}/${id}/stage`;
-    const updateDto = {
-      stageName: stageName,
-      updatedBy: this.authService.userId
-    };
+    const userId = this.authService.getUserId();
+ 
+    if (!userId) {
+ 
+      return throwError(() => new Error('User ID not found. Cannot perform action.'));
+    }
+ 
    
-    return this.http.put<DealRead>(url, updateDto, this.httpOptions)
-      .pipe(
-        map(response => {
-          console.log('Stage update response:', response);
-          return response;
-        }),
-        catchError(this.handleError));
+    if (!this.authService.hasPrivilege('UpdateDealStage')) {
+      return throwError(() => new Error('User lacks StageUpdate privilege.'));
+    }
+ 
+    const payload = {
+      stageName: stageName,
+      UpdatedBy: userId
+    };
+ 
+   
+    return this.http.put<DealRead>(url, payload, this.httpOptions)
+      .pipe(catchError(this.handleError));
   }
 
   getDealStageHistory(id: number): Observable<any[]> {
@@ -242,6 +279,12 @@ export class DealService {
       .pipe(catchError(this.handleError));
   }
  
+  updateDeal(id: number, dealData: DealEditPayload): Observable<DealRead> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.put<DealRead>(url, JSON.stringify(dealData), this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
  
   updateDealDescription(id: number, description: string): Observable<DealRead> {
   const url = `${this.apiUrl}/${id}/description`;

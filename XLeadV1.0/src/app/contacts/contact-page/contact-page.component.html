@@ -1,13 +1,12 @@
-
 <div class="page-container" [ngClass]="{'mobile-view': isMobile}">
  
   <!-- Sidebar (uncomment if needed) -->
   <!-- <app-sidebar [ngClass]="{'sidebar-hidden': !isSidebarVisible, 'sidebar-visible': isSidebarVisible}"></app-sidebar> -->
  
   <div class="container">
-    
+   
     <div class="topbar">
-      
+     
        
       <div class="total-count">
         Total Contacts: {{ totalContacts }}
@@ -41,6 +40,10 @@
   [exportFileName]="'Contacts'"
   (onSelectionChanged)="handleSelectionChanged($event)"
   [entityType]="'Customer'"
+   [allowEditing]="true"
+   (onRowUpdating)="handleUpdate($event)"
+   (onRowRemoving)="handleDelete($event)"
+ 
 ></app-table>
     </div>
   </div>
