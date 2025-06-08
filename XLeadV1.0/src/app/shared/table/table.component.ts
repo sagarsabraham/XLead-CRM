@@ -11,6 +11,7 @@ import { TableOutlineComponent } from '../table-outline/table-outline.component'
   styleUrls: ['./table.component.css'],
 })
 export class TableComponent implements AfterViewInit {
+  @Input() lookupData: { [key: string]: any[] } = {};
   @Input() data: any[] = [];
   @Input() headers: GridColumn[] = [];
   @Input() classNames: string = '';
@@ -118,6 +119,7 @@ export class TableComponent implements AfterViewInit {
       this.configureDataGrid();
       this.adjustFilterRowPosition();
     }
+    
 
     console.log('=== TABLE COMPONENT INIT ===');
     console.log('Data sample:', this.data.slice(0, 2));
@@ -146,6 +148,24 @@ export class TableComponent implements AfterViewInit {
 
   getDisplayValue(item: any, field: string): string {
     return item[field] || `No ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`;
+  }
+
+    getLookupDataSource(dataField: string): any[] | null {
+    return this.lookupData[dataField] || null;
+  }
+
+  getLookupDisplayExpr(dataField: string): string {
+    if (dataField === 'industryVertical') {
+      return 'industryName'; // The property to display in the dropdown
+    }
+    return 'name';
+  }
+
+   getLookupValueExpr(dataField: string): string {
+    if (dataField === 'industryVertical') {
+      return 'industryName'; // The property to use as the value
+    }
+   return 'name';
   }
 
 

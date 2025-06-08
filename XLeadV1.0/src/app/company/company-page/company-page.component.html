@@ -44,6 +44,7 @@
           [allowEditing]="true" 
    (onRowUpdating)="handleUpdate($event)"
    (onRowRemoving)="handleDelete($event)"
+    [lookupData]="tableLookups" 
         ></app-table>
       </div>
     </div>

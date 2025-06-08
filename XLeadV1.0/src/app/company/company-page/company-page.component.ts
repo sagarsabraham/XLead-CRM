@@ -44,6 +44,8 @@ export class CompanyPageComponent implements OnInit {
   ngOnInit(): void {
     this.loadData();
   }
+  tableLookups: { [key: string]: any[] } = {};
+
 
   loadData(): void {
     this.isLoading = true;
@@ -59,6 +61,9 @@ export class CompanyPageComponent implements OnInit {
           map[vertical.id] = vertical.industryName || 'Unknown';
           return map;
         }, {});
+        this.tableLookups = {
+          industryVertical: this.allIndustryVerticals // Key matches the dataField
+        };
         
         this.initializeTableHeaders(); // Define headers now that we have the data
         
