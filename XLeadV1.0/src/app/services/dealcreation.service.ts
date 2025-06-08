@@ -141,7 +141,7 @@ export class DealService {
       .pipe(catchError(this.handleError));
   }
   getManagerOverviewDeals(managerId: number): Observable<DealManagerOverview[]> {
-    if (!this.authService.hasPrivilege('overview')) { 
+    if (!this.authService.hasPrivilege('Overview')) { 
         return throwError(() => new Error('Current user lacks Overview privilege.'));
     }
     const url = `${this.apiUrl}/manager-overview-deals/${managerId}`;
@@ -187,7 +187,7 @@ export class DealService {
 
  
   getManagerOverviewStageCounts(managerId: number): Observable<ManagerStageCount[]> {
-     if (!this.authService.hasPrivilege('overview')) { 
+     if (!this.authService.hasPrivilege('Overview')) { 
         return throwError(() => new Error('Current user lacks Overview privilege.'));
     }
     const url = `${this.apiUrl}/manager-overview-stage-counts/${managerId}`;
@@ -221,7 +221,7 @@ export class DealService {
     const url = `${this.apiUrl}/${id}/stage`;
     const updateDto = {
       stageName: stageName,
-      updatedBy: this.authService.userId
+      PerformedByUserId: this.authService.userId
     };
    
     return this.http.put<DealRead>(url, updateDto, this.httpOptions)

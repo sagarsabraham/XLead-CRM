@@ -11,88 +11,85 @@ import { DealManagerOverview, DealService } from 'src/app/services/dealcreation.
 export class OverviewPageComponent {
     tableHeaders = [
     { dataField: 'salespersonName', caption: 'Salesperson', cellTemplate: 'ownerCellTemplate' },
-    { dataField: 'dealName', caption: 'Deal Name' }, 
+    { dataField: 'dealName', caption: 'Deal Name' },
     { dataField: 'stageName', caption: 'Stage' },  
     {
-      dataField: 'dealAmount', 
+      dataField: 'dealAmount',
       caption: 'Amount',
       dataType: 'number',
-      format: { type: 'currency', currency: 'USD' } 
+      format: { type: 'currency', currency: 'USD' }
     },
     {
-      dataField: 'closingDate', 
+      dataField: 'closingDate',
       caption: 'Closing Date',
       dataType: 'date',
-      format: 'dd-MMM-yyyy' 
+      format: 'dd-MMM-yyyy'
     }
   ];
-
-
+ 
+ 
   tableData: DealManagerOverview[] = [];
-
+ 
  
   topcardData: { amount: number; title: string; icon: string; originalTitle?: string }[] = [
     { amount: 0, title: 'Qualification', icon: 'assets/qualification.svg', originalTitle: 'Qualification' },
     { amount: 0, title: 'Need Analysis', icon: 'assets/needanalysis.svg', originalTitle: 'Need Analysis' },
-    { amount: 0, title: 'Proposal', icon: 'assets/proposal.svg', originalTitle: 'Proposal/Price Quote' }, // Assuming backend sends "Proposal" or "Proposal/Price Quote"
-    { amount: 0, title: 'Negotiation', icon: 'assets/negotiation.svg', originalTitle: 'Negotiation/Review' }, // Assuming backend sends "Negotiation" or "Negotiation/Review"
+    { amount: 0, title: 'Proposal', icon: 'assets/proposal.svg', originalTitle: 'Proposal/Price Quote' },
+    { amount: 0, title: 'Negotiation', icon: 'assets/negotiation.svg', originalTitle: 'Negotiation/Review' },
     { amount: 0, title: 'Closed Won', icon: 'assets/closedwon.svg', originalTitle: 'Closed Won' },
     { amount: 0, title: 'Closed Lost', icon: 'assets/closedlost.svg', originalTitle: 'Closed Lost' }
   ];
-
+ 
   isLoading = true;
   errorMessage: string | null = null;
   managerId: number;
-
+ 
   constructor(
     private authService: AuthServiceService,
     private dealService: DealService,
     private cdr: ChangeDetectorRef
   ) {
-    this.managerId = this.authService.getUserId(); 
+    this.managerId = this.authService.getUserId();
   }
-
+ 
   ngOnInit(): void {
     this.loadOverviewData();
   }
-
+ 
   loadOverviewData(): void {
     this.isLoading = true;
     this.errorMessage = null;
-
-    if (!this.authService.hasPrivilege('overview')) {
+ 
+    if (!this.authService.hasPrivilege('Overview')) {
         this.errorMessage = "User does not have 'Overview' privilege.";
         this.isLoading = false;
         console.error(this.errorMessage);
-    
+   
         return;
     }
-
-    console.log(`OverviewPage: Loading data for manager ID: ${this.managerId}`);
-
+ 
+   
+ 
     forkJoin({
       deals: this.dealService.getManagerOverviewDeals(this.managerId),
       stageCounts: this.dealService.getManagerOverviewStageCounts(this.managerId)
     }).subscribe({
       next: (results) => {
-        console.log('OverviewPage: Data received from backend.');
        
         this.tableData = results.deals.map(deal => ({
           ...deal,
        
           closingDate: deal.closingDate ? new Date(deal.closingDate).toISOString() : null
         }));
-        console.log('OverviewPage: Table data populated:', this.tableData);
-
+       
         this.topcardData.forEach(card => {
-      
+     
           const foundStage = results.stageCounts.find(sc => sc.stageName === (card.originalTitle || card.title));
           card.amount = foundStage ? foundStage.dealCount : 0;
         });
-        console.log('OverviewPage: Top card data populated:', this.topcardData);
-
+        
         this.isLoading = false;
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('OverviewPage: Error loading overview data:', err);
@@ -102,15 +99,15 @@ export class OverviewPageComponent {
       }
     });
   }
-
+ 
   getIconColor(index: number): string {
     switch (index) {
-      case 0: return '#F8A978'; 
-      case 1: return '#92BEFA'; 
+      case 0: return '#F8A978';
+      case 1: return '#92BEFA';
       case 2: return '#B0A3E2';
       case 3: return '#D0D0D0';
-      case 4: return '#87DEB2'; 
-      case 5: return '#F48F9F'; 
+      case 4: return '#87DEB2';
+      case 5: return '#F48F9F';
       default: return '#000000';
     }
   }
