@@ -15,4 +15,18 @@ export class DealHeaderComponent {
     this.router.navigate(['/pipeline']);
   }
 
+formatDate(date: any): string {
+  if (!date) return '';
+  try {
+    const dateObj = new Date(date);
+    if (isNaN(dateObj.getTime())) return ''; 
+    return dateObj.toLocaleDateString('en-GB', { 
+      day: 'numeric', 
+      month: 'short', 
+      year: 'numeric' 
+    });
+  } catch (e) {
+    return '';
+  }
+}
 }

@@ -9,8 +9,8 @@
         [items]="companyItems">
     </app-related-info>
 
-    <app-description
-    [description]="dealDescription"
-    (descriptionChange)="onDescriptionChange($event)">
-    </app-description>
+<app-description 
+  [description]="deal?.description" 
+  (descriptionChange)="onDescriptionChange($event)">
+</app-description>
 </div>

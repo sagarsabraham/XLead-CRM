@@ -31,12 +31,11 @@
     </div>
   </div>
    
- 
   <div class="topcard-container">
     <app-topcard
       *ngFor="let card of topcardData; let i = index"
       [amount]="card.amount"
-      [title]="card.title"
+            [title]="card.title"
       [isCurrency]="card.isCurrency"
       [icon]="card.icon"
       [iconColor]="getIconColor(i)">
@@ -49,6 +48,7 @@
       *ngFor="let stage of stages; let i = index"
       class="stage-card dx-card"
       [class.collapsed]="stage.collapsed"
+      [class.dragging]="isDraggingDeal"
       (mouseenter)="onMouseEnter(i)"
       (mouseleave)="onMouseLeave(i)"
       (click)="toggleCollapse(i)"
@@ -89,19 +89,21 @@
       [headers]="tableHeaders"
       [useOwnerTemplate]="false"
       [exportFileName]="'pipeline'"
+      [entityType]="'Pipeline'"
+      (onRowClick)="onTableRowClick($event)"
       (onSelectionChanged)="handleSelectionChanged($event)"
       #pipelineTable>
     </app-table>
   </div>
  
-  <!-- Add Deal Modal -->
-  <app-add-deal-modal
-    [isVisible]="isModalVisible"
-    [dealToEdit]="selectedDealForModal()"
-    [mode]="isEditMode ? 'edit' : 'add'"
-    [selectedStage]="selectedStageId"
-    (onClose)="onModalClose()"
-    (onSubmitSuccess)="onDealSubmitSuccess($event)"
-    (onSubmitError)="onDealSubmitError($event)">
-  </app-add-deal-modal>
+<!-- Add Deal Modal - For both creating and editing -->
+<app-add-deal-modal
+  [isVisible]="isModalVisible"
+  [dealToEdit]="selectedDealForModal()"
+  [mode]="isEditMode ? 'edit' : 'add'"
+  [selectedStage]="selectedStageId"
+  (onClose)="onModalClose()"
+  (onSubmitSuccess)="onDealSubmitSuccess($event)"
+  (onSubmitError)="onDealSubmitError($event)">
+</app-add-deal-modal>
 </div>

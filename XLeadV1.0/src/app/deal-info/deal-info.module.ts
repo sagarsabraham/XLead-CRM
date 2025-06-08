@@ -11,7 +11,9 @@ import { DxButtonModule,
          DxFileUploaderModule, 
          DxListModule, 
          DxTextBoxModule, 
-         DxTabsModule } from 'devextreme-angular';
+         DxTabsModule, 
+         DxLoadPanelModule,
+         DxTextAreaModule} from 'devextreme-angular';
 import { StatusTimelineComponent } from './status-timeline/status-timeline.component';
 import { RelatedInfoComponent } from './related-info/related-info.component';
 import { DescriptionComponent } from './description/description.component';
@@ -20,6 +22,7 @@ import { DealInfoCardComponent } from './deal-info-card/deal-info-card.component
 import { SharedModule } from '../shared/shared.module';
 import { DocUploadComponent } from './doc-upload/doc-upload.component';
 import { FormsModule } from '@angular/forms';
+import { NotesTabComponent } from './notes-tab/notes-tab.component';
 
 
 @NgModule({
@@ -31,7 +34,8 @@ import { FormsModule } from '@angular/forms';
     DescriptionComponent,
     HistoryTimelineComponent,
     DealInfoCardComponent,
-    DocUploadComponent
+    DocUploadComponent,
+    NotesTabComponent
   ],
   imports: [
     SharedModule,
@@ -47,6 +51,9 @@ import { FormsModule } from '@angular/forms';
     DxTextBoxModule,
     DxTabsModule,
     FormsModule,
+        DxTextAreaModule,
+    DxButtonModule,
+    DxLoadPanelModule
   ]
 })
 export class DealInfoModule { }

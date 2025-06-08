@@ -3,9 +3,8 @@ import { DealRead, DealService } from 'src/app/services/dealcreation.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 import { forkJoin } from 'rxjs';
 import { DealstageService } from 'src/app/services/dealstage.service';
+import { Router } from '@angular/router';
 
- 
- 
 export interface PipelineDeal {
   id: number;
   title: string;
@@ -35,18 +34,20 @@ export interface PipelineStage {
   deals: PipelineDeal[];
   id?: number;
 }
- export interface DealStage {
+
+export interface DealStage {
   id: number;
   displayName?: string;
   stageName?: string;
 }
+
 @Component({
   selector: 'app-pipelinepage',
   templateUrl: './pipelinepage.component.html',
   styleUrls: ['./pipelinepage.component.css']
 })
 export class PipelinepageComponent implements OnInit {
-   topcardData = [
+  topcardData = [
     { amount: 0, title: 'Total Return', isCurrency: true, icon: 'assets/dollar-sign-svgrepo-com.svg' },
     { amount: 0, title: 'Total Count of Deals', isCurrency: false, icon: 'assets/count.svg' },
   ];
@@ -93,12 +94,13 @@ export class PipelinepageComponent implements OnInit {
     }
     this.cdr.detectChanges();
   }
+  
   stageNames: string[] = this.stages.map(s => s.name);
   isLoadingInitialData: boolean = false;
   isModalVisible: boolean = false;
   isEditMode: boolean = false;
   selectedStageId: number | null = null;
-
+  isDraggingDeal: boolean = false;
   _selectedDealForModalInput: DealRead | null = null;
   _currentlyEditingPipelineDeal: PipelineDeal | null = null;
   _originalStageNameOfEditingDeal: string = '';
@@ -111,10 +113,11 @@ export class PipelinepageComponent implements OnInit {
   }
 
   constructor(
-   private dealService: DealService,
+    private dealService: DealService,
     private companyContactService: CompanyContactService,
     private dealStageService: DealstageService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -173,7 +176,7 @@ export class PipelinepageComponent implements OnInit {
     console.log('Table data refreshed:', this._tableData.length, 'deals');
   }
 
-  findCustomerByContact(contactFullName: string | null | undefined): string | null { // Updated to match backend
+  findCustomerByContact(contactFullName: string | null | undefined): string | null {
     if (!contactFullName || !this.customerContactMap || Object.keys(this.customerContactMap).length === 0) {
       if (!contactFullName) console.warn('findCustomerByContact: called with null/undefined contactFullName.');
       if (!this.customerContactMap || Object.keys(this.customerContactMap).length === 0) console.warn('findCustomerByContact: customerContactMap is empty or null.');
@@ -259,8 +262,7 @@ export class PipelinepageComponent implements OnInit {
       return typeof dateInput === 'string' ? dateInput : 'Invalid Date';
     }
   }
-
-  getIconColor(index: number): string {
+    getIconColor(index: number): string {
     switch (index) {
       case 0:
         return '#8a2be2';
@@ -292,17 +294,42 @@ export class PipelinepageComponent implements OnInit {
     const previousStageName = this.stages.find(s => s.name === previousStage);
     const currentStageName = this.stages.find(s => s.name === currentStage);
     const deal = previousStageName?.deals[previousIndex];
+    
     if (previousStageName && currentStageName && deal && deal.id) {
       const dealIndexInPrev = previousStageName.deals.findIndex(d => d.id === deal.id);
       if (dealIndexInPrev > -1) {
+        // Set dragging state
+        this.isDraggingDeal = true;
+        
         const [movedDeal] = previousStageName.deals.splice(dealIndexInPrev, 1);
         currentStageName.deals.splice(currentIndex, 0, movedDeal);
 
         console.log(`PipelinePage: Deal "${movedDeal.title}" (ID: ${movedDeal.id}) moved to stage "${currentStage}". Backend update needed.`);
-        this.dealService.updateDealStage(deal.id, currentStageName.name).subscribe();
-
-        this.updateStageAmountsAndTopCards();
-        this.cdr.detectChanges();
+        
+        // Update backend with proper error handling
+        this.dealService.updateDealStage(deal.id, currentStageName.name).subscribe({
+          next: (updatedDeal) => {
+            console.log('Stage updated successfully in backend');
+            // Update the original data with the latest from backend
+            movedDeal.originalData = updatedDeal;
+            this.isDraggingDeal = false;
+            this.updateStageAmountsAndTopCards();
+            this.refreshTableData();
+            this.cdr.detectChanges();
+          },
+          error: (err) => {
+            console.error('Failed to update stage in backend:', err);
+            // Revert the move on error
+            const currentIndex = currentStageName.deals.findIndex(d => d.id === movedDeal.id);
+            if (currentIndex > -1) {
+              currentStageName.deals.splice(currentIndex, 1);
+              previousStageName.deals.splice(dealIndexInPrev, 0, movedDeal);
+            }
+            this.isDraggingDeal = false;
+            alert('Failed to update deal stage. Please try again.');
+            this.cdr.detectChanges();
+          }
+        });
       }
     }
   }
@@ -311,65 +338,85 @@ export class PipelinepageComponent implements OnInit {
     this.isEditMode = false;
     this._selectedDealForModalInput = null;
     this._currentlyEditingPipelineDeal = null;
-    this.selectedStageId = stageId || null; 
-    this.isModalVisible = true;
     this.selectedStageId = stageId || null;
+    this.isModalVisible = true;
   }
-onButtonClick(event: { label: string, stageId?: number }) {
+
+  onButtonClick(event: { label: string, stageId?: number }) {
     if (event.label === 'Deal') {
       this.onAddDeal(event.stageId);
     }
   }
-  onEditDeal(dealFromCard: PipelineDeal, stageName: string): void {
-    this.isEditMode = true;
-    this._currentlyEditingPipelineDeal = dealFromCard;
-    this._originalStageNameOfEditingDeal = stageName;
-    this.selectedStageId = null;
-    if (dealFromCard.originalData) {
-        this._selectedDealForModalInput = { ...dealFromCard.originalData };
-    } else {
-        console.error("PipelinePage CRITICAL: Original backend data (originalData) is missing from PipelineDeal for editing.", dealFromCard);
-        this._selectedDealForModalInput = this.transformPipelineDealToModalInputFallback(dealFromCard);
+
+onEditDeal(dealFromCard: PipelineDeal, stageName: string): void {
+  this.isEditMode = true;
+  this._currentlyEditingPipelineDeal = dealFromCard;
+  this._originalStageNameOfEditingDeal = stageName;
+  this.selectedStageId = null;
+
+  if (dealFromCard.originalData) {
+    this._selectedDealForModalInput = { ...dealFromCard.originalData };
+  } else {
+    console.error("PipelinePage CRITICAL: Original backend data (originalData) is missing from PipelineDeal for editing.", dealFromCard);
+    this._selectedDealForModalInput = this.transformPipelineDealToModalInputFallback(dealFromCard);
+  }
+  this.isModalVisible = true;
+}
+
+transformPipelineDealToModalInputFallback(pipelineDeal: PipelineDeal): DealRead {
+  console.warn("PipelinePage: Executing transformPipelineDealToModalInputFallback. Data accuracy for edit might be reduced.");
+  const stageId = this.stages.find(s => s.name === pipelineDeal.originalData?.stageName)?.id || pipelineDeal.originalData?.dealStageId;
+
+  return {
+    id: pipelineDeal.id,
+    dealName: pipelineDeal.title,
+    dealAmount: pipelineDeal.amount,
+    salespersonName: pipelineDeal.salesperson,
+    startingDate: pipelineDeal.originalData?.startingDate || new Date(pipelineDeal.startDate).toISOString(),
+    closingDate: pipelineDeal.originalData?.closingDate || new Date(pipelineDeal.closeDate).toISOString(),
+    description: pipelineDeal.description,
+    probability: parseFloat(pipelineDeal.probability.replace('%','')),
+    stageName: pipelineDeal.originalData?.stageName,
+    duName: pipelineDeal.department,
+    regionName: pipelineDeal.region,
+    accountName: pipelineDeal.account,
+    contactName: pipelineDeal.contactName,
+    domainName: pipelineDeal.domain,
+    revenueTypeName: pipelineDeal.revenueType,
+    countryName: pipelineDeal.country,
+    customerName: pipelineDeal.customerName,
+    accountId: pipelineDeal.originalData?.accountId,
+    regionId: pipelineDeal.originalData?.regionId,
+    domainId: pipelineDeal.originalData?.domainId,
+    revenueTypeId: pipelineDeal.originalData?.revenueTypeId,
+    duId: pipelineDeal.originalData?.duId,
+    countryId: pipelineDeal.originalData?.countryId,
+    dealStageId: stageId,
+    createdAt: pipelineDeal.originalData?.createdAt || new Date().toISOString(),
+    createdBy: pipelineDeal.originalData?.createdBy || 1,
+  };
+}
+
+  // Open deal in table view
+  onTableRowClick(event: any): void {
+    if (event && event.data && event.data.id) {
+      const dealId = typeof event.data.id === 'string' ? parseInt(event.data.id) : event.data.id;
+      const deal = this.stages.flatMap(s => s.deals).find(d => d.id === dealId);
+      
+      if (deal) {
+        this.router.navigate(['/deal-info', dealId], {
+          state: { 
+            deal: deal.originalData,
+            fromPipeline: true,
+            currentStage: deal.originalData.stageName
+          }
+        });
+      }
     }
-    this.isModalVisible = true;
   }
 
   selectedDealForModal(): DealRead | null {
-      return this._selectedDealForModalInput;
-  }
-
-  transformPipelineDealToModalInputFallback(pipelineDeal: PipelineDeal): DealRead {
-      console.warn("PipelinePage: Executing transformPipelineDealToModalInputFallback. Data accuracy for edit might be reduced.");
-      const stageId = this.stages.find(s => s.name === pipelineDeal.originalData?.stageName)?.id || pipelineDeal.originalData?.dealStageId;
-
-      return {
-          id: pipelineDeal.id,
-          dealName: pipelineDeal.title,
-          dealAmount: pipelineDeal.amount,
-          salespersonName: pipelineDeal.salesperson,
-          startingDate: pipelineDeal.originalData?.startingDate || new Date(pipelineDeal.startDate).toISOString(),
-          closingDate: pipelineDeal.originalData?.closingDate || new Date(pipelineDeal.closeDate).toISOString(),
-          description: pipelineDeal.description,
-          probability: parseFloat(pipelineDeal.probability.replace('%','')),
-          stageName: pipelineDeal.originalData?.stageName,
-          duName: pipelineDeal.department,
-          regionName: pipelineDeal.region,
-          accountName: pipelineDeal.account,
-          contactName: pipelineDeal.contactName,
-          domainName: pipelineDeal.domain,
-          revenueTypeName: pipelineDeal.revenueType,
-          countryName: pipelineDeal.country,
-          customerName: pipelineDeal.customerName,
-          accountId: pipelineDeal.originalData?.accountId,
-          regionId: pipelineDeal.originalData?.regionId,
-          domainId: pipelineDeal.originalData?.domainId,
-          revenueTypeId: pipelineDeal.originalData?.revenueTypeId,
-          duId: pipelineDeal.originalData?.duId,
-          countryId: pipelineDeal.originalData?.countryId,
-          dealStageId: stageId,
-          createdAt: pipelineDeal.originalData?.createdAt || new Date().toISOString(),
-          createdBy: pipelineDeal.originalData?.createdBy || 1,
-      };
+    return this._selectedDealForModalInput;
   }
 
   onModalClose(): void {
@@ -391,63 +438,9 @@ onButtonClick(event: { label: string, stageId?: number }) {
       return;
     }
 
-    console.log('PipelinePage: Processing edited deal in existing view.');
-    if (this._currentlyEditingPipelineDeal && this._currentlyEditingPipelineDeal.id === updatedBackendDeal.id) {
-      let determinedCustomerName = updatedBackendDeal.customerName;
-      if (!determinedCustomerName && updatedBackendDeal.contactName) {
-        determinedCustomerName = this.findCustomerByContact(updatedBackendDeal.contactName) ?? undefined;
-        console.log('Customer name from contact lookup:', determinedCustomerName);
-      }
-      const finalCustomerName = determinedCustomerName || this.extractCustomerNameFallback(updatedBackendDeal) || 'Unknown Customer';
-      console.log('Final customer name:', finalCustomerName);
 
-      const updatedPipelineDeal: PipelineDeal = {
-        id: updatedBackendDeal.id,
-        title: updatedBackendDeal.dealName,
-        amount: updatedBackendDeal.dealAmount,
-        startDate: this.formatDateForDisplay(updatedBackendDeal.startingDate),
-        closeDate: this.formatDateForDisplay(updatedBackendDeal.closingDate),
-        department: updatedBackendDeal.duName || 'N/A',
-        probability: updatedBackendDeal.probability?.toString() + '%' || '0%',
-        region: updatedBackendDeal.regionName || 'N/A',
-        salesperson: updatedBackendDeal.salespersonName,
-        customerName: finalCustomerName,
-        account: updatedBackendDeal.accountName || 'N/A',
-        contactName: updatedBackendDeal.contactName || 'N/A',
-        domain: updatedBackendDeal.domainName || 'N/A',
-        revenueType: updatedBackendDeal.revenueTypeName || 'N/A',
-        country: updatedBackendDeal.countryName || 'N/A',
-        description: updatedBackendDeal.description || '',
-        doc: this._currentlyEditingPipelineDeal.doc,
-        originalData: updatedBackendDeal,
-      };
-
-      const originalStage = this.stages.find(s => s.name === this._originalStageNameOfEditingDeal);
-      const newTargetStage = this.stages.find(s => s.name === updatedBackendDeal.stageName);
-
-      if (originalStage) {
-        const indexInOriginal = originalStage.deals.findIndex(d => d.id === updatedPipelineDeal.id);
-        if (indexInOriginal > -1) {
-          originalStage.deals.splice(indexInOriginal, 1);
-        }
-      }
-
-      if (newTargetStage) {
-        newTargetStage.deals.push(updatedPipelineDeal);
-        newTargetStage.deals.sort((a,b) =>
-            new Date(a.originalData.closingDate!).getTime() - new Date(b.originalData.closingDate!).getTime()
-        );
-      }
-      alert('Deal updated successfully!');
-    } else {
-      console.warn('PipelinePage: onDealSubmitSuccess in edit mode, but _currentlyEditingPipelineDeal is mismatched or missing. Reloading data.');
-      this.loadInitialData();
-    }
-
-    this.updateStageAmountsAndTopCards();
-    this.refreshTableData();
+    this.loadInitialData();
     this.onModalClose();
-    this.cdr.detectChanges();
   }
 
   onDealSubmitError(errorMessage: string): void {
@@ -474,4 +467,92 @@ onButtonClick(event: { label: string, stageId?: number }) {
   get tableData(): any[] {
     return this._tableData;
   }
+
+  // Helper method to refresh a specific deal after returning from deal info page
+  refreshDeal(dealId: number): void {
+    this.dealService.getDealById(dealId).subscribe({
+      next: (updatedDeal) => {
+        // Find and update the deal in the appropriate stage
+        for (const stage of this.stages) {
+          const dealIndex = stage.deals.findIndex(d => d.id === dealId);
+          if (dealIndex > -1) {
+            // Remove from current stage if stage changed
+            if (stage.name !== updatedDeal.stageName) {
+              stage.deals.splice(dealIndex, 1);
+              
+              // Add to new stage
+              const newStage = this.stages.find(s => s.name === updatedDeal.stageName);
+              if (newStage) {
+                const pipelineDeal = this.createPipelineDeal(updatedDeal);
+                newStage.deals.push(pipelineDeal);
+              }
+            } else {
+              // Update in place
+              stage.deals[dealIndex] = this.createPipelineDeal(updatedDeal);
+            }
+            break;
+          }
+        }
+        
+        this.updateStageAmountsAndTopCards();
+        this.refreshTableData();
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error refreshing deal:', err);
+      }
+    });
+  }
+
+  private createPipelineDeal(backendDeal: DealRead): PipelineDeal {
+    let determinedCustomerName = backendDeal.customerName;
+
+    if (!determinedCustomerName && backendDeal.contactName) {
+      determinedCustomerName = this.findCustomerByContact(backendDeal.contactName) ?? undefined;
+    }
+
+    const finalCustomerName = determinedCustomerName || this.extractCustomerNameFallback(backendDeal) || 'Unknown Customer';
+
+    return {
+      id: backendDeal.id,
+      title: backendDeal.dealName,
+      amount: backendDeal.dealAmount,
+      startDate: this.formatDateForDisplay(backendDeal.startingDate),
+      closeDate: this.formatDateForDisplay(backendDeal.closingDate),
+      department: backendDeal.duName || 'N/A',
+      probability: backendDeal.probability?.toString() + '%' || '0%',
+      region: backendDeal.regionName || 'N/A',
+      salesperson: backendDeal.salespersonName,
+      customerName: finalCustomerName,
+      account: backendDeal.accountName || 'N/A',
+      contactName: backendDeal.contactName || 'N/A',
+      domain: backendDeal.domainName || 'N/A',
+      revenueType: backendDeal.revenueTypeName || 'N/A',
+      country: backendDeal.countryName || 'N/A',
+      description: backendDeal.description || '',
+      doc: '',
+      originalData: backendDeal,
+    };
+  }
+
+
+onCardClick(deal: PipelineDeal, stageName: string): void {
+  console.log('Card clicked - Deal:', deal.title, 'Stage:', stageName);
+  console.log('Original data stage:', deal.originalData?.stageName);
+  
+  this.router.navigate(['/deal-info', deal.id], {
+    state: { 
+      deal: {
+        ...deal.originalData,
+        stageName: deal.originalData?.stageName || stageName, // Ensure stage is included
+        currentStage: deal.originalData?.stageName || stageName,
+        closingDate: deal.originalData?.closingDate || deal.closeDate
+      },
+      fromPipeline: true
+    }
+  });
 }
+
+
+}
+  

@@ -1,4 +1,4 @@
-import { NgModule, Pipe } from '@angular/core';
+import { NgModule, Pipe} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
 import { DxButtonModule, DxDrawerModule, DxListModule, DxLoadIndicatorModule } from 'devextreme-angular';

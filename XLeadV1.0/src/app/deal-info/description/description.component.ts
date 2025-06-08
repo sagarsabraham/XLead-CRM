@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-description',
@@ -8,22 +8,23 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class DescriptionComponent {
   @Input() description: string = '';
   @Output() descriptionChange = new EventEmitter<string>();
-
+  
   isEditing: boolean = false;
   editedDescription: string = '';
 
   startEditing() {
     this.isEditing = true;
-    this.editedDescription = this.description;
+    this.editedDescription = this.description || '';
   }
 
   saveDescription() {
-    this.descriptionChange.emit(this.editedDescription);
     this.isEditing = false;
+    this.description = this.editedDescription;
+    this.descriptionChange.emit(this.editedDescription);
   }
 
   cancelEditing() {
     this.isEditing = false;
-    this.editedDescription = this.description;
+    this.editedDescription = this.description || '';
   }
 }

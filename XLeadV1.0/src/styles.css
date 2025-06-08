@@ -155,3 +155,46 @@ p {
     font-size: 2rem; /* 32px */
   }
 }
+
+/* Add to your global styles.css or styles.scss */
+::ng-deep .dx-dialog-wrapper .dx-dialog {
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+::ng-deep .dx-dialog-wrapper .dx-dialog-title {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 15px 20px;
+  font-weight: 600;
+  color: #333;
+  border-radius: 8px 8px 0 0;
+}
+
+::ng-deep .dx-dialog-wrapper .dx-dialog-content {
+  padding: 20px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+::ng-deep .dx-dialog-wrapper .dx-dialog-content .dx-icon-warning {
+  font-size: 48px;
+  color: #ff6b6b;
+  margin-bottom: 10px;
+}
+
+::ng-deep .dx-dialog-wrapper .dx-dialog-buttons {
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  border-radius: 0 0 8px 8px;
+}
+
+::ng-deep .dx-dialog-wrapper .dx-dialog-button {
+  margin: 0 5px;
+}
+
+::ng-deep .dx-dialog-wrapper .dx-dialog-button.dx-state-focused {
+  background-color: #dc3545;
+  color: white;
+}
