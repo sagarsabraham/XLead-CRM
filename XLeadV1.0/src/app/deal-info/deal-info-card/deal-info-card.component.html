@@ -1,16 +1,16 @@
 <div class="deal-info-card dx-card">
-    <app-related-info 
-        title="Related Contact" 
+    <app-related-info
+        title="Related Contact"
         [items]="contactItems">
     </app-related-info>
-
-    <app-related-info 
-        title="Related Company" 
+ 
+    <app-related-info
+        title="Related Customer"
         [items]="companyItems">
     </app-related-info>
-
-    <app-description
-    [description]="dealDescription"
-    (descriptionChange)="onDescriptionChange($event)">
-    </app-description>
+ 
+<app-description
+  [description]="deal?.description"
+  (descriptionChange)="onDescriptionChange($event)">
+</app-description>
 </div>

@@ -1,6 +1,9 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { CompanyService } from '../../services/company.service';
+
 import { UserService } from '../../services/user.service';
+import { CompanyContactService } from 'src/app/services/company-contact.service';
+import { IndustryVerticalService } from 'src/app/services/industry-vertical.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-company-page',
@@ -9,19 +12,32 @@ import { UserService } from '../../services/user.service';
 })
 export class CompanyPageComponent implements OnInit {
   tableHeaders = [
-    { dataField: 'companyName', caption: 'Company Name', visible: true },
+    { dataField: 'customerName', caption: 'Customer Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'website', caption: 'Website', visible: true },
-    
-    { dataField: 'status', caption: 'Status', visible: true }
-    // Keep other headers as needed
+    { dataField: 'industryVertical', caption: 'Industry Vertical', visible: true },
+   { 
+      dataField: 'status', 
+      caption: 'Status', 
+      visible: true,
+      // This lookup configuration tells the grid to use a dropdown for editing.
+      lookup: {
+        dataSource: [
+          { value: 'Active', displayValue: 'Active' },
+          { value: 'Inactive', displayValue: 'Inactive' }
+        ],
+        valueExpr: 'value',
+        displayExpr: 'displayValue'
+      }
+    },
+    // { dataField: 'owner', caption: 'Owner', visible: true }
   ];
 
   tableData: any[] = [];
   topcardData = [
-    { amount: 0, title: 'Total Companies', icon: 'sorted' },
-    { amount: 0, title: 'Active Companies', icon: 'sorted' },
-    { amount: 0, title: 'Inactive Companies', icon: 'sorted' }
+    { amount: 0, title: 'Total Customers', icon: 'assets/count.svg' },
+    { amount: 0, title: 'Active Customers', icon: 'assets/company.svg' },
+    { amount: 0, title: 'Inactive Customers', icon: 'assets/company.svg' }
   ];
 
   totalCompanies = 0;
@@ -29,33 +45,48 @@ export class CompanyPageComponent implements OnInit {
   isLoading: boolean = true;
   error: string | null = null;
 
-  constructor(private companyService: CompanyService, private userService: UserService) {
+  private industryVerticalMap: { [id: number]: string } = {}; // Will be populated dynamically
+  private users: any[] = [];
+
+  constructor(
+    private companyService: CompanyContactService,
+    private userService: UserService,
+    private industryVerticalService: IndustryVerticalService // Added service
+  ) {
     this.checkIfMobile();
   }
 
   ngOnInit(): void {
-   
-     this.loadData();
-    
+    this.loadData();
   }
 
   loadData(): void {
     this.isLoading = true;
     this.error = null;
     
-    // Load users first, then companies
-    this.userService.getUsers().subscribe({
-      next: (users) => {
-        // Store users for mapping
-         console.log('Users loaded:', users);
+    // Fetch industry verticals, users, and companies
+    forkJoin({
+      industryVerticals: this.industryVerticalService.getIndustryVertical(),
+      users: this.userService.getUsers()
+    }).subscribe({
+      next: ({ industryVerticals, users }) => {
+        console.log('Industry Verticals loaded:', industryVerticals);
+        console.log('Users loaded:', users);
+
+        // Map industry verticals
+        this.industryVerticalMap = industryVerticals.reduce((map: { [id: number]: string }, vertical: any) => {
+          map[vertical.id] = vertical.industryName || 'Unknown';
+          return map;
+        }, {});
+
         this.users = users;
-        
-        // Now load companies
         this.loadCompanies();
       },
       error: (err) => {
-        console.error('Error loading users:', err);
-        // Still try to load companies even if users fail
+        console.error('Error loading industry verticals or users:', err);
+        // Fallback: Load companies even if industry verticals or users fail
+        this.industryVerticalMap = {}; // Empty map as fallback
+        this.users = [];
         this.loadCompanies();
       }
     });
@@ -64,20 +95,15 @@ export class CompanyPageComponent implements OnInit {
   loadCompanies(): void {
     this.companyService.getCompanies().subscribe({
       next: (companies) => {
-        // Map API data with safe null checks
-
-         console.log('Companies data:', companies);
+        console.log('Companies data:', companies);
     
-    // Check if createdBy exists in the response
-    if (companies.length > 0) {
-      console.log('Sample company:', companies[0]);
-      console.log('createdBy value:', companies[0].createdBy);
-    }
+        if (companies.length > 0) {
+          console.log('Sample company:', companies[0]);
+          console.log('createdBy value:', companies[0].createdBy);
+        }
+
         this.tableData = companies.map(company => this.mapCompanyData(company));
-        
-        // Update top card metrics
         this.updateMetrics();
-        
         this.totalCompanies = this.tableData.length;
         this.isLoading = false;
       },
@@ -86,13 +112,13 @@ export class CompanyPageComponent implements OnInit {
         this.error = 'Failed to load companies. Please try again later.';
         this.isLoading = false;
         
-        // Optional: Keep demo data for UI testing if API fails
         this.tableData = [
           {
             id: '1',
-            companyName: 'Demo Company',
+            customerName: 'Demo Company',
             phone: '123-456-7890',
             website: 'demo.com',
+            industryVertical: 'Technology',
             owner: 'System',
             status: 'Active'
           }
@@ -102,87 +128,122 @@ export class CompanyPageComponent implements OnInit {
     });
   }
 
-  // Add users property
-  private users: any[] = [];
-
-private mapCompanyData(company: any): any {
-  console.log('Mapping company:', company);
-  console.log('Available users:', this.users);
+  private mapCompanyData(company: any): any {
+    console.log('Mapping company:', company);
+    console.log('Available users:', this.users);
   
-  // Check different possible property names for created by
-  const ownerId = company.createdBy || company.CreatedBy || company.createdById || company.userId;
-  console.log('Looking for owner with ID:', ownerId);
+    const ownerId = company.createdBy || company.CreatedBy || company.createdById || company.userId;
+    console.log('Looking for owner with ID:', ownerId);
   
-  // Make sure comparison is done correctly (string vs number)
-  const ownerIdNum = parseInt(ownerId);
-  let owner = null;
+    const ownerIdNum = parseInt(ownerId);
+    let owner = null;
   
-  if (!isNaN(ownerIdNum)) {
-    // Try to find by numeric ID first
-    owner = this.users.find(u => u.id === ownerIdNum);
-    
-    // If not found, try string comparison
-    if (!owner) {
-      owner = this.users.find(u => u.id.toString() === ownerId.toString());
+    if (!isNaN(ownerIdNum)) {
+      owner = this.users.find(u => u.id === ownerIdNum);
+      if (!owner) {
+        owner = this.users.find(u => u.id.toString() === ownerId.toString());
+      }
     }
+  
+    console.log('Found owner:', owner);
+    const ownerName = owner ? owner.name : 'System';
+  
+    return {
+      id: this.safeToString(company.id),
+      customerName: company.customerName || 'Unnamed Customer',
+      phone: company.customerPhoneNumber || '',
+      website: company.website || '',
+      industryVertical: this.industryVerticalMap[company.industryVerticalId] || 'Unknown', // Use dynamic map
+      owner: ownerName,
+      status: this.mapStatus(company),
+    };
   }
-  
-  console.log('Found owner:', owner);
-  const ownerName = owner ? owner.name : 'System';
-  
-  return {
-    id: this.safeToString(company.id),
-    companyName: company.companyName || 'Unnamed Company',
-    phone: company.companyPhoneNumber || '',
-    website: company.website || '',
-    owner: ownerName,
-    status: this.mapStatus(company),
-  };
-}
 
-  // Add the missing method
   private safeToString(value: any): string {
     return value !== undefined && value !== null ? String(value) : '';
   }
 
   private mapStatus(company: any): string {
-    // If status is already a string (like 'Active' or 'Not Active')
     if (typeof company.status === 'string') {
       return company.status;
     }
-    
-    // If status is a boolean from isActive property
-    if (company.isActive === true || company.isActive === 1) {
-      return 'Active';
-    } else if (company.isActive === false || company.isActive === 0) {
-      return 'Not Active';
-    }
-    
-    // If we can't determine, return unknown
     return 'Unknown';
   }
 
   private updateMetrics(): void {
-    // Count total companies
     const total = this.tableData.length;
+    const active = this.tableData.filter(company => company.status === 'Active').length;
+    const inactive = this.tableData.filter(company => company.status === 'Not Active' || company.status === 'Inactive').length;
     
-    // Count active and inactive companies - match both formats
-    const active = this.tableData.filter(company => 
-      company.status === 'Active'
-    ).length;
-    
-    const inactive = this.tableData.filter(company => 
-      company.status === 'Not Active' || company.status === 'Inactive'
-    ).length;
-    
-    // Update top card data
     this.topcardData = [
-      { amount: total, title: 'Total Companies',icon: 'assets/count.svg'},
-      { amount: active, title: 'Active Companies', icon: 'assets/company.svg' },
-      { amount: inactive, title: 'Inactive Companies', icon: 'assets/company.svg' }
+      { amount: total, title: 'Total Customers', icon: 'assets/count.svg' },
+      { amount: active, title: 'Active Customers', icon: 'assets/company.svg' },
+      { amount: inactive, title: 'Inactive Customers', icon: 'assets/company.svg' }
     ];
   }
+   private getIndustryIdByName(name: string): number | null {
+    const entry = Object.entries(this.industryVerticalMap).find(([id, value]) => value === name);
+    return entry ? parseInt(entry[0], 10) : null;
+  }
 
+    handleUpdate(event: any): void {
+    const companyId = event.key;
+    // The event now contains the full old data and just the changed new data.
+    // Merging them gives us the complete final object.
+    const finalData = { ...event.oldData, ...event.newData };
+
+    // Construct the DTO payload for the backend API
+    const updatePayload = {
+      customerName: finalData.customerName,
+      phoneNo: finalData.phone,
+      website: finalData.website,
+      industryVerticalId: this.getIndustryIdByName(finalData.industryVertical),
+      // The status from the dropdown is now directly a string 'Active' or 'Inactive'.
+      // We convert it back to the required boolean for the API.
+      isActive: finalData.status === 'Active',
+      updatedBy: 3 // Hardcoded user ID for demo.
+    };
+
+    this.companyService.updateCompany(companyId, updatePayload).subscribe({
+      next: (response) => {
+        console.log('Company updated successfully', response);
+        const index = this.tableData.findIndex(c => c.id === companyId);
+        if (index !== -1) {
+          // Update the local data with the merged data from the event
+          this.tableData[index] = finalData;
+          this.tableData = [...this.tableData];
+          this.updateMetrics();
+        }
+      },
+      error: (err) => {
+        console.error('Failed to update company', err);
+        alert('Failed to update company. Please check the console for details.');
+      }
+    });
+  }
+
+
+  
+
+  handleDelete(event: any): void {
+    const companyId = event.key;
+
+    if (confirm('Are you sure you want to delete this company? ')) {
+      
+      this.companyService.deleteCompany(companyId).subscribe({
+        next: () => {
+          console.log('Company deleted successfully');
+          this.tableData = this.tableData.filter(c => c.id !== companyId);
+          this.updateMetrics();
+        },
+        error: (err) => {
+          console.error('Failed to delete company', err);
+          alert(err.error?.message || 'Could not delete the company. Please try again.');
+        }
+      });
+    }
+  }
+  
   @HostListener('window:resize')
   onResize(): void {
     this.checkIfMobile();
@@ -195,11 +256,11 @@ private mapCompanyData(company: any): any {
   getIconColor(index: number): string {
     switch (index) {
       case 0:
-        return '#8a2be2'; // Violet
+        return '#8a2be2'; 
       case 1:
-        return '#28a745'; // Green
+        return '#28a745'; 
       case 2:
-        return '#dc3545'; // Red
+        return '#dc3545'; 
       default:
         return '#000000';
     }

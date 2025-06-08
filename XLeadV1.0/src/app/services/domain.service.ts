@@ -18,7 +18,7 @@ export class DomainService {
     constructor(private http: HttpClient) { }
     
     getAllDomains(): Observable<Domain[]> {
-      // Add the full path here
+  
       const url = `${this.apiUrl}/api/Domain`;
       console.log('Calling API at:', url);
       return this.http.get<Domain[]>(url);

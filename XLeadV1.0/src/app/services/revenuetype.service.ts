@@ -19,7 +19,7 @@ export class RevenuetypeService {
   constructor(private http: HttpClient) { }
 
   getRevenueTypes(): Observable<RevenueType[]> {
-    // Add the full path here
+ 
     const url = `${this.apiUrl}/api/RevenueType`;
     console.log('Calling API at:', url);
     return this.http.get<RevenueType[]>(url);

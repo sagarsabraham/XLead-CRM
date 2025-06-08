@@ -1,9 +1,10 @@
 <div class="deal-card dx-card" (mouseenter)="hover = true" (mouseleave)="hover = false" (click)="onCardClick()">
+ 
     <div class="content">
       <div class="dealname">{{deal.title}}</div>
       <div class="deal-details">
         <div class="deal-amount">{{deal.amount | currency:'USD':'symbol':'1.2-2':'en-US'}}</div>
-        <div appHighlight [appHighlightDate]="deal.closeDate">{{deal.closeDate | date: 'd MMM y'}}</div>
+        <div class="close-date" appHighlight [appHighlightDate]="deal.closeDate">{{deal.closeDate | date: 'd MMM y'}}</div>
       </div>
       <div class="deal-content">{{deal.account}} {{(deal.companyName)}}</div>
       <div class="deal-content">{{deal.department}}</div>

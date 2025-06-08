@@ -15,9 +15,20 @@
             [hoverStateEnabled]="true"
             [class]="classNames"
             (onSelectionChanged)="handleSelectionChanged($event)"
+            (onRowUpdating)="handleRowUpdating($event)"
+            (onRowRemoving)="handleRowRemoving($event)"
             [columnAutoWidth]="true"
             [wordWrapEnabled]="false"
           >
+            <!-- Editing Configuration -->
+            <dxo-editing
+              [allowUpdating]="allowEditing"
+              [allowDeleting]="allowEditing"
+              mode="row"
+              [useIcons]="true"
+            >
+            </dxo-editing>
+ 
             <dxo-selection
               mode="multiple"
               selectAllMode="page"
@@ -310,38 +321,70 @@
       <div class="modal-overlay" (click)="closeDetailsModal()"></div>
       <div class="modal-container">
         <div class="modal-header">
-          <h2>{{ modalHeading }}</h2>
+          <h2>{{ isEditingMobile ? 'Edit ' + entityType : modalHeading }}</h2>
           <button class="close-modal-btn" (click)="closeDetailsModal()">×</button>
         </div>
         <div class="modal-body">
-          <div *ngFor="let header of headers" class="detail-item" [hidden]="!columnVisibility[header.dataField]">
-            <div class="detail-label">{{ header.caption }}</div>
-            <div class="detail-value">
-              <ng-container *ngIf="header.cellTemplate !== 'ownerCellTemplate'">
-                {{ selectedContact[header.dataField] || 'N/A' }}
-              </ng-container>
-              <div *ngIf="header.cellTemplate === 'ownerCellTemplate' && useOwnerTemplate" class="owner-cell">
-                <div class="owner-avatar" [style.backgroundColor]="getOwnerColor(selectedContact[ownerField])">
-                  {{ getOwnerInitial(selectedContact[ownerField]) }}
+          <!-- View Mode -->
+          <ng-container *ngIf="!isEditingMobile && selectedContact">
+            <div *ngFor="let header of headers" class="detail-item" [hidden]="!columnVisibility[header.dataField]">
+              <div class="detail-label">{{ header.caption }}</div>
+              <div class="detail-value">
+                <ng-container *ngIf="header.cellTemplate !== 'ownerCellTemplate'">
+                  {{ selectedContact[header.dataField] || 'N/A' }}
+                </ng-container>
+                <div *ngIf="header.cellTemplate === 'ownerCellTemplate' && useOwnerTemplate" class="owner-cell">
+                  <div class="owner-avatar" [style.backgroundColor]="getOwnerColor(selectedContact[ownerField])">
+                    {{ getOwnerInitial(selectedContact[ownerField]) }}
+                  </div>
+                  <span class="owner-name">{{ selectedContact[ownerField] }}</span>
                 </div>
-                <span class="owner-name">{{ selectedContact[ownerField] }}</span>
               </div>
             </div>
-          </div>
+          </ng-container>
+ 
+          <!-- Edit Mode -->
+          <ng-container *ngIf="isEditingMobile && editedContact">
+      <div *ngFor="let header of headers" class="detail-item" [hidden]="!columnVisibility[header.dataField]">
+        <div class="detail-label">{{ header.caption }}</div>
+        <div class="detail-value">
+          <ng-container *ngIf="header.dataField === 'status' && header.allowEditing !== false">
+            <select class="mobile-edit-select" [(ngModel)]="editedContact.status">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </ng-container>
+            <ng-container *ngIf="header.dataField !== 'status' && header.allowEditing !== false">
+            <input 
+              type="text" 
+              class="mobile-edit-input"
+              [(ngModel)]="editedContact[header.dataField]">
+            </ng-container>
+              
+                <span *ngIf="header.allowEditing === false">{{ editedContact[header.dataField] || 'N/A' }}</span>
+              </div>
+            </div>
+          </ng-container>
         </div>
-        <div class="modal-actions">
-          <button class="modal-action-btn">
-            <i class="fas fa-edit"></i> Edit
-          </button>
-          <button class="modal-action-btn">
-            <i class="fas fa-trash"></i> Delete
-          </button>
-          <button class="modal-action-btn">
-            <i class="fas fa-phone"></i> Call
-          </button>
-          <button class="modal-action-btn">
-            <i class="fas fa-envelope"></i>
-          </button>
+        <div class="modal-actions" *ngIf="allowEditing">
+          <!-- View Mode Actions -->
+          <ng-container *ngIf="!isEditingMobile">
+            <button class="modal-action-btn" (click)="editMobileContact()">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+            <button class="modal-action-btn delete" (click)="deleteMobileContact()">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </ng-container>
+          <!-- Edit Mode Actions -->
+          <ng-container *ngIf="isEditingMobile">
+             <button class="modal-action-btn save" (click)="saveMobileContact()">
+              <i class="fas fa-save"></i> Save
+            </button>
+            <button class="modal-action-btn cancel" (click)="cancelMobileEdit()">
+              <i class="fas fa-times"></i> Cancel
+            </button>
+          </ng-container>
         </div>
       </div>
     </div>

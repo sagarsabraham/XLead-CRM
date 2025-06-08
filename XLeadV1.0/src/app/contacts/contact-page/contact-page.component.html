@@ -4,7 +4,10 @@
   <!-- <app-sidebar [ngClass]="{'sidebar-hidden': !isSidebarVisible, 'sidebar-visible': isSidebarVisible}"></app-sidebar> -->
  
   <div class="container">
+   
     <div class="topbar">
+     
+       
       <div class="total-count">
         Total Contacts: {{ totalContacts }}
       </div>
@@ -32,11 +35,15 @@
   *ngIf="!isLoading && !error"
   [data]="tableData"
   [headers]="tableHeaders"
-  [useOwnerTemplate]="true"
+  [useOwnerTemplate]="false"
   [ownerField]="'owner'"
   [exportFileName]="'Contacts'"
   (onSelectionChanged)="handleSelectionChanged($event)"
-  [entityType]="'Company'"
+  [entityType]="'Customer'"
+   [allowEditing]="true"
+   (onRowUpdating)="handleUpdate($event)"
+   (onRowRemoving)="handleDelete($event)"
+ 
 ></app-table>
     </div>
   </div>
