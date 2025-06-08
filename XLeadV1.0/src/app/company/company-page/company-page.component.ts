@@ -14,9 +14,7 @@ import { TableComponent } from 'src/app/shared/table/table.component'; // Assumi
 export class CompanyPageComponent implements OnInit {
   @ViewChild('appTable') tableComponent!: TableComponent;
 
-  // tableHeaders is now initialized by a dedicated method
   tableHeaders: any[] = []; 
-
   tableData: any[] = [];
   topcardData = [
     { amount: 0, title: 'Total Customers', icon: 'assets/count.svg' },
@@ -30,8 +28,10 @@ export class CompanyPageComponent implements OnInit {
   error: string | null = null;
 
   private industryVerticalMap: { [id: number]: string } = {};
-  private allIndustryVerticals: { id: number; industryName: string }[] = []; // To store data for the dropdown
+  private allIndustryVerticals: { id: number; industryName: string }[] = [];
   private users: any[] = [];
+
+  tableLookups: { [key: string]: any[] } = {};
 
   constructor(
     private companyService: CompanyContactService,
@@ -44,8 +44,6 @@ export class CompanyPageComponent implements OnInit {
   ngOnInit(): void {
     this.loadData();
   }
-  tableLookups: { [key: string]: any[] } = {};
-
 
   loadData(): void {
     this.isLoading = true;
@@ -56,30 +54,29 @@ export class CompanyPageComponent implements OnInit {
       users: this.userService.getUsers()
     }).subscribe({
       next: ({ industryVerticals, users }) => {
-        this.allIndustryVerticals = industryVerticals; // Store the full array
+        this.allIndustryVerticals = industryVerticals;
         this.industryVerticalMap = industryVerticals.reduce((map: { [id: number]: string }, vertical: any) => {
           map[vertical.id] = vertical.industryName || 'Unknown';
           return map;
         }, {});
         this.tableLookups = {
-          industryVertical: this.allIndustryVerticals // Key matches the dataField
+          industryVertical: this.allIndustryVerticals
         };
         
-        this.initializeTableHeaders(); // Define headers now that we have the data
+        this.initializeTableHeaders();
         
         this.users = users;
         this.loadCompanies();
       },
       error: (err) => {
-        console.error('Error loading industry verticals or users:', err);
-        this.initializeTableHeaders(); // Still init headers, dropdown will be empty
+        console.error('Error loading prerequisites:', err);
+        this.initializeTableHeaders();
         this.users = [];
         this.loadCompanies();
       }
     });
   }
 
-  // NEW METHOD to set up the table headers dynamically
   initializeTableHeaders(): void {
     this.tableHeaders = [
       { dataField: 'customerName', caption: 'Customer Name', visible: true },
@@ -89,7 +86,6 @@ export class CompanyPageComponent implements OnInit {
         dataField: 'industryVertical', 
         caption: 'Industry Vertical', 
         visible: true,
-        // This configures the dropdown for the 'industryVertical' column
         lookup: {
           dataSource: this.allIndustryVerticals,
           valueExpr: 'industryName',
@@ -101,10 +97,7 @@ export class CompanyPageComponent implements OnInit {
         caption: 'Status', 
         visible: true,
         lookup: {
-          dataSource: [
-            { value: 'Active' },
-            { value: 'Inactive' }
-          ],
+          dataSource: [ { value: 'Active' }, { value: 'Inactive' } ],
           valueExpr: 'value',
           displayExpr: 'value'
         }
@@ -136,12 +129,13 @@ export class CompanyPageComponent implements OnInit {
     return {
       id: this.safeToString(company.id),
       customerName: company.customerName || 'Unnamed Customer',
-      phone: company.customerPhoneNumber  || '', // Corrected from your provided code
+      phone: company.customerPhoneNumber  || '',
       website: company.website || '',
       industryVertical: this.industryVerticalMap[company.industryVerticalId] || 'Unknown',
       owner: ownerName,
-      status: company.isActive ? 'Active' : 'Inactive', // Corrected from your provided code
-      // Store original ID for lookups
+      status: company.isActive ? 'Active' : 'Inactive',
+      // Store the raw boolean for consistent re-mapping
+      isActive: company.isActive,
       industryVerticalId: company.industryVerticalId 
     };
   }
@@ -150,9 +144,6 @@ export class CompanyPageComponent implements OnInit {
     return value !== undefined && value !== null ? String(value) : '';
   }
   
-  // This mapStatus method is no longer needed as it's handled in mapCompanyData
-  // private mapStatus(company: any): string { ... }
-
   private updateMetrics(): void {
     const total = this.tableData.length;
     const active = this.tableData.filter(company => company.status === 'Active').length;
@@ -165,26 +156,28 @@ export class CompanyPageComponent implements OnInit {
     ];
   }
 
-  // CORRECTED helper method to find the ID from the name
   private getIndustryIdByName(name: string): number | null {
     const vertical = this.allIndustryVerticals.find(v => v.industryName === name);
     return vertical ? vertical.id : null;
   }
 
+  // --- CORRECTED handleUpdate METHOD ---
   handleUpdate(event: any): void {
     const companyId = event.key;
     const finalData = { ...event.oldData, ...event.newData };
+
+    // This is the correct boolean value to send to the backend.
+    const newIsActiveValue = finalData.status === 'Active';
 
     const updatePayload = {
       customerName: finalData.customerName,
       phoneNo: finalData.phone,
       website: finalData.website,
       industryVerticalId: this.getIndustryIdByName(finalData.industryVertical),
-      isActive: finalData.status === 'Active',
+      isActive: newIsActiveValue, // Use the calculated boolean
       updatedBy: 3 
     };
 
-    // Check if industryVerticalId was found
     if (finalData.industryVertical && updatePayload.industryVerticalId === null) {
       alert(`Could not find an ID for the selected industry vertical: "${finalData.industryVertical}". Update cancelled.`);
       return;
@@ -195,10 +188,14 @@ export class CompanyPageComponent implements OnInit {
         console.log('Company updated successfully', response);
         const index = this.tableData.findIndex(c => c.id === companyId);
         if (index !== -1) {
+         
+          finalData.isActive = newIsActiveValue; 
+
           this.tableData[index] = { ...this.tableData[index], ...finalData };
           this.tableData = [...this.tableData];
           this.updateMetrics();
-       
+          
+     
         }
       },
       error: (err) => {
@@ -208,17 +205,20 @@ export class CompanyPageComponent implements OnInit {
     });
   }
 
+  // --- CORRECTED handleDelete METHOD ---
   handleDelete(event: any): void {
     const companyId = event.key;
-    const userId = 3; // The backend requires a userId for soft delete
+    const userId = 3; 
 
     if (confirm('Are you sure you want to delete this company?')) {
-      this.companyService.deleteCompany(companyId).subscribe({ // Pass the userId
+      // Your backend soft-delete endpoint requires a userId
+      this.companyService.deleteCompany(companyId).subscribe({ 
         next: () => {
           console.log('Company deleted successfully');
           this.tableData = this.tableData.filter(c => c.id !== companyId);
           this.updateMetrics();
-       
+          
+      
         },
         error: (err) => {
           console.error('Failed to delete company', err);
@@ -239,14 +239,10 @@ export class CompanyPageComponent implements OnInit {
 
   getIconColor(index: number): string {
     switch (index) {
-      case 0:
-        return '#8a2be2'; 
-      case 1:
-        return '#28a745'; 
-      case 2:
-        return '#dc3545'; 
-      default:
-        return '#000000';
+      case 0: return '#8a2be2'; 
+      case 1: return '#28a745'; 
+      case 2: return '#dc3545'; 
+      default: return '#000000';
     }
   }
 }
