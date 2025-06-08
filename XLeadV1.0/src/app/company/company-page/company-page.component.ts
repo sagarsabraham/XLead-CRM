@@ -1,10 +1,9 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { Component, HostListener, OnInit } from '@angular/core';
 
 import { UserService } from '../../services/user.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 import { IndustryVerticalService } from 'src/app/services/industry-vertical.service';
-import { TableComponent } from 'src/app/shared/table/table.component'; // Assuming this is the correct path
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-company-page',
@@ -12,9 +11,28 @@ import { TableComponent } from 'src/app/shared/table/table.component'; // Assumi
   styleUrls: ['./company-page.component.css']
 })
 export class CompanyPageComponent implements OnInit {
-  @ViewChild('appTable') tableComponent!: TableComponent;
+  tableHeaders = [
+    { dataField: 'customerName', caption: 'Customer Name', visible: true },
+    { dataField: 'phone', caption: 'Phone', visible: true },
+    { dataField: 'website', caption: 'Website', visible: true },
+    { dataField: 'industryVertical', caption: 'Industry Vertical', visible: true },
+   { 
+      dataField: 'status', 
+      caption: 'Status', 
+      visible: true,
+      // This lookup configuration tells the grid to use a dropdown for editing.
+      lookup: {
+        dataSource: [
+          { value: 'Active', displayValue: 'Active' },
+          { value: 'Inactive', displayValue: 'Inactive' }
+        ],
+        valueExpr: 'value',
+        displayExpr: 'displayValue'
+      }
+    },
+    // { dataField: 'owner', caption: 'Owner', visible: true }
+  ];
 
-  tableHeaders: any[] = []; 
   tableData: any[] = [];
   topcardData = [
     { amount: 0, title: 'Total Customers', icon: 'assets/count.svg' },
@@ -27,8 +45,7 @@ export class CompanyPageComponent implements OnInit {
   isLoading: boolean = true;
   error: string | null = null;
 
-  private industryVerticalMap: { [id: number]: string } = {};
-  private allIndustryVerticals: { id: number; industryName: string }[] = [];
+  private industryVerticalMap: { [id: number]: string } = {}; // Will be populated dynamically
   private users: any[] = [];
 
   tableLookups: { [key: string]: any[] } = {};
@@ -36,7 +53,7 @@ export class CompanyPageComponent implements OnInit {
   constructor(
     private companyService: CompanyContactService,
     private userService: UserService,
-    private industryVerticalService: IndustryVerticalService
+    private industryVerticalService: IndustryVerticalService // Added service
   ) {
     this.checkIfMobile();
   }
@@ -49,65 +66,44 @@ export class CompanyPageComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
     
+    // Fetch industry verticals, users, and companies
     forkJoin({
       industryVerticals: this.industryVerticalService.getIndustryVertical(),
       users: this.userService.getUsers()
     }).subscribe({
       next: ({ industryVerticals, users }) => {
-        this.allIndustryVerticals = industryVerticals;
+        console.log('Industry Verticals loaded:', industryVerticals);
+        console.log('Users loaded:', users);
+
+        // Map industry verticals
         this.industryVerticalMap = industryVerticals.reduce((map: { [id: number]: string }, vertical: any) => {
           map[vertical.id] = vertical.industryName || 'Unknown';
           return map;
         }, {});
-        this.tableLookups = {
-          industryVertical: this.allIndustryVerticals
-        };
-        
-        this.initializeTableHeaders();
-        
+
         this.users = users;
         this.loadCompanies();
       },
       error: (err) => {
-        console.error('Error loading prerequisites:', err);
-        this.initializeTableHeaders();
+        console.error('Error loading industry verticals or users:', err);
+        // Fallback: Load companies even if industry verticals or users fail
+        this.industryVerticalMap = {}; // Empty map as fallback
         this.users = [];
         this.loadCompanies();
       }
     });
   }
-
-  initializeTableHeaders(): void {
-    this.tableHeaders = [
-      { dataField: 'customerName', caption: 'Customer Name', visible: true },
-      { dataField: 'phone', caption: 'Phone', visible: true },
-      { dataField: 'website', caption: 'Website', visible: true },
-      { 
-        dataField: 'industryVertical', 
-        caption: 'Industry Vertical', 
-        visible: true,
-        lookup: {
-          dataSource: this.allIndustryVerticals,
-          valueExpr: 'industryName',
-          displayExpr: 'industryName'
-        }
-      },
-      { 
-        dataField: 'status', 
-        caption: 'Status', 
-        visible: true,
-        lookup: {
-          dataSource: [ { value: 'Active' }, { value: 'Inactive' } ],
-          valueExpr: 'value',
-          displayExpr: 'value'
-        }
-      },
-    ];
-  }
   
   loadCompanies(): void {
     this.companyService.getCompanies().subscribe({
       next: (companies) => {
+        console.log('Companies data:', companies);
+    
+        if (companies.length > 0) {
+          console.log('Sample company:', companies[0]);
+          console.log('createdBy value:', companies[0].createdBy);
+        }
+
         this.tableData = companies.map(company => this.mapCompanyData(company));
         this.updateMetrics();
         this.totalCompanies = this.tableData.length;
@@ -117,37 +113,69 @@ export class CompanyPageComponent implements OnInit {
         console.error('Error fetching companies:', err);
         this.error = 'Failed to load companies. Please try again later.';
         this.isLoading = false;
+        
+        this.tableData = [
+          {
+            id: '1',
+            customerName: 'Demo Company',
+            phone: '123-456-7890',
+            website: 'demo.com',
+            industryVertical: 'Technology',
+            owner: 'System',
+            status: 'Active'
+          }
+        ];
+        this.updateMetrics();
       }
     });
   }
 
   private mapCompanyData(company: any): any {
+    console.log('Mapping company:', company);
+    console.log('Available users:', this.users);
+  
     const ownerId = company.createdBy || company.CreatedBy || company.createdById || company.userId;
-    const owner = this.users.find(u => u.id === parseInt(ownerId)) || null;
+    console.log('Looking for owner with ID:', ownerId);
+  
+    const ownerIdNum = parseInt(ownerId);
+    let owner = null;
+  
+    if (!isNaN(ownerIdNum)) {
+      owner = this.users.find(u => u.id === ownerIdNum);
+      if (!owner) {
+        owner = this.users.find(u => u.id.toString() === ownerId.toString());
+      }
+    }
+  
+    console.log('Found owner:', owner);
     const ownerName = owner ? owner.name : 'System';
   
     return {
       id: this.safeToString(company.id),
       customerName: company.customerName || 'Unnamed Customer',
-      phone: company.customerPhoneNumber  || '',
+      phone: company.customerPhoneNumber || '',
       website: company.website || '',
-      industryVertical: this.industryVerticalMap[company.industryVerticalId] || 'Unknown',
+      industryVertical: this.industryVerticalMap[company.industryVerticalId] || 'Unknown', // Use dynamic map
       owner: ownerName,
-      status: company.isActive ? 'Active' : 'Inactive',
-      // Store the raw boolean for consistent re-mapping
-      isActive: company.isActive,
-      industryVerticalId: company.industryVerticalId 
+      status: this.mapStatus(company),
     };
   }
 
   private safeToString(value: any): string {
     return value !== undefined && value !== null ? String(value) : '';
   }
-  
+
+  private mapStatus(company: any): string {
+    if (typeof company.status === 'string') {
+      return company.status;
+    }
+    return 'Unknown';
+  }
+
   private updateMetrics(): void {
     const total = this.tableData.length;
     const active = this.tableData.filter(company => company.status === 'Active').length;
-    const inactive = total - active;
+    const inactive = this.tableData.filter(company => company.status === 'Not Active' || company.status === 'Inactive').length;
     
     this.topcardData = [
       { amount: total, title: 'Total Customers', icon: 'assets/count.svg' },
@@ -155,47 +183,38 @@ export class CompanyPageComponent implements OnInit {
       { amount: inactive, title: 'Inactive Customers', icon: 'assets/company.svg' }
     ];
   }
-
-  private getIndustryIdByName(name: string): number | null {
-    const vertical = this.allIndustryVerticals.find(v => v.industryName === name);
-    return vertical ? vertical.id : null;
+   private getIndustryIdByName(name: string): number | null {
+    const entry = Object.entries(this.industryVerticalMap).find(([id, value]) => value === name);
+    return entry ? parseInt(entry[0], 10) : null;
   }
 
-  // --- CORRECTED handleUpdate METHOD ---
-  handleUpdate(event: any): void {
+    handleUpdate(event: any): void {
     const companyId = event.key;
+    // The event now contains the full old data and just the changed new data.
+    // Merging them gives us the complete final object.
     const finalData = { ...event.oldData, ...event.newData };
 
-    // This is the correct boolean value to send to the backend.
-    const newIsActiveValue = finalData.status === 'Active';
-
+    // Construct the DTO payload for the backend API
     const updatePayload = {
       customerName: finalData.customerName,
       phoneNo: finalData.phone,
       website: finalData.website,
       industryVerticalId: this.getIndustryIdByName(finalData.industryVertical),
-      isActive: newIsActiveValue, // Use the calculated boolean
-      updatedBy: 3 
+      // The status from the dropdown is now directly a string 'Active' or 'Inactive'.
+      // We convert it back to the required boolean for the API.
+      isActive: finalData.status === 'Active',
+      updatedBy: 3 // Hardcoded user ID for demo.
     };
-
-    if (finalData.industryVertical && updatePayload.industryVerticalId === null) {
-      alert(`Could not find an ID for the selected industry vertical: "${finalData.industryVertical}". Update cancelled.`);
-      return;
-    }
 
     this.companyService.updateCompany(companyId, updatePayload).subscribe({
       next: (response) => {
         console.log('Company updated successfully', response);
         const index = this.tableData.findIndex(c => c.id === companyId);
         if (index !== -1) {
-         
-          finalData.isActive = newIsActiveValue; 
-
-          this.tableData[index] = { ...this.tableData[index], ...finalData };
+          // Update the local data with the merged data from the event
+          this.tableData[index] = finalData;
           this.tableData = [...this.tableData];
           this.updateMetrics();
-          
-     
         }
       },
       error: (err) => {
@@ -205,20 +224,19 @@ export class CompanyPageComponent implements OnInit {
     });
   }
 
-  // --- CORRECTED handleDelete METHOD ---
+
+  
+
   handleDelete(event: any): void {
     const companyId = event.key;
-    const userId = 3; 
 
-    if (confirm('Are you sure you want to delete this company?')) {
-      // Your backend soft-delete endpoint requires a userId
-      this.companyService.deleteCompany(companyId).subscribe({ 
+    if (confirm('Are you sure you want to delete this company? ')) {
+      
+      this.companyService.deleteCompany(companyId).subscribe({
         next: () => {
           console.log('Company deleted successfully');
           this.tableData = this.tableData.filter(c => c.id !== companyId);
           this.updateMetrics();
-          
-      
         },
         error: (err) => {
           console.error('Failed to delete company', err);
