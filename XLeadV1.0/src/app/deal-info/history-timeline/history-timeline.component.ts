@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
  
-// Define an interface for the history entry
 interface HistoryEntry {
   timestamp: string;
   editedBy: string;
@@ -16,15 +15,12 @@ interface HistoryEntry {
 export class HistoryTimelineComponent {
   @Input() history: HistoryEntry[] = [];
  
-  // Group history entries by date
   get groupedHistory(): { date: string; entries: HistoryEntry[] }[] {
     if (!this.history || this.history.length === 0) return [];
  
     const grouped: { date: string; entries: HistoryEntry[] }[] = [];
     let currentDate = '';
     let currentGroup: HistoryEntry[] = [];
- 
-    // Sort history in descending order (newest first)
     const sortedHistory = this.history.slice().sort((a, b) => {
       return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
     });
@@ -39,7 +35,6 @@ export class HistoryTimelineComponent {
       currentGroup.push(item);
     });
  
-    // Push the last group
     if (currentGroup.length > 0) {
       grouped.push({ date: currentDate, entries: currentGroup });
     }
@@ -54,7 +49,6 @@ export class HistoryTimelineComponent {
       const date = new Date(timestamp);
       if (isNaN(date.getTime())) return 'Invalid date';
  
-      // Format date to "MMM DD, YYYY" (e.g., "MAY 12, 2025")
       const options: Intl.DateTimeFormatOptions = {
         month: 'short',
         day: '2-digit',

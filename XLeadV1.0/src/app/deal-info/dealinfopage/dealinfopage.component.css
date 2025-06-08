@@ -15,7 +15,7 @@ html, body {
  
 .content {
   display: flex;
-  gap: 20px !important; /* Reinforced gap for desktop */
+  gap: 20px !important; 
   margin-top: 20px;
   align-items: flex-start;
   width: 100%;
@@ -27,7 +27,7 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  flex: 0 0 400px; /* Fixed width */
+  flex: 0 0 400px; 
   max-width: 400px;
   padding: 0 !important;
   margin: 0 !important;
@@ -35,16 +35,16 @@ html, body {
 }
  
 .right-column {
-  flex: 1 1 auto; /* Take remaining space */
+  flex: 1 1 auto; 
   display: flex;
   flex-direction: column;
-  min-width: 0; /* Allows column to shrink */
+  min-width: 0; 
   padding: 0 !important;
   margin: 0 !important;
   box-sizing: border-box;
 }
  
-/* Desktop Tabs Styling */
+
 .dx-tabs {
   background: rgba(255, 255, 255, 0.95) !important;
   backdrop-filter: blur(20px) !important;
@@ -80,7 +80,6 @@ html, body {
   width: 100% !important;
 }
  
-/* Ensure content below dx-tabs takes full width and aligns with tabs */
 :host ::ng-deep app-history-timeline,
 :host ::ng-deep app-doc-upload {
   width: 100% !important;
@@ -94,16 +93,14 @@ html, body {
   align-self: stretch !important;
 }
  
-/* Constrain app-deal-info-card to prevent expansion */
 :host ::ng-deep app-deal-info-card {
   width: 100% !important;
   max-width: 100% !important;
-  margin: 0 !important; /* Ensure no margins interfere with gap */
+  margin: 0 !important; 
   box-sizing: border-box;
   overflow: hidden;
 }
  
-/* Ensure textarea inside app-deal-info-card doesn't expand */
 :host ::ng-deep app-deal-info-card textarea {
   width: 100%;
   box-sizing: border-box;
@@ -261,7 +258,7 @@ html, body {
   :host ::ng-deep app-deal-info-card {
     padding: 16px;
     flex: 1;
-    margin: 0 !important; /* Ensure no margins in mobile */
+    margin: 0 !important; 
   }
  
   :host ::ng-deep app-deal-info-card h3 {
@@ -319,14 +316,13 @@ html, body {
   .desktop-layout {
     display: flex !important;
     width: 100% !important;
-    gap: 20px !important; /* Reinforced gap for desktop */
+    gap: 20px !important; 
   }
  
   .timeline-wrapper {
     display: block;
   }
  
-  /* Ensure flexbox layout stays horizontal */
   .content {
     display: flex !important;
     flex-direction: row !important;
