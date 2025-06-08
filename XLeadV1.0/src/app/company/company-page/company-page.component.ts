@@ -1,3 +1,4 @@
+
 import { Component, HostListener, OnInit } from '@angular/core';
 
 import { UserService } from '../../services/user.service';
@@ -11,16 +12,28 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./company-page.component.css']
 })
 export class CompanyPageComponent implements OnInit {
+  // Property to hold the data for the Industry Vertical dropdown
+  industryVerticalsLookupData: any[] = [];
+
   tableHeaders = [
     { dataField: 'customerName', caption: 'Customer Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'website', caption: 'Website', visible: true },
-    { dataField: 'industryVertical', caption: 'Industry Vertical', visible: true },
+    // This lookup configuration is now correct and will work with the fix below
+    { 
+      dataField: 'industryVertical', 
+      caption: 'Industry Vertical', 
+      visible: true,
+      lookup: {
+        dataSource: this.industryVerticalsLookupData, // This binding is correct
+        valueExpr: 'industryName', 
+        displayExpr: 'industryName' 
+      }
+    },
    { 
       dataField: 'status', 
       caption: 'Status', 
       visible: true,
-      // This lookup configuration tells the grid to use a dropdown for editing.
       lookup: {
         dataSource: [
           { value: 'Active', displayValue: 'Active' },
@@ -45,7 +58,7 @@ export class CompanyPageComponent implements OnInit {
   isLoading: boolean = true;
   error: string | null = null;
 
-  private industryVerticalMap: { [id: number]: string } = {}; // Will be populated dynamically
+  private industryVerticalMap: { [id: number]: string } = {};
   private users: any[] = [];
 
   tableLookups: { [key: string]: any[] } = {};
@@ -53,7 +66,7 @@ export class CompanyPageComponent implements OnInit {
   constructor(
     private companyService: CompanyContactService,
     private userService: UserService,
-    private industryVerticalService: IndustryVerticalService // Added service
+    private industryVerticalService: IndustryVerticalService
   ) {
     this.checkIfMobile();
   }
@@ -66,7 +79,6 @@ export class CompanyPageComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
     
-    // Fetch industry verticals, users, and companies
     forkJoin({
       industryVerticals: this.industryVerticalService.getIndustryVertical(),
       users: this.userService.getUsers()
@@ -74,8 +86,13 @@ export class CompanyPageComponent implements OnInit {
       next: ({ industryVerticals, users }) => {
         console.log('Industry Verticals loaded:', industryVerticals);
         console.log('Users loaded:', users);
+        
+        // FIX: Instead of re-assigning the array, clear it and push the new items.
+        // This maintains the original array reference that the grid is bound to.
+        this.industryVerticalsLookupData.length = 0; // Clear the array
+        this.industryVerticalsLookupData.push(...industryVerticals); // Add new items
 
-        // Map industry verticals
+        // Map industry verticals for display purposes
         this.industryVerticalMap = industryVerticals.reduce((map: { [id: number]: string }, vertical: any) => {
           map[vertical.id] = vertical.industryName || 'Unknown';
           return map;
@@ -86,8 +103,7 @@ export class CompanyPageComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading industry verticals or users:', err);
-        // Fallback: Load companies even if industry verticals or users fail
-        this.industryVerticalMap = {}; // Empty map as fallback
+        this.industryVerticalMap = {};
         this.users = [];
         this.loadCompanies();
       }
@@ -131,12 +147,7 @@ export class CompanyPageComponent implements OnInit {
   }
 
   private mapCompanyData(company: any): any {
-    console.log('Mapping company:', company);
-    console.log('Available users:', this.users);
-  
     const ownerId = company.createdBy || company.CreatedBy || company.createdById || company.userId;
-    console.log('Looking for owner with ID:', ownerId);
-  
     const ownerIdNum = parseInt(ownerId);
     let owner = null;
   
@@ -147,7 +158,6 @@ export class CompanyPageComponent implements OnInit {
       }
     }
   
-    console.log('Found owner:', owner);
     const ownerName = owner ? owner.name : 'System';
   
     return {
@@ -155,7 +165,7 @@ export class CompanyPageComponent implements OnInit {
       customerName: company.customerName || 'Unnamed Customer',
       phone: company.customerPhoneNumber || '',
       website: company.website || '',
-      industryVertical: this.industryVerticalMap[company.industryVerticalId] || 'Unknown', // Use dynamic map
+      industryVertical: this.industryVerticalMap[company.industryVerticalId] || 'Unknown',
       owner: ownerName,
       status: this.mapStatus(company),
     };
@@ -190,18 +200,13 @@ export class CompanyPageComponent implements OnInit {
 
     handleUpdate(event: any): void {
     const companyId = event.key;
-    // The event now contains the full old data and just the changed new data.
-    // Merging them gives us the complete final object.
     const finalData = { ...event.oldData, ...event.newData };
 
-    // Construct the DTO payload for the backend API
     const updatePayload = {
       customerName: finalData.customerName,
       phoneNo: finalData.phone,
       website: finalData.website,
       industryVerticalId: this.getIndustryIdByName(finalData.industryVertical),
-      // The status from the dropdown is now directly a string 'Active' or 'Inactive'.
-      // We convert it back to the required boolean for the API.
       isActive: finalData.status === 'Active',
       updatedBy: 3 // Hardcoded user ID for demo.
     };
@@ -211,7 +216,6 @@ export class CompanyPageComponent implements OnInit {
         console.log('Company updated successfully', response);
         const index = this.tableData.findIndex(c => c.id === companyId);
         if (index !== -1) {
-          // Update the local data with the merged data from the event
           this.tableData[index] = finalData;
           this.tableData = [...this.tableData];
           this.updateMetrics();
@@ -223,9 +227,6 @@ export class CompanyPageComponent implements OnInit {
       }
     });
   }
-
-
-  
 
   handleDelete(event: any): void {
     const companyId = event.key;
