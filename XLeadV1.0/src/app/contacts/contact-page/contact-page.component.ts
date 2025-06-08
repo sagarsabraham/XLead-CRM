@@ -1,6 +1,7 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
+import { TableComponent } from 'src/app/shared/table/table.component';
 
 @Component({
   selector: 'app-contact-page',
@@ -8,13 +9,27 @@ import { CompanyContactService } from 'src/app/services/company-contact.service'
   styleUrls: ['./contact-page.component.css']
 })
 export class ContactPageComponent implements OnInit {
+  // @ViewChild('appTable') tableComponent!: TableComponent;
   tableHeaders = [
     { dataField: 'name', caption: 'Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'email', caption: 'Email', visible: true },
     { dataField: 'customerName', caption: 'Customer', visible: true },
     { dataField: 'designation', caption: 'Designation', visible: true }, 
-    { dataField: 'status', caption: 'Status', visible: true }
+    { 
+      dataField: 'status', 
+      caption: 'Status', 
+      visible: true,
+      // Add the same lookup configuration here
+      lookup: {
+        dataSource: [
+          { value: 'Active', displayValue: 'Active' },
+          { value: 'Inactive', displayValue: 'Inactive' }
+        ],
+        valueExpr: 'value',
+        displayExpr: 'displayValue'
+      }
+    }
   ];
 
   tableData: any[] = [];
@@ -105,6 +120,59 @@ export class ContactPageComponent implements OnInit {
     
     this.selectedContactIds = event.selectedRowKeys || [];
   }
+    handleUpdate(event: any): void {
+    const contactId = event.key;
+    const finalData = { ...event.oldData, ...event.newData };
+
+    const updatePayload = {
+      firstName: finalData.name.split(' ')[0],
+      lastName: finalData.name.split(' ').slice(1).join(' '),
+      designation: finalData.designation,
+      email: finalData.email,
+      phoneNumber: finalData.phone,
+      // Convert the status string from the dropdown back to the required boolean
+      isActive: finalData.status === 'Active',
+      // updatedBy: 3 // Hardcoded user ID
+    };
+
+    this.contactService.updateContact(contactId, updatePayload).subscribe({
+      next: (response) => {
+        console.log('Contact updated successfully', response);
+        const index = this.tableData.findIndex(c => c.id === contactId);
+        if (index !== -1) {
+          this.tableData[index] = finalData;
+          this.tableData = [...this.tableData];
+        }
+        
+      },
+      error: (err) => {
+        console.error('Failed to update contact', err);
+        this.loadContacts(); 
+      }
+    });
+  }
+ 
+  handleDelete(event: any): void {
+    const contactId = event.key;
+
+    if (confirm('Are you sure you want to delete this contact?')) {
+      // No longer need to pass a userId
+      this.contactService.deleteContact(contactId).subscribe({
+        next: () => {
+          console.log('Contact deleted successfully');
+          this.tableData = this.tableData.filter(c => c.id !== contactId);
+          this.totalContacts = this.tableData.length;
+        },
+        error: (err) => {
+          console.error('Failed to delete contact', err);
+          alert(err.error?.message || 'Could not delete the contact. Please try again.');
+        }
+      });
+    }
+  }
+
+ 
+
 
   toggleSidebar(): void {
     this.isSidebarVisible = !this.isSidebarVisible;

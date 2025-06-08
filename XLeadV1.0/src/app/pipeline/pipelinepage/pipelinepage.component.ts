@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DealRead, DealService } from 'src/app/services/dealcreation.service';
-import { CompanyContactService } from 'src/app/services/company-contact.service';
+import { CompanyContactService, CustomerContactMap } from 'src/app/services/company-contact.service'; // Import the new interface
 import { forkJoin } from 'rxjs';
 import { DealstageService } from 'src/app/services/dealstage.service';
 import { Router } from '@angular/router';
@@ -74,7 +74,8 @@ export class PipelinepageComponent implements OnInit {
     { dataField: 'stageName', caption: 'Stage', visible: true }
   ];
 
-  customerContactMap: { [customer: string]: string[] } = {}; 
+  // --- THIS IS THE CORRECTED PROPERTY TYPE ---
+  customerContactMap: { [customer: string]: CustomerContactMap } = {}; 
 
   selectedTabId: string = 'card';
   selectedTabIndex: number = 0;
@@ -91,7 +92,6 @@ export class PipelinepageComponent implements OnInit {
         this.cdr.detectChanges();
       }, 50);
     }
-    this.cdr.detectChanges();
   }
   stageNames: string[] = this.stages.map(s => s.name);
   isLoadingInitialData: boolean = false;
@@ -135,11 +135,16 @@ export class PipelinepageComponent implements OnInit {
     }).subscribe({
       next: (results: {
         deals: DealRead[];
-        contactMap: { [company: string]: string[] };
+        contactMap: { [customer: string]: CustomerContactMap };
         stages: DealStage[];
       }) => {
         console.log('PipelinePage: Successfully fetched deals, contact map, and stages.');
-       
+         this.customerContactMap = results.contactMap; 
+        this.processFetchedDeals(results.deals);
+        this.updateStageAmountsAndTopCards();
+        this.refreshTableData();
+        this.isLoadingInitialData = false;
+        this.cdr.detectChanges();
         // Update stage IDs
         this.stages.forEach(stage => {
           const backendStage = results.stages.find(s => s.displayName === stage.name || s.stageName === stage.name);
@@ -148,15 +153,11 @@ export class PipelinepageComponent implements OnInit {
           }
         });
         console.log('PipelinePage: Successfully fetched deals and contact map.', results);
-        this.customerContactMap = results.contactMap; 
-        this.processFetchedDeals(results.deals);
-        this.updateStageAmountsAndTopCards();
-        this.refreshTableData();
-        this.isLoadingInitialData = false;
-        this.cdr.detectChanges();
+        // This assignment will now work without a type error
+      
       },
       error: (err) => {
-        console.error('PipelinePage: Error fetching initial data (deals, contact map, or stages):', err);
+        console.error('PipelinePage: Error fetching initial data (deals or contact map):', err);
         alert('Failed to load pipeline data. Please try again.');
         this.isLoadingInitialData = false;
         this.cdr.detectChanges();
@@ -175,10 +176,9 @@ export class PipelinepageComponent implements OnInit {
     console.log('Table data refreshed:', this._tableData.length, 'deals');
   }
 
-  findCustomerByContact(contactFullName: string | null | undefined): string | null { 
+  // --- THIS IS THE CORRECTED METHOD ---
+  findCustomerByContact(contactFullName: string | null | undefined): string | null {
     if (!contactFullName || !this.customerContactMap || Object.keys(this.customerContactMap).length === 0) {
-      if (!contactFullName) console.warn('findCustomerByContact: called with null/undefined contactFullName.');
-      if (!this.customerContactMap || Object.keys(this.customerContactMap).length === 0) console.warn('findCustomerByContact: customerContactMap is empty or null.');
       return null;
     }
 
@@ -186,10 +186,13 @@ export class PipelinepageComponent implements OnInit {
 
     for (const customerName in this.customerContactMap) {
       if (Object.prototype.hasOwnProperty.call(this.customerContactMap, customerName)) {
-        const contactsInCustomer = this.customerContactMap[customerName];
+        // 1. Get the customer info object from the map.
+        const customerInfo = this.customerContactMap[customerName];
        
-        if (Array.isArray(contactsInCustomer)) {
-          const found = contactsInCustomer.some(mappedContact => {
+        // 2. Safely access the 'contacts' array within the object.
+        if (customerInfo && Array.isArray(customerInfo.contacts)) {
+          // 3. Perform the 'some' check on the contacts array.
+          const found = customerInfo.contacts.some(mappedContact => {
             if (typeof mappedContact === 'string') {
               return mappedContact.trim() === normalizedSearchContact;
             }
@@ -202,7 +205,7 @@ export class PipelinepageComponent implements OnInit {
         }
       }
     }
-    
+   
     return null;
   }
 
@@ -338,7 +341,6 @@ export class PipelinepageComponent implements OnInit {
     this.isEditMode = false;
     this._selectedDealForModalInput = null;
     this._currentlyEditingPipelineDeal = null;
-    this.selectedStageId = stageId || null; 
     this.isModalVisible = true;
     this.selectedStageId = stageId || null;
   }
@@ -421,7 +423,6 @@ onTableRowClick(event: any): void {
     this._selectedDealForModalInput = null;
     this._currentlyEditingPipelineDeal = null;
     this._originalStageNameOfEditingDeal = '';
-    this.selectedStageId = null;
   }
 
   onDealSubmitSuccess(updatedBackendDeal: DealRead): void {

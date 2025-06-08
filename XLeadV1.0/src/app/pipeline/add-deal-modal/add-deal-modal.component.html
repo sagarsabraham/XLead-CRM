@@ -13,12 +13,14 @@
       <app-modal-header title="Deal Information" [showOwner]="true"></app-modal-header>
 
       <dx-form
-      *ngIf="showForm"
         #dealFormInstance 
         [formData]="newDeal"
         [colCountByScreen]="{ xs: 1, sm: 1, md: 1, lg: 1 }">
  
-      
+        <!-- <dxi-item dataField="salesperson">
+          <dxo-label text="SalesPerson" cssClass="bold-label"></dxo-label>
+          <dxi-validation-rule type="required" message="SalesPerson Name is required"></dxi-validation-rule>
+        </dxi-item> -->
   <dxi-item
   dataField="amount"
   editorType="dxNumberBox"
@@ -34,26 +36,39 @@
 </dxi-item>
  
  
-        <dxi-item dataField="customerName">
-          <dxo-label text="Customer Name" cssClass="bold-label"></dxo-label>
-          <div class="company-name-container">
-            <dx-select-box
-              id="customerSelect"
-              [(value)]="newDeal.customerName"
-              [dataSource]="filteredCustomers"
-              [searchEnabled]="true"
-              placeholder="Select or search a customer"
-              (onValueChanged)="onCustomerChange($event.value)">
-            </dx-select-box>
-            <dx-button
-              text="+" 
-              type="default"
-              (onClick)="openQuickCreateCustomerModal()">
-            </dx-button>
-          </div>
-          <dxi-validation-rule type="required" message="Customer Name is required"></dxi-validation-rule>
-        </dxi-item>
-       
+       <!-- Inside the dx-form -->
+
+<dxi-item dataField="customerName">
+  <dxo-label text="Customer Name" cssClass="bold-label"></dxo-label>
+  <div class="company-name-container">
+    <dx-select-box
+      id="customerSelect"
+      [(value)]="newDeal.customerName"
+      [dataSource]="customerDataSource"  
+      displayExpr="name"                
+      valueExpr="name"                 
+      itemTemplate="item"               
+      [searchEnabled]="true"
+      placeholder="Select or search a customer"
+      (onValueChanged)="onCustomerChange($event.value)">
+      
+      <!-- NEW: Custom template to show disabled items with a different style -->
+      <div *dxTemplate="let item of 'item'">
+        <div [ngClass]="{'disabled-item': item.disabled}">
+          {{item.name}}
+          <span *ngIf="item.disabled" class="disabled-text"> (Inactive)</span>
+        </div>
+      </div>
+
+    </dx-select-box>
+    <dx-button
+      text="+" 
+      type="default"
+      (onClick)="openQuickCreateCustomerModal()">
+    </dx-button>
+  </div>
+  <dxi-validation-rule type="required" message="Company Name is required"></dxi-validation-rule>
+</dxi-item>
         <dxi-item dataField="title">
           <dxo-label text="Deal Name" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Deal Name is required"></dxi-validation-rule>
@@ -193,18 +208,18 @@
         <dxi-item *ngIf="customFields.length > 0" itemType="group">
           <dxo-label text="Additional Information" cssClass="bold-label section-label"></dxo-label>
           <dxi-item
-            *ngFor="let field of customFields"
-            [dataField]="field.dataField"
-            [editorType]="getEditorType(field.fieldType)"
-            [editorOptions]="getEditorOptions(field.fieldType)">
-            <dxo-label [text]="field.fieldLabel" cssClass="bold-label"></dxo-label>
-            <dxi-validation-rule
-              *ngIf="field.required"
-              type="required"
-              [message]="field.fieldLabel + ' is required'">
-            </dxi-validation-rule>
-          </dxi-item>
-        </dxi-item>
+    *ngFor="let field of customFields; trackBy: trackByDataField" 
+    [dataField]="field.dataField"
+    [editorType]="getEditorType(field.fieldType)"
+    [editorOptions]="getEditorOptions(field.fieldType)">
+    <dxo-label [text]="field.fieldLabel" cssClass="bold-label"></dxo-label>
+    <dxi-validation-rule
+      *ngIf="field.required"
+      type="required"
+      [message]="field.fieldLabel + ' is required'">
+    </dxi-validation-rule>
+  </dxi-item>
+</dxi-item>
       </dx-form>
     </div>
    

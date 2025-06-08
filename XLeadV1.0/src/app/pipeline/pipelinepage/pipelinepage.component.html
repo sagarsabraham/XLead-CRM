@@ -1,34 +1,12 @@
 <div class="container">
   <div class="topbar">
     <h1>Pipelines</h1>
-    <div class="topbar-actions">
-      <!-- View switching icons -->
-      <div class="view-icons">
-        <span
-          class="view-icon"
-          [class.active]="selectedTabId === 'card'"
-          (click)="switchView('card')"
-          title="Card View">
-          <img src="assets/card-view.svg" alt="Card View" width="20" height="20">
-          <span class="view-label">Card View</span>
-        </span>
-        <span
-          class="view-icon"
-          [class.active]="selectedTabId === 'table'"
-          (click)="switchView('table')"
-          title="Table View">
-          <img src="assets/table-view.svg" alt="Card View" width="24" height="24">
-          <span class="view-label">Table View</span>
-        </span>
-      </div>
-      <!-- Deal button -->
-      <app-button
-        *ngFor="let button of dealButton"
-        [label]="button.label"
-        [icon]="button.icon"
-        (onClick)="onAddDeal()"
-      ></app-button>
-    </div>
+    <app-button
+      *ngFor="let button of dealButton"
+      [label]="button.label"
+      [icon]="button.icon"
+      (onClick)="onAddDeal()"
+    ></app-button>
   </div>
    
  
@@ -61,7 +39,7 @@
           [collapsed]="stage.collapsed">
         </app-dealheader>
       </div>
-
+ 
       <div *ngIf="!stage.collapsed">
         <app-dealbody
           [deals]="stage.deals"
@@ -71,27 +49,27 @@
           (onEdit)="onEditDeal($event, stage.name)">
         </app-dealbody>
       </div>
-
+ 
       <div *ngIf="stage.hover && !stage.collapsed">
         <app-dealfooter
           [buttons]="dealButton"
-          [stageId]="stage.id"
-          (buttonClick)="onButtonClick($event)">
+          (buttonClick)="onAddDeal()">
         </app-dealfooter>
       </div>
     </div>
   </div>
-
+ 
   <!-- Table View -->
+ 
   <div *ngIf="selectedTabId === 'table'" class="table-view">
-    <app-table
-      [data]="tableData"
-      [headers]="tableHeaders"
-      [useOwnerTemplate]="false"
-      [exportFileName]="'pipeline'"
-      (onSelectionChanged)="handleSelectionChanged($event)"
-      #pipelineTable>
-    </app-table>
+   <app-table
+  [data]="tableData"
+  [headers]="tableHeaders"
+  [useOwnerTemplate]="false"
+  [exportFileName]="'pipeline'"
+  (onSelectionChanged)="handleSelectionChanged($event)"
+   #pipelineTable>
+ </app-table>
   </div>
  
   <!-- Add Deal Modal -->
@@ -99,7 +77,6 @@
     [isVisible]="isModalVisible"
     [dealToEdit]="selectedDealForModal()"
     [mode]="isEditMode ? 'edit' : 'add'"
-    [selectedStage]="selectedStageId"
     (onClose)="onModalClose()"
     (onSubmitSuccess)="onDealSubmitSuccess($event)"
     (onSubmitError)="onDealSubmitError($event)">

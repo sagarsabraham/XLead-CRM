@@ -16,7 +16,20 @@ export class CompanyPageComponent implements OnInit {
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'website', caption: 'Website', visible: true },
     { dataField: 'industryVertical', caption: 'Industry Vertical', visible: true },
-    { dataField: 'status', caption: 'Status', visible: true },
+   { 
+      dataField: 'status', 
+      caption: 'Status', 
+      visible: true,
+      // This lookup configuration tells the grid to use a dropdown for editing.
+      lookup: {
+        dataSource: [
+          { value: 'Active', displayValue: 'Active' },
+          { value: 'Inactive', displayValue: 'Inactive' }
+        ],
+        valueExpr: 'value',
+        displayExpr: 'displayValue'
+      }
+    },
     // { dataField: 'owner', caption: 'Owner', visible: true }
   ];
 
@@ -167,6 +180,68 @@ export class CompanyPageComponent implements OnInit {
       { amount: active, title: 'Active Customers', icon: 'assets/company.svg' },
       { amount: inactive, title: 'Inactive Customers', icon: 'assets/company.svg' }
     ];
+  }
+   private getIndustryIdByName(name: string): number | null {
+    const entry = Object.entries(this.industryVerticalMap).find(([id, value]) => value === name);
+    return entry ? parseInt(entry[0], 10) : null;
+  }
+
+    handleUpdate(event: any): void {
+    const companyId = event.key;
+    // The event now contains the full old data and just the changed new data.
+    // Merging them gives us the complete final object.
+    const finalData = { ...event.oldData, ...event.newData };
+
+    // Construct the DTO payload for the backend API
+    const updatePayload = {
+      customerName: finalData.customerName,
+      phoneNo: finalData.phone,
+      website: finalData.website,
+      industryVerticalId: this.getIndustryIdByName(finalData.industryVertical),
+      // The status from the dropdown is now directly a string 'Active' or 'Inactive'.
+      // We convert it back to the required boolean for the API.
+      isActive: finalData.status === 'Active',
+      updatedBy: 3 // Hardcoded user ID for demo.
+    };
+
+    this.companyService.updateCompany(companyId, updatePayload).subscribe({
+      next: (response) => {
+        console.log('Company updated successfully', response);
+        const index = this.tableData.findIndex(c => c.id === companyId);
+        if (index !== -1) {
+          // Update the local data with the merged data from the event
+          this.tableData[index] = finalData;
+          this.tableData = [...this.tableData];
+          this.updateMetrics();
+        }
+      },
+      error: (err) => {
+        console.error('Failed to update company', err);
+        alert('Failed to update company. Please check the console for details.');
+      }
+    });
+  }
+
+
+  
+
+  handleDelete(event: any): void {
+    const companyId = event.key;
+
+    if (confirm('Are you sure you want to delete this company? ')) {
+      
+      this.companyService.deleteCompany(companyId).subscribe({
+        next: () => {
+          console.log('Company deleted successfully');
+          this.tableData = this.tableData.filter(c => c.id !== companyId);
+          this.updateMetrics();
+        },
+        error: (err) => {
+          console.error('Failed to delete company', err);
+          alert(err.error?.message || 'Could not delete the company. Please try again.');
+        }
+      });
+    }
   }
   
   @HostListener('window:resize')

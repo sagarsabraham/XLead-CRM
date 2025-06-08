@@ -41,6 +41,9 @@
           [ownerField]="'owner'"
           [exportFileName]="'Customers'"
           [entityType]="'Customer'"
+          [allowEditing]="true" 
+   (onRowUpdating)="handleUpdate($event)"
+   (onRowRemoving)="handleDelete($event)"
         ></app-table>
       </div>
     </div>
