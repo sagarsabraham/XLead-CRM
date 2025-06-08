@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { DxFormComponent, DxPopupComponent } from 'devextreme-angular';
 import { finalize } from 'rxjs/operators';
-import { forkJoin } from 'rxjs'; // Add this import
+import { forkJoin } from 'rxjs'; 
 
 export interface QuickContactFormData {
   FirstName: string;
@@ -367,12 +367,10 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         this.isFormReady = false;
         console.log('Modal became visible (isVisible=true), form marked as NOT ready initially.');
         if (this.mode === 'edit' && this.dealToEdit) {
-          // Wait for dropdown data to load before pre-filling the form
           if (this.isDropdownDataLoaded) {
             this.prefillFormForEdit(this.dealToEdit);
           } else {
             console.log('Waiting for dropdown data to load before pre-filling form...');
-            // The loadDropdownData method will call prefillFormForEdit once data is loaded
           }
         } else {
           this.resetForm();
@@ -436,8 +434,6 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         this.customers = Object.keys(results.customerContactMap);
         this.filteredCustomers = [...this.customers];
         this.industryVertical = results.industryVerticals;
-
-        // Update customerFields with industry verticals
         const industryField = this.customerFields.find(field => field.dataField === 'industryVertical');
         if (industryField && industryField.editorOptions) {
           industryField.editorOptions.dataSource = this.industryVertical;
@@ -445,8 +441,6 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
 
         this.isDropdownDataLoaded = true;
         console.log('Dropdown data loaded:', this.isDropdownDataLoaded);
-
-        // Now prefill the form if in edit mode
         if (this.mode === 'edit' && this.dealToEdit && this.isVisible) {
           this.prefillFormForEdit(this.dealToEdit);
         }
@@ -455,7 +449,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       },
       error: (err) => {
         console.error('Error loading dropdown data:', err);
-        this.isDropdownDataLoaded = true; // Allow form to proceed even if there's an error
+        this.isDropdownDataLoaded = true; 
         this.cdr.detectChanges();
       }
     });
@@ -465,10 +459,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     const parseDate = (dateStr: string | null | undefined): Date | null => dateStr ? new Date(dateStr) : null;
 
     console.log('Prefilling form with deal data:', deal);
-    // Add this to inspect the raw object
   console.log('Raw deal serviceId:', deal.serviceId, 'serviceLineId:', (deal as any).serviceLineId);
 
-    // Initialize newDeal with deal data
     this.newDeal = {
       amount: deal.dealAmount || 0,
       customerName: deal.customerName || '',
@@ -488,7 +480,6 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       probability: deal.probability || null,
     };
 
-    // Prefill custom fields if they exist
     if (deal.customFields) {
       Object.keys(deal.customFields).forEach(key => {
         this.newDeal[key] = deal.customFields![key];
@@ -506,8 +497,6 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         }
       });
     }
-
-    // Ensure the form is updated after setting newDeal
     if (this.dealFormInstance && this.dealFormInstance.instance) {
       this.dealFormInstance.instance.option('formData', this.newDeal);
     }
@@ -522,13 +511,11 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     }
     this.onCustomerChange(this.newDeal.customerName, false);
     
-
-    // Ensure serviceline is updated in the form
     if (deal.serviceId && this.dealFormInstance && this.dealFormInstance.instance) {
       console.log('Updating serviceline in form with serviceId:', deal.serviceId);
       this.dealFormInstance.instance.updateData('serviceline', deal.serviceId);
     } else {
-      console.log('Not updating serviceline: serviceId=', deal.serviceId, 'dealFormInstance=', !!this.dealFormInstance); // Add this
+      console.log('Not updating serviceline: serviceId=', deal.serviceId, 'dealFormInstance=', !!this.dealFormInstance); 
     }
 
     this.cdr.detectChanges();
@@ -624,7 +611,6 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     });
 
     if (this.mode === 'edit' && this.dealToEdit) {
-      // Edit mode: Prepare DealEditPayload and call updateDeal
       const dealPayload: DealEditPayload = {
         title: this.newDeal.title,
         amount: this.newDeal.amount,
@@ -665,7 +651,6 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
           }
         });
     } else {
-      // Add mode: Prepare DealCreatePayload and call createDeal
       const dealPayload: DealCreatePayload = {
         title: this.newDeal.title,
         amount: this.newDeal.amount,
@@ -765,7 +750,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.dealFormInstance?.instance.resetValues();
     this.cdr.detectChanges();
   }
-private setDefaultStage() {
+  private setDefaultStage() {
     if (this.selectedStage !== null && this.dealStages.some(stage => stage.id === this.selectedStage)) {
       this.newDeal.stage = this.selectedStage;
     } else if (this.qualificationStageId !== null) {
@@ -780,7 +765,6 @@ private setDefaultStage() {
       this.newDeal.contactName = '';
       this.selectedContactDetails = null;
     }
-    // Update the form with the new customerName
     if (this.dealFormInstance && this.dealFormInstance.instance) {
       this.dealFormInstance.instance.updateData('customerName', this.newDeal.customerName);
     }
@@ -803,7 +787,6 @@ private setDefaultStage() {
           next: (contact) => {
             console.log('Contact details fetched:', contact);
             this.selectedContactDetails = contact || null;
-            // Update the form with the contactName after fetching details
             if (this.dealFormInstance && this.dealFormInstance.instance) {
               this.dealFormInstance.instance.updateData('contactName', this.newDeal.contactName);
             }
