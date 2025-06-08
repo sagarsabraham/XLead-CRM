@@ -12,7 +12,12 @@ export class ContactPageComponent implements OnInit {
     { dataField: 'name', caption: 'Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'email', caption: 'Email', visible: true },
-    { dataField: 'customerName', caption: 'Customer', visible: true },
+    { 
+      dataField: 'customerName', 
+      caption: 'Customer', 
+      visible: true,
+      allowEditing: false // Customer assignment is a complex action, disable simple edit
+    },
     { dataField: 'designation', caption: 'Designation', visible: true },
     {
       dataField: 'status',
