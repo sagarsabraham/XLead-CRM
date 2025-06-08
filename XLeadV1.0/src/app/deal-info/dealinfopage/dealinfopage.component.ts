@@ -48,7 +48,7 @@ export class DealinfopageComponent implements OnInit {
     this.checkScreenSize();
     this.loadStages();
    
-    // First check if deal data was passed via navigation state
+ 
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras?.state || window.history.state;
    
@@ -112,7 +112,6 @@ export class DealinfopageComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading stage history:', err);
-        // Create default history entry if endpoint doesn't exist or returns error
         this.history = [{
           timestamp: this.formatDate(this.deal?.startDate ? new Date(this.deal.startDate) : new Date()),
           editedBy: 'System',
@@ -124,9 +123,9 @@ export class DealinfopageComponent implements OnInit {
   }
  
   processDealData(dealData: any) {
-    console.log('Processing deal data:', dealData); // Debug log
+    console.log('Processing deal data:', dealData); 
    
-    // Store original customer data before processing
+
     this.originalCustomerData = {
       customerName: dealData.customerName || dealData.companyName,
       contactName: dealData.contactName,
@@ -136,7 +135,7 @@ export class DealinfopageComponent implements OnInit {
       companyPhone: dealData.companyPhone
     };
  
-    // Get the stage - check multiple possible field names
+   
     let stageName = dealData.stageName ||
                     dealData.stage ||
                     dealData.dealStage ||
@@ -148,8 +147,7 @@ export class DealinfopageComponent implements OnInit {
       stageName = dealData.dealStage.stageName || dealData.dealStage.displayName;
     }
    
-    console.log('Stage name found:', stageName); // Debug log
- 
+    console.log('Stage name found:', stageName); 
     this.deal = {
       id: dealData.id || dealData.dealId,
       title: dealData.dealName || dealData.title,
@@ -176,20 +174,20 @@ export class DealinfopageComponent implements OnInit {
       createdAt: dealData.createdAt || dealData.startingDate || new Date()
     };
    
-    console.log('Processed deal with stage:', this.deal.stage); // Debug log
+    console.log('Processed deal with stage:', this.deal.stage); 
    
     this.dealId = dealData.id || dealData.dealId;
   }
  
-  // Helper method to format dates consistently
+
   private formatDate(date: Date): string {
     if (!date || isNaN(date.getTime())) {
       console.warn('Invalid date detected, using current date');
       date = new Date();
     }
-    // Format as YYYY-MM-DD HH:MM:SS to ensure consistency
+   
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const month = String(date.getMonth() + 1).padStart(2, '0'); 
     const day = String(date.getDate()).padStart(2, '0');
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
@@ -201,7 +199,7 @@ export class DealinfopageComponent implements OnInit {
     this.history = [];
    
     if (!history || history.length === 0) {
-      // Add initial creation entry
+   
       this.history.push({
         timestamp: this.formatDate(this.deal?.startDate ? new Date(this.deal.startDate) : new Date()),
         editedBy: 'System',
@@ -211,7 +209,7 @@ export class DealinfopageComponent implements OnInit {
       return;
     }
    
-    // Sort history by date (oldest first)
+  
     const sortedHistory = [...history].sort((a, b) => {
       const dateA = new Date(a.createdAt || a.timestamp);
       const dateB = new Date(b.createdAt || b.timestamp);
@@ -232,7 +230,7 @@ export class DealinfopageComponent implements OnInit {
       previousStage = toStage;
     });
    
-    // Reverse to show newest first
+
     this.history.reverse();
   }
  

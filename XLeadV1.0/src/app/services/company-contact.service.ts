@@ -33,17 +33,13 @@ export interface ContactCreateDto {
   createdBy: number;
 }
 
-// --- NEW INTERFACE TO MATCH THE BACKEND'S RESPONSE ---
 export interface CustomerContactMap {
   isActive: boolean;
   isHidden: boolean | null;
   contacts: string[];
 }
 
-// --- OLD INTERFACE IS NO LONGER NEEDED AND CAN BE REMOVED ---
-// export interface CustomerContactMap {
-//   [customerName: string]: string[]; 
-// }
+
 
 @Injectable({
   providedIn: 'root'
@@ -61,9 +57,7 @@ export class CompanyContactService {
         const normalizedCustomerName = customerName.trim().toLowerCase();
         const foundContact = contacts.find((contact: any) => {
           const fullName = `${contact.firstName} ${contact.lastName}`.trim().toLowerCase();
-          // Assuming the getContacts() response doesn't have customerName directly
-          // This part of your logic might need adjustment if getContacts() API changes
-          // For now, let's assume it works or is handled elsewhere.
+         
           return fullName === normalizedContactName;
         });
         if (!foundContact) {
@@ -74,7 +68,6 @@ export class CompanyContactService {
     );
   }
 
-  // --- THIS IS THE CORRECTED METHOD ---
   getCompanyContactMap(): Observable<{ [customer: string]: CustomerContactMap}> {
     return this.http.get<{ [customer: string]: CustomerContactMap }>(
       `${this.apiUrl}/api/CustomerContact/customer-contact-map`
@@ -126,9 +119,7 @@ export class CompanyContactService {
   }
 
   deleteContact(id: number): Observable<any> {
-    // Note: The backend for soft-delete requires a userId. This might need to be added back.
-    // Example: deleteContact(id: number, userId: number): Observable<any>
-    // return this.http.delete(`${this.apiUrl}/api/CustomerContact/contact/${id}?userId=${userId}`);
+   
     return this.http.delete(`${this.apiUrl}/api/CustomerContact/contact/${id}`);
   }
 
@@ -137,9 +128,7 @@ export class CompanyContactService {
   }
 
   deleteCompany(id: number): Observable<any> {
-    // Note: The backend for soft-delete requires a userId. This might need to be added back.
-    // Example: deleteCompany(id: number, userId: number): Observable<any>
-    // return this.http.delete(`${this.apiUrl}/api/CustomerContact/customer/${id}?userId=${userId}`);
+   
     return this.http.delete(`${this.apiUrl}/api/CustomerContact/customer/${id}`);
   }
 }
