@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { AuthService } from 'src/app/services/auth-service.service';
+import { AuthServiceService } from 'src/app/services/auth-service.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
  
 @Component({
@@ -21,7 +22,7 @@ export class ContactPageComponent implements OnInit {
       dataField: 'status',
       caption: 'Status',
       visible: true,
-     
+      
       lookup: {
         dataSource: [
           { value: 'Active', displayValue: 'Active' },
@@ -42,6 +43,9 @@ export class ContactPageComponent implements OnInit {
  canEditContacts = false;
   canDeleteContacts = false;
   constructor(private contactService: CompanyContactService, private authService: AuthService) {
+ canEditContacts = false;
+  canDeleteContacts = false;
+  constructor(private contactService: CompanyContactService, private authService: AuthServiceService) {
     this.checkIfMobile();
   }
  
@@ -78,7 +82,7 @@ export class ContactPageComponent implements OnInit {
           phone: contact.phoneNumber || '',
           email: contact.email || '',
           customerName: contact.customerId ? customerMap[contact.customerId] || 'Unknown Customer' : 'No Customer',
-          designation: contact.designation || 'N/A',
+          designation: contact.designation || 'N/A', 
           status: contact.isActive ? 'Active' : 'Inactive',
           owner: contact.createdBy?.toString() || 'System'
         }));
@@ -127,7 +131,7 @@ export class ContactPageComponent implements OnInit {
  handleUpdate(event: any): void {
     const contactId = event.key;
     const finalData = { ...event.oldData, ...event.newData };
- 
+
     const updatePayload = {
       firstName: finalData.name.split(' ')[0],
       lastName: finalData.name.split(' ').slice(1).join(' '),
@@ -137,32 +141,32 @@ export class ContactPageComponent implements OnInit {
       isActive: finalData.status === 'Active',
       updatedBy: this.authService.getUserId()
     };
- 
+
     this.contactService.updateContact(contactId, updatePayload).subscribe({
       next: (response) => {
         console.log('Contact updated successfully', response);
-       
+        
        
         const index = this.tableData.findIndex(c => c.id === contactId);
- 
+
         if (index !== -1) {
        
           this.tableData[index] = finalData;
-         
-         
+          
+          
           this.tableData = [...this.tableData];
         }
-       
+        
       },
       error: (err) => {
         console.error('Failed to update contact', err);
         alert(err.error?.message || 'Update failed.');
-        this.loadContacts();
+        this.loadContacts(); 
       }
     });
   }
- 
- 
+
+  
   handleDelete(event: any): void {
     const contactId = event.key;
     if (confirm('Are you sure you want to delete this contact?')) {

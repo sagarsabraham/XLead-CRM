@@ -348,13 +348,21 @@
       <div *ngFor="let header of headers" class="detail-item" [hidden]="!columnVisibility[header.dataField]">
         <div class="detail-label">{{ header.caption }}</div>
         <div class="detail-value">
+
+          <ng-container *ngIf="getLookupDataSource(header.dataField) && header.allowEditing !== false">
+        <select class="mobile-edit-select" [(ngModel)]="editedContact[header.dataField]">
+          <option *ngFor="let item of getLookupDataSource(header.dataField)" [ngValue]="item[getLookupValueExpr(header.dataField)]">
+            {{ item[getLookupDisplayExpr(header.dataField)] }}
+          </option>
+        </select>
+      </ng-container>
           <ng-container *ngIf="header.dataField === 'status' && header.allowEditing !== false">
             <select class="mobile-edit-select" [(ngModel)]="editedContact.status">
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
             </select>
           </ng-container>
-            <ng-container *ngIf="header.dataField !== 'status' && header.allowEditing !== false">
+              <ng-container *ngIf="header.dataField !== 'status' && !getLookupDataSource(header.dataField) && header.allowEditing !== false">
             <input 
               type="text" 
               class="mobile-edit-input"

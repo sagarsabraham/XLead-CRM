@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DealService } from 'src/app/services/dealcreation.service';
 import { DealstageService } from 'src/app/services/dealstage.service';
  import { CompanyContactService } from 'src/app/services/company-contact.service';
-
+ 
 @Component({
   selector: 'app-dealinfopage',
   templateUrl: './dealinfopage.component.html',
@@ -49,7 +49,7 @@ export class DealinfopageComponent implements OnInit {
     console.log('=== DEAL INFO PAGE INIT ===');
     this.checkScreenSize();
     this.loadStages();
-
+ 
     // First check if deal data was passed via navigation state
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras?.state || window.history.state;
@@ -448,4 +448,5 @@ processDealDataWithContactInfo(dealData: any) {
     this.desktopSelectedTabId = e.itemData.id;
   }
 }
+ 
  

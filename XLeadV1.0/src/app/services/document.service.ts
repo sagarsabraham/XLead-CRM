@@ -10,20 +10,22 @@ export interface Attachment {
   dealId: number;
   createdBy: number;
   createdAt: Date;
+  createdAt: Date;
 }
-
+ 
 @Injectable({
   providedIn: 'root'
 })
 export class DocumentService {
   private apiUrl = environment.apiUrl;
-
+ 
   constructor(private http: HttpClient) { }
-
+ 
   getAttachments(dealId: number): Observable<Attachment[]> {
     return this.http.get<Attachment[]>(`${this.apiUrl}/api/attachments/deal/${dealId}`);
+    return this.http.get<Attachment[]>(`${this.apiUrl}/api/attachments/deal/${dealId}`);
   }
-
+ 
   uploadAttachment(file: File, dealId: number): Observable<Attachment> {
     const formData = new FormData();
     formData.append('file', file, file.name);
@@ -32,3 +34,4 @@ export class DocumentService {
     return this.http.post<Attachment>(`${this.apiUrl}/api/attachments/upload`, formData);
   }
 }
+ 

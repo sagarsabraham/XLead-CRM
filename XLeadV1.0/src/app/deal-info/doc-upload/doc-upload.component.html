@@ -1,5 +1,5 @@
 <div class="doc-upload-container">
-
+ 
   <h5>Upload New Document</h5>
   <dx-file-uploader
     selectButtonText="Select file"
@@ -9,15 +9,15 @@
     [multiple]="false"
     (onValueChanged)="onFileSelected($event)">
   </dx-file-uploader>
-
+ 
   <hr>
-
+ 
   <h5>Uploaded Documents</h5>
   <dx-load-panel
       [visible]="isLoading"
       message="Loading attachments...">
   </dx-load-panel>
-
+ 
   <dx-list
     [dataSource]="attachments"
     [height]="300"
@@ -35,3 +35,4 @@
     </div>
   </dx-list>
 </div>
+ 

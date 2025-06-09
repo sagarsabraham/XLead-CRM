@@ -118,10 +118,25 @@ export class CompanyContactService {
       map(companies => companies.find((company: any) => company.customerName === name))
     );
   }
+
+    updateCompany(id: number, companyData: any): Observable<any> {
  
     updateCompany(id: number, companyData: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/api/CustomerContact/customer/${id}`, companyData);
   }
+
+  // Pass userId to the backend for authorization check
+  deleteCompany(id: number, userId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/api/CustomerContact/customer/${id}?userId=${userId}`);
+  }
+  
+  updateContact(id: number, contactData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/CustomerContact/contact/${id}`, contactData);
+  }
+
+  // Pass userId to the backend for authorization check
+  deleteContact(id: number, userId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/api/CustomerContact/contact/${id}?userId=${userId}`);
  
   // Pass userId to the backend for authorization check
   deleteCompany(id: number, userId: number): Observable<any> {

@@ -20,6 +20,8 @@ export class TableComponent implements AfterViewInit {
   @Input() ownerField: string = 'owner';
   @Input() exportFileName: string = 'Data';
   @Input() entityType: string = 'Item';
+  @Input() allowEditing: boolean = true; 
+  @Input() allowDeleting: boolean = false;
   @Input() allowEditing: boolean = true;
   @Input() allowDeleting: boolean = false;
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter<any>();
@@ -121,6 +123,8 @@ export class TableComponent implements AfterViewInit {
       this.configureDataGrid();
       this.adjustFilterRowPosition();
     }
+    
+
    
  
     console.log('=== TABLE COMPONENT INIT ===');
