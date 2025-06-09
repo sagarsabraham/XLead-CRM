@@ -51,7 +51,7 @@ import { DealService, DealCreatePayload, DealRead,DealEditPayload } from 'src/ap
 import { DxValidationRule } from '../form-modal/form-modal.component';
 import { SeviceLineService } from 'src/app/services/sevice-line.service';
 import { IndustryVerticalService } from 'src/app/services/industry-vertical.service';
-import { AuthServiceService } from 'src/app/services/auth-service.service';
+import { AuthService } from 'src/app/services/auth-service.service';
 import { CountryCodeService } from 'src/app/services/country-code.service';
 import { forkJoin } from 'rxjs';
 
@@ -311,7 +311,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     private dealService: DealService,
     private serviceLine: SeviceLineService,
     private industryVerticalService: IndustryVerticalService,
-    private authService: AuthServiceService,
+    private authService: AuthService,
     private countrycodeService: CountryCodeService
   ) {}
 

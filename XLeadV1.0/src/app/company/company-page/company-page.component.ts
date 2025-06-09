@@ -4,7 +4,7 @@ import { UserService } from '../../services/user.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 import { IndustryVerticalService } from 'src/app/services/industry-vertical.service';
 import { forkJoin } from 'rxjs';
-import { AuthServiceService } from 'src/app/services/auth-service.service';
+import { AuthService } from 'src/app/services/auth-service.service';
  
 @Component({
   selector: 'app-company-page',
@@ -68,7 +68,7 @@ canEditCustomers = false;
     private companyService: CompanyContactService,
     private userService: UserService,
     private industryVerticalService: IndustryVerticalService,
-     private authService: AuthServiceService
+     private authService: AuthService
   ) {
     this.checkIfMobile();
   }

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { AuthServiceService } from './auth-service.service';
+import { AuthService } from './auth-service.service';
  
 
 export interface DealCreatePayload {
@@ -156,7 +156,7 @@ export class DealService {
   private apiUrl = 'https://localhost:7297/api/Deals';
   private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
  
-  constructor(private http: HttpClient,private authService: AuthServiceService) { }
+  constructor(private http: HttpClient,private authService: AuthService) { }
  
   createDeal(dealData: DealCreatePayload): Observable<DealRead> {
     return this.http.post<DealRead>(this.apiUrl, JSON.stringify(dealData), this.httpOptions)
@@ -223,6 +223,7 @@ export class DealService {
     return this.http.get<ManagerStageCount[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
+
   getAllDeals(): Observable<DealRead[]> {
     return this.http.get<DealRead[]>(this.apiUrl, this.httpOptions)
       .pipe(catchError(this.handleError));
@@ -232,7 +233,7 @@ export class DealService {
 
     if (!currentUserId) {
     
-      console.error('User ID not found in AuthServiceService.');
+      console.error('User ID not found in AuthService.');
       return throwError(() => new Error('User ID is not available. Cannot fetch user-specific deals.'));
     }
 

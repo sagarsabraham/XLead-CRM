@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, HostListener } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { AuthServiceService } from 'src/app/services/auth-service.service';
+import { AuthService } from 'src/app/services/auth-service.service';
 import { DealManagerOverview, DealService } from 'src/app/services/dealcreation.service';
  
 @Component({
@@ -45,7 +45,7 @@ export class OverviewPageComponent {
   managerId: number;
  
   constructor(
-    private authService: AuthServiceService,
+    private authService: AuthService,
     private dealService: DealService,
     private cdr: ChangeDetectorRef
   ) {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AuthServiceService } from './auth-service.service';
+import { AuthService } from './auth-service.service';
  
 export interface Note {
   id?: number;
@@ -36,7 +36,7 @@ export class NotesService {
  
   constructor(
     private http: HttpClient,
-    private authService: AuthServiceService
+    private authService: AuthService
   ) { }
  
   createNote(note: NoteCreate): Observable<Note> {

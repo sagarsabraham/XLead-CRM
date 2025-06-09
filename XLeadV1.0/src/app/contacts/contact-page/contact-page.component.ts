@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { AuthServiceService } from 'src/app/services/auth-service.service';
+import { AuthService } from 'src/app/services/auth-service.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
  
 @Component({
@@ -41,7 +41,7 @@ export class ContactPageComponent implements OnInit {
   error: string | null = null;
  canEditContacts = false;
   canDeleteContacts = false;
-  constructor(private contactService: CompanyContactService, private authService: AuthServiceService) {
+  constructor(private contactService: CompanyContactService, private authService: AuthService) {
     this.checkIfMobile();
   }
  

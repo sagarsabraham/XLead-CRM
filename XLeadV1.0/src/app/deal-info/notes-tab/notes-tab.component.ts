@@ -2,7 +2,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { NotesService, Note, NoteCreate } from 'src/app/services/notes.service';
-import { AuthServiceService } from 'src/app/services/auth-service.service';
+import { AuthService } from 'src/app/services/auth-service.service';
 import { confirm } from 'devextreme/ui/dialog';
  
 @Component({
@@ -26,7 +26,7 @@ export class NotesTabComponent implements OnInit, OnDestroy {
  
   constructor(
     private notesService: NotesService,
-    private authService: AuthServiceService
+    private authService: AuthService
   ) {
     this.currentUserId = this.authService.userId;
   }

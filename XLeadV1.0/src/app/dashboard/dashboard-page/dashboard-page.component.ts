@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'; // Added OnInit
 import { DealService, MonthlyRevenueData, PipelineStageData, TopCustomerData } from '../../services/dealcreation.service'; // Adjust path if needed
-import { AuthServiceService } from 'src/app/services/auth-service.service';
+import { AuthService } from 'src/app/services/auth-service.service';
  
 @Component({
   selector: 'app-dashboard-page',
@@ -22,7 +22,7 @@ export class DashboardPageComponent implements OnInit { // Implemented OnInit
   pipelineStagesError: string | null = null;
   // --- End of update ---
  
-  constructor(private dealService: DealService, private authService: AuthServiceService) {
+  constructor(private dealService: DealService, private authService: AuthService) {
         this.currentUserId = this.authService.getUserId(); 
   } // Injected DealService
  
