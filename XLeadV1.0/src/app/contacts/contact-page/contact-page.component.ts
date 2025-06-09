@@ -1,7 +1,8 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { AuthService } from 'src/app/services/auth-service.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
+import { DxToastComponent} from 'devextreme-angular';
  
 @Component({
   selector: 'app-contact-page',
@@ -9,6 +10,7 @@ import { CompanyContactService } from 'src/app/services/company-contact.service'
   styleUrls: ['./contact-page.component.css']
 })
 export class ContactPageComponent implements OnInit {
+  @ViewChild('toastInstance', { static: false }) toastInstance!: DxToastComponent;
   tableHeaders = [
     { dataField: 'name', caption: 'Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
@@ -41,10 +43,21 @@ export class ContactPageComponent implements OnInit {
   error: string | null = null;
  canEditContacts = false;
   canDeleteContacts = false;
+
+  toastMessage: string = '';
+  toastType: 'info' | 'success' | 'error' | 'warning' = 'info';
+  toastVisible: boolean = false;
+
   constructor(private contactService: CompanyContactService, private authService: AuthService) {
     this.checkIfMobile();
   }
  
+  showToast(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.toastVisible = true;
+  }
+
   ngOnInit(): void {
     this.canEditContacts = this.authService.hasPrivilege('EditContact');
     this.canDeleteContacts = this.authService.hasPrivilege('DeleteContact');
@@ -156,7 +169,7 @@ export class ContactPageComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to update contact', err);
-        alert(err.error?.message || 'Update failed.');
+        this.showToast(err.error?.message || 'Update failed.', 'error');
         this.loadContacts(); 
       }
     });
@@ -174,7 +187,7 @@ export class ContactPageComponent implements OnInit {
         },
         error: (err) => {
           console.error('Failed to delete contact', err);
-          alert(err.error?.message || 'Could not delete the contact.');
+          this.showToast(err.error?.message || 'Could not delete the contact.', 'error');
         }
       });
     }

@@ -1,10 +1,11 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit, ViewChild } from '@angular/core';
  
 import { UserService } from '../../services/user.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 import { IndustryVerticalService } from 'src/app/services/industry-vertical.service';
 import { forkJoin } from 'rxjs';
 import { AuthService } from 'src/app/services/auth-service.service';
+import { DxToastComponent } from 'devextreme-angular';
  
 @Component({
   selector: 'app-company-page',
@@ -12,6 +13,7 @@ import { AuthService } from 'src/app/services/auth-service.service';
   styleUrls: ['./company-page.component.css']
 })
 export class CompanyPageComponent implements OnInit {
+  @ViewChild('toastInstance', { static: false }) toastInstance!: DxToastComponent;
   industryVerticalsLookupData: any[] = [];
  
   tableHeaders = [
@@ -61,14 +63,26 @@ canDeleteCustomers = false;
   private users: any[] = [];
 
   tableLookups: { [key: string]: any[] } = {};
+
+  toastMessage: string = '';
+  toastType: 'info' | 'success' | 'error' | 'warning' = 'info';
+  toastVisible: boolean = false;
  
   constructor(
+    private cdr: ChangeDetectorRef,
     private companyService: CompanyContactService,
     private userService: UserService,
     private industryVerticalService: IndustryVerticalService,
      private authService: AuthService
   ) {
     this.checkIfMobile();
+  }
+
+  showToast(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.toastVisible = true;
+    this.cdr.detectChanges();
   }
  
   ngOnInit(): void {
@@ -227,11 +241,7 @@ canDeleteCustomers = false;
       },
       error: (err) => {
         console.error('Failed to update company', err);
-        alert(err.error?.message || 'Update failed.');
-       
-        this.loadCompanies(); 
-        alert(err.error?.message || 'Update failed.');
-       
+        this.showToast(err.error?.message || 'Update failed.', 'error');
         this.loadCompanies();
       }
     });
@@ -247,8 +257,7 @@ canDeleteCustomers = false;
         },
         error: (err) => {
           console.error('Failed to delete company', err);
-          alert(err.error?.message || 'Could not delete the company.');
-          alert(err.error?.message || 'Could not delete the company.');
+          this.showToast(err.error?.message || 'Could not delete the company.', 'error');
         }
       });
     }

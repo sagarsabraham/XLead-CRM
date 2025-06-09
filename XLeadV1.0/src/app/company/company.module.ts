@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CompanyRoutingModule } from './company-routing.module';
 import { CompanyPageComponent } from './company-page/company-page.component';
 import { SharedModule } from '../shared/shared.module';
+import { DxToastModule } from 'devextreme-angular';
 
 @NgModule({
   declarations: [
@@ -11,7 +12,8 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     CommonModule,
     CompanyRoutingModule,
-    SharedModule
+    SharedModule,
+    DxToastModule
   ]
 })
 export class CompanyModule { }

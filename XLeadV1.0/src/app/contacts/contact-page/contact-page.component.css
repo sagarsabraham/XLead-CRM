@@ -3,36 +3,26 @@
   width: 100%;
 }
  
-/* Page Layout */
 .page-container {
   display: flex;
   width: 100%;
-  min-height: 100vh; /* Ensure full viewport height */
+  min-height: 100vh; 
 }
  
-/* app-sidebar {
-  width: 5rem;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-color: #f5f5f5;
-  transition: transform 0.3s ease;*/
  
 app-sidebar.sidebar-hidden {
-  transform: translateX(-100%); /* Slide out to the left */
+  transform: translateX(-100%); 
 }
  
 app-sidebar.sidebar-visible {
-  transform: translateX(0); /* Slide in */
+  transform: translateX(0);
 }
  
-/* Main Content */
 .content-container,
 .container {
   padding: 20px;
-  margin-left: 100px; /* 80px sidebar width + 20px gap */
-  width: calc(100% - 100px); /* Adjust width to account for sidebar and gap */
+  margin-left: 100px; 
+  width: calc(100% - 100px);
   box-sizing: border-box;
  
 }
@@ -73,9 +63,7 @@ app-sidebar.sidebar-visible {
 .topcard-container app-topcard {
   flex: 1; 
 }
- 
- 
-/* Owner Cell */
+
 .owner-cell {
   display: flex;
   align-items: center;
@@ -100,7 +88,6 @@ app-sidebar.sidebar-visible {
   color: #333;
 }
  
-/* DevExtreme Data Grid */
 dx-data-grid {
   width: 100%;
   max-width: 76.875rem;
@@ -134,15 +121,28 @@ dx-data-grid {
   background-color: #f9f9f9;
   border-top: 1px solid #e0e0e0;
 }
+:host ::ng-deep .dx-toast {
+  z-index: 2000;
+}
+
+:host ::ng-deep .dx-toast-content {
+  font-size: 14px;
+  padding: 10px 15px;
+}
+
+:host ::ng-deep .dx-toast-message {
+  display: block !important;
+  color: #333;
+  font-size: 14px;
+  padding: 5px 10px;
+}
  
-/* Desktop-specific adjustments */
 @media (min-width: 577px) {
   .metric-cards-section {
     margin-bottom: 90px;
   }
 }
  
-/* Mobile Styles */
 @media (max-width: 576px) {
   .page-container.mobile-view {
     flex-direction: column;
@@ -204,7 +204,6 @@ dx-data-grid {
     max-width: 100%;
   }
  
-  /* Adjust owner cell for mobile */
   .owner-cell {
     gap: 6px;
   }
@@ -219,7 +218,6 @@ dx-data-grid {
     font-size: 12px;
   }
  
-  /* Adjust row height and font size for mobile */
   :host ::ng-deep .dx-datagrid-rowsview .dx-row {
     font-size: 12px;
     height: 40px;

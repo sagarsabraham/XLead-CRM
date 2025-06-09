@@ -18,7 +18,6 @@ export class NotesTabComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   currentUserId: number;
  
-  // Edit functionality properties
   editingNoteId: number | null = null;
   editingNoteText: string = '';
  
@@ -41,10 +40,7 @@ export class NotesTabComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
- 
-  // Add this method to handle real-time input changes
   onNoteContentChange(event: any): void {
-    // Handle both event types - DevExtreme events and native events
     if (event && event.value !== undefined) {
       this.newNoteContent = event.value;
     } else if (event && event.target && event.target.value !== undefined) {
@@ -52,9 +48,7 @@ export class NotesTabComponent implements OnInit, OnDestroy {
     }
   }
  
-  // Add this method to handle real-time edit input changes
   onEditContentChange(event: any): void {
-    // Handle both event types - DevExtreme events and native events
     if (event && event.value !== undefined) {
       this.editingNoteText = event.value;
     } else if (event && event.target && event.target.value !== undefined) {
@@ -130,7 +124,6 @@ export class NotesTabComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updatedNote) => {
-          // Find and update the note in the array
           const index = this.notes.findIndex(n => n.id === this.editingNoteId);
           if (index !== -1) {
             this.notes[index] = updatedNote;
@@ -150,8 +143,6 @@ export class NotesTabComponent implements OnInit, OnDestroy {
   deleteNote(index: number): void {
     const note = this.notes[index];
     if (!note.id || note.createdBy !== this.currentUserId) return;
- 
-    // DevExtreme confirm dialog with custom styling
     const result = confirm(
       '<i class="dx-icon-warning"></i><br/>Are you sure you want to delete this note?<br/><br/>This action cannot be undone.',
       'Delete Note'
@@ -159,10 +150,8 @@ export class NotesTabComponent implements OnInit, OnDestroy {
    
     result.then((dialogResult) => {
       if (dialogResult) {
-        // User clicked "Yes" - proceed with deletion
         this.performDelete(index, note.id!);
       }
-      // If user clicked "No", nothing happens
     });
   }
  
@@ -175,8 +164,6 @@ export class NotesTabComponent implements OnInit, OnDestroy {
         next: () => {
           this.notes.splice(index, 1);
           this.isLoading = false;
-          // Optional: Show success message
-          // this.showSuccess('Note deleted successfully');
         },
         error: (err) => {
           console.error('Error deleting note:', err);
@@ -187,11 +174,7 @@ export class NotesTabComponent implements OnInit, OnDestroy {
   }
  
   private showError(message: string): void {
-    // You can use DevExtreme's notify for a better experience
-    // For now, using console.error to avoid browser alerts
     console.error(message);
-    // If you have DevExtreme notify imported:
-    // notify({ message: message, type: 'error', displayTime: 3000 });
   }
  
   formatDate(date: Date | string): string {
@@ -199,7 +182,6 @@ export class NotesTabComponent implements OnInit, OnDestroy {
    
     const dateObj = new Date(date);
    
-    // Format: Dec 15, 2024 at 2:30 PM
     return dateObj.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
