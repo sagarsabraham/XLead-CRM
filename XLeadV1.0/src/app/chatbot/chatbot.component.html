@@ -70,19 +70,8 @@
           </div>
         </div>
       </div>
-
-      <!-- Results Skeleton -->
-      <div *ngIf="showResultsSkeleton" class="results-skeleton">
-        <div class="skeleton-line" style="width: 60%; height: 16px;"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line" style="width: 80%;"></div>
-        <div class="skeleton-line" style="width: 40%;"></div>
-      </div>
     </div>
     
-    <!-- Results Actions -->
-   
-
     <!-- Smart Suggestions -->
     <div class="suggestions-container" *ngIf="smartSuggestions.length > 0">
       <button *ngFor="let suggestion of smartSuggestions; trackBy: trackBySuggestion" 
@@ -99,7 +88,7 @@
         <textarea 
           #messageInput 
           [(ngModel)]="userInput" 
-          (input)="autoGrowTextarea($event); onInputChange()" 
+          (input)="autoGrowTextarea($event)" 
           (keydown)="onInputKeyDown($event)" 
           placeholder="Ask about deals, contacts, or anything else..." 
           class="message-input" 

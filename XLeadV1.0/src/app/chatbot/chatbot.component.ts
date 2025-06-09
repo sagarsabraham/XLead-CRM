@@ -21,12 +21,6 @@ interface ChatMessage {
   sqlQuery?: string;
 }
 
-// Enums
-enum QueryType {
-  GENERAL = 'general',
-  AI_QUERY = 'ai_query'
-}
-
 @Component({
   selector: 'app-chatbot',
   templateUrl: './chatbot.component.html',
@@ -41,16 +35,15 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
   isTyping: boolean = false;
   results: any[] = [];
   queryHistory: string[] = [];
-  showResultsSkeleton = false;
   messages: ChatMessage[] = [];
 
   private readonly baseApiUrl = 'https://localhost:7297/api';
   private shouldScrollToBottom = false;
 
   smartSuggestions = [
-    'Show me deals created this week',
-    'Top 5 deals by amount',
-    'Recent customer contacts',
+    // 'Show me deals created this week',
+    // 'Top 5 deals by amount',
+    // 'Recent customer contacts',
   ];
 
   constructor(
@@ -64,7 +57,6 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
     this.configureMarked();
     this.addInitialMessage();
     
-    // Focus input after view initialization
     setTimeout(() => {
       if (this.messageInput?.nativeElement) {
         this.messageInput.nativeElement.focus();
@@ -87,14 +79,8 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
   }
 
   private addInitialMessage(): void {
-    const welcomeMessage = 'Hello! I\'m your Smart XLeadBot assistant. How can I help you with your XLead data today?';
-    this.messages.push({
-      id: this.generateMessageId(),
-      text: welcomeMessage,
-      timestamp: new Date(),
-      isUser: false,
-      parsedText: this.sanitizer.bypassSecurityTrustHtml(welcomeMessage)
-    });
+    const welcomeMessage = 'Hello! I\'m your Smart XLeadBot assistant. How can I help you?';
+    this.addBotResponse(welcomeMessage);
   }
 
   private generateMessageId(): string {
@@ -128,10 +114,6 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
     this.addBotResponse('Chat cleared. How can I assist you now?');
   }
 
-  onInputChange(): void {
-    // Placeholder for future input change handling
-  }
-
   sendMessage(): void {
     const messageText = this.userInput.trim();
     if (!messageText || this.isTyping) return;
@@ -163,8 +145,7 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
 
   private processWithAi(prompt: string): void {
     this.isTyping = true;
-    this.showResultsSkeleton = true;
-    this.results = [];
+    this.results = []; // Clear previous results immediately
     this.shouldScrollToBottom = true;
 
     const apiUrl = `${this.baseApiUrl}/aiquery/process-natural-language`;
@@ -172,22 +153,17 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
       .subscribe({
         next: (response) => {
           this.isTyping = false;
-          this.showResultsSkeleton = false;
-
           if (response.success) {
-            let botText = response.message;
-            if (response.results && response.results.length > 0) {
-              botText = `Found ${response.count} record(s). Here's a preview:\n\n` + this.formatAiResults(response.results);
-              this.results = response.results;
-            }
-            this.addBotResponse(botText, response.generatedSql);
+            // Keep the full results for potential future use (like re-adding exports)
+            this.results = response.results || [];
+            // The message from the backend is now the primary content to display
+            this.addBotResponse(response.message, response.generatedSql);
           } else {
             this.addBotResponse(`⚠️ ${response.message}`, response.generatedSql);
           }
         },
         error: (err: HttpErrorResponse) => {
           this.isTyping = false;
-          this.showResultsSkeleton = false;
           this.handleApiError(err);
         }
       });
@@ -196,72 +172,33 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
   private async addBotResponse(text: string, sqlQuery?: string): Promise<void> {
     try {
       const parsedHtml = await marked.parse(text);
-      const sanitizedHtml = this.sanitizer.bypassSecurityTrustHtml(parsedHtml);
-
       this.messages.push({
         id: this.generateMessageId(),
         text,
-        parsedText: sanitizedHtml,
+        parsedText: this.sanitizer.bypassSecurityTrustHtml(parsedHtml),
         timestamp: new Date(),
         isUser: false,
         sqlQuery
       });
       
       this.shouldScrollToBottom = true;
-      this.cdr.detectChanges();
+      this.cdr.detectChanges(); // Manually trigger change detection
     } catch (error) {
       console.error('Error parsing markdown:', error);
-      // Fallback to plain text
-      this.messages.push({
-        id: this.generateMessageId(),
-        text,
-        parsedText: this.sanitizer.bypassSecurityTrustHtml(text),
-        timestamp: new Date(),
-        isUser: false,
-        sqlQuery
-      });
-      this.shouldScrollToBottom = true;
     }
   }
 
   private async handleApiError(error: HttpErrorResponse): Promise<void> {
-    let errorMessage = `**Oops! I encountered a problem.**\n\n`;
-    
+    let errorMessage = `**Oops! An error occurred.**\n\n`;
     if (error.error instanceof ErrorEvent) {
-      errorMessage += `A network error occurred. Please check your connection.`;
+      errorMessage += `A network error prevented the request from completing.`;
     } else {
       errorMessage += `The server responded with a status of **${error.status}**.`;
       if (error.error?.message) {
-        errorMessage += `\n\n> ${error.error.message}`;
+        errorMessage += `\n\n> *${error.error.message}*`;
       }
     }
-    
-    errorMessage += '\n\n*Please try rephrasing your query or contact support if the issue persists.*';
     await this.addBotResponse(errorMessage);
-  }
-
-  private formatAiResults(data: any[]): string {
-    let formatted = '';
-    const maxResultsToDisplay = 5;
-    const resultsToDisplay = data.slice(0, maxResultsToDisplay);
-
-    for (const row of resultsToDisplay) {
-      formatted += `- **Record:**\n`;
-      Object.keys(row).forEach(key => {
-        let value = row[key];
-        if (value === null || value === undefined) {
-          value = '_(null)_';
-        } else if (typeof value === 'number' && (key.toLowerCase().includes('amount') || key.toLowerCase().includes('price'))) {
-          value = this.formatCurrency(value);
-        }
-        formatted += `  - **${key}:** ${value}\n`;
-      });
-    }
-
-    if (data.length > maxResultsToDisplay) {
-      formatted += `\n...and ${data.length - maxResultsToDisplay} more record(s).`;
-    }
-    return formatted;
   }
 
   private addToHistory(query: string): void {
@@ -304,76 +241,14 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
-  private formatCurrency(amount: any): string {
-    return new Intl.NumberFormat('en-US', { 
-      style: 'currency', 
-      currency: 'USD' 
-    }).format(Number(amount));
-  }
-
   autoGrowTextarea(event: any): void {
     const textarea = event.target as HTMLTextAreaElement;
     textarea.style.height = 'auto';
+    // Set a max height to prevent infinite growth
     textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`;
   }
 
-  exportResults(format: 'json' | 'csv'): void {
-    if (!this.results || this.results.length === 0) {
-      this.addBotResponse('❌ No results to export.');
-      return;
-    }
-    
-    if (format === 'json') {
-      this.downloadJSON();
-    } else {
-      this.downloadCSV();
-    }
-  }
-
-  private downloadJSON(): void {
-    this.downloadFile(
-      JSON.stringify(this.results, null, 2), 
-      'application/json', 
-      'json'
-    );
-    this.addBotResponse('📁 **Export Complete:** JSON file downloaded successfully.');
-  }
-
-  private downloadCSV(): void {
-    if (this.results.length === 0) return;
-    
-    const headers = Object.keys(this.results[0]);
-    const csvRows = [
-      headers.join(','),
-      ...this.results.map(row =>
-        headers.map(header => {
-          const value = row[header] ?? '';
-          return `"${value.toString().replace(/"/g, '""')}"`;
-        }).join(',')
-      )
-    ];
-    
-    this.downloadFile(csvRows.join('\n'), 'text/csv;charset=utf-8;', 'csv');
-    this.addBotResponse('📁 **Export Complete:** CSV file downloaded successfully.');
-  }
-
-  private downloadFile(content: string, mimeType: string, extension: string): void {
-    try {
-      const blob = new Blob([content], { type: mimeType });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `xlead-ai-results-${new Date().toISOString().split('T')[0]}.${extension}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(link.href);
-    } catch (error) {
-      console.error('Error downloading file:', error);
-      this.addBotResponse('❌ Failed to download file. Please try again.');
-    }
-  }
-
-  // TrackBy functions for performance optimization
+  // TrackBy functions for *ngFor performance optimization
   trackByMessage(index: number, message: ChatMessage): string {
     return message.id;
   }
