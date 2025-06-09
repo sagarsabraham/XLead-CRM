@@ -3,7 +3,7 @@
   <!-- <app-sidebar></app-sidebar> -->
  
   <div class="container">
-    
+   
     <!-- Loading state -->
     <div *ngIf="isLoading" class="loading-state">
       <div class="spinner"></div>
@@ -37,7 +37,7 @@
         <app-table
           [data]="tableData"
           [headers]="tableHeaders"
-          
+         
           [ownerField]="'owner'"
           [exportFileName]="'Customers'"
           [entityType]="'Customer'"

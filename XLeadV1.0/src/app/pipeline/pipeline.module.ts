@@ -26,7 +26,7 @@ import { DuService } from '../services/du.service';
 import { RegionService } from '../services/region.service';
 import { RevenuetypeService } from '../services/revenuetype.service';
 import { DealstageService } from '../services/dealstage.service';
-import { AuthServiceService } from '../services/auth-service.service';
+import { AuthService } from '../services/auth-service.service';
 import { IndustryVerticalService } from '../services/industry-vertical.service';
 import { PrivilegeServiceService } from '../services/privilege-service.service';
 import { SeviceLineService } from '../services/sevice-line.service';
@@ -76,7 +76,7 @@ import { SeviceLineService } from '../services/sevice-line.service';
     DuService,
     DealstageService,
     RevenuetypeService,
-    AuthServiceService,
+    AuthService,
     IndustryVerticalService,
     PrivilegeServiceService,
     SeviceLineService

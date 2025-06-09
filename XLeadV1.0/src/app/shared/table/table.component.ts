@@ -12,6 +12,7 @@ import { TableOutlineComponent } from '../table-outline/table-outline.component'
 })
 export class TableComponent implements AfterViewInit {
   @Input() data: any[] = [];
+  
   @Input() headers: GridColumn[] = [];
   @Input() classNames: string = '';
   @Input() useOwnerTemplate: boolean = true;
@@ -94,6 +95,7 @@ export class TableComponent implements AfterViewInit {
         document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
       }
       this.cdr.detectChanges();
+      this.cdr.detectChanges();
     }, 100);
   }
 
@@ -110,6 +112,7 @@ export class TableComponent implements AfterViewInit {
     this.selectedRowKeys = [];
     this.updatePagination();
     this.cdr.detectChanges();
+    this.cdr.detectChanges();
   }
 
   ngAfterViewInit(): void {
@@ -124,6 +127,7 @@ export class TableComponent implements AfterViewInit {
     console.log('Export filename:', this.exportFileName);
     console.log('Data IDs:', this.data.slice(0, 5).map(item => ({ id: item.id, type: typeof item.id })));
     console.log('============================');
+    this.cdr.detectChanges();
     this.cdr.detectChanges();
   }
 
@@ -177,6 +181,7 @@ export class TableComponent implements AfterViewInit {
       this.selectedRowKeys = [];
       this.emitSelectionChange();
       this.cdr.detectChanges();
+      this.cdr.detectChanges();
     }
 
     this.updatePagination();
@@ -186,6 +191,7 @@ export class TableComponent implements AfterViewInit {
     const startIndex = (this.currentPage - 1) * this.mobilePageSize;
     const endIndex = startIndex + this.mobilePageSize;
     this.paginatedData = this.filteredData.slice(startIndex, endIndex);
+    this.cdr.detectChanges();
     this.cdr.detectChanges();
   }
 
@@ -207,12 +213,15 @@ export class TableComponent implements AfterViewInit {
 
     this.onSelectionChanged.emit(event);
     this.cdr.detectChanges();
+    this.cdr.detectChanges();
   }
 
   openDetailsModal(contact: any): void {
     this.selectedContact = contact;
     this.editedContact = { ...contact }; // Create a copy for editing
+    this.editedContact = { ...contact }; // Create a copy for editing
     this.isDetailsModalOpen = true;
+    this.isEditingMobile = false;
     this.isEditingMobile = false;
     this.cdr.detectChanges();
   }
@@ -466,6 +475,7 @@ export class TableComponent implements AfterViewInit {
       this.columnVisibility[header.dataField] = header.visible !== false;
     });
     this.cdr.detectChanges();
+    this.cdr.detectChanges();
   }
 
   toggleColumnChooser(event: Event): void {
@@ -475,6 +485,10 @@ export class TableComponent implements AfterViewInit {
     this.clickedInsideDropdown = true;
 
     if (this.showCustomColumnChooser) {
+      setTimeout(() => {
+        this.positionDropdown(this.columnChooserButton, this.columnChooserDropdown);
+        this.cdr.detectChanges();
+      });
       setTimeout(() => {
         this.positionDropdown(this.columnChooserButton, this.columnChooserDropdown);
         this.cdr.detectChanges();
@@ -490,6 +504,7 @@ export class TableComponent implements AfterViewInit {
       this.dataGrid.instance.columnOption(dataField, 'visible', this.columnVisibility[dataField]);
     }
     this.cardFields = this.headers
+      .filter(header => this.columnVisibility[header.dataField])
       .filter(header => this.columnVisibility[header.dataField])
       .slice(0, 3)
       .map(header => header.dataField);
@@ -517,6 +532,7 @@ export class TableComponent implements AfterViewInit {
 
     this.cardFields = this.headers
       .filter(header => this.columnVisibility[header.dataField])
+      .filter(header => this.columnVisibility[header.dataField])
       .slice(0, 3)
       .map(header => header.dataField);
     this.cdr.detectChanges();
@@ -533,6 +549,10 @@ export class TableComponent implements AfterViewInit {
         this.positionDropdown(this.exportButton, this.exportOptionsDropdown);
         this.cdr.detectChanges();
       });
+      setTimeout(() => {
+        this.positionDropdown(this.exportButton, this.exportOptionsDropdown);
+        this.cdr.detectChanges();
+      });
     } else {
       this.closeDropdowns();
     }
@@ -544,11 +564,13 @@ export class TableComponent implements AfterViewInit {
     event.stopPropagation();
     this.clickedInsideDropdown = true;
     this.cdr.detectChanges();
+    this.cdr.detectChanges();
   }
 
   onExportOptionsDropdownClick(event: Event): void {
     event.stopPropagation();
     this.clickedInsideDropdown = true;
+    this.cdr.detectChanges();
     this.cdr.detectChanges();
   }
 
@@ -570,6 +592,7 @@ export class TableComponent implements AfterViewInit {
     if (this.showCustomColumnChooser && !clickedOnColumnChooserButton && !clickedInColumnChooser) {
       this.showCustomColumnChooser = false;
       changesDetected = true;
+      changesDetected = true;
     }
 
     if (this.showExportModal && !clickedOnExportButton && !clickedInExportDropdown) {
@@ -590,6 +613,7 @@ export class TableComponent implements AfterViewInit {
     if (this.showExportModal) {
       this.positionDropdown(this.exportButton, this.exportOptionsDropdown);
     }
+    this.cdr.detectChanges();
     this.cdr.detectChanges();
   }
 
@@ -617,8 +641,11 @@ export class TableComponent implements AfterViewInit {
     } else if (currentSortOrder === 'asc') {
       newSortOrder = 'desc';
     } else {
-      newSortOrder = undefined;
-    }
+      newSortOrder = 'desc';
+    } 
+    // else {
+    //   newSortOrder = undefined;
+    // }
 
     column.sortOrder = newSortOrder;
     if (!this.isMobile && this.dataGrid?.instance) {
@@ -628,7 +655,13 @@ export class TableComponent implements AfterViewInit {
       } else {
         this.dataGrid.instance.columnOption(column.dataField, 'sortOrder', undefined);
       }
+      if (newSortOrder) {
+        this.dataGrid.instance.columnOption(column.dataField, 'sortOrder', newSortOrder);
+      } else {
+        this.dataGrid.instance.columnOption(column.dataField, 'sortOrder', undefined);
+      }
     }
+    this.cdr.detectChanges();
     this.cdr.detectChanges();
   }
 
@@ -683,8 +716,10 @@ export class TableComponent implements AfterViewInit {
     this.exportMessage = 'Export Completed';
     this.showExportMessage = true;
     this.cdr.detectChanges();
+    this.cdr.detectChanges();
     setTimeout(() => {
       this.showExportMessage = false;
+      this.cdr.detectChanges();
       this.cdr.detectChanges();
     }, 3000);
   }
@@ -770,6 +805,7 @@ export class TableComponent implements AfterViewInit {
     dropdown.style.left = `${left}px`;
     dropdown.style.right = '';
     this.cdr.detectChanges();
+    this.cdr.detectChanges();
   }
 
   closeDropdowns(): void {
@@ -816,6 +852,7 @@ export class TableComponent implements AfterViewInit {
 
     this.dataGrid.instance.option('width', '100%');
     this.dataGrid.instance.refresh();
+    this.cdr.detectChanges();
     this.cdr.detectChanges();
   }
 }

@@ -1,16 +1,20 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-
+ 
 import { UserService } from '../../services/user.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 import { IndustryVerticalService } from 'src/app/services/industry-vertical.service';
 import { forkJoin } from 'rxjs';
-
+import { AuthService } from 'src/app/services/auth-service.service';
+ 
 @Component({
   selector: 'app-company-page',
   templateUrl: './company-page.component.html',
   styleUrls: ['./company-page.component.css']
 })
 export class CompanyPageComponent implements OnInit {
+  // Property to hold the data for the Industry Vertical dropdown
+  industryVerticalsLookupData: any[] = [];
+ 
   tableHeaders = [
     { dataField: 'customerName', caption: 'Customer Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
@@ -32,34 +36,40 @@ export class CompanyPageComponent implements OnInit {
     },
     // { dataField: 'owner', caption: 'Owner', visible: true }
   ];
-
+canEditCustomers = false;
+  canDeleteCustomers = false;
   tableData: any[] = [];
   topcardData = [
     { amount: 0, title: 'Total Customers', icon: 'assets/count.svg' },
     { amount: 0, title: 'Active Customers', icon: 'assets/company.svg' },
     { amount: 0, title: 'Inactive Customers', icon: 'assets/company.svg' }
   ];
-
+ 
   totalCompanies = 0;
   isMobile: boolean = false;
   isLoading: boolean = true;
   error: string | null = null;
-
-  private industryVerticalMap: { [id: number]: string } = {}; // Will be populated dynamically
+ 
+  private industryVerticalMap: { [id: number]: string } = {};
   private users: any[] = [];
-
+ 
+  tableLookups: { [key: string]: any[] } = {};
+ 
   constructor(
     private companyService: CompanyContactService,
     private userService: UserService,
-    private industryVerticalService: IndustryVerticalService // Added service
+    private industryVerticalService: IndustryVerticalService,
+     private authService: AuthService
   ) {
     this.checkIfMobile();
   }
-
+ 
   ngOnInit(): void {
+    this.canEditCustomers = this.authService.hasPrivilege('EditCustomer');
+    this.canDeleteCustomers = this.authService.hasPrivilege('DeleteCustomer');
     this.loadData();
   }
-
+ 
   loadData(): void {
     this.isLoading = true;
     this.error = null;
@@ -72,8 +82,13 @@ export class CompanyPageComponent implements OnInit {
       next: ({ industryVerticals, users }) => {
         console.log('Industry Verticals loaded:', industryVerticals);
         console.log('Users loaded:', users);
-
-        // Map industry verticals
+       
+        // FIX: Instead of re-assigning the array, clear it and push the new items.
+        // This maintains the original array reference that the grid is bound to.
+        this.industryVerticalsLookupData.length = 0; // Clear the array
+        this.industryVerticalsLookupData.push(...industryVerticals); // Add new items
+ 
+        // Map industry verticals for display purposes
         this.industryVerticalMap = industryVerticals.reduce((map: { [id: number]: string }, vertical: any) => {
           map[vertical.id] = vertical.industryName || 'Unknown';
           return map;
@@ -84,24 +99,23 @@ export class CompanyPageComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading industry verticals or users:', err);
-        // Fallback: Load companies even if industry verticals or users fail
-        this.industryVerticalMap = {}; // Empty map as fallback
+        this.industryVerticalMap = {};
         this.users = [];
         this.loadCompanies();
       }
     });
   }
-  
+ 
   loadCompanies(): void {
     this.companyService.getCompanies().subscribe({
       next: (companies) => {
         console.log('Companies data:', companies);
-    
+   
         if (companies.length > 0) {
           console.log('Sample company:', companies[0]);
           console.log('createdBy value:', companies[0].createdBy);
         }
-
+ 
         this.tableData = companies.map(company => this.mapCompanyData(company));
         this.updateMetrics();
         this.totalCompanies = this.tableData.length;
@@ -111,7 +125,7 @@ export class CompanyPageComponent implements OnInit {
         console.error('Error fetching companies:', err);
         this.error = 'Failed to load companies. Please try again later.';
         this.isLoading = false;
-        
+       
         this.tableData = [
           {
             id: '1',
@@ -129,47 +143,41 @@ export class CompanyPageComponent implements OnInit {
   }
 
   private mapCompanyData(company: any): any {
-    console.log('Mapping company:', company);
-    console.log('Available users:', this.users);
-  
     const ownerId = company.createdBy || company.CreatedBy || company.createdById || company.userId;
-    console.log('Looking for owner with ID:', ownerId);
-  
     const ownerIdNum = parseInt(ownerId);
     let owner = null;
-  
+ 
     if (!isNaN(ownerIdNum)) {
       owner = this.users.find(u => u.id === ownerIdNum);
       if (!owner) {
         owner = this.users.find(u => u.id.toString() === ownerId.toString());
       }
     }
-  
-    console.log('Found owner:', owner);
+ 
     const ownerName = owner ? owner.name : 'System';
-  
+ 
     return {
       id: this.safeToString(company.id),
       customerName: company.customerName || 'Unnamed Customer',
       phone: company.customerPhoneNumber || '',
       website: company.website || '',
-      industryVertical: this.industryVerticalMap[company.industryVerticalId] || 'Unknown', // Use dynamic map
+      industryVertical: this.industryVerticalMap[company.industryVerticalId] || 'Unknown',
       owner: ownerName,
       status: this.mapStatus(company),
     };
   }
-
+ 
   private safeToString(value: any): string {
     return value !== undefined && value !== null ? String(value) : '';
   }
-
+ 
   private mapStatus(company: any): string {
     if (typeof company.status === 'string') {
       return company.status;
     }
     return 'Unknown';
   }
-
+ 
   private updateMetrics(): void {
     const total = this.tableData.length;
     const active = this.tableData.filter(company => company.status === 'Active').length;
@@ -248,21 +256,17 @@ export class CompanyPageComponent implements OnInit {
   onResize(): void {
     this.checkIfMobile();
   }
-
+ 
   private checkIfMobile(): void {
     this.isMobile = window.innerWidth <= 576;
   }
-
+ 
   getIconColor(index: number): string {
     switch (index) {
-      case 0:
-        return '#8a2be2'; 
-      case 1:
-        return '#28a745'; 
-      case 2:
-        return '#dc3545'; 
-      default:
-        return '#000000';
+      case 0: return '#8a2be2';
+      case 1: return '#28a745';
+      case 2: return '#dc3545';
+      default: return '#000000';
     }
   }
 }

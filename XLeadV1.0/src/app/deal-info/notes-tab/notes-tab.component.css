@@ -1,0 +1,278 @@
+/* Main Container */
+.smart-notes-container {
+  max-width: 960px;
+  margin: 40px auto;
+  padding: 32px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  transition: box-shadow 0.3s ease;
+  height: 100%;
+  overflow-y: auto;
+}
+ 
+.smart-notes-container:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+}
+ 
+/* Header */
+.smart-notes-container h4 {
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 24px;
+  font-size: 28px;
+  letter-spacing: 0.5px;
+}
+ 
+/* DevExtreme Text Box */
+dx-text-box {
+  display: block;
+  margin-bottom: 16px;
+  width: 100%;
+  font-family: inherit;
+}
+ 
+/* Add Note Button Styling */
+.dx-button.dx-button-mode-contained.dx-button-default {
+  background-color: #d0d0d0;
+  color: #222;
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 10px 20px;
+  user-select: none;
+  transition: all 0.3s ease;
+  margin-bottom: 24px;
+}
+ 
+.dx-button.dx-button-mode-contained.dx-button-default:hover {
+  background-color: #b3b3b3;
+}
+ 
+/* Disabled button */
+.dx-button:disabled {
+  background-color: #b0b0b0 !important;
+  color: #f5f5f5 !important;
+  cursor: not-allowed !important;
+}
+ 
+/* Highlighted Add Note button - when typing */
+.highlighted-add-button {
+  background-color: #0078d4 !important;
+  color: white !important;
+  font-weight: 600;
+  box-shadow: 0 3px 8px rgba(0, 120, 212, 0.4);
+  transform: translateY(-1px);
+}
+ 
+.highlighted-add-button:hover {
+  background-color: #005fa3 !important;
+}
+ 
+/* Highlight fix for inner content */
+::ng-deep .highlighted-add-button .dx-button-content {
+  background-color: #0078d4 !important;
+  color: white !important;
+  font-weight: 600;
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(0, 120, 212, 0.4);
+}
+ 
+::ng-deep .highlighted-add-button:hover .dx-button-content {
+  background-color: #005fa3 !important;
+}
+ 
+/* Notes List */
+.notes-list {
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+}
+ 
+/* Note Card Template */
+.note-template {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-left: 4px solid #0078d4;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+ 
+.note-template:hover {
+  background-color: #f2f8fc;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+ 
+.note-content {
+  flex: 1;
+  margin-right: 15px;
+}
+ 
+.note-text {
+  margin: 0 0 10px 0;
+  color: #333;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+ 
+.note-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.85em;
+  color: #666;
+}
+ 
+.note-author {
+  font-weight: 500;
+  color: #337ab7;
+}
+ 
+.note-date {
+  color: #888;
+}
+ 
+.note-updated {
+  color: #888;
+  font-style: italic;
+}
+ 
+/* Note Actions */
+.note-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 80px;
+}
+ 
+/* Edit Mode */
+.edit-mode {
+  width: 100%;
+}
+ 
+.edit-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: flex-start;
+}
+ 
+.edit-actions dx-button {
+  min-width: 80px;
+}
+ 
+/* Button Styling */
+.dx-button {
+  transition: all 0.3s ease;
+}
+ 
+/* Edit and Delete buttons */
+.dx-button.dx-button-mode-text.dx-button-normal {
+  color: #666 !important;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+ 
+.dx-button.dx-button-mode-text.dx-button-normal:hover {
+  color: #337ab7 !important;
+}
+ 
+.dx-button.dx-button-mode-text.dx-button-danger {
+  color: #999 !important;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+ 
+.dx-button.dx-button-mode-text.dx-button-danger:hover {
+  color: #e81123 !important;
+}
+ 
+/* Save button in edit mode */
+.edit-actions .dx-button.dx-button-mode-contained.dx-button-default {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+ 
+.edit-actions .dx-button.dx-button-mode-contained.dx-button-default:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+ 
+/* Cancel button in edit mode */
+.edit-actions .dx-button.dx-button-mode-contained.dx-button-normal {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+}
+ 
+.edit-actions .dx-button.dx-button-mode-contained.dx-button-normal:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+ 
+/* No Notes Message */
+.no-notes {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+}
+ 
+.no-notes p {
+  margin: 0;
+}
+ 
+/* Chatbot Float Button */
+.chatbot-float-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 999;
+}
+ 
+.chatbot-float-btn .dx-button-content {
+  justify-content: center;
+  padding: 0;
+}
+ 
+.chatbot-float-btn .dx-icon {
+  font-size: 22px;
+  color: white;
+}
+ 
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .smart-notes-container {
+    padding: 15px;
+  }
+ 
+  .note-template {
+    flex-direction: column;
+  }
+ 
+  .note-actions {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: flex-start;
+  }
+ 
+  .edit-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+ 
+  .note-metadata {
+    flex-direction: column;
+    gap: 5px;
+  }
+}

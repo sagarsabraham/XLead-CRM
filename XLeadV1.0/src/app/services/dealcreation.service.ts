@@ -1,8 +1,9 @@
-// src/app/services/deal.service.ts
+
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { AuthService } from './auth-service.service';
 
 export interface DealCreatePayload {
   title: string;
@@ -28,12 +29,88 @@ export interface DealCreatePayload {
   customFields?: { [key: string]: any };
 }
 
+export interface DealEditPayload {
+  title: string;
+  amount: number;
+  customerName: string;
+  contactFullName: string;
+  contactEmail: string | null;
+  contactPhoneNumber: string | null;
+  contactDesignation: string | null;
+  serviceId: number | null;
+  accountId: number | null;
+  regionId: number;
+  domainId: number | null;
+  dealStageId: number;
+  revenueTypeId: number;
+  duId: number;
+  countryId: number;
+  description: string | null;
+  probability: number | null;
+  startingDate: string | null;
+  closingDate: string | null;
+}
+
+
+
+export interface DealManagerOverview { 
+  id: number;
+  dealName: string;
+  dealAmount: number;
+  stageName?: string;
+  closingDate?: string | null;
+  salespersonId: number;
+  salespersonName: string;
+
+
+  accountName?: string;
+  regionName?: string;
+  duName?: string; 
+  contactName?: string;
+  startingDate?: string | null;
+}
+
+
+export interface ManagerStageCount {
+  stageName: string;
+  dealCount: number;
+ 
+}
+export interface DashboardMetricItem {
+  value: string;
+  percentageChange: number;
+  isPositiveTrend: boolean;
+}
+
+export interface DashboardMetrics {
+  openPipelines: DashboardMetricItem;
+  pipelinesWon: DashboardMetricItem;
+  pipelinesLost: DashboardMetricItem;
+  revenueWon: DashboardMetricItem;
+}
+
+export interface PipelineStageData { 
+  stageName: string;
+  totalAmount: number;
+}
+
+export interface MonthlyRevenueData { 
+  monthYear: string;
+  totalRevenue: number;
+}
+
+export interface TopCustomerData { 
+  customerName: string;
+  totalRevenueWon: number;
+}
+
 export interface DealRead {
   id: number;
   dealName: string;
   dealAmount: number;
   customerName?: string;
   contactName?: string;
+  contactId?: number | null;
   salespersonName?: string | null;
   startingDate?: string | null;
   closingDate?: string | null; // If backend always returns this, can be non-nullable: string
@@ -55,6 +132,7 @@ export interface DealRead {
   accountId?: number | null;
   serviceName?: string; // New field
   serviceId?: number | null; // New field
+  isHidden: boolean;
   createdBy?: number;
   createdAt?: string; // Should be non-nullable if backend always sends it
   updatedAt?: string;
@@ -98,10 +176,19 @@ export class DealService {
   private apiUrl = 'https://localhost:7297/api/Deals'; // Base API URL for deals
   private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,private authService: AuthService) { }
 
   createDeal(dealData: DealCreatePayload): Observable<DealRead> {
     return this.http.post<DealRead>(this.apiUrl, JSON.stringify(dealData), this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  getDealStageHistory(id: number): Observable<any[]> {
+    const url = `${this.apiUrl}/${id}/stage-history`;
+    const params = new HttpParams().set('userId', this.authService.userId.toString());
+    const options = { ...this.httpOptions, params };
+   
+    return this.http.get<any[]>(url, options)
       .pipe(catchError(this.handleError));
   }
 
@@ -122,6 +209,49 @@ export class DealService {
     // For example: { "newStageId": 123 } or { "newStageName": "Qualification" }
     // The current payload {"stageName":stageName} is a common pattern.
     return this.http.put<DealRead[]>(url, JSON.stringify({ "stageName": stageName }), this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+   updateDeal(id: number, dealData: DealEditPayload): Observable<DealRead> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.put<DealRead>(url, JSON.stringify(dealData), this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  getManagerOverviewStageCounts(managerId: number): Observable<ManagerStageCount[]> {
+     if (!this.authService.hasPrivilege('overview')) {
+        return throwError(() => new Error('Current user lacks Overview privilege.'));
+    }
+    const url = `${this.apiUrl}/manager-overview-stage-counts/${managerId}`;
+    console.log(`DealService: Fetching manager overview stage counts from ${url}`);
+    return this.http.get<ManagerStageCount[]>(url, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+updateDealDescription(id: number, description: string): Observable<DealRead> {
+  const url = `${this.apiUrl}/${id}/description`;
+  const updateDto = {
+    description: description,
+    updatedBy: this.authService.userId
+  };
+ 
+  return this.http.put<DealRead>(url, updateDto, this.httpOptions)
+    .pipe(
+      map(response => {
+        console.log('Description update response:', response);
+        return response;
+      }),
+      catchError(this.handleError)
+    );
+}
+ 
+  getManagerOverviewDeals(managerId: number): Observable<DealManagerOverview[]> {
+    if (!this.authService.hasPrivilege('overview')) {
+        return throwError(() => new Error('Current user lacks Overview privilege.'));
+    }
+    const url = `${this.apiUrl}/manager-overview-deals/${managerId}`;
+    console.log(`DealService: Fetching manager overview deals from ${url}`);
+    return this.http.get<DealManagerOverview[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 

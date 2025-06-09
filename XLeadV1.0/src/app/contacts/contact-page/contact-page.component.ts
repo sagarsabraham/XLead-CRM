@@ -1,5 +1,6 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { forkJoin } from 'rxjs';
+import { AuthService } from 'src/app/services/auth-service.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 import { TableComponent } from 'src/app/shared/table/table.component';
 
@@ -31,26 +32,29 @@ export class ContactPageComponent implements OnInit {
       }
     }
   ];
-
+ 
   tableData: any[] = [];
   totalContacts = 0;
   isMobile: boolean = false;
   isSidebarVisible: boolean = false;
   isLoading: boolean = true;
   error: string | null = null;
-
-  constructor(private contactService: CompanyContactService) {
+ canEditContacts = false;
+  canDeleteContacts = false;
+  constructor(private contactService: CompanyContactService, private authService: AuthService) {
     this.checkIfMobile();
   }
-
+ 
   ngOnInit(): void {
+    this.canEditContacts = this.authService.hasPrivilege('EditContact');
+    this.canDeleteContacts = this.authService.hasPrivilege('DeleteContact');
     this.loadContacts();
   }
 
   private safeToString(value: any): string {
     return value !== undefined && value !== null ? String(value) : '';
   }
-
+ 
   loadContacts(): void {
     this.isLoading = true;
     this.error = null;
@@ -66,26 +70,26 @@ export class ContactPageComponent implements OnInit {
         customers.forEach((customer: any) => {
           customerMap[customer.id] = customer.customerName || 'Unknown Customer';
         });
-
-      
+ 
+     
         this.tableData = contacts.map(contact => ({
           id: this.safeToString(contact.id || `temp-id-${Math.random().toString(36).substring(2)}`),
           name: contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim(),
           phone: contact.phoneNumber || '',
           email: contact.email || '',
           customerName: contact.customerId ? customerMap[contact.customerId] || 'Unknown Customer' : 'No Customer',
-          designation: contact.designation || 'N/A', // Map the designation field
+          designation: contact.designation || 'N/A',
           status: contact.isActive ? 'Active' : 'Inactive',
           owner: contact.createdBy?.toString() || 'System'
         }));
-
-      
+ 
+     
         const ids = this.tableData.map(item => item.id);
         const uniqueIds = new Set(ids);
         if (uniqueIds.size !== ids.length) {
           console.error('Duplicate IDs detected:', ids);
         }
-
+ 
         this.totalContacts = this.tableData.length;
         this.isLoading = false;
       },
@@ -96,12 +100,12 @@ export class ContactPageComponent implements OnInit {
       }
     });
   }
-
+ 
   @HostListener('window:resize')
   onResize(): void {
     this.checkIfMobile();
   }
-
+ 
   private checkIfMobile(): void {
     this.isMobile = window.innerWidth <= 576;
     if (this.isMobile) {
@@ -110,14 +114,14 @@ export class ContactPageComponent implements OnInit {
       this.isSidebarVisible = true;
     }
   }
-
+ 
   selectedContactIds: string[] = [];
 
   handleSelectionChanged(event: any): void {
     console.log('Selection changed:', event);
     console.log('Selected keys:', event.selectedRowKeys);
     console.log('Selected data:', event.selectedRowsData);
-    
+   
     this.selectedContactIds = event.selectedRowKeys || [];
   }
     handleUpdate(event: any): void {
@@ -177,4 +181,4 @@ export class ContactPageComponent implements OnInit {
   toggleSidebar(): void {
     this.isSidebarVisible = !this.isSidebarVisible;
   }
-}
+} 

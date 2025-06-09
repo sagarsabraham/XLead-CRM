@@ -84,7 +84,7 @@
           placeholder="Select Account (Optional)">
         </dx-select-box>
       </dxi-item>
-       <dxi-item dataField="account">
+       <dxi-item dataField="serviceline">
         <dxo-label text="Service Line" cssClass="bold-label"></dxo-label>
         <dx-select-box
           [(value)]="newDeal.serviceline"
@@ -219,6 +219,17 @@
       [message]="field.fieldLabel + ' is required'">
     </dxi-validation-rule>
   </dxi-item>
+</dxi-item>
+    *ngFor="let field of customFields; trackBy: trackByDataField" 
+    [dataField]="field.dataField"
+    [editorType]="getEditorType(field.fieldType)"
+    [editorOptions]="getEditorOptions(field.fieldType)">
+    <dxo-label [text]="field.fieldLabel" cssClass="bold-label"></dxo-label>
+    <dxi-validation-rule
+      *ngIf="field.required"
+      type="required"
+      [message]="field.fieldLabel + ' is required'">
+    </dxi-validation-rule>
 </dxi-item>
       </dx-form>
     </div>

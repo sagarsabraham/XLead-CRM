@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges, HostListener } from '@angular/core';
 import { DxChartModule, DxScrollViewModule } from 'devextreme-angular';
-
+ 
 @Component({
   selector: 'app-pipeline-stage-graph',
   templateUrl: './pipeline-stage-graph.component.html',
@@ -8,14 +8,14 @@ import { DxChartModule, DxScrollViewModule } from 'devextreme-angular';
 })
 export class PipelineStageGraphComponent implements OnChanges {
   @Input() stages: { stage: string, amount: number }[] = [];
-
+ 
   filteredStages: { stage: string, amount: number }[] = [];
   valueAxisRange: { startValue: number, endValue: number } = { startValue: 0, endValue: 0 };
   // tickInterval: number = 100000;
   chartSize: { height: number } = { height: 349 };
   adaptiveLayoutWidth: number = 300;
   isMobile: boolean = false;
-
+ 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['stages']) {
       this.filteredStages = this.stages.filter(stage => stage.amount > 0);
@@ -25,20 +25,20 @@ export class PipelineStageGraphComponent implements OnChanges {
       // this.setTickInterval(maxAmount);
     }
   }
-
+ 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event): void {
     this.updateChartSize();
   }
-
+ 
   ngOnInit(): void {
     this.updateChartSize();
   }
-
+ 
   updateChartSize(): void {
     const width = window.innerWidth;
     this.isMobile = width <= 480;
-
+ 
     if (width <= 480) {
       this.chartSize = { height: 250 };
       this.adaptiveLayoutWidth = 200;
@@ -50,7 +50,7 @@ export class PipelineStageGraphComponent implements OnChanges {
       this.adaptiveLayoutWidth = 300;
     }
   }
-
+ 
   // setTickInterval(maxAmount: number): void {
   //   if (maxAmount <= 100000) {
   //     this.tickInterval = 20000;
@@ -60,7 +60,7 @@ export class PipelineStageGraphComponent implements OnChanges {
   //     this.tickInterval = 200000;
   //   }
   // }
-
+ 
   customizeTooltip(arg: any) {
   const formattedValue = arg.value.toLocaleString('en-US', {
     style: 'currency',

@@ -70,3 +70,8 @@ app-modal-buttons {
   margin-left: 5px;
 }
 
+.disabled-text {
+  font-style: italic;
+  font-size: 0.9em;
+  margin-left: 5px;
+}

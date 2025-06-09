@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { AuthServiceService } from 'src/app/services/auth-service.service';
+import { AuthService } from 'src/app/services/auth-service.service';
 import{ PrivilegeServiceService } from 'src/app/services/privilege-service.service';
 
 interface NavItem {
@@ -26,7 +26,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router, 
-    private auth: AuthServiceService,
+    private auth: AuthService,
     private privilegeService: PrivilegeServiceService
   ) {
     this.checkScreenSize();
@@ -64,8 +64,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
         isActive: false,
       },
       {
-        iconPath: 'assets/Company.png',
-        text: 'Companies',
+        iconPath: 'assets/customer.png',
+        text: 'Customers',
         route: '/companies',
         isActive: false,
       },
@@ -124,7 +124,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   getPipelineRoute(): string {
-    console.log('Current privileges:', this.auth.privileges); // Debug line
+    console.log('Current privileges:', this.auth.privileges);
     if (this.auth.hasPrivilege('overview')) {
       return '/overview';
     } else if (this.auth.hasPrivilege('PipelineDetailAccess')) {
