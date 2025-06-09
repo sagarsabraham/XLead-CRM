@@ -2,9 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DealService } from 'src/app/services/dealcreation.service';
 import { DealstageService } from 'src/app/services/dealstage.service';
-import { CompanyContactService } from 'src/app/services/company-contact.service';
-import { forkJoin, of } from 'rxjs';
- 
+ import { CompanyContactService } from 'src/app/services/company-contact.service';
  
 @Component({
   selector: 'app-dealinfopage',
@@ -22,7 +20,7 @@ export class DealinfopageComponent implements OnInit {
   isLoading: boolean = true;
   isUpdatingStage: boolean = false;
  
- 
+  // Store original customer data to prevent loss
   private originalCustomerData: any = {};
  
   mobileTabs = [
@@ -44,38 +42,40 @@ export class DealinfopageComponent implements OnInit {
     private router: Router,
     private dealService: DealService,
     private dealStageService: DealstageService,
-      private companyContactService: CompanyContactService  
+    private companyContactService: CompanyContactService
   ) {}
  
-ngOnInit() {
-  console.log('=== DEAL INFO PAGE INIT ===');
-  this.checkScreenSize();
-  this.loadStages();
+  ngOnInit() {
+    console.log('=== DEAL INFO PAGE INIT ===');
+    this.checkScreenSize();
+    this.loadStages();
  
-  const navigation = this.router.getCurrentNavigation();
-  const state = navigation?.extras?.state || window.history.state;
- 
-  console.log('Navigation state:', state);
- 
-  if (state && state.deal) {
-    console.log('Deal found in state:', state.deal);
-    console.log('Stage from state:', state.deal.stageName);
-    this.dealId = state.deal.id;
- 
+    // First check if deal data was passed via navigation state
+    const navigation = this.router.getCurrentNavigation();
+    const state = navigation?.extras?.state || window.history.state;
     this.processDealDataWithContactInfo(state.deal);  
-    this.loadStageHistory();
-  } else {
-    this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.dealId = +params['id'];
-        console.log('Loading deal by ID:', this.dealId);
-        this.loadDealData();
-      } else {
-        console.error('No deal data found in navigation state or params');
-      }
-    });
+   
+    console.log('Navigation state:', state);
+   
+    if (state && state.deal) {
+      console.log('Deal found in state:', state.deal);
+      console.log('Stage from state:', state.deal.stageName);
+      this.dealId = state.deal.id;
+      this.processDealData(state.deal);
+      this.loadStageHistory();
+    } else {
+      // If no deal in state, check route params
+      this.route.params.subscribe(params => {
+        if (params['id']) {
+          this.dealId = +params['id'];
+          console.log('Loading deal by ID:', this.dealId);
+          this.loadDealData();
+        } else {
+          console.error('No deal data found in navigation state or params');
+        }
+      });
+    }
   }
-}
  
   loadStages() {
     this.dealStageService.getAllDealStages().subscribe({
@@ -94,8 +94,9 @@ ngOnInit() {
     this.isLoading = true;
     this.dealService.getDealById(this.dealId).subscribe({
       next: (dealData) => {
-        this.processDealDataWithContactInfo(dealData);
+        this.processDealData(dealData);
         this.loadStageHistory();
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading deal:', err);
@@ -232,15 +233,15 @@ processDealDataWithContactInfo(dealData: any) {
   }
 }
  
- 
+  // Helper method to format dates consistently
   private formatDate(date: Date): string {
     if (!date || isNaN(date.getTime())) {
       console.warn('Invalid date detected, using current date');
       date = new Date();
     }
- 
+    // Format as YYYY-MM-DD HH:MM:SS to ensure consistency
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
     const day = String(date.getDate()).padStart(2, '0');
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
@@ -248,82 +249,44 @@ processDealDataWithContactInfo(dealData: any) {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
  
-processStageHistory(history: any[]) {
-  this.history = [];
- 
-  // First, check if we have any stage history from the backend
-  const hasBackendHistory = history && history.length > 0;
- 
-  if (hasBackendHistory) {
-    // Sort history by date (oldest first) to process in chronological order
+  processStageHistory(history: any[]) {
+    this.history = [];
+   
+    if (!history || history.length === 0) {
+      // Add initial creation entry
+      this.history.push({
+        timestamp: this.formatDate(this.deal?.startDate ? new Date(this.deal.startDate) : new Date()),
+        editedBy: 'System',
+        fromStage: 'Initial',
+        toStage: this.deal.stage || 'Qualification'
+      });
+      return;
+    }
+   
+    // Sort history by date (oldest first)
     const sortedHistory = [...history].sort((a, b) => {
       const dateA = new Date(a.createdAt || a.timestamp);
       const dateB = new Date(b.createdAt || b.timestamp);
       return dateA.getTime() - dateB.getTime();
     });
    
-    // Check if the first entry is the initial stage
-    const firstEntry = sortedHistory[0];
-    const isFirstEntryInitial = !firstEntry.fromStage || firstEntry.fromStage === 'Initial';
+    let previousStage = 'Initial';
    
-    if (isFirstEntryInitial) {
-     
-      const date = new Date(firstEntry.createdAt || firstEntry.timestamp);
-     
-     
-      const creatorName = firstEntry.createdBy || 'Unknown User';
-     
+    sortedHistory.forEach((entry) => {
+      const date = new Date(entry.createdAt || entry.timestamp);
+      const toStage = entry.stageDisplayName || entry.stageName || entry.toStage;
       this.history.push({
         timestamp: this.formatDate(date),
-        editedBy: creatorName,  // Same field used in stage updates
-        fromStage: '',
-        toStage: '',
-        isCreation: true,
-        dealName: this.deal?.title || this.deal?.dealName || 'New Deal'
+        editedBy: entry.createdBy || entry.editedBy || 'Unknown User',
+        fromStage: entry.fromStage || previousStage,
+        toStage: toStage
       });
-     
- 
-      let previousStage = firstEntry.stageDisplayName || firstEntry.stageName || firstEntry.toStage || 'Qualification';
-     
-      for (let i = 1; i < sortedHistory.length; i++) {
-        const entry = sortedHistory[i];
-        const date = new Date(entry.createdAt || entry.timestamp);
-        const toStage = entry.stageDisplayName || entry.stageName || entry.toStage;
-       
-        this.history.push({
-          timestamp: this.formatDate(date),
-          editedBy: entry.createdBy || 'Unknown User',  // Same logic
-          fromStage: entry.fromStage || previousStage,
-          toStage: toStage,
-          isCreation: false
-        });
-       
-        previousStage = toStage;
-      }
-    } else {
-     
-      let previousStage = 'Qualification';
-     
-      sortedHistory.forEach((entry) => {
-        const date = new Date(entry.createdAt || entry.timestamp);
-        const toStage = entry.stageDisplayName || entry.stageName || entry.toStage;
-       
-        this.history.push({
-          timestamp: this.formatDate(date),
-          editedBy: entry.createdBy || 'Unknown User',  // Same logic
-          fromStage: entry.fromStage || previousStage,
-          toStage: toStage,
-          isCreation: false
-        });
-       
-        previousStage = toStage;
-      });
-    }
-  } else {
+      previousStage = toStage;
+    });
    
-    console.log('No stage history available from backend');
+    // Reverse to show newest first
+    this.history.reverse();
   }
-}
  
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
@@ -341,52 +304,78 @@ processStageHistory(history: any[]) {
   }
  
   onStageChange(newStage: string) {
-  if (!this.dealId || this.isUpdatingStage || !this.deal) {
-    return;
-  }
- 
-  const oldStage = this.deal.stage;
-  this.isUpdatingStage = true;
- 
- 
-  const preservedData = { ...this.deal };
- 
- 
-  this.deal = { ...this.deal, stage: newStage };
- 
-  this.dealService.updateDealStage(this.dealId, newStage).subscribe({
-    next: (updatedDeal) => {
-     
-      this.deal = {
-        ...preservedData,
-        stage: newStage
-      };
-     
-     
-      this.history.unshift({
-        timestamp: this.formatDate(new Date()),
-        editedBy: 'Current User',
-        fromStage: oldStage,
-        toStage: newStage,
-        isCreation: false
-      });
-     
-      this.isUpdatingStage = false;
-      console.log('Stage updated from', oldStage, 'to', newStage);
-     
-     
-      this.loadStageHistory();
-    },
-    error: (err) => {
-      console.error('Error updating stage:', err);
-      alert('Failed to update stage. Please try again.');
-     
-      this.deal = { ...this.deal, stage: oldStage };
-      this.isUpdatingStage = false;
+    if (!this.dealId || this.isUpdatingStage || !this.deal) {
+      return;
     }
-  });
-}
  
+    const oldStage = this.deal.stage;
+    this.isUpdatingStage = true;
+   
+    // Store current customer data before update
+    const preservedData = {
+      companyName: this.deal.companyName,
+      contactName: this.deal.contactName,
+      contactEmail: this.deal.contactEmail,
+      contactPhone: this.deal.contactPhone,
+      companyWebsite: this.deal.companyWebsite,
+      companyPhone: this.deal.companyPhone,
+      closingDate: this.deal.closingDate
+    };
+   
+    // Update the stage immediately for UI feedback
+    this.deal = { ...this.deal, stage: newStage };
+   
+    this.dealService.updateDealStage(this.dealId, newStage).subscribe({
+      next: (updatedDeal) => {
+        // Process the updated deal data
+        this.processDealData(updatedDeal);
+       
+        // Restore preserved customer data if it was lost in the update
+        if (!this.deal.companyName || this.deal.companyName === 'N/A' || this.deal.companyName === '') {
+          this.deal.companyName = preservedData.companyName || this.originalCustomerData.customerName;
+        }
+        if (!this.deal.contactName) {
+          this.deal.contactName = preservedData.contactName || this.originalCustomerData.contactName;
+        }
+        if (!this.deal.contactEmail || this.deal.contactEmail === '.com') {
+          this.deal.contactEmail = preservedData.contactEmail || this.originalCustomerData.contactEmail;
+        }
+        if (!this.deal.contactPhone) {
+          this.deal.contactPhone = preservedData.contactPhone || this.originalCustomerData.contactPhone;
+        }
+        if (!this.deal.companyWebsite || this.deal.companyWebsite === 'info@.com') {
+          this.deal.companyWebsite = preservedData.companyWebsite || this.originalCustomerData.companyWebsite;
+        }
+        if (!this.deal.companyPhone) {
+          this.deal.companyPhone = preservedData.companyPhone || this.originalCustomerData.companyPhone;
+        }
+        if (!this.deal.closingDate) {
+          this.deal.closingDate = preservedData.closingDate;
+        }
+       
+        // Add to history immediately
+        this.history.unshift({
+          timestamp: this.formatDate(new Date()),
+          editedBy: 'Current User', // Replace with actual user from auth service
+          fromStage: oldStage,
+          toStage: newStage
+        });
+       
+        this.isUpdatingStage = false;
+        console.log('Stage updated successfully to:', newStage);
+       
+        // Refresh stage history from backend
+        this.loadStageHistory();
+      },
+      error: (err) => {
+        console.error('Error updating stage:', err);
+        alert('Failed to update stage. Please try again.');
+        // Revert the UI change
+        this.deal = { ...this.deal, stage: oldStage };
+        this.isUpdatingStage = false;
+      }
+    });
+  }
  
   onDescriptionChange(newDescription: string) {
     console.log('Updated description:', newDescription);
