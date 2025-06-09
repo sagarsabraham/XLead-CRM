@@ -7,7 +7,7 @@ import { DealheaderComponent } from './dealheader/dealheader.component';
 import { DealfooterComponent } from './dealfooter/dealfooter.component';
 import { PipelinepageComponent } from './pipelinepage/pipelinepage.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { DxBoxModule, DxButtonModule, DxDateBoxModule, DxFileUploaderModule, DxFormModule, DxListModule, DxNumberBoxModule, DxPopupModule, DxSelectBoxModule, DxTabsModule } from 'devextreme-angular';
+import { DxBoxModule, DxButtonModule, DxDateBoxModule, DxFileUploaderModule, DxFormModule, DxListModule, DxNumberBoxModule, DxPopupModule, DxSelectBoxModule, DxTabsModule, DxToastModule } from 'devextreme-angular';
 import { SharedModule } from '../shared/shared.module';
 import { AddDealModalComponent } from './add-deal-modal/add-deal-modal.component';
 import { ModalHeaderComponent } from './modal-header/modal-header.component'
@@ -26,7 +26,7 @@ import { DuService } from '../services/du.service';
 import { RegionService } from '../services/region.service';
 import { RevenuetypeService } from '../services/revenuetype.service';
 import { DealstageService } from '../services/dealstage.service';
-import { AuthServiceService } from '../services/auth-service.service';
+
 import { IndustryVerticalService } from '../services/industry-vertical.service';
 import { PrivilegeServiceService } from '../services/privilege-service.service';
 import { SeviceLineService } from '../services/sevice-line.service';
@@ -63,7 +63,8 @@ import { SeviceLineService } from '../services/sevice-line.service';
     DxDateBoxModule,
     DxFileUploaderModule,
     DealInfoModule,
-    RouterModule
+    RouterModule,
+    DxToastModule
   ],
 
   providers: [
@@ -76,7 +77,7 @@ import { SeviceLineService } from '../services/sevice-line.service';
     DuService,
     DealstageService,
     RevenuetypeService,
-    AuthServiceService,
+    
     IndustryVerticalService,
     PrivilegeServiceService,
     SeviceLineService

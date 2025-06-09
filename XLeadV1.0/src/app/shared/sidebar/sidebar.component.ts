@@ -2,15 +2,14 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { AuthServiceService } from 'src/app/services/auth-service.service';
-import { PrivilegeServiceService, Privilege } from 'src/app/services/privilege-service.service'; 
+import { AuthService } from 'src/app/services/auth-service.service';
+import{ PrivilegeServiceService } from 'src/app/services/privilege-service.service';
 
 interface NavItem {
   iconPath: string;
   text: string;
   route: string;
   isActive: boolean;
-  disabled?: boolean;
 }
 
 @Component({
@@ -26,44 +25,30 @@ export class SidebarComponent implements OnInit, OnDestroy {
   navItems: NavItem[] = [];
 
   constructor(
-    private router: Router,
-    private auth: AuthServiceService,
+    private router: Router, 
+    private auth: AuthService,
     private privilegeService: PrivilegeServiceService
   ) {
-    this.checkScreenSize(); 
+    this.checkScreenSize();
   }
 
   ngOnInit() {
-    
-    this.privilegeService.getPrivileges(this.auth.userId).subscribe((privs: Privilege[]) => {
-      this.auth.setPrivileges(privs); 
-      console.log('Privileges fetched and set in AuthService:', this.auth.privileges);
-      this.initializeNavItems(); 
-      this.setupRouterListener(); 
-    }, error => {
-      console.error("Error fetching privileges:", error);
-     
-      this.auth.setPrivileges([]); 
-      this.initializeNavItems(); 
-      this.setupRouterListener();
+   
+    this.privilegeService.getPrivileges(this.auth.userId).subscribe(privs => {
+      this.auth.setPrivileges(privs);
+      this.initializeNavItems();
     });
   }
 
   private initializeNavItems() {
     const pipelineRoute = this.getPipelineRoute();
-    const contactsRoute = this.getContactsRoute(); 
-    const customersRoute = this.getCustomersRoute();
-
-    console.log('Determined Routes:');
-    console.log('  Pipeline:', pipelineRoute);
-    console.log('  Contacts:', contactsRoute);
-    console.log('  Customers:', customersRoute);
-
+    console.log('Pipeline route:', pipelineRoute);
+    
     this.navItems = [
       {
         iconPath: 'assets/Dashboard.png',
         text: 'Dashboard',
-        route: '/dashboard', 
+        route: '/dashboard',
         isActive: false,
       },
       {
@@ -71,55 +56,41 @@ export class SidebarComponent implements OnInit, OnDestroy {
         text: 'Pipeline',
         route: pipelineRoute,
         isActive: false,
-        disabled: pipelineRoute === '/access-denied' 
       },
       {
         iconPath: 'assets/Contact.png',
         text: 'Contacts',
-        route: contactsRoute,
+        route: '/contacts',
         isActive: false,
-        disabled: contactsRoute === '/access-denied' 
       },
       {
-        iconPath: 'assets/Company.png', 
-        text: 'Customers',              
-        route: customersRoute,
+        iconPath: 'assets/customer.png',
+        text: 'Customers',
+        route: '/companies',
         isActive: false,
-        disabled: customersRoute === '/access-denied' 
       },
     ];
 
-    this.updateActiveRoute(this.router.url); 
-  }
+    this.updateActiveRoute(this.router.url);
 
-  private setupRouterListener() {
-  
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
-    }
-    
     this.routerSubscription = this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       this.updateActiveRoute(event.urlAfterRedirects);
     });
+
+    this.checkScreenSize();
   }
 
-
   ngOnDestroy() {
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
-    }
+    if (this.routerSubscription) this.routerSubscription.unsubscribe();
   }
 
   updateActiveRoute(url: string) {
-
-    const normalizedUrl = url === '/' ? (this.navItems.find(item => item.text === 'Dashboard')?.route || '/dashboard') : url;
+    const normalizedUrl = url === '/' ? '/dashboard' : url;
     this.navItems = this.navItems.map(item => ({
       ...item,
-    
-      isActive: item.route !== '/access-denied' &&
-                  (normalizedUrl === item.route || (item.route !== '/' && normalizedUrl.startsWith(item.route + '/')))
+      isActive: normalizedUrl === item.route || normalizedUrl.startsWith(item.route + '/'),
     }));
   }
 
@@ -127,21 +98,20 @@ export class SidebarComponent implements OnInit, OnDestroy {
   onResize() {
     this.checkScreenSize();
   }
-
+ 
   checkScreenSize() {
     const prevMobileView = this.isMobileView;
-    this.isMobileView = window.innerWidth <= 768; 
-    if (prevMobileView && !this.isMobileView) { 
+    this.isMobileView = window.innerWidth <= 768;
+    if (prevMobileView && !this.isMobileView) {
       this.isMobileMenuOpen = false;
-      document.body.style.overflow = '';
     }
   }
-
+ 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
     document.body.style.overflow = this.isMobileMenuOpen ? 'hidden' : '';
   }
-
+ 
   closeMobileMenuIfOpen() {
     if (this.isMobileView && this.isMobileMenuOpen) {
       this.isMobileMenuOpen = false;
@@ -149,45 +119,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  navigate(item: NavItem) { 
-    if (item.route === '/access-denied') {
-      console.warn(`Navigation to "${item.text}" blocked due to access denied.`);
- 
-      return;
-    }
-    this.router.navigate([item.route]);
-    this.closeMobileMenuIfOpen(); 
+  navigate(route: string) {
+    this.router.navigate([route]);
   }
-
-  
 
   getPipelineRoute(): string {
-  
-    if (this.auth.hasPrivilege('Overview')) { 
+    console.log('Current privileges:', this.auth.privileges);
+    if (this.auth.hasPrivilege('Overview')) {
       return '/overview';
-    } else if (this.auth.hasPrivilege('PipelineDetailAccess')) { 
+    } else if (this.auth.hasPrivilege('PipelineDetailAccess')) {
       return '/pipeline';
     } else {
-      console.warn('User lacks "Overview" and "PipelineDetailAccess" privileges for Pipeline.');
-      return '/access-denied'; 
-    }
-  }
-
-  getContactsRoute(): string {
-    if (this.auth.hasPrivilege('ViewContacts')) {
-      return '/contacts';
-    } else {
-      console.warn('User lacks "ViewContacts" privilege.');
-      return '/access-denied'; 
-    }
-  }
-
-  getCustomersRoute(): string { 
-    if (this.auth.hasPrivilege('ViewCustomers')) {
-      return '/companies'; 
-    } else {
-      console.warn('User lacks "ViewCustomers" privilege.');
-      return '/access-denied'; 
+      return '/access-denied';
     }
   }
 }

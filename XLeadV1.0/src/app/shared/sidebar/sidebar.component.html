@@ -17,7 +17,7 @@
     </div>
     <div class="close-button" (click)="toggleMobileMenu()">×</div>
     <div class="nav-items">
-      <div class="icons" *ngFor="let item of navItems" (click)="navigate(item); closeMobileMenuIfOpen()">
+      <div class="icons" *ngFor="let item of navItems" (click)="navigate(item.route); closeMobileMenuIfOpen()">
         <app-icon
           [iconPath]="item.iconPath"
           [isActive]="item.isActive"

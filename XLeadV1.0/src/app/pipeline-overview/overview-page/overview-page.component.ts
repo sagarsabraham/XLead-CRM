@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, HostListener } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { AuthServiceService } from 'src/app/services/auth-service.service';
+import { AuthService } from 'src/app/services/auth-service.service';
 import { DealManagerOverview, DealService } from 'src/app/services/dealcreation.service';
  
 @Component({
@@ -45,7 +45,7 @@ export class OverviewPageComponent {
   managerId: number;
  
   constructor(
-    private authService: AuthServiceService,
+    private authService: AuthService,
     private dealService: DealService,
     private cdr: ChangeDetectorRef
   ) {
@@ -87,7 +87,7 @@ export class OverviewPageComponent {
           const foundStage = results.stageCounts.find(sc => sc.stageName === (card.originalTitle || card.title));
           card.amount = foundStage ? foundStage.dealCount : 0;
         });
-        
+       
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -112,3 +112,4 @@ export class OverviewPageComponent {
     }
   }
 }
+ 

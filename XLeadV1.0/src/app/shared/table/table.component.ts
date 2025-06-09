@@ -4,14 +4,16 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { GridColumn, ExportFormat } from './table.interface';
 import { TableOutlineComponent } from '../table-outline/table-outline.component';
-
+ 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
 })
 export class TableComponent implements AfterViewInit {
+  @Input() lookupData: { [key: string]: any[] } = {};
   @Input() data: any[] = [];
+  
   @Input() headers: GridColumn[] = [];
   @Input() classNames: string = '';
   @Input() useOwnerTemplate: boolean = true;
@@ -19,11 +21,11 @@ export class TableComponent implements AfterViewInit {
   @Input() exportFileName: string = 'Data';
   @Input() entityType: string = 'Item';
   @Input() allowEditing: boolean = true; 
+  @Input() allowDeleting: boolean = false;
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter<any>();
   @Output() onRowUpdating: EventEmitter<any> = new EventEmitter<any>();
-  @Output() onRowRemoving: EventEmitter<any> = new EventEmitter<any>(); 
-  
-  @Input() allowDeleting: boolean = false;
+  @Output() onRowRemoving: EventEmitter<any> = new EventEmitter<any>();
+ 
   @ViewChild(DxDataGridComponent) dataGrid!: DxDataGridComponent;
   @ViewChild('columnChooserButton', { static: false }) columnChooserButton!: ElementRef;
   @ViewChild('exportButton', { static: false }) exportButton!: ElementRef;
@@ -43,7 +45,7 @@ export class TableComponent implements AfterViewInit {
   showSearchPanel: boolean = true;
   columnVisibility: { [key: string]: boolean } = {};
   public clickedInsideDropdown: boolean = false;
-
+ 
   public readonly ownerColors: readonly string[] = [
     '#2196f3',
     '#4caf50',
@@ -60,7 +62,7 @@ export class TableComponent implements AfterViewInit {
   showColumnChooserMobile: boolean = false;
   showMobileExportOptions: boolean = false;
   selectedContact: any = null;
-  editedContact: any = null; 
+  editedContact: any = null;
   isEditingMobile: boolean = false;
   isDetailsModalOpen: boolean = false;
   sortField: string = '';
@@ -70,7 +72,7 @@ export class TableComponent implements AfterViewInit {
   mobilePageSize: number = 10;
   mobileAllowedPageSizes: number[] = [5, 10, 20];
   paginatedData: any[] = [];
-
+ 
   cardFields: string[] = [];
 
   constructor(private cdr: ChangeDetectorRef) {
@@ -87,7 +89,7 @@ export class TableComponent implements AfterViewInit {
 
   private adjustFilterRowPosition(): void {
     if (!this.dataGrid?.instance) return;
-
+ 
     setTimeout(() => {
       const headerElement = document.querySelector('.dx-datagrid-headers') as HTMLElement;
       if (headerElement) {
@@ -119,7 +121,10 @@ export class TableComponent implements AfterViewInit {
       this.configureDataGrid();
       this.adjustFilterRowPosition();
     }
+    
 
+   
+ 
     console.log('=== TABLE COMPONENT INIT ===');
     console.log('Data sample:', this.data.slice(0, 2));
     console.log('Export filename:', this.exportFileName);
@@ -144,68 +149,86 @@ export class TableComponent implements AfterViewInit {
     ],
     phone: [{ type: 'pattern', pattern: /^[0-9-+\s()]*$/, message: 'Invalid phone number' }]
   };
-
+ 
   getDisplayValue(item: any, field: string): string {
     return item[field] || `No ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`;
   }
-
-
+ 
+    getLookupDataSource(dataField: string): any[] | null {
+    return this.lookupData[dataField] || null;
+  }
+ 
+  getLookupDisplayExpr(dataField: string): string {
+    if (dataField === 'industryVertical') {
+      return 'industryName'; // The property to display in the dropdown
+    }
+    return 'name';
+  }
+ 
+   getLookupValueExpr(dataField: string): string {
+    if (dataField === 'industryVertical') {
+      return 'industryName'; // The property to use as the value
+    }
+   return 'name';
+  }
+ 
+ 
   // public refreshData(): void {
    
   //   console.log('TableComponent: refreshData() called.');
-    
+   
    
   //   const filtered = this.filteredData;
-    
+   
   //   const startIndex = (this.currentPage - 1) * this.mobilePageSize;
   //   const endIndex = startIndex + this.mobilePageSize;
   //   this.paginatedData = filtered.slice(startIndex, endIndex);
-
+ 
    
   //   this.cdr.detectChanges();
   // }
-
-
-  
-  
-  
-
+ 
+ 
+ 
+ 
+ 
+ 
   private checkIfMobile(): void {
     const wasMobile = this.isMobile;
     this.isMobile = window.innerWidth <= 576;
-
+ 
     if (wasMobile !== this.isMobile) {
       this.selectedRowKeys = [];
       this.emitSelectionChange();
       this.cdr.detectChanges();
     }
-
+ 
     this.updatePagination();
   }
-
+ 
   public updatePagination(): void {
     const startIndex = (this.currentPage - 1) * this.mobilePageSize;
     const endIndex = startIndex + this.mobilePageSize;
     this.paginatedData = this.filteredData.slice(startIndex, endIndex);
     this.cdr.detectChanges();
   }
-
+ 
   public emitSelectionChange(): void {
     const selectedRowsData = this.data.filter(row =>
       this.selectedRowKeys.includes(String(row.id))
     );
-
+ 
     const event = {
       selectedRowKeys: [...this.selectedRowKeys],
       selectedRowsData: selectedRowsData
     };
-
+ 
     console.log('=== SELECTION CHANGE EMITTED ===');
     console.log('Selected keys:', event.selectedRowKeys);
     console.log('Selected data count:', event.selectedRowsData.length);
     console.log('Export filename:', this.exportFileName);
     console.log('================================');
-
+ 
     this.onSelectionChanged.emit(event);
     this.cdr.detectChanges();
   }
@@ -225,59 +248,59 @@ export class TableComponent implements AfterViewInit {
     this.isEditingMobile = false;
     this.cdr.detectChanges();
   }
-  
+ 
   // --- Mobile Edit/Delete ---
   editMobileContact(): void {
     this.isEditingMobile = true;
     this.cdr.detectChanges();
   }
-
+ 
   cancelMobileEdit(): void {
     this.isEditingMobile = false;
     this.editedContact = { ...this.selectedContact }; // Revert changes
     this.cdr.detectChanges();
   }
-
  
-
-
-
+ 
+ 
+ 
+ 
   saveMobileContact(): void {
-  
+ 
     const newData: { [key: string]: any } = {};
     for (const key in this.editedContact) {
       if (this.editedContact[key] !== this.selectedContact[key]) {
         newData[key] = this.editedContact[key];
       }
     }
-    
-    
+   
+   
     const updateEvent = {
       key: this.selectedContact.id, // The ID of the row being updated
       oldData: this.selectedContact, // The original data
       newData: newData // An object containing only the fields that changed
     };
-    
+   
     // Emit the event. The parent component will handle the rest.
     this.onRowUpdating.emit(updateEvent);
-    
+   
     this.isEditingMobile = false;
     this.closeDetailsModal();
   }
-
+ 
   deleteMobileContact(): void {
     // This logic also needs to be corrected to be generic.
     if (window.confirm(`Are you sure you want to delete this ${this.entityType}?`)) {
-      
+     
       // Construct a generic remove event.
       const removeEvent = {
         key: this.selectedContact.id,
         data: this.selectedContact
       };
-      
+     
       // Emit the event. The parent component's `handleDelete` will take care of it.
       this.onRowRemoving.emit(removeEvent);
-      
+     
       this.closeDetailsModal();
     }
   }
@@ -292,7 +315,7 @@ export class TableComponent implements AfterViewInit {
     // Let parent handle data update and grid will refresh on [data] change
     this.dataGrid.instance.cancelEditData();
   }
-
+ 
   handleRowRemoving(e: any): void {
     e.cancel = true; // Prevent grid's default removal
     const removePayload = {
@@ -303,7 +326,7 @@ export class TableComponent implements AfterViewInit {
     // Let parent handle data update and grid will refresh on [data] change
     this.dataGrid.instance.cancelEditData();
   }
-
+ 
   toggleSortMobile(field: string): void {
     if (this.sortField === field) {
       if (this.sortDirection === 'asc') {
@@ -414,7 +437,7 @@ export class TableComponent implements AfterViewInit {
   toggleSelection(id: string): void {
     const stringId = String(id);
     const index = this.selectedRowKeys.indexOf(stringId);
-
+ 
     if (index === -1) {
       this.selectedRowKeys.push(stringId);
     } else {
@@ -451,7 +474,7 @@ export class TableComponent implements AfterViewInit {
     this.showMobileExportOptions = false;
     this.cdr.detectChanges();
   }
-
+ 
   public initializeHeaders(): void {
     this.headers = this.headers.map((header) => ({
       ...header,
@@ -461,7 +484,7 @@ export class TableComponent implements AfterViewInit {
       allowFiltering: header.allowFiltering !== false,
     }));
   }
-
+ 
   public initializeColumnVisibility(): void {
     this.headers.forEach((header) => {
       this.columnVisibility[header.dataField] = header.visible !== false;
@@ -515,7 +538,7 @@ export class TableComponent implements AfterViewInit {
         this.dataGrid.instance.columnOption(header.dataField, 'visible', !allSelected);
       }
     });
-
+ 
     this.cardFields = this.headers
       .filter(header => this.columnVisibility[header.dataField])
       .slice(0, 3)
@@ -561,12 +584,12 @@ export class TableComponent implements AfterViewInit {
       this.clickedInsideDropdown = false;
       return;
     }
-
+ 
     const clickedOnColumnChooserButton = this.columnChooserButton?.nativeElement?.contains(target) || false;
     const clickedOnExportButton = this.exportButton?.nativeElement?.contains(target) || false;
     const clickedInColumnChooser = this.columnChooserDropdown?.nativeElement?.contains(target) || false;
     const clickedInExportDropdown = this.exportOptionsDropdown?.nativeElement?.contains(target) || false;
-
+ 
     let changesDetected = false;
     if (this.showCustomColumnChooser && !clickedOnColumnChooserButton && !clickedInColumnChooser) {
       this.showCustomColumnChooser = false;
@@ -577,7 +600,7 @@ export class TableComponent implements AfterViewInit {
       this.showExportModal = false;
       changesDetected = true;
     }
-
+ 
     if (changesDetected) {
       this.cdr.detectChanges();
     }
@@ -598,13 +621,13 @@ export class TableComponent implements AfterViewInit {
     console.log('=== DESKTOP SELECTION EVENT ===');
     console.log('DevExtreme event:', event);
     console.log('Selected keys from DevExtreme:', event.selectedRowKeys);
-
+ 
     this.selectedRowKeys = (event.selectedRowKeys || []).map((key: any) => String(key));
-
+ 
     console.log('Normalized selected keys:', this.selectedRowKeys);
     console.log('Export filename:', this.exportFileName);
     console.log('==============================');
-
+ 
     this.emitSelectionChange();
     this.cdr.detectChanges();
   }
@@ -612,7 +635,7 @@ export class TableComponent implements AfterViewInit {
   toggleSort(column: GridColumn): void {
     const currentSortOrder = column.sortOrder;
     let newSortOrder: 'asc' | 'desc' | undefined;
-
+ 
     if (!currentSortOrder) {
       newSortOrder = 'asc';
     } else if (currentSortOrder === 'asc') {
@@ -735,7 +758,7 @@ export class TableComponent implements AfterViewInit {
     const sortOrder = column.sortOrder;
     return sortOrder ? 'sort-icon active' : 'sort-icon';
   }
-
+ 
   public positionDropdown(buttonRef: ElementRef, dropdownRef: ElementRef): void {
     if (!buttonRef?.nativeElement || !dropdownRef?.nativeElement) {
       return;
@@ -799,14 +822,14 @@ export class TableComponent implements AfterViewInit {
       this.dataGrid.instance.columnOption(firstColumnDataField, 'fixed', true);
       this.dataGrid.instance.columnOption(firstColumnDataField, 'fixedPosition', 'left');
     }
-
+ 
     // Fix the command column to the right if editing is enabled
     if (this.allowEditing) {
       this.dataGrid.instance.columnOption('command:edit', 'fixed', true);
       this.dataGrid.instance.columnOption('command:edit', 'fixedPosition', 'right');
       this.dataGrid.instance.columnOption('command:edit', 'width', 110);
     }
-
+ 
     this.dataGrid.instance.option('scrolling', {
       mode: 'standard',
       showScrollbar: 'always',

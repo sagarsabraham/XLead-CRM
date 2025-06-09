@@ -1,19 +1,19 @@
-
+ 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { AuthServiceService } from './auth-service.service';
+import { AuthService } from './auth-service.service';
  
-
+ 
 export interface DealCreatePayload {
   title: string;
   amount: number;
   customerName: string; // Note: In previous backend versions, we used 'companyName'. Ensure backend DTO matches.
   contactFullName: string;
-  contactEmail: string | null; 
-  contactPhoneNumber: string | null; 
-  contactDesignation: string | null; 
+  contactEmail: string | null;
+  contactPhoneNumber: string | null;
+  contactDesignation: string | null;
   accountId: number | null;
   serviceId: number | null; // New field
   regionId: number;
@@ -50,7 +50,7 @@ export interface DealEditPayload {
   startingDate: string | null;
   closingDate: string | null;
 }
-export interface DealManagerOverview { 
+export interface DealManagerOverview {
   id: number;
   dealName: string;
   dealAmount: number;
@@ -58,16 +58,16 @@ export interface DealManagerOverview {
   closingDate?: string | null;
   salespersonId: number;
   salespersonName: string;
-
-
+ 
+ 
   accountName?: string;
   regionName?: string;
-  duName?: string; 
+  duName?: string;
   contactName?: string;
   startingDate?: string | null;
 }
-
-
+ 
+ 
 export interface ManagerStageCount {
   stageName: string;
   dealCount: number;
@@ -78,25 +78,25 @@ export interface DashboardMetricItem {
   percentageChange: number;
   isPositiveTrend: boolean;
 }
-
+ 
 export interface DashboardMetrics {
   openPipelines: DashboardMetricItem;
   pipelinesWon: DashboardMetricItem;
   pipelinesLost: DashboardMetricItem;
   revenueWon: DashboardMetricItem;
 }
-
-export interface PipelineStageData { 
+ 
+export interface PipelineStageData {
   stageName: string;
   totalAmount: number;
 }
-
-export interface MonthlyRevenueData { 
+ 
+export interface MonthlyRevenueData {
   monthYear: string;
   totalRevenue: number;
 }
-
-export interface TopCustomerData { 
+ 
+export interface TopCustomerData {
   customerName: string;
   totalRevenueWon: number;
 }
@@ -130,6 +130,7 @@ export interface DealRead {
   createdBy?: number;
   createdAt?: string; 
   updatedAt?: string;
+  isHidden?:boolean|null;
   customFields?: { [key: string]: any };
 }
 export interface StageHistoryReadDto {
@@ -137,7 +138,7 @@ export interface StageHistoryReadDto {
   dealId: number;
   stageName: string;
   createdBy: number;
-  createdAt: string; 
+  createdAt: string;
   updatedBy?: number | null;
   updatedAt?: string | null;
 }
@@ -149,21 +150,21 @@ export class DealService {
   private apiUrl = 'https://localhost:7297/api/Deals'; 
   private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
  
-  constructor(private http: HttpClient,private authService: AuthServiceService) { }
+  constructor(private http: HttpClient,private authService: AuthService) { }
  
   createDeal(dealData: DealCreatePayload): Observable<DealRead> {
     return this.http.post<DealRead>(this.apiUrl, JSON.stringify(dealData), this.httpOptions)
       .pipe(catchError(this.handleError));
   }
-
-
+ 
+ 
   getDealById(id: number): Observable<DealRead> {
     const url = `${this.apiUrl}/${id}`;
     return this.http.get<DealRead>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
   getManagerOverviewDeals(managerId: number): Observable<DealManagerOverview[]> {
-    if (!this.authService.hasPrivilege('Overview')) { 
+    if (!this.authService.hasPrivilege('Overview')) {
         return throwError(() => new Error('Current user lacks Overview privilege.'));
     }
     const url = `${this.apiUrl}/manager-overview-deals/${managerId}`;
@@ -171,45 +172,45 @@ export class DealService {
     return this.http.get<DealManagerOverview[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
-
  
  
-  getDashboardMetrics(userId: number): Observable<DashboardMetrics> { 
-    
+ 
+  getDashboardMetrics(userId: number): Observable<DashboardMetrics> {
    
-    const url = `${this.apiUrl}/dashboard-metrics/${userId}`; 
+   
+    const url = `${this.apiUrl}/dashboard-metrics/${userId}`;
     console.log(`DealService: Fetching dashboard metrics from ${url}`);
     return this.http.get<DashboardMetrics>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
-
-  getOpenPipelineAmountsByStage(userId: number): Observable<PipelineStageData[]> { 
-
+ 
+  getOpenPipelineAmountsByStage(userId: number): Observable<PipelineStageData[]> {
+ 
     const url = `${this.apiUrl}/open-pipeline-stages/${userId}`;
     console.log(`DealService: Fetching open pipeline amounts from ${url}`);
     return this.http.get<PipelineStageData[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
-
-  getMonthlyRevenueWon(userId: number, months: number = 12): Observable<MonthlyRevenueData[]> { 
+ 
+  getMonthlyRevenueWon(userId: number, months: number = 12): Observable<MonthlyRevenueData[]> {
    
-    const url = `${this.apiUrl}/monthly-revenue-won/${userId}?months=${months}`; 
+    const url = `${this.apiUrl}/monthly-revenue-won/${userId}?months=${months}`;
     console.log(`DealService: Fetching monthly revenue from ${url}`);
     return this.http.get<MonthlyRevenueData[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
-
-  getTopCustomersByRevenue(userId: number, count: number = 5): Observable<TopCustomerData[]> { 
-    
-    const url = `${this.apiUrl}/top-customers-by-revenue/${userId}?count=${count}`; 
+ 
+  getTopCustomersByRevenue(userId: number, count: number = 5): Observable<TopCustomerData[]> {
+   
+    const url = `${this.apiUrl}/top-customers-by-revenue/${userId}?count=${count}`;
     console.log(`DealService: Fetching top customers from ${url}`);
     return this.http.get<TopCustomerData[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
-
+ 
  
   getManagerOverviewStageCounts(managerId: number): Observable<ManagerStageCount[]> {
-     if (!this.authService.hasPrivilege('Overview')) { 
+     if (!this.authService.hasPrivilege('Overview')) {
         return throwError(() => new Error('Current user lacks Overview privilege.'));
     }
     const url = `${this.apiUrl}/manager-overview-stage-counts/${managerId}`;
@@ -217,26 +218,29 @@ export class DealService {
     return this.http.get<ManagerStageCount[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
+
   getAllDeals(): Observable<DealRead[]> {
     return this.http.get<DealRead[]>(this.apiUrl, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
   getDealsForCurrentUser(): Observable<DealRead[]> {
-    const currentUserId = this.authService.getUserId(); 
-
+    const currentUserId = this.authService.getUserId();
+ 
     if (!currentUserId) {
-    
+   
       console.error('User ID not found in AuthServiceService.');
+    
+      console.error('User ID not found in AuthService.');
       return throwError(() => new Error('User ID is not available. Cannot fetch user-specific deals.'));
     }
-
+ 
    
     const url = `${this.apiUrl}/byCreator/${currentUserId}`;
-    
-  
-
+   
+ 
+ 
     console.log(`Fetching deals for user ID: ${currentUserId} from URL: ${url}`);
-    return this.http.get<DealRead[]>(url, this.httpOptions) 
+    return this.http.get<DealRead[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
     updateDeal(id: number, dealData: DealEditPayload): Observable<DealRead> {
@@ -248,9 +252,8 @@ export class DealService {
     const url = `${this.apiUrl}/${id}/stage`;
     const updateDto = {
       stageName: stageName,
-      PerformedByUserId: this.authService.userId
-    };
-   
+      UpdatedBy: this.authService.userId
+    };   
     return this.http.put<DealRead>(url, updateDto, this.httpOptions)
       .pipe(
         map(response => {
@@ -259,7 +262,7 @@ export class DealService {
         }),
         catchError(this.handleError));
   }
-
+ 
   getDealStageHistory(id: number): Observable<any[]> {
     const url = `${this.apiUrl}/${id}/stage-history`;
     const params = new HttpParams().set('userId', this.authService.userId.toString());
@@ -287,8 +290,8 @@ export class DealService {
     );
 }
  
-
-
+ 
+ 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred!';
     if (error.error instanceof ErrorEvent) {
@@ -298,7 +301,7 @@ export class DealService {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong.
       console.error(`Backend returned code ${error.status}, body was: `, error.error);
-
+ 
       if (error.status === 400) {
         // ASP.NET Core validation errors often come in `error.error.errors`
         // or sometimes directly in `error.error` as a string or ProblemDetails object

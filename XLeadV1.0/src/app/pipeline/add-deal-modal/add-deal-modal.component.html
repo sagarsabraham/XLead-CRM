@@ -1,3 +1,16 @@
+<dx-toast
+  #toastInstance
+  [(visible)]="toastVisible"
+  [message]="toastMessage"
+  [type]="toastType"
+  [displayTime]="3000"
+  position="top center"
+  [width]="300">
+  <div *dxTemplate="let data of 'content'">
+    <span>{{ toastMessage }}</span>
+  </div>
+</dx-toast>
+
 <dx-popup
   #popupInstanceRef  
   [visible]="isVisible"
@@ -13,15 +26,12 @@
       <app-modal-header title="Deal Information" [showOwner]="true"></app-modal-header>
  
       <dx-form
-       
-        #dealFormInstance
+        
+        #dealFormInstance 
         [formData]="newDeal"
         [colCountByScreen]="{ xs: 1, sm: 1, md: 1, lg: 1 }">
  
-        <!-- <dxi-item dataField="salesperson">
-          <dxo-label text="SalesPerson" cssClass="bold-label"></dxo-label>
-          <dxi-validation-rule type="required" message="SalesPerson Name is required"></dxi-validation-rule>
-        </dxi-item> -->
+    
   <dxi-item
   dataField="amount"
   editorType="dxNumberBox"
@@ -38,7 +48,7 @@
  
  
        <!-- Inside the dx-form -->
- 
+
 <dxi-item dataField="customerName">
   <dxo-label text="Customer Name" cssClass="bold-label"></dxo-label>
   <div class="company-name-container">
@@ -47,12 +57,12 @@
       [(value)]="newDeal.customerName"
       [dataSource]="customerDataSource"  
       displayExpr="name"                
-      valueExpr="name"                
-      itemTemplate="item"              
+      valueExpr="name"                 
+      itemTemplate="item"               
       [searchEnabled]="true"
       placeholder="Select or search a customer"
       (onValueChanged)="onCustomerChange($event.value)">
-     
+      
       <!-- NEW: Custom template to show disabled items with a different style -->
       <div *dxTemplate="let item of 'item'">
         <div [ngClass]="{'disabled-item': item.disabled}">
@@ -60,17 +70,17 @@
           <span *ngIf="item.disabled" class="disabled-text"> (Inactive)</span>
         </div>
       </div>
- 
+
     </dx-select-box>
     <dx-button
-      text="+"
+      text="+" 
       type="default"
       (onClick)="openQuickCreateCustomerModal()">
     </dx-button>
   </div>
   <dxi-validation-rule type="required" message="Company Name is required"></dxi-validation-rule>
 </dxi-item>
- 
+
         <dxi-item dataField="title">
           <dxo-label text="Deal Name" cssClass="bold-label"></dxo-label>
           <dxi-validation-rule type="required" message="Deal Name is required"></dxi-validation-rule>
@@ -210,7 +220,7 @@
         <dxi-item *ngIf="customFields.length > 0" itemType="group">
           <dxo-label text="Additional Information" cssClass="bold-label section-label"></dxo-label>
           <dxi-item
-    *ngFor="let field of customFields; trackBy: trackByDataField"
+    *ngFor="let field of customFields; trackBy: trackByDataField" 
     [dataField]="field.dataField"
     [editorType]="getEditorType(field.fieldType)"
     [editorOptions]="getEditorOptions(field.fieldType)">

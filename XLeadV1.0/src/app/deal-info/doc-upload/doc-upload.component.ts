@@ -1,43 +1,67 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AuthServiceService } from 'src/app/services/auth-service.service';
-import { DocumentService } from 'src/app/services/document.service';
-
+import { DocumentService, Attachment } from 'src/app/services/document.service';
+import { lastValueFrom } from 'rxjs';
+import notify from 'devextreme/ui/notify';
+import { environment } from 'src/environments/environment';
+ 
 @Component({
   selector: 'app-doc-upload',
   templateUrl: './doc-upload.component.html',
   styleUrls: ['./doc-upload.component.css']
 })
 export class DocUploadComponent implements OnInit {
-  @Input() dealId: string | null = null;
-  uploadUrl: string = '';
-  constructor(private uploadService: DocumentService, private authService: AuthServiceService) {}
+  @Input() dealId!: number;
 
+  attachments: Attachment[] = [];
+  isLoading = true;
+  baseStaticUrl = `${environment.apiUrl}/UploadedFiles`;
+
+  constructor(private documentService: DocumentService) { }
+ 
   ngOnInit(): void {
-    if (this.dealId) {
-      this.uploadUrl = `/api/upload/deal/${this.dealId}`;
+    if (!this.dealId) {
+      console.error("DealId is required for the doc-upload component.");
+      this.isLoading = false;
+      return;
+    }
+    this.loadAttachments();
+  }
+ 
+  async loadAttachments(): Promise<void> {
+    this.isLoading = true;
+    try {
+      this.attachments = await lastValueFrom(this.documentService.getAttachments(this.dealId));
+    } catch (error) {
+      notify('Failed to load documents.', 'error', 3000);
+      notify('Failed to load documents.', 'error', 3000);
+      console.error(error);
+    } finally {
+      this.isLoading = false;
     }
   }
-
-  onUploaded(event: any): void {
-  const response = JSON.parse(event.request.response);
-  const fileName = response.fileName;
-  const storedAs = response.storedAs;
-
-  const attachment = {
-    fileName: fileName,
-    s3UploadName: storedAs,
-    dealId: this.dealId ? Number(this.dealId) : 0,
-    createdBy: this.authService.getUserId()
-  };
-
-  this.uploadService.saveAttachmentMetadata(attachment).subscribe(() => {
-    console.log('File metadata saved to DB');
-  });
-}
-
-
-  onUploadError(event: any): void {
-    const error = event.error;
-    this.uploadService.handleUploadError(error);
+ 
+  onFileSelected(e: any): void {
+    const files: File[] = e.value;
+    if (files.length > 0) {
+      this.uploadFile(files[0], e.component);
+    }
+  }
+ 
+  async uploadFile(file: File, uploaderInstance: any): Promise<void> {
+    try {
+      const newDocument = await lastValueFrom(this.documentService.uploadAttachment(file, this.dealId));
+      notify(`'${file.name}' uploaded successfully.`, 'success', 3000);
+ 
+      // Add the new attachment to the top of the list
+      this.attachments.unshift(newDocument);
+     
+      // Reset the file uploader so the same file can be uploaded again if needed
+      uploaderInstance.reset();
+ 
+    } catch (error) {
+      notify(`Error uploading '${file.name}'.`, 'error', 3000);
+      console.error(error);
+    }
   }
 }
+ 

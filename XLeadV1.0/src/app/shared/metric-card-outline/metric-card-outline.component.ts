@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core'; 
-import { AuthServiceService } from 'src/app/services/auth-service.service';
-
+import { Component, OnInit } from '@angular/core'; // Added OnInit
+import { AuthService } from 'src/app/services/auth-service.service';
+// DxResponsiveBoxModule is likely not needed here unless you explicitly use dx-responsive-box in this component's HTML
+// import { DxResponsiveBoxModule } from 'devextreme-angular';
 import { DealService,DashboardMetricItem,DashboardMetrics } from 'src/app/services/dealcreation.service';// Adjust path if needed
  
 interface MetricCardData {
@@ -28,7 +29,7 @@ export class MetricCardOutlineComponent implements OnInit {
     revenueWon: 'Revenue Won - This Month'
   };
  
-  constructor(private dealService: DealService, private authService: AuthServiceService ) {
+  constructor(private dealService: DealService, private authService: AuthService ) {
     this.currentUserId = this.authService.getUserId();
   } 
  

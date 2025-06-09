@@ -8,8 +8,8 @@ interface Privilege {
 @Injectable({
   providedIn: 'root'
 })
-export class AuthServiceService {
-  userId: number = 5;
+export class AuthService {
+  userId: number = 4;
   privileges: Privilege[] = [];
 
   setPrivileges(privs: Privilege[]) {

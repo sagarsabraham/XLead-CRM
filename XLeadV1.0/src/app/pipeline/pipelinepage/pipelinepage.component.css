@@ -156,6 +156,11 @@ app-dealfooter {
   left: 0;
   right: 0;
   z-index: 10;
+  display: none;
+}
+ 
+.stage-card:hover app-dealfooter {
+  display: block;
 }
  
  
@@ -163,6 +168,28 @@ app-button {
   padding: 8px 16px;
   flex-shrink: 0;
  
+}
+ 
+.content-loading {
+  opacity: 0.5;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+ 
+:host ::ng-deep .dx-toast {
+  z-index: 2000;
+}
+ 
+:host ::ng-deep .dx-toast-content {
+  font-size: 14px;
+  padding: 10px 15px;
+}
+ 
+:host ::ng-deep .dx-toast-message {
+  display: block !important;
+  color: #333;
+  font-size: 14px;
+  padding: 5px 10px;
 }
  
 /* ========== Responsive Breakpoints ========== */
@@ -279,6 +306,16 @@ app-button {
   .stage-card {
     min-width: 180px;
   }
+  app-dealfooter {
+    display: block;
+  }
+ 
+  :host ::ng-deep app-dealfooter app-button,
+  :host ::ng-deep app-dealfooter dx-button {
+    max-width: 150px;
+    font-size: 14px;
+    padding: 6px 10px;
+  }
 }
 }
  
@@ -287,3 +324,4 @@ app-button {
   width: 100%;
   overflow-x: auto;
 }
+ 
