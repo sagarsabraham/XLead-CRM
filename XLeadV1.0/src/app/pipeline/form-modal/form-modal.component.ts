@@ -67,13 +67,6 @@ export class FormModalComponent implements AfterViewInit {
     }
   }
 
-  showToast(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
-    this.toastMessage = message;
-    this.toastType = type;
-    this.toastVisible = true;
-    this.cdr.detectChanges();
-  }
-
   handleClose() {
     this.onClose.emit();
     this.resetForm();

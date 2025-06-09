@@ -1,7 +1,21 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { DxFormComponent, DxPopupComponent,DxToastComponent } from 'devextreme-angular';
 import { finalize } from 'rxjs/operators';
-import { forkJoin } from 'rxjs'; 
+import { CountryService } from 'src/app/services/country.service';
+import { DuService } from 'src/app/services/du.service';
+import { RevenuetypeService } from 'src/app/services/revenuetype.service';
+import { AccountService } from '../../services/account.service';
+import { RegionService } from '../../services/region.service';
+import { DomainService } from '../../services/domain.service';
+import { DealstageService } from 'src/app/services/dealstage.service';
+import { Customer, CompanyContactService, Contact } from 'src/app/services/company-contact.service';
+import { DealService, DealCreatePayload, DealRead,DealEditPayload } from 'src/app/services/dealcreation.service';
+import { DxValidationRule } from '../form-modal/form-modal.component';
+import { SeviceLineService } from 'src/app/services/sevice-line.service';
+import { IndustryVerticalService } from 'src/app/services/industry-vertical.service';
+import { AuthService } from 'src/app/services/auth-service.service';
+import { CountryCodeService } from 'src/app/services/country-code.service';
+import { forkJoin } from 'rxjs';
 
 export interface QuickContactFormData {
   FirstName: string;
@@ -38,23 +52,6 @@ export interface CustomerContactMap {
   isHidden: boolean | null;
   contacts: string[];
 }
-
-
-import { CountryService } from 'src/app/services/country.service';
-import { DuService } from 'src/app/services/du.service';
-import { RevenuetypeService } from 'src/app/services/revenuetype.service';
-import { AccountService } from '../../services/account.service';
-import { RegionService } from '../../services/region.service';
-import { DomainService } from '../../services/domain.service';
-import { DealstageService } from 'src/app/services/dealstage.service';
-import { Customer, CompanyContactService, Contact } from 'src/app/services/company-contact.service';
-import { DealService, DealCreatePayload, DealRead,DealEditPayload } from 'src/app/services/dealcreation.service';
-import { DxValidationRule } from '../form-modal/form-modal.component';
-import { SeviceLineService } from 'src/app/services/sevice-line.service';
-import { IndustryVerticalService } from 'src/app/services/industry-vertical.service';
-import { AuthService } from 'src/app/services/auth-service.service';
-import { CountryCodeService } from 'src/app/services/country-code.service';
-import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-add-deal-modal',
@@ -784,6 +781,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.isCustomizeFieldModalVisible = false;
   }
 
+  showForm = true;
   addCustomField(newField: any) {
     const dataField = `custom_${newField.fieldLabel.toLowerCase().replace(/\s+/g, '_')}`;
     this.customFields.push({
@@ -792,8 +790,30 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       dataField: dataField,
       required: false,
     });
-    this.newDeal[dataField] = newField.fieldType.toLowerCase() === 'boolean' ? false : (newField.fieldType.toLowerCase() === 'numerical' || newField.fieldType.toLowerCase() === 'date' ? null : '');
+    this.newDeal[dataField] = '';
+    console.log("Custom field array", this.customFields);
+    switch (newField.fieldType.toLowerCase()) {
+      case 'text':
+        this.newDeal[dataField] = '';
+        break;
+      case 'numerical':
+        this.newDeal[dataField] = null;
+        break;
+      case 'boolean':
+        this.newDeal[dataField] = false;
+        break;
+      case 'date':
+        this.newDeal[dataField] = null;
+        break;
+      default:
+        this.newDeal[dataField] = '';
+    }
+    this.showForm = false;
     this.cdr.detectChanges();
+    this.showForm = true;
+    this.cdr.detectChanges();
+    console.log("Custom field array", this.customFields);
+    this.showToast('Custom field added successfully!', 'success');
     this.closeCustomizeFieldModal();
   }
 

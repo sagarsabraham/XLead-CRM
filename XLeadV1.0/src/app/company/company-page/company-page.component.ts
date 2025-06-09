@@ -12,20 +12,18 @@ import { AuthService } from 'src/app/services/auth-service.service';
   styleUrls: ['./company-page.component.css']
 })
 export class CompanyPageComponent implements OnInit {
-  // Property to hold the data for the Industry Vertical dropdown
   industryVerticalsLookupData: any[] = [];
  
   tableHeaders = [
     { dataField: 'customerName', caption: 'Customer Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'website', caption: 'Website', visible: true },
-    // This lookup configuration is now correct and will work with the fix below
     { 
       dataField: 'industryVertical', 
       caption: 'Industry Vertical', 
       visible: true,
       lookup: {
-        dataSource: this.industryVerticalsLookupData, // This binding is correct
+        dataSource: this.industryVerticalsLookupData, 
         valueExpr: 'industryName', 
         displayExpr: 'industryName' 
       }
@@ -43,7 +41,6 @@ export class CompanyPageComponent implements OnInit {
         displayExpr: 'displayValue'
       }
     },
-    // { dataField: 'owner', caption: 'Owner', visible: true }
   ];
 canEditCustomers = false;
 canDeleteCustomers = false;
@@ -94,13 +91,9 @@ canDeleteCustomers = false;
       next: ({ industryVerticals, users }) => {
         console.log('Industry Verticals loaded:', industryVerticals);
         console.log('Users loaded:', users);
-       
-        // FIX: Instead of re-assigning the array, clear it and push the new items.
-        // This maintains the original array reference that the grid is bound to.
-        this.industryVerticalsLookupData.length = 0; // Clear the array
-        this.industryVerticalsLookupData.push(...industryVerticals); // Add new items
- 
-        // Map industry verticals for display purposes
+        this.industryVerticalsLookupData.length = 0; 
+        this.industryVerticalsLookupData.push(...industryVerticals);
+
         this.industryVerticalMap = industryVerticals.reduce((map: { [id: number]: string }, vertical: any) => {
           map[vertical.id] = vertical.industryName || 'Unknown';
           return map;
@@ -210,8 +203,6 @@ canDeleteCustomers = false;
  
     handleUpdate(event: any): void {
     const companyId = event.key;
-    // This contains the merged data from the grid's edit
-    // This contains the merged data from the grid's edit
     const finalData = { ...event.oldData, ...event.newData };
 
     const updatePayload = {
@@ -226,30 +217,13 @@ canDeleteCustomers = false;
     this.companyService.updateCompany(companyId, updatePayload).subscribe({
       next: (response) => {
         console.log('Company updated successfully', response);
-        
-        
-       
-       
         const index = this.tableData.findIndex(c => c.id === companyId);
-
- 
         if (index !== -1) {
-          
-         
           this.tableData[index] = finalData;
-          
-          
-         
-         
           this.tableData = [...this.tableData];
-          
-          
-         
-         
           this.updateMetrics();
         }
         
-       
       },
       error: (err) => {
         console.error('Failed to update company', err);
@@ -262,10 +236,6 @@ canDeleteCustomers = false;
       }
     });
   }
-  
-
- 
- 
   handleDelete(event: any): void {
     const companyId = event.key;
     if (confirm('Are you sure you want to delete this company?')) {
@@ -284,11 +254,6 @@ canDeleteCustomers = false;
     }
   }
 
-
-  
- 
- 
- 
   @HostListener('window:resize')
   onResize(): void {
     this.checkIfMobile();

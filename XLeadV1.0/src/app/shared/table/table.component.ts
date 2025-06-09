@@ -160,38 +160,17 @@ export class TableComponent implements AfterViewInit {
  
   getLookupDisplayExpr(dataField: string): string {
     if (dataField === 'industryVertical') {
-      return 'industryName'; // The property to display in the dropdown
+      return 'industryName'; 
     }
     return 'name';
   }
  
    getLookupValueExpr(dataField: string): string {
     if (dataField === 'industryVertical') {
-      return 'industryName'; // The property to use as the value
+      return 'industryName';
     }
    return 'name';
   }
- 
- 
-  // public refreshData(): void {
-   
-  //   console.log('TableComponent: refreshData() called.');
-   
-   
-  //   const filtered = this.filteredData;
-   
-  //   const startIndex = (this.currentPage - 1) * this.mobilePageSize;
-  //   const endIndex = startIndex + this.mobilePageSize;
-  //   this.paginatedData = filtered.slice(startIndex, endIndex);
- 
-   
-  //   this.cdr.detectChanges();
-  // }
- 
- 
- 
- 
- 
  
   private checkIfMobile(): void {
     const wasMobile = this.isMobile;
@@ -235,7 +214,7 @@ export class TableComponent implements AfterViewInit {
  
   openDetailsModal(contact: any): void {
     this.selectedContact = contact;
-    this.editedContact = { ...contact }; // Create a copy for editing
+    this.editedContact = { ...contact }; 
     this.isDetailsModalOpen = true;
     this.isEditingMobile = false;
     this.cdr.detectChanges();
@@ -249,7 +228,6 @@ export class TableComponent implements AfterViewInit {
     this.cdr.detectChanges();
   }
  
-  // --- Mobile Edit/Delete ---
   editMobileContact(): void {
     this.isEditingMobile = true;
     this.cdr.detectChanges();
@@ -257,13 +235,9 @@ export class TableComponent implements AfterViewInit {
  
   cancelMobileEdit(): void {
     this.isEditingMobile = false;
-    this.editedContact = { ...this.selectedContact }; // Revert changes
+    this.editedContact = { ...this.selectedContact };
     this.cdr.detectChanges();
   }
- 
- 
- 
- 
  
   saveMobileContact(): void {
  
@@ -276,12 +250,11 @@ export class TableComponent implements AfterViewInit {
    
    
     const updateEvent = {
-      key: this.selectedContact.id, // The ID of the row being updated
-      oldData: this.selectedContact, // The original data
-      newData: newData // An object containing only the fields that changed
+      key: this.selectedContact.id, 
+      oldData: this.selectedContact,
+      newData: newData 
     };
    
-    // Emit the event. The parent component will handle the rest.
     this.onRowUpdating.emit(updateEvent);
    
     this.isEditingMobile = false;
@@ -289,41 +262,35 @@ export class TableComponent implements AfterViewInit {
   }
  
   deleteMobileContact(): void {
-    // This logic also needs to be corrected to be generic.
     if (window.confirm(`Are you sure you want to delete this ${this.entityType}?`)) {
      
-      // Construct a generic remove event.
       const removeEvent = {
         key: this.selectedContact.id,
         data: this.selectedContact
       };
      
-      // Emit the event. The parent component's `handleDelete` will take care of it.
       this.onRowRemoving.emit(removeEvent);
      
       this.closeDetailsModal();
     }
   }
-  // --- Grid Event Handlers ---
   handleRowUpdating(e: any): void {
-    e.cancel = true; // Prevent grid's default update
+    e.cancel = true; 
     const updatePayload = {
       key: e.key,
       newData: { ...e.oldData, ...e.newData },
     };
     this.onRowUpdating.emit(updatePayload);
-    // Let parent handle data update and grid will refresh on [data] change
     this.dataGrid.instance.cancelEditData();
   }
  
   handleRowRemoving(e: any): void {
-    e.cancel = true; // Prevent grid's default removal
+    e.cancel = true;
     const removePayload = {
       key: e.key,
       data: e.data,
     };
     this.onRowRemoving.emit(removePayload);
-    // Let parent handle data update and grid will refresh on [data] change
     this.dataGrid.instance.cancelEditData();
   }
  
@@ -823,7 +790,6 @@ export class TableComponent implements AfterViewInit {
       this.dataGrid.instance.columnOption(firstColumnDataField, 'fixedPosition', 'left');
     }
  
-    // Fix the command column to the right if editing is enabled
     if (this.allowEditing) {
       this.dataGrid.instance.columnOption('command:edit', 'fixed', true);
       this.dataGrid.instance.columnOption('command:edit', 'fixedPosition', 'right');

@@ -9,13 +9,13 @@ import { AuthService } from './auth-service.service';
 export interface DealCreatePayload {
   title: string;
   amount: number;
-  customerName: string; // Note: In previous backend versions, we used 'companyName'. Ensure backend DTO matches.
+  customerName: string; 
   contactFullName: string;
   contactEmail: string | null;
   contactPhoneNumber: string | null;
   contactDesignation: string | null;
   accountId: number | null;
-  serviceId: number | null; // New field
+  serviceId: number | null; 
   regionId: number;
   domainId: number | null;
   dealStageId: number;
@@ -58,8 +58,6 @@ export interface DealManagerOverview {
   closingDate?: string | null;
   salespersonId: number;
   salespersonName: string;
- 
- 
   accountName?: string;
   regionName?: string;
   duName?: string;
@@ -71,7 +69,6 @@ export interface DealManagerOverview {
 export interface ManagerStageCount {
   stageName: string;
   dealCount: number;
- 
 }
 export interface DashboardMetricItem {
   value: string;
@@ -126,8 +123,8 @@ export interface DealRead {
   probability?: number | null;
   accountName?: string;
   accountId?: number | null;
-  serviceName?: string; // New field
-  serviceId?: number | null; // New field
+  serviceName?: string; 
+  serviceId?: number | null; 
   createdBy?: number;
   createdAt?: string;
   updatedAt?: string;
@@ -174,11 +171,7 @@ export class DealService {
       .pipe(catchError(this.handleError));
   }
  
- 
- 
   getDashboardMetrics(userId: number): Observable<DashboardMetrics> {
-   
-   
     const url = `${this.apiUrl}/dashboard-metrics/${userId}`;
     console.log(`DealService: Fetching dashboard metrics from ${url}`);
     return this.http.get<DashboardMetrics>(url, this.httpOptions)
@@ -186,7 +179,6 @@ export class DealService {
   }
  
   getOpenPipelineAmountsByStage(userId: number): Observable<PipelineStageData[]> {
- 
     const url = `${this.apiUrl}/open-pipeline-stages/${userId}`;
     console.log(`DealService: Fetching open pipeline amounts from ${url}`);
     return this.http.get<PipelineStageData[]>(url, this.httpOptions)
@@ -194,7 +186,6 @@ export class DealService {
   }
  
   getMonthlyRevenueWon(userId: number, months: number = 12): Observable<MonthlyRevenueData[]> {
-   
     const url = `${this.apiUrl}/monthly-revenue-won/${userId}?months=${months}`;
     console.log(`DealService: Fetching monthly revenue from ${url}`);
     return this.http.get<MonthlyRevenueData[]>(url, this.httpOptions)
@@ -202,13 +193,11 @@ export class DealService {
   }
  
   getTopCustomersByRevenue(userId: number, count: number = 5): Observable<TopCustomerData[]> {
-   
     const url = `${this.apiUrl}/top-customers-by-revenue/${userId}?count=${count}`;
     console.log(`DealService: Fetching top customers from ${url}`);
     return this.http.get<TopCustomerData[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
- 
  
   getManagerOverviewStageCounts(managerId: number): Observable<ManagerStageCount[]> {
      if (!this.authService.hasPrivilege('Overview')) {
@@ -234,12 +223,7 @@ export class DealService {
       console.error('User ID not found in AuthService.');
       return throwError(() => new Error('User ID is not available. Cannot fetch user-specific deals.'));
     }
- 
-   
     const url = `${this.apiUrl}/byCreator/${currentUserId}`;
-   
- 
- 
     console.log(`Fetching deals for user ID: ${currentUserId} from URL: ${url}`);
     return this.http.get<DealRead[]>(url, this.httpOptions)
       .pipe(catchError(this.handleError));
@@ -291,23 +275,16 @@ export class DealService {
     );
 }
  
- 
- 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred!';
     if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
       errorMessage = `Error: ${error.error.message}`;
     } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong.
       console.error(`Backend returned code ${error.status}, body was: `, error.error);
  
       if (error.status === 400) {
-        // ASP.NET Core validation errors often come in `error.error.errors`
-        // or sometimes directly in `error.error` as a string or ProblemDetails object
         if (error.error && typeof error.error === 'object') {
-          if (error.error.errors) { // Standard ASP.NET Core validation summary
+          if (error.error.errors) {
             const validationErrors = error.error.errors;
             let messages = [];
             for (const key in validationErrors) {
@@ -316,28 +293,27 @@ export class DealService {
               }
             }
             errorMessage = `Validation Errors: ${messages.join(', ')}`;
-          } else if (error.error.title) { // ProblemDetails
+          } else if (error.error.title) { 
             errorMessage = error.error.title;
             if (error.error.detail) {
                 errorMessage += ` Details: ${error.error.detail}`;
             }
-          } else if (typeof error.error === 'string') { // Custom string error from BadRequest(string)
+          } else if (typeof error.error === 'string') {
              errorMessage = error.error;
           } else {
-            // Fallback for other 400 error structures
             errorMessage = `Bad Request (Status 400). Please check your input.`;
             if (Object.keys(error.error).length > 0) {
                 try {
                     errorMessage += ` Details: ${JSON.stringify(error.error)}`;
-                } catch (e) { /* ignore if not stringifiable */ }
+                } catch (e) { }
             }
           }
-        } else if (typeof error.error === 'string') { // Sometimes 400 errors are just strings
+        } else if (typeof error.error === 'string') { 
             errorMessage = error.error;
         } else {
             errorMessage = `Bad Request (Status 400).`;
         }
-      } else if (error.status === 0 || error.status === 503) { // Network error or service unavailable
+      } else if (error.status === 0 || error.status === 503) {
         errorMessage = 'Could not connect to the server. Please check your network connection or if the server is running.';
       } else if (error.status === 401) {
         errorMessage = 'Unauthorized. Please login again.';
@@ -346,13 +322,13 @@ export class DealService {
       } else if (error.status === 404) {
         errorMessage = 'The requested resource was not found.';
          if (error.error && typeof error.error === 'string') { errorMessage += ` Details: ${error.error}`; }
-      } else { // Other server-side errors
+      } else { 
         errorMessage = `Server error: ${error.status} - ${error.message || error.statusText}`;
         if (error.error && typeof error.error === 'string') {
           errorMessage += ` Details: ${error.error}`;
-        } else if (error.error && error.error.detail) { // ProblemDetails
+        } else if (error.error && error.error.detail) { 
           errorMessage += ` Details: ${error.error.detail}`;
-        } else if (error.error && error.error.title) { // ProblemDetails
+        } else if (error.error && error.error.title) {
            errorMessage += ` Title: ${error.error.title}`;
         }
       }
