@@ -219,10 +219,10 @@ export class DealService {
       .pipe(catchError(this.handleError));
   }
 
-  getAllDeals(): Observable<DealRead[]> {
-    return this.http.get<DealRead[]>(this.apiUrl, this.httpOptions)
-      .pipe(catchError(this.handleError));
-  }
+  // getAllDeals(): Observable<DealRead[]> {
+  //   return this.http.get<DealRead[]>(this.apiUrl, this.httpOptions)
+  //     .pipe(catchError(this.handleError));
+  // }
   getDealsForCurrentUser(): Observable<DealRead[]> {
     const currentUserId = this.authService.getUserId();
  
