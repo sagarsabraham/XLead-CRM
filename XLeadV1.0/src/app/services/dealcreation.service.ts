@@ -88,6 +88,7 @@ export class DealService {
     return this.http.post<DealRead>(this.apiUrl, JSON.stringify(payload), this.httpOptions)
       .pipe(catchError(this.handleError));
   }
+  
 getDealById(id: number): Observable<DealRead> {
   const url = `${this.apiUrl}/${id}`;
   

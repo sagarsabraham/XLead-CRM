@@ -22,4 +22,5 @@ export class AuthServiceService {
     console.log(`Checking privilege '${privilegeName}':`, hasIt); 
     return hasIt;
   }
+
 }

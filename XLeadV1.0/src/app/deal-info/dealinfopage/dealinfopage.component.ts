@@ -2,6 +2,9 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DealService } from 'src/app/services/dealcreation.service';
 import { DealstageService } from 'src/app/services/dealstage.service';
+import { CompanyContactService } from 'src/app/services/company-contact.service';
+import { forkJoin, of } from 'rxjs';
+
 
 @Component({
   selector: 'app-dealinfopage',
@@ -19,7 +22,7 @@ export class DealinfopageComponent implements OnInit {
   isLoading: boolean = true;
   isUpdatingStage: boolean = false;
   
-  // Store original customer data to prevent loss
+  
   private originalCustomerData: any = {};
 
   mobileTabs = [
@@ -40,39 +43,39 @@ export class DealinfopageComponent implements OnInit {
     private route: ActivatedRoute, 
     private router: Router,
     private dealService: DealService,
-    private dealStageService: DealstageService
+    private dealStageService: DealstageService,
+      private companyContactService: CompanyContactService  
   ) {}
  
-  ngOnInit() { 
-    console.log('=== DEAL INFO PAGE INIT ===');
-    this.checkScreenSize();
-    this.loadStages();
-    
-    // First check if deal data was passed via navigation state
-    const navigation = this.router.getCurrentNavigation();
-    const state = navigation?.extras?.state || window.history.state;
-    
-    console.log('Navigation state:', state);
-    
-    if (state && state.deal) {
-      console.log('Deal found in state:', state.deal);
-      console.log('Stage from state:', state.deal.stageName);
-      this.dealId = state.deal.id;
-      this.processDealData(state.deal);
-      this.loadStageHistory();
-    } else {
-      // If no deal in state, check route params
-      this.route.params.subscribe(params => {
-        if (params['id']) {
-          this.dealId = +params['id'];
-          console.log('Loading deal by ID:', this.dealId);
-          this.loadDealData();
-        } else {
-          console.error('No deal data found in navigation state or params');
-        }
-      });
-    }
+ngOnInit() { 
+  console.log('=== DEAL INFO PAGE INIT ===');
+  this.checkScreenSize();
+  this.loadStages();
+  
+  const navigation = this.router.getCurrentNavigation();
+  const state = navigation?.extras?.state || window.history.state;
+  
+  console.log('Navigation state:', state);
+  
+  if (state && state.deal) {
+    console.log('Deal found in state:', state.deal);
+    console.log('Stage from state:', state.deal.stageName);
+    this.dealId = state.deal.id;
+ 
+    this.processDealDataWithContactInfo(state.deal);  
+    this.loadStageHistory();
+  } else {
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.dealId = +params['id'];
+        console.log('Loading deal by ID:', this.dealId);
+        this.loadDealData();
+      } else {
+        console.error('No deal data found in navigation state or params');
+      }
+    });
   }
+}
 
   loadStages() {
     this.dealStageService.getAllDealStages().subscribe({
@@ -91,9 +94,8 @@ export class DealinfopageComponent implements OnInit {
     this.isLoading = true;
     this.dealService.getDealById(this.dealId).subscribe({
       next: (dealData) => {
-        this.processDealData(dealData);
+        this.processDealDataWithContactInfo(dealData);
         this.loadStageHistory();
-        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading deal:', err);
@@ -124,117 +126,204 @@ export class DealinfopageComponent implements OnInit {
   }
 
   processDealData(dealData: any) {
-    console.log('Processing deal data:', dealData); // Debug log
-    
-    // Store original customer data before processing
-    this.originalCustomerData = {
-      customerName: dealData.customerName || dealData.companyName,
-      contactName: dealData.contactName,
-      contactEmail: dealData.contactEmail,
-      contactPhone: dealData.contactPhone,
-      companyWebsite: dealData.companyWebsite,
-      companyPhone: dealData.companyPhone
-    };
+  console.log('Processing deal data:', dealData);
+  
+  let stageName = dealData.stageName || 
+                  dealData.stage || 
+                  dealData.dealStage || 
+                  dealData.currentStage ||
+                  dealData.stageDisplayName;
+  
+  console.log('Stage name found:', stageName);
 
-    // Get the stage - check multiple possible field names
-    let stageName = dealData.stageName || 
-                    dealData.stage || 
-                    dealData.dealStage || 
-                    dealData.currentStage ||
-                    dealData.stageDisplayName;
-    
-    // If stage is still not found, check if it's nested in another object
-    if (!stageName && dealData.dealStage) {
-      stageName = dealData.dealStage.stageName || dealData.dealStage.displayName;
-    }
-    
-    console.log('Stage name found:', stageName); // Debug log
+  this.deal = {
+    id: dealData.id || dealData.dealId,
+    title: dealData.dealName || dealData.title,
+    startDate: dealData.startingDate || dealData.startDate,
+    closingDate: dealData.closingDate || dealData.expectedClosingDate || dealData.date,
+    amount: dealData.dealAmount || dealData.amount,
+    companyName: dealData.companyName || dealData.customerName,
+    contactName: dealData.contactName,
+    contactEmail: '', 
+    contactPhone: '',
+    salesperson: dealData.salespersonName || dealData.salesperson,
+    stage: stageName || 'Qualification',
+    description: dealData.description || '',
+    companyWebsite: '', 
+    companyPhone: '', 
+    probability: dealData.probability,
+    region: dealData.regionName || dealData.region,
+    domain: dealData.domainName || dealData.domain,
+    revenueType: dealData.revenueTypeName || dealData.revenueType,
+    du: dealData.duName || dealData.du,
+    country: dealData.countryName || dealData.country,
+    createdAt: dealData.createdAt || dealData.startingDate || new Date(),
+    contactId: dealData.contactId,
+    accountId: dealData.accountId
+  };
+  
+  this.dealId = dealData.id || dealData.dealId;
+}
 
-    this.deal = {
-      id: dealData.id || dealData.dealId,
-      title: dealData.dealName || dealData.title,
-      startDate: dealData.startingDate || dealData.startDate,
-      closingDate: dealData.closingDate || dealData.expectedClosingDate || dealData.date,
-      amount: dealData.dealAmount || dealData.amount,
-      companyName: dealData.customerName || dealData.companyName || this.originalCustomerData.customerName,
-      contactName: dealData.contactName || this.originalCustomerData.contactName,
-      contactEmail: dealData.contactEmail || this.originalCustomerData.contactEmail || 
-                   `${(dealData.contactName || '').replace(/\s+/g, '.').toLowerCase()}@example.com`,
-      contactPhone: dealData.contactPhone || this.originalCustomerData.contactPhone || '+919847908657',
-      salesperson: dealData.salespersonName || dealData.salesperson,
-      stage: stageName || 'Qualification',
-      description: dealData.description || '',
-      companyWebsite: dealData.companyWebsite || this.originalCustomerData.companyWebsite ||
-                      `info@${(dealData.customerName || dealData.companyName || '').toLowerCase().replace(/\s+/g, '')}.com`,
-      companyPhone: dealData.companyPhone || this.originalCustomerData.companyPhone || '+917745635467',
-      probability: dealData.probability,
-      region: dealData.regionName || dealData.region,
-      domain: dealData.domainName || dealData.domain,
-      revenueType: dealData.revenueTypeName || dealData.revenueType,
-      du: dealData.duName || dealData.du,
-      country: dealData.countryName || dealData.country,
-      createdAt: dealData.createdAt || dealData.startingDate || new Date()
-    };
-    
-    console.log('Processed deal with stage:', this.deal.stage); // Debug log
-    
-    this.dealId = dealData.id || dealData.dealId;
+
+processDealDataWithContactInfo(dealData: any) {
+  console.log('Processing deal data with contact info:', dealData);
+  
+
+  this.processDealData(dealData);
+  
+  
+  const contactName = dealData.contactName;
+  const companyName = dealData.accountName || dealData.customerName;
+  
+  console.log('Looking for contact:', contactName, 'and company:', companyName);
+  
+  if (contactName) {
+  
+    this.companyContactService.getContacts().subscribe(contacts => {
+      console.log('All available contacts:', contacts);
+      
+      const matchingContact = contacts.find((c: any) => 
+        `${c.firstName} ${c.lastName}`.toLowerCase() === contactName.toLowerCase()
+      );
+      
+      if (matchingContact) {
+        console.log('Found matching contact:', matchingContact);
+        
+        
+        this.deal.contactName = `${matchingContact.firstName} ${matchingContact.lastName}`;
+        this.deal.contactEmail = matchingContact.email;
+        this.deal.contactPhone = matchingContact.phoneNumber;
+        
+      
+        this.companyContactService.getCompanies().subscribe(companies => {
+          console.log('All available companies:', companies);
+          
+          const customerCompany = companies.find((c: any) => c.id === matchingContact.customerId);
+          
+          if (customerCompany) {
+            console.log('Found customer company:', customerCompany);
+            this.deal.companyName = customerCompany.customerName;
+            this.deal.companyWebsite = customerCompany.website;
+            this.deal.companyPhone = customerCompany.customerPhoneNumber;
+          } else {
+            console.log('No company found for customerId:', matchingContact.customerId);
+           
+            const fallbackCompany = companies.find((c: any) => 
+              c.customerName.toLowerCase() === companyName.toLowerCase()
+            );
+            if (fallbackCompany) {
+              this.deal.companyName = fallbackCompany.customerName;
+              this.deal.companyWebsite = fallbackCompany.website;
+              this.deal.companyPhone = fallbackCompany.customerPhoneNumber;
+            }
+          }
+          
+          this.isLoading = false;
+        });
+      } else {
+        console.log('No matching contact found for:', contactName);
+        this.isLoading = false;
+      }
+    });
+  } else {
+    console.log('No contact name provided in deal data');
+    this.isLoading = false;
   }
+}
 
-  // Helper method to format dates consistently
+
   private formatDate(date: Date): string {
     if (!date || isNaN(date.getTime())) {
       console.warn('Invalid date detected, using current date');
       date = new Date();
     }
-    // Format as YYYY-MM-DD HH:MM:SS to ensure consistency
+
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const month = String(date.getMonth() + 1).padStart(2, '0'); 
     const day = String(date.getDate()).padStart(2, '0');
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
-
-  processStageHistory(history: any[]) {
-    this.history = [];
-    
-    if (!history || history.length === 0) {
-      // Add initial creation entry
-      this.history.push({
-        timestamp: this.formatDate(this.deal?.startDate ? new Date(this.deal.startDate) : new Date()),
-        editedBy: 'System',
-        fromStage: 'Initial',
-        toStage: this.deal.stage || 'Qualification'
-      });
-      return;
-    }
-    
-    // Sort history by date (oldest first)
+  
+processStageHistory(history: any[]) {
+  this.history = [];
+  
+  // First, check if we have any stage history from the backend
+  const hasBackendHistory = history && history.length > 0;
+  
+  if (hasBackendHistory) {
+    // Sort history by date (oldest first) to process in chronological order
     const sortedHistory = [...history].sort((a, b) => {
       const dateA = new Date(a.createdAt || a.timestamp);
       const dateB = new Date(b.createdAt || b.timestamp);
       return dateA.getTime() - dateB.getTime();
     });
     
-    let previousStage = 'Initial';
+    // Check if the first entry is the initial stage
+    const firstEntry = sortedHistory[0];
+    const isFirstEntryInitial = !firstEntry.fromStage || firstEntry.fromStage === 'Initial';
     
-    sortedHistory.forEach((entry) => {
-      const date = new Date(entry.createdAt || entry.timestamp);
-      const toStage = entry.stageDisplayName || entry.stageName || entry.toStage;
+    if (isFirstEntryInitial) {
+     
+      const date = new Date(firstEntry.createdAt || firstEntry.timestamp);
+      
+     
+      const creatorName = firstEntry.createdBy || 'Unknown User';
+      
       this.history.push({
         timestamp: this.formatDate(date),
-        editedBy: entry.createdBy || entry.editedBy || 'Unknown User',
-        fromStage: entry.fromStage || previousStage,
-        toStage: toStage
+        editedBy: creatorName,  // Same field used in stage updates
+        fromStage: '',
+        toStage: '',
+        isCreation: true,
+        dealName: this.deal?.title || this.deal?.dealName || 'New Deal'
       });
-      previousStage = toStage;
-    });
-    
-    // Reverse to show newest first
-    this.history.reverse();
+      
+
+      let previousStage = firstEntry.stageDisplayName || firstEntry.stageName || firstEntry.toStage || 'Qualification';
+      
+      for (let i = 1; i < sortedHistory.length; i++) {
+        const entry = sortedHistory[i];
+        const date = new Date(entry.createdAt || entry.timestamp);
+        const toStage = entry.stageDisplayName || entry.stageName || entry.toStage;
+        
+        this.history.push({
+          timestamp: this.formatDate(date),
+          editedBy: entry.createdBy || 'Unknown User',  // Same logic
+          fromStage: entry.fromStage || previousStage,
+          toStage: toStage,
+          isCreation: false
+        });
+        
+        previousStage = toStage;
+      }
+    } else {
+     
+      let previousStage = 'Qualification';
+      
+      sortedHistory.forEach((entry) => {
+        const date = new Date(entry.createdAt || entry.timestamp);
+        const toStage = entry.stageDisplayName || entry.stageName || entry.toStage;
+        
+        this.history.push({
+          timestamp: this.formatDate(date),
+          editedBy: entry.createdBy || 'Unknown User',  // Same logic
+          fromStage: entry.fromStage || previousStage,
+          toStage: toStage,
+          isCreation: false
+        });
+        
+        previousStage = toStage;
+      });
+    }
+  } else {
+   
+    console.log('No stage history available from backend');
   }
+}
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
@@ -252,78 +341,52 @@ export class DealinfopageComponent implements OnInit {
   }
  
   onStageChange(newStage: string) {
-    if (!this.dealId || this.isUpdatingStage || !this.deal) {
-      return;
-    }
-
-    const oldStage = this.deal.stage;
-    this.isUpdatingStage = true;
-    
-    // Store current customer data before update
-    const preservedData = {
-      companyName: this.deal.companyName,
-      contactName: this.deal.contactName,
-      contactEmail: this.deal.contactEmail,
-      contactPhone: this.deal.contactPhone,
-      companyWebsite: this.deal.companyWebsite,
-      companyPhone: this.deal.companyPhone,
-      closingDate: this.deal.closingDate
-    };
-    
-    // Update the stage immediately for UI feedback
-    this.deal = { ...this.deal, stage: newStage };
-    
-    this.dealService.updateDealStage(this.dealId, newStage).subscribe({
-      next: (updatedDeal) => {
-        // Process the updated deal data
-        this.processDealData(updatedDeal);
-        
-        // Restore preserved customer data if it was lost in the update
-        if (!this.deal.companyName || this.deal.companyName === 'N/A' || this.deal.companyName === '') {
-          this.deal.companyName = preservedData.companyName || this.originalCustomerData.customerName;
-        }
-        if (!this.deal.contactName) {
-          this.deal.contactName = preservedData.contactName || this.originalCustomerData.contactName;
-        }
-        if (!this.deal.contactEmail || this.deal.contactEmail === '.com') {
-          this.deal.contactEmail = preservedData.contactEmail || this.originalCustomerData.contactEmail;
-        }
-        if (!this.deal.contactPhone) {
-          this.deal.contactPhone = preservedData.contactPhone || this.originalCustomerData.contactPhone;
-        }
-        if (!this.deal.companyWebsite || this.deal.companyWebsite === 'info@.com') {
-          this.deal.companyWebsite = preservedData.companyWebsite || this.originalCustomerData.companyWebsite;
-        }
-        if (!this.deal.companyPhone) {
-          this.deal.companyPhone = preservedData.companyPhone || this.originalCustomerData.companyPhone;
-        }
-        if (!this.deal.closingDate) {
-          this.deal.closingDate = preservedData.closingDate;
-        }
-        
-        // Add to history immediately
-        this.history.unshift({
-          timestamp: this.formatDate(new Date()),
-          editedBy: 'Current User', // Replace with actual user from auth service
-          fromStage: oldStage,
-          toStage: newStage
-        });
-        
-        this.isUpdatingStage = false;
-        console.log('Stage updated successfully to:', newStage);
-        
-        // Refresh stage history from backend
-        this.loadStageHistory();
-      },
-      error: (err) => {
-        console.error('Error updating stage:', err);
-        alert('Failed to update stage. Please try again.');
-        // Revert the UI change
-        this.deal = { ...this.deal, stage: oldStage };
-        this.isUpdatingStage = false;
-      }
-    });
+  if (!this.dealId || this.isUpdatingStage || !this.deal) {
+    return;
   }
+
+  const oldStage = this.deal.stage; 
+  this.isUpdatingStage = true;
+  
+
+  const preservedData = { ...this.deal };
+  
+  
+  this.deal = { ...this.deal, stage: newStage };
+  
+  this.dealService.updateDealStage(this.dealId, newStage).subscribe({
+    next: (updatedDeal) => {
+      
+      this.deal = {
+        ...preservedData,
+        stage: newStage
+      };
+      
+      
+      this.history.unshift({
+        timestamp: this.formatDate(new Date()),
+        editedBy: 'Current User', 
+        fromStage: oldStage, 
+        toStage: newStage,
+        isCreation: false
+      });
+      
+      this.isUpdatingStage = false;
+      console.log('Stage updated from', oldStage, 'to', newStage);
+      
+     
+      this.loadStageHistory();
+    },
+    error: (err) => {
+      console.error('Error updating stage:', err);
+      alert('Failed to update stage. Please try again.');
+      
+      this.deal = { ...this.deal, stage: oldStage };
+      this.isUpdatingStage = false;
+    }
+  });
+}
+
  
   onDescriptionChange(newDescription: string) {
     console.log('Updated description:', newDescription);
