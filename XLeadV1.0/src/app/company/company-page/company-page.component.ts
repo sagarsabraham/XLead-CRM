@@ -5,6 +5,7 @@ import { UserService } from '../../services/user.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
 import { IndustryVerticalService } from 'src/app/services/industry-vertical.service';
 import { forkJoin } from 'rxjs';
+import { AuthServiceService } from 'src/app/services/auth-service.service';
 
 @Component({
   selector: 'app-company-page',
@@ -45,7 +46,8 @@ export class CompanyPageComponent implements OnInit {
     },
     // { dataField: 'owner', caption: 'Owner', visible: true }
   ];
-
+canEditCustomers = false;
+  canDeleteCustomers = false;
   tableData: any[] = [];
   topcardData = [
     { amount: 0, title: 'Total Customers', icon: 'assets/count.svg' },
@@ -66,12 +68,15 @@ export class CompanyPageComponent implements OnInit {
   constructor(
     private companyService: CompanyContactService,
     private userService: UserService,
-    private industryVerticalService: IndustryVerticalService
+    private industryVerticalService: IndustryVerticalService,
+     private authService: AuthServiceService 
   ) {
     this.checkIfMobile();
   }
 
   ngOnInit(): void {
+    this.canEditCustomers = this.authService.hasPrivilege('EditCustomer');
+    this.canDeleteCustomers = this.authService.hasPrivilege('DeleteCustomer');
     this.loadData();
   }
 
@@ -200,6 +205,7 @@ export class CompanyPageComponent implements OnInit {
 
     handleUpdate(event: any): void {
     const companyId = event.key;
+    // This contains the merged data from the grid's edit
     const finalData = { ...event.oldData, ...event.newData };
 
     const updatePayload = {
@@ -208,32 +214,42 @@ export class CompanyPageComponent implements OnInit {
       website: finalData.website,
       industryVerticalId: this.getIndustryIdByName(finalData.industryVertical),
       isActive: finalData.status === 'Active',
-      updatedBy: 3 // Hardcoded user ID for demo.
+      updatedBy: this.authService.getUserId()
     };
 
     this.companyService.updateCompany(companyId, updatePayload).subscribe({
       next: (response) => {
         console.log('Company updated successfully', response);
+        
+        
         const index = this.tableData.findIndex(c => c.id === companyId);
+
         if (index !== -1) {
+          
           this.tableData[index] = finalData;
+          
+          
           this.tableData = [...this.tableData];
+          
+          
           this.updateMetrics();
         }
+        
       },
       error: (err) => {
         console.error('Failed to update company', err);
-        alert('Failed to update company. Please check the console for details.');
+        alert(err.error?.message || 'Update failed.');
+       
+        this.loadCompanies(); 
       }
     });
   }
+  
 
   handleDelete(event: any): void {
     const companyId = event.key;
-
-    if (confirm('Are you sure you want to delete this company? ')) {
-      
-      this.companyService.deleteCompany(companyId).subscribe({
+    if (confirm('Are you sure you want to delete this company?')) {
+      this.companyService.deleteCompany(companyId, this.authService.getUserId()).subscribe({
         next: () => {
           console.log('Company deleted successfully');
           this.tableData = this.tableData.filter(c => c.id !== companyId);
@@ -241,11 +257,13 @@ export class CompanyPageComponent implements OnInit {
         },
         error: (err) => {
           console.error('Failed to delete company', err);
-          alert(err.error?.message || 'Could not delete the company. Please try again.');
+          alert(err.error?.message || 'Could not delete the company.');
         }
       });
     }
   }
+
+
   
   @HostListener('window:resize')
   onResize(): void {

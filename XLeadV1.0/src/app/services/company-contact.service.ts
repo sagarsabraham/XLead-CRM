@@ -119,27 +119,21 @@ export class CompanyContactService {
     );
   }
 
-   updateContact(id: number, contactData: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/api/CustomerContact/contact/${id}`, contactData, {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    });
-  }
-
-  deleteContact(id: number): Observable<any> {
-    // Note: The backend for soft-delete requires a userId. This might need to be added back.
-    // Example: deleteContact(id: number, userId: number): Observable<any>
-    // return this.http.delete(`${this.apiUrl}/api/CustomerContact/contact/${id}?userId=${userId}`);
-    return this.http.delete(`${this.apiUrl}/api/CustomerContact/contact/${id}`);
-  }
-
-   updateCompany(id: number, companyData: any): Observable<any> {
+    updateCompany(id: number, companyData: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/api/CustomerContact/customer/${id}`, companyData);
   }
 
-  deleteCompany(id: number): Observable<any> {
-    // Note: The backend for soft-delete requires a userId. This might need to be added back.
-    // Example: deleteCompany(id: number, userId: number): Observable<any>
-    // return this.http.delete(`${this.apiUrl}/api/CustomerContact/customer/${id}?userId=${userId}`);
-    return this.http.delete(`${this.apiUrl}/api/CustomerContact/customer/${id}`);
+  // Pass userId to the backend for authorization check
+  deleteCompany(id: number, userId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/api/CustomerContact/customer/${id}?userId=${userId}`);
+  }
+  
+  updateContact(id: number, contactData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/CustomerContact/contact/${id}`, contactData);
+  }
+
+  // Pass userId to the backend for authorization check
+  deleteContact(id: number, userId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/api/CustomerContact/contact/${id}?userId=${userId}`);
   }
 }
