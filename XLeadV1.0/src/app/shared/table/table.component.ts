@@ -4,31 +4,34 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { GridColumn, ExportFormat } from './table.interface';
 import { TableOutlineComponent } from '../table-outline/table-outline.component';
-
+ 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
 })
 export class TableComponent implements AfterViewInit {
+  @Input() lookupData: { [key: string]: any[] } = {};
   @Input() data: any[] = [];
+  
   @Input() headers: GridColumn[] = [];
   @Input() classNames: string = '';
   @Input() useOwnerTemplate: boolean = true;
   @Input() ownerField: string = 'owner';
   @Input() exportFileName: string = 'Data';
   @Input() entityType: string = 'Item';
-  @Input() allowEditing: boolean = true; 
+  @Input() allowEditing: boolean = true;
+  @Input() allowDeleting: boolean = false;
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter<any>();
   @Output() onRowUpdating: EventEmitter<any> = new EventEmitter<any>();
-  @Output() onRowRemoving: EventEmitter<any> = new EventEmitter<any>(); 
-
+  @Output() onRowRemoving: EventEmitter<any> = new EventEmitter<any>();
+ 
   @ViewChild(DxDataGridComponent) dataGrid!: DxDataGridComponent;
   @ViewChild('columnChooserButton', { static: false }) columnChooserButton!: ElementRef;
   @ViewChild('exportButton', { static: false }) exportButton!: ElementRef;
   @ViewChild('columnChooserDropdown', { static: false }) columnChooserDropdown!: ElementRef;
   @ViewChild('exportOptionsDropdown', { static: false }) exportOptionsDropdown!: ElementRef;
-
+ 
   pageSize: number = 10;
   allowedPageSizes: number[] = [5, 10, 20];
   selectedRowKeys: string[] = [];
@@ -42,7 +45,7 @@ export class TableComponent implements AfterViewInit {
   showSearchPanel: boolean = true;
   columnVisibility: { [key: string]: boolean } = {};
   public clickedInsideDropdown: boolean = false;
-
+ 
   public readonly ownerColors: readonly string[] = [
     '#2196f3',
     '#4caf50',
@@ -53,13 +56,13 @@ export class TableComponent implements AfterViewInit {
     '#673ab7',
     '#009688',
   ];
-
+ 
   isMobile: boolean = false;
   showSortOptions: boolean = false;
   showColumnChooserMobile: boolean = false;
   showMobileExportOptions: boolean = false;
   selectedContact: any = null;
-  editedContact: any = null; 
+  editedContact: any = null;
   isEditingMobile: boolean = false;
   isDetailsModalOpen: boolean = false;
   sortField: string = '';
@@ -69,24 +72,24 @@ export class TableComponent implements AfterViewInit {
   mobilePageSize: number = 10;
   mobileAllowedPageSizes: number[] = [5, 10, 20];
   paginatedData: any[] = [];
-
+ 
   cardFields: string[] = [];
-
+ 
   constructor(private cdr: ChangeDetectorRef) {
     this.initializeHeaders();
   }
-
+ 
   get modalHeading(): string {
     return `${this.entityType} Details`;
   }
-
+ 
   get searchPlaceholder(): string {
     return `Search ${this.entityType.toLowerCase()}s...`;
   }
-
+ 
   private adjustFilterRowPosition(): void {
     if (!this.dataGrid?.instance) return;
-
+ 
     setTimeout(() => {
       const headerElement = document.querySelector('.dx-datagrid-headers') as HTMLElement;
       if (headerElement) {
@@ -96,7 +99,7 @@ export class TableComponent implements AfterViewInit {
       this.cdr.detectChanges();
     }, 100);
   }
-
+ 
   ngOnInit() {
     this.checkIfMobile();
     this.data = this.data.map((item, index) => ({
@@ -111,14 +114,15 @@ export class TableComponent implements AfterViewInit {
     this.updatePagination();
     this.cdr.detectChanges();
   }
-
+ 
   ngAfterViewInit(): void {
     this.initializeColumnVisibility();
     if (!this.isMobile && this.dataGrid?.instance) {
       this.configureDataGrid();
       this.adjustFilterRowPosition();
     }
-
+   
+ 
     console.log('=== TABLE COMPONENT INIT ===');
     console.log('Data sample:', this.data.slice(0, 2));
     console.log('Export filename:', this.exportFileName);
@@ -126,14 +130,14 @@ export class TableComponent implements AfterViewInit {
     console.log('============================');
     this.cdr.detectChanges();
   }
-
+ 
   @HostListener('window:resize')
   onWindowResize(): void {
     this.checkIfMobile();
     this.onResizeOrScroll();
     this.cdr.detectChanges();
   }
-
+ 
   validationRules: { [key: string]: any[] } = {
     name: [{ type: 'required', message: 'Name is required' }],
     companyName: [{ type: 'required', message: 'Company Name is required' }],
@@ -143,72 +147,90 @@ export class TableComponent implements AfterViewInit {
     ],
     phone: [{ type: 'pattern', pattern: /^[0-9-+\s()]*$/, message: 'Invalid phone number' }]
   };
-
+ 
   getDisplayValue(item: any, field: string): string {
     return item[field] || `No ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`;
   }
-
-
+ 
+    getLookupDataSource(dataField: string): any[] | null {
+    return this.lookupData[dataField] || null;
+  }
+ 
+  getLookupDisplayExpr(dataField: string): string {
+    if (dataField === 'industryVertical') {
+      return 'industryName'; // The property to display in the dropdown
+    }
+    return 'name';
+  }
+ 
+   getLookupValueExpr(dataField: string): string {
+    if (dataField === 'industryVertical') {
+      return 'industryName'; // The property to use as the value
+    }
+   return 'name';
+  }
+ 
+ 
   // public refreshData(): void {
    
   //   console.log('TableComponent: refreshData() called.');
-    
+   
    
   //   const filtered = this.filteredData;
-    
+   
   //   const startIndex = (this.currentPage - 1) * this.mobilePageSize;
   //   const endIndex = startIndex + this.mobilePageSize;
   //   this.paginatedData = filtered.slice(startIndex, endIndex);
-
+ 
    
   //   this.cdr.detectChanges();
   // }
-
-
-  
-  
-  
-
+ 
+ 
+ 
+ 
+ 
+ 
   private checkIfMobile(): void {
     const wasMobile = this.isMobile;
     this.isMobile = window.innerWidth <= 576;
-
+ 
     if (wasMobile !== this.isMobile) {
       this.selectedRowKeys = [];
       this.emitSelectionChange();
       this.cdr.detectChanges();
     }
-
+ 
     this.updatePagination();
   }
-
+ 
   public updatePagination(): void {
     const startIndex = (this.currentPage - 1) * this.mobilePageSize;
     const endIndex = startIndex + this.mobilePageSize;
     this.paginatedData = this.filteredData.slice(startIndex, endIndex);
     this.cdr.detectChanges();
   }
-
+ 
   public emitSelectionChange(): void {
     const selectedRowsData = this.data.filter(row =>
       this.selectedRowKeys.includes(String(row.id))
     );
-
+ 
     const event = {
       selectedRowKeys: [...this.selectedRowKeys],
       selectedRowsData: selectedRowsData
     };
-
+ 
     console.log('=== SELECTION CHANGE EMITTED ===');
     console.log('Selected keys:', event.selectedRowKeys);
     console.log('Selected data count:', event.selectedRowsData.length);
     console.log('Export filename:', this.exportFileName);
     console.log('================================');
-
+ 
     this.onSelectionChanged.emit(event);
     this.cdr.detectChanges();
   }
-
+ 
   openDetailsModal(contact: any): void {
     this.selectedContact = contact;
     this.editedContact = { ...contact }; // Create a copy for editing
@@ -216,7 +238,7 @@ export class TableComponent implements AfterViewInit {
     this.isEditingMobile = false;
     this.cdr.detectChanges();
   }
-
+ 
   closeDetailsModal(): void {
     this.isDetailsModalOpen = false;
     this.selectedContact = null;
@@ -224,59 +246,59 @@ export class TableComponent implements AfterViewInit {
     this.isEditingMobile = false;
     this.cdr.detectChanges();
   }
-  
+ 
   // --- Mobile Edit/Delete ---
   editMobileContact(): void {
     this.isEditingMobile = true;
     this.cdr.detectChanges();
   }
-
+ 
   cancelMobileEdit(): void {
     this.isEditingMobile = false;
     this.editedContact = { ...this.selectedContact }; // Revert changes
     this.cdr.detectChanges();
   }
-
  
-
-
-
+ 
+ 
+ 
+ 
   saveMobileContact(): void {
-  
+ 
     const newData: { [key: string]: any } = {};
     for (const key in this.editedContact) {
       if (this.editedContact[key] !== this.selectedContact[key]) {
         newData[key] = this.editedContact[key];
       }
     }
-    
-    
+   
+   
     const updateEvent = {
       key: this.selectedContact.id, // The ID of the row being updated
       oldData: this.selectedContact, // The original data
       newData: newData // An object containing only the fields that changed
     };
-    
+   
     // Emit the event. The parent component will handle the rest.
     this.onRowUpdating.emit(updateEvent);
-    
+   
     this.isEditingMobile = false;
     this.closeDetailsModal();
   }
-
+ 
   deleteMobileContact(): void {
     // This logic also needs to be corrected to be generic.
     if (window.confirm(`Are you sure you want to delete this ${this.entityType}?`)) {
-      
+     
       // Construct a generic remove event.
       const removeEvent = {
         key: this.selectedContact.id,
         data: this.selectedContact
       };
-      
+     
       // Emit the event. The parent component's `handleDelete` will take care of it.
       this.onRowRemoving.emit(removeEvent);
-      
+     
       this.closeDetailsModal();
     }
   }
@@ -291,7 +313,7 @@ export class TableComponent implements AfterViewInit {
     // Let parent handle data update and grid will refresh on [data] change
     this.dataGrid.instance.cancelEditData();
   }
-
+ 
   handleRowRemoving(e: any): void {
     e.cancel = true; // Prevent grid's default removal
     const removePayload = {
@@ -302,7 +324,7 @@ export class TableComponent implements AfterViewInit {
     // Let parent handle data update and grid will refresh on [data] change
     this.dataGrid.instance.cancelEditData();
   }
-
+ 
   toggleSortMobile(field: string): void {
     if (this.sortField === field) {
       if (this.sortDirection === 'asc') {
@@ -315,13 +337,13 @@ export class TableComponent implements AfterViewInit {
       this.sortField = field;
       this.sortDirection = 'asc';
     }
-
+ 
     if (this.sortField) {
       this.data = [...this.data].sort((a, b) => {
         const valueA = a[this.sortField];
         const valueB = b[this.sortField];
         const direction = this.sortDirection === 'asc' ? 1 : -1;
-
+ 
         if (typeof valueA === 'string' && typeof valueB === 'string') {
           return valueA.localeCompare(valueB) * direction;
         }
@@ -332,12 +354,12 @@ export class TableComponent implements AfterViewInit {
     this.updatePagination();
     this.cdr.detectChanges();
   }
-
+ 
   getSortIndicator(field: string): string {
     if (this.sortField !== field) return '';
     return this.sortDirection === 'asc' ? '↑' : '↓';
   }
-
+ 
   searchMobile(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.searchQuery = input.value.toLowerCase();
@@ -345,10 +367,10 @@ export class TableComponent implements AfterViewInit {
     this.updatePagination();
     this.cdr.detectChanges();
   }
-
+ 
   get filteredData(): any[] {
     if (!this.searchQuery) return this.data;
-
+ 
     return this.data.filter(item => {
       return this.headers.some(header => {
         if (!this.columnVisibility[header.dataField]) return false;
@@ -357,11 +379,11 @@ export class TableComponent implements AfterViewInit {
       });
     });
   }
-
+ 
   get totalPages(): number {
     return Math.ceil(this.filteredData.length / this.mobilePageSize);
   }
-
+ 
   goToNextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
@@ -369,7 +391,7 @@ export class TableComponent implements AfterViewInit {
       this.cdr.detectChanges();
     }
   }
-
+ 
   goToPreviousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
@@ -377,12 +399,12 @@ export class TableComponent implements AfterViewInit {
       this.cdr.detectChanges();
     }
   }
-
+ 
   toggleSelectAllOnPage(): void {
     const currentPageItems = this.paginatedData;
     const currentPageIds = currentPageItems.map(item => String(item.id));
     const allSelected = currentPageIds.every(id => this.selectedRowKeys.includes(id));
-
+ 
     if (allSelected) {
       this.selectedRowKeys = this.selectedRowKeys.filter(id => !currentPageIds.includes(id));
     } else {
@@ -392,65 +414,65 @@ export class TableComponent implements AfterViewInit {
         }
       });
     }
-
+ 
     this.emitSelectionChange();
     this.cdr.detectChanges();
   }
-
+ 
   areAllOnPageSelected(): boolean {
     const currentPageItems = this.paginatedData;
     const currentPageIds = currentPageItems.map(item => String(item.id));
     return currentPageIds.length > 0 && currentPageIds.every(id => this.selectedRowKeys.includes(id));
   }
-
+ 
   areSomeOnPageSelected(): boolean {
     const currentPageItems = this.paginatedData;
     const currentPageIds = currentPageItems.map(item => String(item.id));
     const selectedCount = currentPageIds.filter(id => this.selectedRowKeys.includes(id)).length;
     return selectedCount > 0 && selectedCount < currentPageIds.length;
   }
-
+ 
   toggleSelection(id: string): void {
     const stringId = String(id);
     const index = this.selectedRowKeys.indexOf(stringId);
-
+ 
     if (index === -1) {
       this.selectedRowKeys.push(stringId);
     } else {
       this.selectedRowKeys.splice(index, 1);
     }
-
+ 
     this.emitSelectionChange();
     this.cdr.detectChanges();
   }
-
+ 
   setPageSize(size: number): void {
     this.mobilePageSize = size;
     this.currentPage = 1;
     this.updatePagination();
     this.cdr.detectChanges();
   }
-
+ 
   toggleColumnChooserMobile(): void {
     this.showColumnChooserMobile = !this.showColumnChooserMobile;
     this.showSortOptions = false;
     this.showMobileExportOptions = false;
     this.cdr.detectChanges();
   }
-
+ 
   toggleMobileExportOptions(): void {
     this.showMobileExportOptions = !this.showMobileExportOptions;
     this.showSortOptions = false;
     this.showColumnChooserMobile = false;
     this.cdr.detectChanges();
   }
-
+ 
   exportMobile(format: 'excel' | 'csv'): void {
     this.exportData(format);
     this.showMobileExportOptions = false;
     this.cdr.detectChanges();
   }
-
+ 
   public initializeHeaders(): void {
     this.headers = this.headers.map((header) => ({
       ...header,
@@ -460,30 +482,30 @@ export class TableComponent implements AfterViewInit {
       allowFiltering: header.allowFiltering !== false,
     }));
   }
-
+ 
   public initializeColumnVisibility(): void {
     this.headers.forEach((header) => {
       this.columnVisibility[header.dataField] = header.visible !== false;
     });
     this.cdr.detectChanges();
   }
-
+ 
   toggleColumnChooser(event: Event): void {
     event.stopPropagation();
     this.showCustomColumnChooser = !this.showCustomColumnChooser;
     this.showExportModal = false;
     this.clickedInsideDropdown = true;
-
+ 
     if (this.showCustomColumnChooser) {
       setTimeout(() => {
         this.positionDropdown(this.columnChooserButton, this.columnChooserDropdown);
         this.cdr.detectChanges();
       });
     }
-
+ 
     this.cdr.detectChanges();
   }
-
+ 
   toggleColumnVisibility(dataField: string): void {
     this.columnVisibility[dataField] = !this.columnVisibility[dataField];
     if (!this.isMobile && this.dataGrid?.instance) {
@@ -496,16 +518,16 @@ export class TableComponent implements AfterViewInit {
     this.clickedInsideDropdown = true;
     this.cdr.detectChanges();
   }
-
+ 
   areAllColumnsSelected(): boolean {
     return this.headers.every(header => this.columnVisibility[header.dataField]);
   }
-
+ 
   areSomeColumnsSelected(): boolean {
     const visibleCount = this.headers.filter(header => this.columnVisibility[header.dataField]).length;
     return visibleCount > 0 && visibleCount < this.headers.length;
   }
-
+ 
   toggleAllColumns(): void {
     const allSelected = this.areAllColumnsSelected();
     this.headers.forEach(header => {
@@ -514,20 +536,20 @@ export class TableComponent implements AfterViewInit {
         this.dataGrid.instance.columnOption(header.dataField, 'visible', !allSelected);
       }
     });
-
+ 
     this.cardFields = this.headers
       .filter(header => this.columnVisibility[header.dataField])
       .slice(0, 3)
       .map(header => header.dataField);
     this.cdr.detectChanges();
   }
-
+ 
   onExportButtonClick(event: Event): void {
     event.stopPropagation();
     this.showExportModal = !this.showExportModal;
     this.showCustomColumnChooser = false;
     this.clickedInsideDropdown = true;
-
+ 
     if (this.showExportModal) {
       setTimeout(() => {
         this.positionDropdown(this.exportButton, this.exportOptionsDropdown);
@@ -536,52 +558,52 @@ export class TableComponent implements AfterViewInit {
     } else {
       this.closeDropdowns();
     }
-
+ 
     this.cdr.detectChanges();
   }
-
+ 
   onColumnChooserDropdownClick(event: Event): void {
     event.stopPropagation();
     this.clickedInsideDropdown = true;
     this.cdr.detectChanges();
   }
-
+ 
   onExportOptionsDropdownClick(event: Event): void {
     event.stopPropagation();
     this.clickedInsideDropdown = true;
     this.cdr.detectChanges();
   }
-
+ 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
-
+ 
     if (this.clickedInsideDropdown) {
       this.clickedInsideDropdown = false;
       return;
     }
-
+ 
     const clickedOnColumnChooserButton = this.columnChooserButton?.nativeElement?.contains(target) || false;
     const clickedOnExportButton = this.exportButton?.nativeElement?.contains(target) || false;
     const clickedInColumnChooser = this.columnChooserDropdown?.nativeElement?.contains(target) || false;
     const clickedInExportDropdown = this.exportOptionsDropdown?.nativeElement?.contains(target) || false;
-
+ 
     let changesDetected = false;
     if (this.showCustomColumnChooser && !clickedOnColumnChooserButton && !clickedInColumnChooser) {
       this.showCustomColumnChooser = false;
       changesDetected = true;
     }
-
+ 
     if (this.showExportModal && !clickedOnExportButton && !clickedInExportDropdown) {
       this.showExportModal = false;
       changesDetected = true;
     }
-
+ 
     if (changesDetected) {
       this.cdr.detectChanges();
     }
   }
-
+ 
   @HostListener('window:scroll')
   onResizeOrScroll(): void {
     if (this.showCustomColumnChooser) {
@@ -592,26 +614,26 @@ export class TableComponent implements AfterViewInit {
     }
     this.cdr.detectChanges();
   }
-
+ 
   handleSelectionChanged(event: any): void {
     console.log('=== DESKTOP SELECTION EVENT ===');
     console.log('DevExtreme event:', event);
     console.log('Selected keys from DevExtreme:', event.selectedRowKeys);
-
+ 
     this.selectedRowKeys = (event.selectedRowKeys || []).map((key: any) => String(key));
-
+ 
     console.log('Normalized selected keys:', this.selectedRowKeys);
     console.log('Export filename:', this.exportFileName);
     console.log('==============================');
-
+ 
     this.emitSelectionChange();
     this.cdr.detectChanges();
   }
-
+ 
   toggleSort(column: GridColumn): void {
     const currentSortOrder = column.sortOrder;
     let newSortOrder: 'asc' | 'desc' | undefined;
-
+ 
     if (!currentSortOrder) {
       newSortOrder = 'asc';
     } else if (currentSortOrder === 'asc') {
@@ -619,7 +641,7 @@ export class TableComponent implements AfterViewInit {
     } else {
       newSortOrder = undefined;
     }
-
+ 
     column.sortOrder = newSortOrder;
     if (!this.isMobile && this.dataGrid?.instance) {
       this.dataGrid.instance.clearSorting();
@@ -631,35 +653,35 @@ export class TableComponent implements AfterViewInit {
     }
     this.cdr.detectChanges();
   }
-
+ 
   exportData(format: 'excel' | 'csv'): void {
     this.closeDropdowns();
-
+ 
     const exportFormats: { [key: string]: ExportFormat } = {
       excel: { format: 'excel', fileType: 'xlsx', fileExtension: 'xlsx' },
       csv: { format: 'csv', fileType: 'csv', fileExtension: 'csv' },
     };
-
+ 
     const { fileType, fileExtension } = exportFormats[format];
     const workbook = XLSX.utils.book_new();
     const exportData: any[] = [];
-
+ 
     const visibleHeaders = this.headers.filter((header) => this.columnVisibility[header.dataField]);
     const headerRow = visibleHeaders.map((header) => header.caption);
     exportData.push(headerRow);
-
+ 
     let rowsToExport = this.data;
     if (this.selectedRowKeys.length > 0) {
       rowsToExport = this.data.filter((row) => this.selectedRowKeys.includes(String(row.id)));
     }
-
+ 
     rowsToExport.forEach((row) => {
       const rowData = visibleHeaders.map((header) => row[header.dataField] ?? 'N/A');
       exportData.push(rowData);
     });
-
+ 
     const worksheet = XLSX.utils.aoa_to_sheet(exportData);
-
+ 
     if (format === 'excel') {
       for (let col = 0; col < headerRow.length; col++) {
         const cellAddress = XLSX.utils.encode_cell({ r: 0, c: col });
@@ -672,14 +694,14 @@ export class TableComponent implements AfterViewInit {
       }
       worksheet['!cols'] = headerRow.map(() => ({ wpx: 120 }));
     }
-
+ 
     XLSX.utils.book_append_sheet(workbook, worksheet, this.exportFileName);
-
+ 
     const fileName = `${this.exportFileName}.${fileExtension}`;
     const excelBuffer = XLSX.write(workbook, { bookType: fileType, type: 'array' });
     const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(data, fileName);
-
+ 
     this.exportMessage = 'Export Completed';
     this.showExportMessage = true;
     this.cdr.detectChanges();
@@ -688,11 +710,11 @@ export class TableComponent implements AfterViewInit {
       this.cdr.detectChanges();
     }, 3000);
   }
-
+ 
   onExporting(event: any): void {
     event.cancel = true;
   }
-
+ 
   private hashString(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -702,24 +724,24 @@ export class TableComponent implements AfterViewInit {
     }
     return Math.abs(hash);
   }
-
+ 
   getOwnerColor(owner: string): string {
     if (!owner || typeof owner !== 'string') {
       return this.ownerColors[0];
     }
-
+ 
     const hash = this.hashString(owner.toLowerCase());
     const colorIndex = hash % this.ownerColors.length;
     return this.ownerColors[colorIndex];
   }
-
+ 
   getOwnerInitial(owner: string): string {
     if (!owner || typeof owner !== 'string') {
       return '';
     }
     return owner.charAt(0).toUpperCase();
   }
-
+ 
   getSortIcon(column: GridColumn): string {
     const sortOrder = column.sortOrder;
     if (sortOrder === 'asc') {
@@ -729,17 +751,17 @@ export class TableComponent implements AfterViewInit {
     }
     return '↕';
   }
-
+ 
   getSortIconClass(column: GridColumn): string {
     const sortOrder = column.sortOrder;
     return sortOrder ? 'sort-icon active' : 'sort-icon';
   }
-
+ 
   public positionDropdown(buttonRef: ElementRef, dropdownRef: ElementRef): void {
     if (!buttonRef?.nativeElement || !dropdownRef?.nativeElement) {
       return;
     }
-
+ 
     const button = buttonRef.nativeElement as HTMLElement;
     const dropdown = dropdownRef.nativeElement as HTMLElement;
     const rect = button.getBoundingClientRect();
@@ -747,31 +769,31 @@ export class TableComponent implements AfterViewInit {
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     const dropdownHeight = dropdown.offsetHeight || 300;
-
+ 
     let left = rect.left + window.scrollX;
     const top = rect.bottom + window.scrollY + 5;
-
+ 
     if (left + dropdownWidth > viewportWidth) {
       left = rect.right + window.scrollX - dropdownWidth;
     }
-
+ 
     if (left < 0) {
       left = 0;
     }
-
+ 
     if (top + dropdownHeight > viewportHeight + window.scrollY) {
       const topAbove = rect.top + window.scrollY - dropdownHeight - 5;
       dropdown.style.top = `${topAbove}px`;
     } else {
       dropdown.style.top = `${top}px`;
     }
-
+ 
     dropdown.style.position = 'absolute';
     dropdown.style.left = `${left}px`;
     dropdown.style.right = '';
     this.cdr.detectChanges();
   }
-
+ 
   closeDropdowns(): void {
     this.showCustomColumnChooser = false;
     this.showExportModal = false;
@@ -781,31 +803,31 @@ export class TableComponent implements AfterViewInit {
     this.clickedInsideDropdown = false;
     this.cdr.detectChanges();
   }
-
+ 
   private configureDataGrid(): void {
     if (!this.dataGrid?.instance) {
       return;
     }
-
+ 
     this.dataGrid.instance.option('columnResizingMode', 'widget');
-
+ 
     this.headers.forEach((header) => {
       this.dataGrid.instance.columnOption(header.dataField, 'minWidth', 150);
     });
-
+ 
     if (this.headers.length > 0) {
       const firstColumnDataField = this.headers[0].dataField;
       this.dataGrid.instance.columnOption(firstColumnDataField, 'fixed', true);
       this.dataGrid.instance.columnOption(firstColumnDataField, 'fixedPosition', 'left');
     }
-
+ 
     // Fix the command column to the right if editing is enabled
     if (this.allowEditing) {
       this.dataGrid.instance.columnOption('command:edit', 'fixed', true);
       this.dataGrid.instance.columnOption('command:edit', 'fixedPosition', 'right');
       this.dataGrid.instance.columnOption('command:edit', 'width', 110);
     }
-
+ 
     this.dataGrid.instance.option('scrolling', {
       mode: 'standard',
       showScrollbar: 'always',
@@ -813,9 +835,10 @@ export class TableComponent implements AfterViewInit {
       scrollByContent: true,
       scrollByThumb: true,
     });
-
+ 
     this.dataGrid.instance.option('width', '100%');
     this.dataGrid.instance.refresh();
     this.cdr.detectChanges();
   }
 }
+ 

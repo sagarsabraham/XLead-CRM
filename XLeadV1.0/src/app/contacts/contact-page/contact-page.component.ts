@@ -1,5 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
+import { AuthServiceService } from 'src/app/services/auth-service.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
  
 @Component({
@@ -12,13 +13,15 @@ export class ContactPageComponent implements OnInit {
     { dataField: 'name', caption: 'Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'email', caption: 'Email', visible: true },
-    { dataField: 'customerName', caption: 'Customer', visible: true },
+    { dataField: 'customerName', caption: 'Customer', visible: true,
+      allowEditing:false
+     },
     { dataField: 'designation', caption: 'Designation', visible: true },
     {
       dataField: 'status',
       caption: 'Status',
       visible: true,
-      // Add the same lookup configuration here
+     
       lookup: {
         dataSource: [
           { value: 'Active', displayValue: 'Active' },
@@ -36,12 +39,15 @@ export class ContactPageComponent implements OnInit {
   isSidebarVisible: boolean = false;
   isLoading: boolean = true;
   error: string | null = null;
- 
-  constructor(private contactService: CompanyContactService) {
+ canEditContacts = false;
+  canDeleteContacts = false;
+  constructor(private contactService: CompanyContactService, private authService: AuthServiceService) {
     this.checkIfMobile();
   }
  
   ngOnInit(): void {
+    this.canEditContacts = this.authService.hasPrivilege('EditContact');
+    this.canDeleteContacts = this.authService.hasPrivilege('DeleteContact');
     this.loadContacts();
   }
  
@@ -72,7 +78,7 @@ export class ContactPageComponent implements OnInit {
           phone: contact.phoneNumber || '',
           email: contact.email || '',
           customerName: contact.customerId ? customerMap[contact.customerId] || 'Unknown Customer' : 'No Customer',
-          designation: contact.designation || 'N/A', // Map the designation field
+          designation: contact.designation || 'N/A',
           status: contact.isActive ? 'Active' : 'Inactive',
           owner: contact.createdBy?.toString() || 'System'
         }));
@@ -118,7 +124,7 @@ export class ContactPageComponent implements OnInit {
    
     this.selectedContactIds = event.selectedRowKeys || [];
   }
-    handleUpdate(event: any): void {
+ handleUpdate(event: any): void {
     const contactId = event.key;
     const finalData = { ...event.oldData, ...event.newData };
  
@@ -128,33 +134,39 @@ export class ContactPageComponent implements OnInit {
       designation: finalData.designation,
       email: finalData.email,
       phoneNumber: finalData.phone,
-      // Convert the status string from the dropdown back to the required boolean
       isActive: finalData.status === 'Active',
-      updatedBy: 3 // Hardcoded user ID
+      updatedBy: this.authService.getUserId()
     };
  
     this.contactService.updateContact(contactId, updatePayload).subscribe({
       next: (response) => {
         console.log('Contact updated successfully', response);
+       
+       
         const index = this.tableData.findIndex(c => c.id === contactId);
+ 
         if (index !== -1) {
+       
           this.tableData[index] = finalData;
+         
+         
           this.tableData = [...this.tableData];
         }
+       
       },
       error: (err) => {
         console.error('Failed to update contact', err);
+        alert(err.error?.message || 'Update failed.');
         this.loadContacts();
       }
     });
   }
  
+ 
   handleDelete(event: any): void {
     const contactId = event.key;
- 
     if (confirm('Are you sure you want to delete this contact?')) {
-      // No longer need to pass a userId
-      this.contactService.deleteContact(contactId).subscribe({
+      this.contactService.deleteContact(contactId, this.authService.getUserId()).subscribe({
         next: () => {
           console.log('Contact deleted successfully');
           this.tableData = this.tableData.filter(c => c.id !== contactId);
@@ -162,7 +174,7 @@ export class ContactPageComponent implements OnInit {
         },
         error: (err) => {
           console.error('Failed to delete contact', err);
-          alert(err.error?.message || 'Could not delete the contact. Please try again.');
+          alert(err.error?.message || 'Could not delete the contact.');
         }
       });
     }
@@ -171,4 +183,4 @@ export class ContactPageComponent implements OnInit {
   toggleSidebar(): void {
     this.isSidebarVisible = !this.isSidebarVisible;
   }
-}
+} 

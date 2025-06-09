@@ -3,14 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-// Match this interface with your .NET Attachment model
 export interface Attachment {
   id: number;
   fileName: string;
   s3UploadName: string;
   dealId: number;
   createdBy: number;
-  createdAt: string; // ISO date string
+  createdAt: Date;
 }
 
 @Injectable({
@@ -22,7 +21,7 @@ export class DocumentService {
   constructor(private http: HttpClient) { }
 
   getAttachments(dealId: number): Observable<Attachment[]> {
-    return this.http.get<Attachment[]>(`${this.apiUrl}/attachments/deal/${dealId}`);
+    return this.http.get<Attachment[]>(`${this.apiUrl}/api/attachments/deal/${dealId}`);
   }
 
   uploadAttachment(file: File, dealId: number): Observable<Attachment> {
@@ -30,6 +29,6 @@ export class DocumentService {
     formData.append('file', file, file.name);
     formData.append('dealId', dealId.toString());
 
-    return this.http.post<Attachment>(`${this.apiUrl}/attachments/upload`, formData);
+    return this.http.post<Attachment>(`${this.apiUrl}/api/attachments/upload`, formData);
   }
 }

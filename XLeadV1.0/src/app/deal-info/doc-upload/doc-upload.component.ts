@@ -10,11 +10,11 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./doc-upload.component.css']
 })
 export class DocUploadComponent implements OnInit {
-  @Input() dealId!: number; // Passed from parent component
+  @Input() dealId!: number;
 
   attachments: Attachment[] = [];
   isLoading = true;
-  baseStaticUrl = `${environment.apiUrl}/UploadedFiles`; // Base URL for downloads
+  baseStaticUrl = `${environment.apiUrl}/UploadedFiles`;
 
   constructor(private documentService: DocumentService) { }
 
@@ -32,7 +32,7 @@ export class DocUploadComponent implements OnInit {
     try {
       this.attachments = await lastValueFrom(this.documentService.getAttachments(this.dealId));
     } catch (error) {
-      notify('Failed to load attachments.', 'error', 3000);
+      notify('Failed to load documents.', 'error', 3000);
       console.error(error);
     } finally {
       this.isLoading = false;
