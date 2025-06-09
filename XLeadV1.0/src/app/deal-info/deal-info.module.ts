@@ -8,10 +8,14 @@ import { DxButtonModule,
          DxPopupModule, 
          DxSelectBoxModule, 
          DxDateBoxModule, 
-         DxFileUploaderModule, 
          DxListModule, 
          DxTextBoxModule, 
-         DxTabsModule } from 'devextreme-angular';
+         DxTabsModule,
+         DxFileUploaderModule,
+         DxProgressBarModule,
+         DxDataGridModule,
+         DxLoadPanelModule,
+         DxTextAreaModule} from 'devextreme-angular';
 import { StatusTimelineComponent } from './status-timeline/status-timeline.component';
 import { RelatedInfoComponent } from './related-info/related-info.component';
 import { DescriptionComponent } from './description/description.component';
@@ -19,6 +23,8 @@ import { HistoryTimelineComponent } from './history-timeline/history-timeline.co
 import { DealInfoCardComponent } from './deal-info-card/deal-info-card.component';
 import { SharedModule } from '../shared/shared.module';
 import { DocUploadComponent } from './doc-upload/doc-upload.component';
+import { DocumentService } from '../services/document.service';
+import { NotesTabComponent } from './notes-tab/notes-tab.component';
 
 
 @NgModule({
@@ -30,9 +36,13 @@ import { DocUploadComponent } from './doc-upload/doc-upload.component';
     DescriptionComponent,
     HistoryTimelineComponent,
     DealInfoCardComponent,
-    DocUploadComponent
+    DocUploadComponent,
+    NotesTabComponent
   ],
   imports: [
+          DxTextAreaModule,
+    DxButtonModule,
+    DxLoadPanelModule,
     SharedModule,
     CommonModule,
     DealInfoRoutingModule,
@@ -41,10 +51,13 @@ import { DocUploadComponent } from './doc-upload/doc-upload.component';
     DxPopupModule,
     DxSelectBoxModule,
     DxDateBoxModule,
-    DxFileUploaderModule,
     DxListModule,
     DxTextBoxModule,
-    DxTabsModule
-  ]
+    DxTabsModule,
+    DxFileUploaderModule,
+    DxProgressBarModule,
+    DxDataGridModule
+  ],
+  providers: [DocumentService]
 })
 export class DealInfoModule { }

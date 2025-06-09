@@ -1,1 +1,38 @@
-<p>doc-upload works!</p>
+<div class="doc-upload-container">
+ 
+  <h5>Upload New Document</h5>
+  <dx-file-uploader
+    selectButtonText="Select file"
+    labelText=""
+    accept="*/*"
+    uploadMode="useForm"
+    [multiple]="false"
+    (onValueChanged)="onFileSelected($event)">
+  </dx-file-uploader>
+ 
+  <hr>
+ 
+  <h5>Uploaded Documents</h5>
+  <dx-load-panel
+      [visible]="isLoading"
+      message="Loading attachments...">
+  </dx-load-panel>
+ 
+  <dx-list
+    [dataSource]="attachments"
+    [height]="300"
+    [searchEnabled]="true"
+    searchExpr="fileName"
+    itemRenderMode="html"
+    noDataText="No documents have been uploaded for this deal.">
+    <div *dxTemplate="let item of 'item'">
+      <div class="attachment-item">
+        <i class="dx-icon-file"></i>
+        <!-- The download attribute ensures the browser downloads it with the original filename -->
+        <a [href]="baseStaticUrl + '/' + item.s3UploadName" [download]="item.fileName" target="_blank">{{ item.fileName }}</a>
+        <span class="upload-date">{{ item.createdAt | date:'short' }}</span>
+      </div>
+    </div>
+  </dx-list>
+</div>
+ 

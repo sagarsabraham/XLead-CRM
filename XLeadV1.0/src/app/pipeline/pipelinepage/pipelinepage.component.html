@@ -10,7 +10,7 @@
       <span>{{ toastMessage }}</span>
     </div>
   </dx-toast>
-
+ 
   <div class="topbar">
     <h1>Pipelines</h1>
     <div class="topbar-actions">
@@ -42,7 +42,6 @@
       ></app-button>
     </div>
   </div>
-   
  
   <div class="topcard-container">
     <app-topcard
@@ -83,14 +82,14 @@
           (onEdit)="onEditDeal($event, stage.name)">
         </app-dealbody>
       </div>
-
-      <div *ngIf="!stage.collapsed">
+<div *ngIf="!stage.collapsed">
         <app-dealfooter
           [buttons]="dealButton"
           [stageId]="stage.id"
           (buttonClick)="onButtonClick($event)">
         </app-dealfooter>
       </div>
+ 
     </div>
   </div>
 
@@ -102,6 +101,7 @@
       [useOwnerTemplate]="false"
       [exportFileName]="'pipeline'"
       (onSelectionChanged)="handleSelectionChanged($event)"
+      [allowEditing]="false"
       #pipelineTable>
     </app-table>
   </div>

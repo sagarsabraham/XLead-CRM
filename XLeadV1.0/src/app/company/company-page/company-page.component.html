@@ -3,7 +3,7 @@
   <!-- <app-sidebar></app-sidebar> -->
  
   <div class="container">
-    
+   
     <!-- Loading state -->
     <div *ngIf="isLoading" class="loading-state">
       <div class="spinner"></div>
@@ -37,10 +37,15 @@
         <app-table
           [data]="tableData"
           [headers]="tableHeaders"
-          
+         
           [ownerField]="'owner'"
           [exportFileName]="'Customers'"
           [entityType]="'Customer'"
+           [allowEditing]="canEditCustomers"
+          [allowDeleting]="canDeleteCustomers"
+   (onRowUpdating)="handleUpdate($event)"
+   (onRowRemoving)="handleDelete($event)"
+    [lookupData]="tableLookups" 
         ></app-table>
       </div>
     </div>

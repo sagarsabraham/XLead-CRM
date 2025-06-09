@@ -31,9 +31,9 @@
     z-index: 20;
     display: none;
 }
-
+ 
 .deal-card:hover .edit-icon {
-  display: inline-block; 
+  display: inline-block;
 }
  
 .content {
@@ -84,23 +84,24 @@
 .content > div:last-child {
     margin-bottom: 0;
 }
-
+ 
 @media (max-width: 1024px) {
   .edit-icon {
-    display: inline-block; 
+    display: inline-block;
   }
 }
-
+ 
 @media (max-width: 768px) {
   .edit-icon {
-    display: inline-block; 
+    display: inline-block;
   }
 }
-
-
+ 
+ 
 @media (max-width: 480px) {
   .edit-icon {
-    display: inline-block; 
+    display: inline-block;
   }
 }
+ 
  

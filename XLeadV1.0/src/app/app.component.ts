@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { AuthServiceService } from './services/auth-service.service';
+import { AuthService } from './services/auth-service.service';
 import { PrivilegeServiceService } from './services/privilege-service.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { PrivilegeServiceService } from './services/privilege-service.service';
 export class AppComponent implements OnInit{
   showTopbar = true;
 
-  constructor(private router: Router,  private auth: AuthServiceService,
+  constructor(private router: Router,  private auth: AuthService,
     private privilegeService: PrivilegeServiceService) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {

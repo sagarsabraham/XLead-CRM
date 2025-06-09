@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
-import { DxFormComponent, DxPopupComponent, DxToastComponent } from 'devextreme-angular';
+import { DxFormComponent, DxPopupComponent,DxToastComponent } from 'devextreme-angular';
 import { finalize } from 'rxjs/operators';
 import { forkJoin } from 'rxjs'; 
 
@@ -7,18 +7,18 @@ export interface QuickContactFormData {
   FirstName: string;
   LastName: string;
   Designation: string;
-  customerName: string; 
+  customerName: string;
   Email: string;
   phoneNo: string;
   countryCode: string;
 }
 
-interface NewDeal {
+export interface NewDeal {
   amount: number;
-  customerName: string; 
+  customerName: string;
   title: string;
   account: number | null;
-  serviceline: number | null; 
+  serviceline: number | null;
   region: number | null;
   contactName: string;
   domain: number | null;
@@ -33,6 +33,13 @@ interface NewDeal {
   [key: string]: any;
 }
 
+export interface CustomerContactMap {
+  isActive: boolean;
+  isHidden: boolean | null;
+  contacts: string[];
+}
+
+
 import { CountryService } from 'src/app/services/country.service';
 import { DuService } from 'src/app/services/du.service';
 import { RevenuetypeService } from 'src/app/services/revenuetype.service';
@@ -41,12 +48,13 @@ import { RegionService } from '../../services/region.service';
 import { DomainService } from '../../services/domain.service';
 import { DealstageService } from 'src/app/services/dealstage.service';
 import { Customer, CompanyContactService, Contact } from 'src/app/services/company-contact.service';
-import { DealService, DealCreatePayload, DealRead, DealEditPayload } from 'src/app/services/dealcreation.service';
+import { DealService, DealCreatePayload, DealRead,DealEditPayload } from 'src/app/services/dealcreation.service';
 import { DxValidationRule } from '../form-modal/form-modal.component';
 import { SeviceLineService } from 'src/app/services/sevice-line.service';
 import { IndustryVerticalService } from 'src/app/services/industry-vertical.service';
-import { AuthServiceService } from 'src/app/services/auth-service.service';
+import { AuthService } from 'src/app/services/auth-service.service';
 import { CountryCodeService } from 'src/app/services/country-code.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-add-deal-modal',
@@ -62,7 +70,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() isVisible: boolean = false;
   @Input() mode: 'add' | 'edit' = 'add';
   @Input() dealToEdit: DealRead | null = null;
-  @Input() selectedStage: number|null = null;
+  @Input() selectedStage: number | null = null;
   @Output() onClose = new EventEmitter<void>();
   @Output() onSubmitSuccess = new EventEmitter<DealRead>();
   @Output() onSubmitError = new EventEmitter<string>();
@@ -82,18 +90,17 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   revenueTypes: { id: number; revenueTypeName: string }[] = [];
   dus: { id: number; duName: string }[] = [];
   countries: { id: number; countryName: string }[] = [];
-  countryCodes: { code: string; name: string }[] = []; 
-  
-  customers: string[] = []; 
-  customerContactMap: { [customer: string]: string[] } = {}; 
-  filteredCustomers: string[] = []; 
+  countryCodes: { code: string; name: string }[] = [];
+
+  customerContactMap: { [customerName: string]: CustomerContactMap} = {};
+  customerDataSource: { name: string; disabled: boolean }[] = [];
   filteredContacts: string[] = [];
 
   customFields: { fieldLabel: string; fieldType: string; dataField: string; required?: boolean }[] = [];
 
   newDeal: NewDeal = {
     amount: 0,
-    customerName: '', 
+    customerName: '',
     title: '',
     account: null,
     serviceline: null,
@@ -110,90 +117,36 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     probability: null,
   };
 
-  isCustomerModalVisible: boolean = false; 
-  customerData = { 
-    customerName: '', 
-    phoneNo: '', 
-    website: '', 
+  isCustomerModalVisible: boolean = false;
+  customerData = {
+    customerName: '',
+    phoneNo: '',
+    website: '',
     industryVertical: null as number | null,
     countryCode: '+91'
   };
 
-  customerFields: { 
+  customerFields: {
     dataField: string;
     label: string;
     editorType?: string;
     editorOptions?: any;
     validationRules?: DxValidationRule[];
   }[] = [
-    {
-      dataField: 'customerName',
-      label: 'Customer Name',
-      validationRules: [
-        { type: 'required', message: 'Customer Name is required' },
-        { type: 'stringLength', min: 2, message: 'Customer Name must be at least 2 characters long' }
-      ]
-    },
-    {
-      dataField: 'industryVertical',
-      label: 'Industry Vertical',
-      editorType: 'dxSelectBox',
-      editorOptions: {
-        dataSource: [], 
-        displayExpr: 'industryName',
-        valueExpr: 'id',
-        searchEnabled: true,
-        placeholder: 'Select Industry Vertical'
-      },
-      validationRules: [
-        { type: 'required', message: 'Industry Vertical is required' }
-      ]
-    },
-    {
-      dataField: 'countryCode',
-      label: 'Country Code',
-      editorType: 'dxSelectBox',
-      editorOptions: {
-        dataSource: this.countryCodes,
-        displayExpr: 'name',
-        valueExpr: 'code',
-        searchEnabled: true,
-        placeholder: 'Select Country Code'
-      },
-      validationRules: [
-        { type: 'required', message: 'Country Code is required' }
-      ]
-    },
-    {
-      dataField: 'phoneNo',
-      label: 'Phone Number',
-      editorType: 'dxTextBox',
-      editorOptions: {
-        mask: '00000-00000',
-        maskRules: { "0": /[0-9]/ },
-        placeholder: 'Enter 10-digit phone number'
-      },
-      validationRules: [
-        { type: 'required', message: 'Phone Number is required' },
-      ]
-    },
-    {
-      dataField: 'website',
-      label: 'Website',
-      validationRules: [
-        { type: 'required', message: 'Website is required' },
-        { type: 'pattern', pattern: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/, message: 'Invalid website URL format' }
-      ]
-    }
-  ];
+      { dataField: 'customerName', label: 'Customer Name', validationRules: [{ type: 'required', message: 'Customer Name is required' }, { type: 'stringLength', min: 2, message: 'Customer Name must be at least 2 characters long' }] },
+      { dataField: 'industryVertical', label: 'Industry Vertical', editorType: 'dxSelectBox', editorOptions: { dataSource: [], displayExpr: 'industryName', valueExpr: 'id', searchEnabled: true, placeholder: 'Select Industry Vertical' }, validationRules: [{ type: 'required', message: 'Industry Vertical is required' }] },
+      { dataField: 'countryCode', label: 'Country Code', editorType: 'dxSelectBox', editorOptions: { dataSource: this.countryCodes, displayExpr: 'name', valueExpr: 'code', searchEnabled: true, placeholder: 'Select Country Code' }, validationRules: [{ type: 'required', message: 'Country Code is required' }] },
+      { dataField: 'phoneNo', label: 'Phone Number', editorType: 'dxTextBox', editorOptions: { mask: '00000-00000', maskRules: { "0": /[0-9]/ }, placeholder: 'Enter 10-digit phone number' }, validationRules: [{ type: 'required', message: 'Phone Number is required' }] },
+      { dataField: 'website', label: 'Website', validationRules: [{ type: 'required', message: 'Website is required' }, { type: 'pattern', pattern: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/, message: 'Invalid website URL format' }] }
+    ];
 
   isContactModalVisible: boolean = false;
-  contactData: QuickContactFormData = { 
-    FirstName: '', 
-    LastName: '', 
-    Designation: '', 
-    customerName: '', 
-    Email: '', 
+  contactData: QuickContactFormData = {
+    FirstName: '',
+    LastName: '',
+    Designation: '',
+    customerName: '',
+    Email: '',
     phoneNo: '',
     countryCode: '+91'
   };
@@ -205,81 +158,14 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     editorOptions?: any;
     validationRules?: DxValidationRule[];
   }[] = [
-    {
-      dataField: 'FirstName',
-      label: 'First Name',
-      validationRules: [
-        { type: 'required', message: 'First Name is required' },
-        { type: 'stringLength', min: 2, message: 'First Name must be at least 2 characters' }
-      ]
-    },
-    {
-      dataField: 'LastName',
-      label: 'Last Name',
-      validationRules: [
-        { type: 'stringLength', min: 2, message: 'Last Name must be at least 2 characters if provided' }
-      ]
-    },
-    {
-      dataField: 'Designation',
-      label: 'Designation',
-      validationRules: [
-        { type: 'required', message: 'Designation is required' },
-        { type: 'stringLength', min: 2, message: 'Designation must be at least 2 characters' }
-      ]
-    },
-    {
-      dataField: 'customerName',
-      label: 'Customer Name',
-      editorOptions: { disabled: true },
-      validationRules: [
-        { type: 'required', message: 'Customer Name is required (should be auto-filled)' }
-      ]
-    },
-    {
-      dataField: 'Email',
-      label: 'Email',
-      editorType: 'dxTextBox',
-      editorOptions: { mode: 'email' },
-      validationRules: [
-        { type: 'required', message: 'Email is required' },
-        { type: 'email', message: 'Invalid email format' }
-      ]
-    },
-    {
-      dataField: 'countryCode',
-      label: 'Country Code',
-      editorType: 'dxSelectBox',
-      editorOptions: {
-        dataSource: this.countryCodes,
-        displayExpr: 'name',
-        valueExpr: 'code',
-        searchEnabled: true,
-        placeholder: 'Select Country Code'
-      },
-      validationRules: [
-        { type: 'required', message: 'Country Code is required' }
-      ]
-    },
-    {
-      dataField: 'phoneNo',
-      label: 'Phone Number',
-      editorType: 'dxTextBox',
-      editorOptions: {
-        mask: '00000-00000',
-        maskRules: { "0": /[0-9]/ },
-        placeholder: 'Enter 10-digit phone number'
-      },
-      validationRules: [
-        { type: 'required', message: 'Phone Number is required' },
-        {
-          type: 'pattern',
-          pattern: /^\d{5}-?\d{5}$/,
-          message: 'Phone number must be 10 digits (e.g., 12345-67890 or 1234567890)'
-        }
-      ]
-    }
-  ];
+      { dataField: 'FirstName', label: 'First Name', validationRules: [{ type: 'required', message: 'First Name is required' }, { type: 'stringLength', min: 2, message: 'First Name must be at least 2 characters' }] },
+      { dataField: 'LastName', label: 'Last Name', validationRules: [{ type: 'stringLength', min: 2, message: 'Last Name must be at least 2 characters if provided' }] },
+      { dataField: 'Designation', label: 'Designation', validationRules: [{ type: 'required', message: 'Designation is required' }, { type: 'stringLength', min: 2, message: 'Designation must be at least 2 characters' }] },
+      { dataField: 'customerName', label: 'Customer Name', editorOptions: { disabled: true }, validationRules: [{ type: 'required', message: 'Customer Name is required (should be auto-filled)' }] },
+      { dataField: 'Email', label: 'Email', editorType: 'dxTextBox', editorOptions: { mode: 'email' }, validationRules: [{ type: 'required', message: 'Email is required' }, { type: 'email', message: 'Invalid email format' }] },
+      { dataField: 'countryCode', label: 'Country Code', editorType: 'dxSelectBox', editorOptions: { dataSource: this.countryCodes, displayExpr: 'name', valueExpr: 'code', searchEnabled: true, placeholder: 'Select Country Code' }, validationRules: [{ type: 'required', message: 'Country Code is required' }] },
+      { dataField: 'phoneNo', label: 'Phone Number', editorType: 'dxTextBox', editorOptions: { mask: '00000-00000', maskRules: { "0": /[0-9]/ }, placeholder: 'Enter 10-digit phone number' }, validationRules: [{ type: 'required', message: 'Phone Number is required' }, { type: 'pattern', pattern: /^\d{5}-?\d{5}$/, message: 'Phone number must be 10 digits (e.g., 12345-67890 or 1234567890)' }] }
+    ];
 
   isCustomizeFieldModalVisible: boolean = false;
   customizeFieldFormData: any = {};
@@ -287,6 +173,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     { dataField: 'fieldLabel', label: 'Field Label', required: true },
     { dataField: 'fieldType', label: 'Field Type', editorType: 'dxSelectBox', editorOptions: { items: ['Text', 'Numerical', 'Boolean', 'Date'], placeholder: 'Select field type' }, required: true }
   ];
+
   private qualificationStageId: number | null = null;
   selectedContactDetails: Contact | null = null;
 
@@ -307,9 +194,9 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     private dealService: DealService,
     private serviceLine: SeviceLineService,
     private industryVerticalService: IndustryVerticalService,
-    private authService: AuthServiceService,
-    private countryCodeService: CountryCodeService
-  ) {}
+    private authService: AuthService,
+    private countrycodeService: CountryCodeService
+  ) { }
 
   showToast(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
     this.toastMessage = message;
@@ -317,6 +204,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.toastVisible = true;
     this.cdr.detectChanges();
   }
+ 
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -329,12 +217,12 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
 
   currencyFormat = {
     type: 'fixedPoint',
-    precision: 2  
+    precision: 2
   };
 
   ngOnInit() {
     console.log('AddDealModal ngOnInit - dealFormInstance:', this.dealFormInstance);
-    this.loadDropdownData(); 
+    this.loadAllData();
   }
 
   ngAfterViewInit() {
@@ -342,9 +230,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
 
     if (this.dxPopupInstance && this.dxPopupInstance.instance) {
       this.dxPopupInstance.instance.on('shown', () => {
-        console.log('DxPopup "shown" event. Current dealFormInstance:', this.dealFormInstance);
         this.cdr.detectChanges();
-
         if (this.dealFormInstance && this.dealFormInstance.instance) {
           this.isFormReady = true;
         } else {
@@ -356,7 +242,6 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
 
       this.dxPopupInstance.instance.on('hiding', () => {
         this.isFormReady = false;
-        console.log('Form is marked as not ready (popup hiding).');
         this.cdr.detectChanges();
       });
     } else {
@@ -376,19 +261,19 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     if (changes['isVisible']) {
       if (this.isVisible) {
         this.isFormReady = false;
-        console.log('Modal became visible (isVisible=true), form marked as NOT ready initially.');
         if (this.mode === 'edit' && this.dealToEdit) {
           if (this.isDropdownDataLoaded) {
             this.prefillFormForEdit(this.dealToEdit);
-          } else {
-            console.log('Waiting for dropdown data to load before pre-filling form...');
           }
         } else {
-          this.resetForm();
+          if (this.isDropdownDataLoaded) {
+            this.resetForm();
+          } else {
+            this.loadAllData();
+          }
         }
       } else {
         this.isFormReady = false;
-        console.log('Modal became hidden (isVisible=false), form marked as NOT ready.');
       }
     }
     if (changes['dealToEdit'] && this.isVisible && this.mode === 'edit' && this.dealToEdit) {
@@ -398,8 +283,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  loadDropdownData() {
-    // Use forkJoin to wait for all dropdown data to load
+  loadAllData() {
+    this.isDropdownDataLoaded = false;
     forkJoin({
       accounts: this.accountService.getAllAccounts(),
       serviceLines: this.serviceLine.getServiceTypes(),
@@ -409,21 +294,19 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       dus: this.duService.getDU(),
       revenueTypes: this.revenuetypeService.getRevenueTypes(),
       countries: this.countryService.getCountries(),
-      countryCodes: this.countryCodeService.getCountryCodes(),
+      countryCodes: this.countrycodeService.getCountryCodes(),
       customerContactMap: this.companyContactService.getCompanyContactMap(),
       industryVerticals: this.industryVerticalService.getIndustryVertical(),
     }).subscribe({
       next: (results) => {
         this.accounts = results.accounts;
         this.serviceline = results.serviceLines;
-        console.log('Serviceline data loaded:', this.serviceline);
         this.regions = results.regions;
         this.domains = results.domains;
         this.dealStages = results.stages.map(s => ({ ...s, displayName: s.displayName || s.stageName! }));
         const qualificationStage = this.dealStages.find(stage => stage.displayName === 'Qualification' || stage.stageName === 'Qualification');
         if (qualificationStage) {
           this.qualificationStageId = qualificationStage.id;
-          console.log('Qualification stage ID found:', this.qualificationStageId);
         }
         this.dus = results.dus;
         this.revenueTypes = results.revenueTypes;
@@ -432,35 +315,38 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
           code: country.idd.root + (country.idd.suffixes.length > 0 ? country.idd.suffixes[0] : ''),
           name: `${country.name.common} (${country.idd.root}${country.idd.suffixes.length > 0 ? country.idd.suffixes[0] : ''})`
         }));
-        const customerCountryField = this.customerFields.find(f => f.dataField === 'countryCode');
-        if (customerCountryField && customerCountryField.editorOptions) {
-          customerCountryField.editorOptions.dataSource = this.countryCodes;
-        }
 
+        const customerCountryField = this.customerFields.find(f => f.dataField === 'countryCode');
+        if (customerCountryField?.editorOptions) customerCountryField.editorOptions.dataSource = this.countryCodes;
         const contactCountryField = this.contactFields.find(f => f.dataField === 'countryCode');
-        if (contactCountryField && contactCountryField.editorOptions) {
-          contactCountryField.editorOptions.dataSource = this.countryCodes;
-        }
-        this.customerContactMap = results.customerContactMap;
-        this.customers = Object.keys(results.customerContactMap);
-        this.filteredCustomers = [...this.customers];
+        if (contactCountryField?.editorOptions) contactCountryField.editorOptions.dataSource = this.countryCodes;
+
         this.industryVertical = results.industryVerticals;
         const industryField = this.customerFields.find(field => field.dataField === 'industryVertical');
-        if (industryField && industryField.editorOptions) {
-          industryField.editorOptions.dataSource = this.industryVertical;
-        }
+        if (industryField?.editorOptions) industryField.editorOptions.dataSource = this.industryVertical;
+
+        this.customerContactMap = results.customerContactMap;
+        this.customerDataSource = Object.keys(this.customerContactMap)
+          .map(customerName => ({ name: customerName, info: this.customerContactMap[customerName] }))
+          .filter(customer => customer.info.isHidden !== true)
+          .map(customer => ({
+            name: customer.name,
+            disabled: !customer.info.isActive
+          }));
 
         this.isDropdownDataLoaded = true;
-        console.log('Dropdown data loaded:', this.isDropdownDataLoaded);
+
         if (this.mode === 'edit' && this.dealToEdit && this.isVisible) {
           this.prefillFormForEdit(this.dealToEdit);
+        } else if (this.mode === 'add') {
+          this.resetForm();
         }
 
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading dropdown data:', err);
-        this.isDropdownDataLoaded = true; 
+        this.isDropdownDataLoaded = true;
         this.cdr.detectChanges();
       }
     });
@@ -469,12 +355,9 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   prefillFormForEdit(deal: DealRead) {
     const parseDate = (dateStr: string | null | undefined): Date | null => dateStr ? new Date(dateStr) : null;
 
-    console.log('Prefilling form with deal data:', deal);
-  console.log('Raw deal serviceId:', deal.serviceId, 'serviceLineId:', (deal as any).serviceLineId);
-
     this.newDeal = {
       amount: deal.dealAmount || 0,
-      customerName: deal.customerName || '',
+      customerName: '',
       title: deal.dealName || '',
       account: deal.accountId || null,
       serviceline: deal.serviceId || null,
@@ -497,8 +380,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         if (!this.customFields.some(field => field.dataField === key)) {
           const fieldLabel = key.replace('custom_', '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
           const fieldType = typeof deal.customFields![key] === 'number' ? 'Numerical' :
-                           typeof deal.customFields![key] === 'boolean' ? 'Boolean' :
-                           typeof deal.customFields![key] === 'string' && parseDate(deal.customFields![key]) ? 'Date' : 'Text';
+            typeof deal.customFields![key] === 'boolean' ? 'Boolean' :
+              typeof deal.customFields![key] === 'string' && parseDate(deal.customFields![key]) ? 'Date' : 'Text';
           this.customFields.push({
             fieldLabel: fieldLabel,
             fieldType: fieldType,
@@ -508,25 +391,24 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         }
       });
     }
-    if (this.dealFormInstance && this.dealFormInstance.instance) {
+
+    if (this.dealFormInstance?.instance) {
       this.dealFormInstance.instance.option('formData', this.newDeal);
     }
 
     if (deal.contactName && this.customerContactMap) {
       for (const custName of Object.keys(this.customerContactMap)) {
-        if (this.customerContactMap[custName].includes(deal.contactName)) {
+        const customerInfo = this.customerContactMap[custName];
+        if (customerInfo && customerInfo.contacts.includes(deal.contactName)) {
           this.newDeal.customerName = custName;
           break;
         }
       }
     }
     this.onCustomerChange(this.newDeal.customerName, false);
-    
-    if (deal.serviceId && this.dealFormInstance && this.dealFormInstance.instance) {
-      console.log('Updating serviceline in form with serviceId:', deal.serviceId);
+
+    if (deal.serviceId && this.dealFormInstance?.instance) {
       this.dealFormInstance.instance.updateData('serviceline', deal.serviceId);
-    } else {
-      console.log('Not updating serviceline: serviceId=', deal.serviceId, 'dealFormInstance=', !!this.dealFormInstance); 
     }
 
     this.cdr.detectChanges();
@@ -542,14 +424,14 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.resetForm();
   }
 
-  handleSubmit() {
+ handleSubmit() {
     console.log('handleSubmit called. Form data:', this.newDeal, 'selectedContactDetails:', this.selectedContactDetails);
     if (!this.isFormReady || !this.dealFormInstance || !this.dealFormInstance.instance) {
       let message = "The form is not ready for submission. ";
       if (!this.isFormReady) message += "Popup content might not be fully initialized. ";
       if (!this.dealFormInstance || !this.dealFormInstance.instance) message += "Form component reference is missing. ";
       this.showToast(message + "Please wait a moment. If the problem persists, try closing and reopening the modal.", 'error');
-      
+     
       this.isLoading = false;
       return;
     }
@@ -557,31 +439,35 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     const validationResult = this.dealFormInstance.instance.validate();
     if (!validationResult.isValid) {
       this.showToast('Please correct the validation errors before saving.', 'error');
-      
       return;
     }
+    if (this.isContactLoading) {
+     this.showToast('Please correct the validation errors before saving.', 'error');
+      return;
+    }
+    this.isLoading = true;
 
     if (this.isContactLoading) {
       this.showToast("Contact details are still loading. Please wait a moment.", 'warning');
       this.isLoading = false;
-      
+     
       return;
     }
-
+ 
     this.isLoading = true;
-
+ 
     if (!this.newDeal.customerName) {
       this.showToast("Please select a contact.", 'error');
       this.isLoading = false;
       return;
     }
-
+ 
     if (!this.newDeal.contactName) {
       this.showToast("Please select a contact.", 'error');
       this.isLoading = false;
       return;
     }
-
+ 
     if (!this.newDeal.region || !this.newDeal.stage || !this.newDeal.revenueType || !this.newDeal.department || !this.newDeal.country) {
       const missing = [
         !this.newDeal.region ? "Region" : null,
@@ -594,24 +480,18 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       this.isLoading = false;
       return;
     }
-
+ 
     if (!this.newDeal.startDate || !this.newDeal.closeDate) {
       this.showToast("Starting and Closing dates are required.", 'error');
       this.isLoading = false;
       return;
     }
-
+ 
     if (!this.selectedContactDetails) {
       console.warn('Contact details not loaded. Using fallback values.');
     }
 
-    const contactDetails = this.selectedContactDetails || {
-      email: '',
-      phoneNo: '',
-      designation: '',
-      countryCode: '+91'
-    };
-
+    const contactDetails = this.selectedContactDetails || { email: '', phoneNo: '', designation: '', countryCode: '+91' };
     const customFieldValues: { [key: string]: any } = {};
     this.customFields.forEach(field => {
       customFieldValues[field.dataField] = this.newDeal[field.dataField];
@@ -640,20 +520,18 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         closingDate: this.newDeal.closeDate ? this.newDeal.closeDate.toISOString() : null,
       };
 
-      console.log('Submitting edit deal payload:', dealPayload);
-
       this.dealService.updateDeal(this.dealToEdit.id, dealPayload)
         .pipe(finalize(() => { this.isLoading = false; this.cdr.detectChanges(); }))
         .subscribe({
-          next: (updatedDeal: DealRead) => {
-            this.showToast('Deal updated successfully!', 'success');
+          next: (updatedDeal) => {
+           this.showToast('Deal updated successfully!', 'success');
             this.onSubmitSuccess.emit(updatedDeal);
             this.handleClose();
           },
-          error: (err: Error) => {
+          error: (err) => {
             console.error('Error updating deal:', err);
             this.showToast(err.message || 'Failed to update deal. Please try again.', 'error');
-            this.isLoading = false;
+            this.onSubmitError.emit(err.message || 'Failed to update deal.');
           }
         });
     } else {
@@ -681,20 +559,18 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         customFields: customFieldValues
       };
 
-      console.log('Submitting add deal payload:', dealPayload);
-
       this.dealService.createDeal(dealPayload)
         .pipe(finalize(() => { this.isLoading = false; this.cdr.detectChanges(); }))
         .subscribe({
-          next: (createdDeal: DealRead) => {
+          next: (createdDeal) => {
             this.showToast('Deal created successfully!', 'success');
             this.onSubmitSuccess.emit(createdDeal);
             this.handleClose();
           },
-          error: (err: Error) => {
+          error: (err) => {
             console.error('Error creating deal:', err);
-            this.showToast(err.message || 'Failed to create deal. Please try again.', 'error');
-            this.isLoading = false;
+           this.showToast(err.message || 'Failed to create deal. Please try again.', 'error');
+            this.onSubmitError.emit(err.message || 'Failed to create deal.');
           }
         });
     }
@@ -722,22 +598,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     };
 
     this.customFields.forEach(field => {
-      switch (field.fieldType.toLowerCase()) {
-        case 'text':
-          resetData[field.dataField] = '';
-          break;
-        case 'numerical':
-          resetData[field.dataField] = null;
-          break;
-        case 'boolean':
-          resetData[field.dataField] = false;
-          break;
-        case 'date':
-          resetData[field.dataField] = null;
-          break;
-        default:
-          resetData[field.dataField] = '';
-      }
+      resetData[field.dataField] = field.fieldType.toLowerCase() === 'boolean' ? false : (field.fieldType.toLowerCase() === 'numerical' || field.fieldType.toLowerCase() === 'date' ? null : '');
     });
 
     this.newDeal = resetData;
@@ -745,16 +606,12 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.isContactLoading = false;
     this.setDefaultStage();
 
-    if (this.customers && this.customers.length > 0) {
-      this.filteredCustomers = [...this.customers];
-    } else {
-      this.filteredCustomers = [];
-    }
     this.filteredContacts = [];
     this.isLoading = false;
     this.dealFormInstance?.instance.resetValues();
     this.cdr.detectChanges();
   }
+
   private setDefaultStage() {
     if (this.selectedStage !== null && this.dealStages.some(stage => stage.id === this.selectedStage)) {
       this.newDeal.stage = this.selectedStage;
@@ -762,63 +619,44 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       this.newDeal.stage = this.qualificationStageId;
     }
   }
+
   onCustomerChange(customerName: string, clearContact: boolean = true) {
-    console.log('onCustomerChange called with customerName:', customerName);
     this.newDeal.customerName = customerName;
-    this.filteredContacts = this.customerContactMap[customerName] || [];
+    const customerInfo = this.customerContactMap[customerName];
+    this.filteredContacts = customerInfo ? customerInfo.contacts : [];
     if (clearContact || !this.filteredContacts.includes(this.newDeal.contactName)) {
       this.newDeal.contactName = '';
       this.selectedContactDetails = null;
     }
-    if (this.dealFormInstance && this.dealFormInstance.instance) {
-      this.dealFormInstance.instance.updateData('customerName', this.newDeal.customerName);
-    }
+    this.dealFormInstance?.instance.updateData('customerName', this.newDeal.customerName);
     this.cdr.detectChanges();
   }
 
   onContactChange(contactName: string) {
-    console.log('onContactChange called with contactName:', contactName, 'customerName:', this.newDeal.customerName);
     this.newDeal.contactName = contactName;
     if (contactName && this.newDeal.customerName) {
       this.isContactLoading = true;
       this.companyContactService.getContactByNameAndCustomer(contactName, this.newDeal.customerName)
-        .pipe(
-          finalize(() => {
-            this.isContactLoading = false;
-            this.cdr.detectChanges();
-          })
-        )
+        .pipe(finalize(() => { this.isContactLoading = false; this.cdr.detectChanges(); }))
         .subscribe({
           next: (contact) => {
-            console.log('Contact details fetched:', contact);
             this.selectedContactDetails = contact || null;
-            if (this.dealFormInstance && this.dealFormInstance.instance) {
-              this.dealFormInstance.instance.updateData('contactName', this.newDeal.contactName);
-            }
+            this.dealFormInstance?.instance.updateData('contactName', this.newDeal.contactName);
             this.cdr.detectChanges();
           },
           error: (err) => {
             console.error('Error fetching contact details:', err);
             this.selectedContactDetails = null;
-            this.cdr.detectChanges();
           }
         });
     } else {
-      console.warn('Contact or customer not selected. contactName:', contactName, 'customerName:', this.newDeal.customerName);
       this.selectedContactDetails = null;
       this.isContactLoading = false;
-      this.cdr.detectChanges();
     }
   }
 
   openQuickCreateCustomerModal() {
-    this.customerData = { 
-      customerName: '', 
-      phoneNo: '', 
-      website: '', 
-      industryVertical: null,
-      countryCode: '+91'
-    };
+    this.customerData = { customerName: '', phoneNo: '', website: '', industryVertical: null, countryCode: '+91' };
     this.isCustomerModalVisible = true;
   }
 
@@ -826,15 +664,9 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.isCustomerModalVisible = false;
   }
 
-  addNewCustomer(newCustomerData: { 
-    customerName: string; 
-    phoneNo: string; 
-    website: string; 
-    industryVertical: number | null;
-    countryCode: string;
-  }) {
+  addNewCustomer(newCustomerData: { customerName: string; phoneNo: string; website: string; industryVertical: number | null; countryCode: string; }) {
     const fullPhoneNumber = `${newCustomerData.countryCode} ${newCustomerData.phoneNo}`;
-    const payload: Customer= { 
+    const payload: Customer = {
       customerName: newCustomerData.customerName,
       phoneNo: newCustomerData.phoneNo,
       website: newCustomerData.website,
@@ -849,25 +681,36 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       industryVerticalId: payload.industryVerticalId || null,
       createdBy: payload.createdBy
     };
+ 
     this.isLoading = true;
-    this.companyContactService.addCompany(backendPayload).pipe(
-      finalize(() => {
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      })
-    ).subscribe({
-      next: () => {
-        this.showToast('Customer added successfully!', 'success');
-        this.loadDropdownData();
-        this.newDeal.customerName = payload.customerName;
-        this.onCustomerChange(payload.customerName);
-        this.closeQuickCreateCustomerModal();
-      },
-      error: (err) => {
-        console.error('Customer creation failed:', err);
-        this.showToast(err.message || 'Failed to create customer.', 'error');
-      }
-    });
+    this.companyContactService.addCompany(backendPayload)
+      .pipe(finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }))
+      .subscribe({
+        next: (newlyCreatedCustomer) => { 
+          this.showToast('Customer added successfully!', 'success');
+          this.customerContactMap[payload.customerName] = {
+            contacts: [], 
+            isActive: true,
+            isHidden: false
+          };
+         
+          this.customerDataSource = [
+            ...this.customerDataSource,
+            { name: payload.customerName, disabled: false }
+          ];
+          this.newDeal.customerName = payload.customerName;
+          this.onCustomerChange(payload.customerName);
+         
+          this.closeQuickCreateCustomerModal();
+        },
+        error: (err) => {
+          console.error('Customer creation failed:', err);
+          this.showToast('Failed to create customer. Please try again.', 'error');
+        }
+      });
   }
 
   openQuickCreateContactModal() {
@@ -875,35 +718,18 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       this.showToast('Please select a customer first.', 'error');
       return;
     }
-    this.contactData = { 
-      FirstName: '', 
-      LastName: '', 
-      Designation: '', 
-      customerName: this.newDeal.customerName, 
-      Email: '', 
-      phoneNo: '',
-      countryCode: '+91'
-    };
+    this.contactData = { FirstName: '', LastName: '', Designation: '', customerName: this.newDeal.customerName, Email: '', phoneNo: '', countryCode: '+91' };
     this.isContactModalVisible = true;
-    this.cdr.detectChanges();
   }
 
   closeQuickCreateContactModal() {
     this.isContactModalVisible = false;
-    this.contactData = { 
-      FirstName: '', 
-      LastName: '', 
-      Designation: '', 
-      customerName: '', 
-      Email: '', 
-      phoneNo: '',
-      countryCode: '+91'
-    };
+    this.contactData = { FirstName: '', LastName: '', Designation: '', customerName: '', Email: '', phoneNo: '', countryCode: '+91' };
   }
 
-  addNewContact(newContactData: QuickContactFormData) {
+   addNewContact(newContactData: QuickContactFormData) {
     const fullPhoneNumber = `${newContactData.countryCode} ${newContactData.phoneNo}`;
-    const payload: Contact = { 
+    const payload: Contact = {
       firstName: newContactData.FirstName,
       lastName: newContactData.LastName || '',
       designation: newContactData.Designation,
@@ -922,31 +748,32 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       customerName: payload.customerName,
       createdBy: payload.createdBy
     };
+ 
     this.isLoading = true;
-    this.companyContactService.addContact(backendPayload).pipe(
-      finalize(() => {
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      })
-    ).subscribe({
-      next: () => {
-        this.showToast('Contact added successfully!', 'success');
-        this.loadDropdownData();
-        const fullName = `${payload.firstName} ${payload.lastName}`.trim();
-        setTimeout(() => {
+    this.companyContactService.addContact(backendPayload)
+      .pipe(finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges(); 
+      }))
+      .subscribe({
+        next: (newlyCreatedContact) => { 
+          this.showToast('Contact added successfully!', 'success');
+          const fullName = `${payload.firstName} ${payload.lastName}`.trim();
+          if (this.customerContactMap[this.newDeal.customerName]) {
+            this.customerContactMap[this.newDeal.customerName].contacts.push(fullName);
+            this.filteredContacts = [...this.customerContactMap[this.newDeal.customerName].contacts];
+          }
           this.newDeal.contactName = fullName;
-          this.onCustomerChange(this.newDeal.customerName, false);
           this.onContactChange(fullName);
-          this.cdr.detectChanges();
-        }, 500);
-        this.closeQuickCreateContactModal();
-      },
-      error: (err) => {
-        console.error('Contact creation failed:', err);
-        this.showToast(err.message || 'Failed to create contact.', 'error');
-      }
-    });
+          this.closeQuickCreateContactModal();
+        },
+        error: (err) => {
+          console.error('Contact creation failed:', err);
+          this.showToast('Failed to create contact. Please try again.', 'error');
+        }
+      });
   }
+ 
 
   openCustomizeFieldModal() {
     this.customizeFieldFormData = {};
@@ -956,9 +783,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   closeCustomizeFieldModal() {
     this.isCustomizeFieldModalVisible = false;
   }
-showForm = true;
+
   addCustomField(newField: any) {
-    console.log('Custom Field Added:', newField);
     const dataField = `custom_${newField.fieldLabel.toLowerCase().replace(/\s+/g, '_')}`;
     this.customFields.push({
       fieldLabel: newField.fieldLabel,
@@ -966,60 +792,31 @@ showForm = true;
       dataField: dataField,
       required: false,
     });
-    this.newDeal[dataField] = '';
-    console.log("Custom field array", this.customFields);
-    switch (newField.fieldType.toLowerCase()) {
-      case 'text':
-        this.newDeal[dataField] = '';
-        break;
-      case 'numerical':
-        this.newDeal[dataField] = null;
-        break;
-      case 'boolean':
-        this.newDeal[dataField] = false;
-        break;
-      case 'date':
-        this.newDeal[dataField] = null;
-        break;
-      default:
-        this.newDeal[dataField] = '';
-    }
-    this.showForm = false;
+    this.newDeal[dataField] = newField.fieldType.toLowerCase() === 'boolean' ? false : (newField.fieldType.toLowerCase() === 'numerical' || newField.fieldType.toLowerCase() === 'date' ? null : '');
     this.cdr.detectChanges();
-    this.showForm = true;
-    this.cdr.detectChanges();
-    console.log("Custom field array", this.customFields);
-    this.showToast('Custom field added successfully!', 'success');
     this.closeCustomizeFieldModal();
   }
 
   getEditorType(fieldType: string): string {
     switch (fieldType.toLowerCase()) {
-      case 'text':
-        return 'dxTextBox';
-      case 'numerical':
-        return 'dxNumberBox';
-      case 'boolean':
-        return 'dxCheckBox';
-      case 'date':
-        return 'dxDateBox';
-      default:
-        return 'dxTextBox';
+      case 'text': return 'dxTextBox';
+      case 'numerical': return 'dxNumberBox';
+      case 'boolean': return 'dxCheckBox';
+      case 'date': return 'dxDateBox';
+      default: return 'dxTextBox';
     }
   }
 
   getEditorOptions(fieldType: string): any {
     switch (fieldType.toLowerCase()) {
-      case 'text':
-        return { placeholder: `Enter ${fieldType}` };
-      case 'numerical':
-        return { showSpinButtons: true };
-      case 'boolean':
-        return {};
-      case 'date':
-        return { displayFormat: 'dd/MMM/yyyy' };
-      default:
-        return {};
+      case 'text': return { placeholder: `Enter ${fieldType}` };
+      case 'numerical': return { showSpinButtons: true };
+      case 'boolean': return {};
+      case 'date': return { displayFormat: 'dd/MMM/yyyy' };
+      default: return {};
     }
+  }
+  trackByDataField(index: number, field: { dataField: string }): string {
+    return field.dataField;
   }
 }

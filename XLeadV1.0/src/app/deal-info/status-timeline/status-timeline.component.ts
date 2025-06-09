@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Input, Output, HostListener } from '@angular/core';
+import { Component, EventEmitter, Input, Output, HostListener, ChangeDetectorRef, OnChanges, SimpleChanges, OnInit } from '@angular/core';
  
 @Component({
   selector: 'app-status-timeline',
   templateUrl: './status-timeline.component.html',
   styleUrls: ['./status-timeline.component.css']
 })
-export class StatusTimelineComponent {
+export class StatusTimelineComponent implements OnChanges, OnInit {
   @Input() currentStage: string = '';
   @Output() stageChange = new EventEmitter<string>();
  
@@ -19,9 +19,72 @@ export class StatusTimelineComponent {
   ];
  
   isMobile: boolean = false;
+  private isInitialized: boolean = false;
  
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     this.checkScreenSize();
+  }
+ 
+  ngOnInit(): void {
+    this.isInitialized = true;
+    // Force initial detection
+    setTimeout(() => {
+      console.log('Initial stage on load:', this.currentStage);
+      this.cdr.detectChanges();
+    }, 0);
+  }
+ 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['currentStage']) {
+      console.log('Stage changed from', changes['currentStage'].previousValue, 'to:', changes['currentStage'].currentValue);
+     
+      // Normalize the stage name to handle different formats
+      if (this.currentStage) {
+        this.currentStage = this.normalizeStage(this.currentStage);
+      }
+     
+      // Force change detection
+      if (this.isInitialized) {
+        this.cdr.detectChanges();
+      }
+    }
+  }
+ 
+  private normalizeStage(stage: string): string {
+    if (!stage) return 'Qualification'; // Default stage
+   
+    // Handle different possible stage name formats
+    const stageMap: { [key: string]: string } = {
+      'qualification': 'Qualification',
+      'need analysis': 'Need Analysis',
+      'needanalysis': 'Need Analysis',
+      'proposal': 'Proposal/Price Quote',
+      'proposal/price quote': 'Proposal/Price Quote',
+      'proposalpricequote': 'Proposal/Price Quote',
+      'negotiation': 'Negotiation/Review',
+      'negotiation/review': 'Negotiation/Review',
+      'negotiationreview': 'Negotiation/Review',
+      'closed won': 'Closed Won',
+      'closedwon': 'Closed Won',
+      'closed lost': 'Closed Lost',
+      'closedlost': 'Closed Lost'
+    };
+   
+    const normalizedInput = stage.toLowerCase().trim();
+   
+    // Check if we have a mapping
+    for (const [key, value] of Object.entries(stageMap)) {
+      if (normalizedInput === key || normalizedInput.includes(key)) {
+        return value;
+      }
+    }
+   
+    // Check if the stage matches any of our stages (case-insensitive)
+    const matchedStage = this.stages.find(s =>
+      s.toLowerCase() === normalizedInput
+    );
+   
+    return matchedStage || stage; // Return original if no match found
   }
  
   @HostListener('window:resize', ['$event'])
@@ -34,11 +97,15 @@ export class StatusTimelineComponent {
   }
  
   onStageClick(stage: string) {
-    this.stageChange.emit(stage);
+    if (stage !== this.currentStage) {
+      console.log('Emitting stage change:', stage);
+      this.stageChange.emit(stage);
+    }
   }
  
   getCurrentStageIndex(): number {
-    return this.stages.indexOf(this.currentStage);
+    const index = this.stages.findIndex(s => s === this.currentStage);
+    return index >= 0 ? index : 0; // Default to first stage if not found
   }
  
   isStageCompleted(index: number): boolean {
@@ -63,3 +130,4 @@ export class StatusTimelineComponent {
     return this.isStageCompleted(index);
   }
 }
+ 

@@ -4,8 +4,8 @@
   <div class="timeline-wrapper">
     <app-status-timeline
       [currentStage]="deal?.stage"
-      (stageChange)="onStageChange($event)"
-    ></app-status-timeline>
+      (stageChange)="onStageChange($event)">
+    </app-status-timeline>
   </div>
  
   <!-- Mobile Tabs -->
@@ -39,12 +39,9 @@
           ></dx-tabs>
  
           <app-history-timeline
-            *ngIf="desktopSelectedTabId === 'history'"
-            [history]="history"
-          ></app-history-timeline>
-          <app-doc-upload
-            *ngIf="desktopSelectedTabId === 'documents'"
-          ></app-doc-upload>
+            *ngIf="desktopSelectedTabId === 'history' && dealId" [history]="history"></app-history-timeline>
+          <app-doc-upload *ngIf="desktopSelectedTabId === 'documents' && dealId" [dealId]="dealId"></app-doc-upload>
+       <app-notes-tab *ngIf="desktopSelectedTabId === 'notes' && dealId"  [dealId]="dealId"></app-notes-tab>
         </div>
       </div>
  
@@ -63,12 +60,15 @@
               (descriptionChange)="onDescriptionChange($event)"
             ></app-deal-info-card>
           </div>
-          <div *ngIf="mobileSelectedTabId === 'history'" class="tab-section">
+          <div *ngIf="mobileSelectedTabId === 'history' && dealId" class="tab-section">
             <app-history-timeline [history]="history"></app-history-timeline>
           </div>
-          <div *ngIf="mobileSelectedTabId === 'documents'" class="tab-section">
-            <app-doc-upload></app-doc-upload>
+          <div *ngIf="mobileSelectedTabId === 'documents' && dealId" class="tab-section">
+            <app-doc-upload [dealId]="dealId"></app-doc-upload>
           </div>
+        <div *ngIf="mobileSelectedTabId === 'notes' && dealId" class="tab-section">
+  <app-notes-tab [dealId]="dealId"></app-notes-tab>
+</div>
         </div>
       </div>
     </div>

@@ -3,151 +3,170 @@
   <div *ngIf="!isMobile" class="desktop-view">
     <div class="table-scroll-container">
       <div class="table-wrapper">
-        <dx-data-grid
-          #dataGrid
-          [dataSource]="data"
-          [columns]="headers"
-          [keyExpr]="'id'"
-          [allowColumnResizing]="true"
-          [showBorders]="true"
-          [rowAlternationEnabled]="true"
-          [hoverStateEnabled]="true"
-          [class]="classNames"
-          (onSelectionChanged)="handleSelectionChanged($event)"
-          [columnAutoWidth]="true"
-          [wordWrapEnabled]="false"
-        >
-          <dxo-selection
-            mode="multiple"
-            selectAllMode="page"
-            showCheckBoxesMode="always"
-          ></dxo-selection>
-          <dxo-paging [pageSize]="pageSize"></dxo-paging>
-          <dxo-pager
-            [showPageSizeSelector]="true"
-            [allowedPageSizes]="allowedPageSizes"
-            [showInfo]="true"
-            [showNavigationButtons]="true"
-          ></dxo-pager>
-          <dxo-sorting mode="multiple"></dxo-sorting>
-          <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
-          <dxo-filter-row [visible]="showFilterRow"></dxo-filter-row>
-          <dxo-filter-panel [visible]="showFilterPanel"></dxo-filter-panel>
-          <dxo-search-panel [visible]="showSearchPanel"></dxo-search-panel>
-          <dxo-column-chooser [enabled]="false"></dxo-column-chooser>
-          <dxo-export
-            [enabled]="true"
-            [allowExportSelectedData]="true"
-            (onExporting)="onExporting($event)"
-          ></dxo-export>
-          <dxo-scrolling
-            mode="standard"
-            showScrollbar="always"
-            useNative="true"
-            scrollByContent="true"
-            scrollByThumb="true"
-          ></dxo-scrolling>
-          <dxo-toolbar>
-            <dxi-item location="before" template="selectionInfoTemplate"></dxi-item>
-            <dxi-item location="after">
-              <dx-button
-                icon="columnchooser"
-                hint="Show Column Chooser"
-                (click)="toggleColumnChooser($event)"
-              ></dx-button>
-            </dxi-item>
-            <dxi-item location="after">
-              <dx-button
-                icon="export"
-                text="Export"
-                hint="Export Data"
-                (click)="onExportButtonClick($event)"
-              ></dx-button>
-            </dxi-item>
-          </dxo-toolbar>
-          <div *dxTemplate="let data of 'selectionInfoTemplate'">
-            <ng-container *ngIf="selectedRowKeys.length > 0">
-              <div class="selection-info">
-                {{ selectedRowKeys.length }} row(s) selected
+        <app-table-outline>
+          <dx-data-grid
+            #dataGrid
+            [dataSource]="data"
+            [columns]="headers"
+            [keyExpr]="'id'"
+            [allowColumnResizing]="true"
+            [showBorders]="true"
+            [rowAlternationEnabled]="true"
+            [hoverStateEnabled]="true"
+            [class]="classNames"
+            (onSelectionChanged)="handleSelectionChanged($event)"
+            (onRowUpdating)="handleRowUpdating($event)"
+            (onRowRemoving)="handleRowRemoving($event)"
+            [columnAutoWidth]="true"
+            [wordWrapEnabled]="false"
+          >
+            <!-- Editing Configuration -->
+            <dxo-editing
+              [allowUpdating]="allowEditing"
+              [allowDeleting]="allowEditing"
+              mode="row"
+              [useIcons]="true"
+            >
+            </dxo-editing>
+ 
+            <dxo-selection
+              mode="multiple"
+              selectAllMode="page"
+              showCheckBoxesMode="always"
+            ></dxo-selection>
+            <dxo-paging [pageSize]="pageSize"></dxo-paging>
+            <dxo-pager
+              [showPageSizeSelector]="true"
+              [allowedPageSizes]="allowedPageSizes"
+              [showInfo]="true"
+              [showNavigationButtons]="true"
+            ></dxo-pager>
+            <dxo-sorting mode="multiple"></dxo-sorting>
+            <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
+            <dxo-filter-row [visible]="showFilterRow"></dxo-filter-row>
+            <dxo-filter-panel [visible]="showFilterPanel"></dxo-filter-panel>
+            <dxo-search-panel [visible]="showSearchPanel"></dxo-search-panel>
+            <dxo-column-chooser [enabled]="false"></dxo-column-chooser>
+            <dxo-export
+              [enabled]="true"
+              [allowExportSelectedData]="true"
+              (onExporting)="onExporting($event)"
+            ></dxo-export>
+            <dxo-scrolling
+              mode="standard"
+              showScrollbar="always"
+              useNative="true"
+              scrollByContent="true"
+              scrollByThumb="true"
+            ></dxo-scrolling>
+            <dxo-toolbar>
+              <dxi-item location="before" template="selectionInfoTemplate"></dxi-item>
+              <dxi-item location="after">
+                <dx-button
+                  icon="columnchooser"
+                  hint="Show Column Chooser"
+                  (click)="toggleColumnChooser($event)"
+                  #columnChooserButton
+                ></dx-button>
+              </dxi-item>
+              <dxi-item location="after">
+                <dx-button
+                  icon="export"
+                  text="Export"
+                  hint="Export Data"
+                  (click)="onExportButtonClick($event)"
+                  #exportButton
+                ></dx-button>
+              </dxi-item>
+            </dxo-toolbar>
+            <div *dxTemplate="let data of 'selectionInfoTemplate'">
+              <ng-container *ngIf="selectedRowKeys.length > 0">
+                <div class="selection-info">
+                  {{ selectedRowKeys.length }} row(s) selected
+                </div>
+              </ng-container>
+            </div>
+            <div *dxTemplate="let header of 'headerCellTemplate'">
+              <div class="header-cell">
+                <span class="header-text">{{ header.column.caption }}</span>
+                <span
+                  *ngIf="header.column.allowSorting !== false"
+                  class="sort-icon"
+                  [ngClass]="getSortIconClass(header.column)"
+                  (click)="toggleSort(header.column)"
+                >{{ getSortIcon(header.column) }}</span>
               </div>
-            </ng-container>
-          </div>
-          <div *dxTemplate="let header of 'headerCellTemplate'">
-            <div class="header-cell">
-              <span class="header-text">{{ header.column.caption }}</span>
-              <span
-                *ngIf="header.column.allowSorting !== false"
-                class="sort-icon"
-                [ngClass]="getSortIconClass(header.column)"
-                (click)="toggleSort(header.column)"
-              >{{ getSortIcon(header.column) }}</span>
+            </div>
+            <div *dxTemplate="let cell of 'ownerCellTemplate'">
+              <ng-container *ngIf="useOwnerTemplate">
+                <div class="owner-cell">
+                  <div
+                    class="owner-avatar"
+                    [style.backgroundColor]="getOwnerColor(cell.data[ownerField])"
+                  >{{ getOwnerInitial(cell.data[ownerField]) }}</div>
+                  <span class="owner-name">{{ cell.data[ownerField] }}</span>
+                </div>
+              </ng-container>
+            </div>
+          </dx-data-grid>
+ 
+          <!-- Column Chooser Dropdown -->
+          <div
+            class="custom-dropdown column-chooser-dropdown"
+            *ngIf="showCustomColumnChooser"
+            (click)="onColumnChooserDropdownClick($event)"
+            #columnChooserDropdown
+          >
+            <div class="dropdown-header">
+              Choose Columns
+              <span class="close-button" (click)="closeDropdowns()">×</span>
+            </div>
+            <div class="dropdown-item select-all-item">
+              <label>
+                <input
+                  type="checkbox"
+                  [checked]="areAllColumnsSelected()"
+                  [indeterminate]="areSomeColumnsSelected()"
+                  (change)="toggleAllColumns()"
+                />
+                Select All
+              </label>
+            </div>
+            <div class="dropdown-item" *ngFor="let header of headers">
+              <label>
+                <input
+                  type="checkbox"
+                  [checked]="columnVisibility[header.dataField]"
+                  (change)="toggleColumnVisibility(header.dataField)"
+                />
+                {{ header.caption }}
+              </label>
             </div>
           </div>
-          <div *dxTemplate="let cell of 'ownerCellTemplate'">
-            <ng-container *ngIf="useOwnerTemplate">
-              <div class="owner-cell">
-                <div
-                  class="owner-avatar"
-                  [style.backgroundColor]="getOwnerColor(cell.data[ownerField])"
-                >{{ getOwnerInitial(cell.data[ownerField]) }}</div>
-                <span class="owner-name">{{ cell.data[ownerField] }}</span>
-              </div>
-            </ng-container>
-          </div>
-        </dx-data-grid>
  
-        <!-- Column Chooser Dropdown -->
-        <div
-          class="custom-dropdown column-chooser-dropdown"
-          *ngIf="showCustomColumnChooser"
-        >
-          <div class="dropdown-header">
-            Choose Columns
-            <span class="close-button" (click)="closeDropdowns()">×</span>
+          <!-- Export Options Dropdown -->
+          <div
+            class="custom-dropdown export-options-dropdown"
+            *ngIf="showExportModal"
+            (click)="onExportOptionsDropdownClick($event)"
+            #exportOptionsDropdown
+          >
+            <div class="dropdown-header">
+              Export Options
+              <span class="close-button" (click)="closeDropdowns()">×</span>
+            </div>
+            <div class="dropdown-item">
+              <button class="export-button excel" (click)="exportData('excel')">
+                <span class="dx-icon dx-icon-exportxlsx"></span> Export as XLSX
+              </button>
+            </div>
+            <div class="dropdown-item">
+              <button class="export-button csv" (click)="exportData('csv')">
+                <span class="dx-icon dx-icon-doc"></span> Export as CSV
+              </button>
+            </div>
           </div>
-          <div class="dropdown-item select-all-item">
-            <label>
-              <input
-                type="checkbox"
-                [checked]="areAllColumnsSelected()"
-                [indeterminate]="areSomeColumnsSelected()"
-                (change)="toggleAllColumns()"
-              />
-              Select All
-            </label>
-          </div>
-          <div class="dropdown-item" *ngFor="let header of headers">
-            <label>
-              <input
-                type="checkbox"
-                [checked]="columnVisibility[header.dataField]"
-                (change)="toggleColumnVisibility(header.dataField)"
-              />
-              {{ header.caption }}
-            </label>
-          </div>
-        </div>
- 
-        <!-- Export Options Dropdown -->
-        <div
-          class="custom-dropdown export-options-dropdown"
-          *ngIf="showExportModal"
-        >
-          <div class="dropdown-header">
-            Export Options
-            <span class="close-button" (click)="closeDropdowns()">×</span>
-          </div>
-          <div class="dropdown-item">
-            <button class="export-button excel" (click)="exportData('excel')">
-              <span class="dx-icon dx-icon-exportxlsx"></span> Export as XLSX
-            </button>
-          </div>
-          <div class="dropdown-item">
-            <button class="export-button csv" (click)="exportData('csv')">
-              <span class="dx-icon dx-icon-doc"></span> Export as CSV
-            </button>
-          </div>
-        </div>
+        </app-table-outline>
       </div>
     </div>
   </div>
@@ -185,19 +204,16 @@
         <button class="mobile-action-btn sort-btn" (click)="showSortOptions = !showSortOptions">
           <i class="fas fa-sort"></i> Sort
         </button>
-        <button class="mobile-action-btn" (click)="toggleMobileFilterOptions()">
-          <i class="fas fa-filter"></i> Filter
-        </button>
         <button class="mobile-action-btn" (click)="toggleMobileExportOptions()">
           <i class="fas fa-download"></i> Export
         </button>
       </div>
     </div>
- 
+   
     <!-- Mobile Column Chooser -->
     <div *ngIf="showColumnChooserMobile" class="mobile-column-chooser">
       <div class="column-chooser-header">
-        <div class="column-chooser-title">Choose Columns for Export</div>
+        <div class="column-chooser-title">Choose Fields</div>
         <button class="column-chooser-close" (click)="toggleColumnChooserMobile()">×</button>
       </div>
       <div class="column-chooser-actions">
@@ -216,7 +232,7 @@
           <label>
             <input
               type="checkbox"
-              [checked]="exportColumnVisibility[header.dataField]"
+              [checked]="columnVisibility[header.dataField]"
               (change)="toggleColumnVisibility(header.dataField)"
             />
             {{ header.caption }}
@@ -224,36 +240,13 @@
         </div>
       </div>
     </div>
- 
-    <!-- Mobile Filter Options -->
-    <div *ngIf="showMobileFilterOptions" class="mobile-filter-options">
-      <div class="filter-header">
-        <div class="filter-title">Filter by</div>
-        <button class="filter-close" (click)="toggleMobileFilterOptions()">×</button>
-      </div>
-      <div class="filter-actions">
-  <div *ngIf="isMobile && showMobileFilterOptions" class="mobile-filter-options">
-  <dx-filter-builder
-    [fields]="headers"
-    [(value)]="filterBuilderValue"
-    (onValueChanged)="onFilterBuilderValueChanged($event)"
-  >
-  </dx-filter-builder>
- 
-</div>
-        <div class="filter-actions-footer">
-          <button class="filter-action-btn clear" (click)="clearMobileFilters()">Clear Filters</button>
-          <button class="filter-action-btn apply" (click)="applyMobileFilters()">Apply Filters</button>
-        </div>
-      </div>
-    </div>
- 
+   
     <!-- Mobile Sort Options -->
     <div *ngIf="showSortOptions" class="mobile-sort-options">
       <div class="sort-header">Sort by:</div>
       <div class="sort-options">
         <ng-container *ngFor="let header of headers">
-          <div *ngIf="header.allowSorting !== false"
+          <div *ngIf="columnVisibility[header.dataField] && header.allowSorting !== false"
                class="sort-option"
                (click)="toggleSortMobile(header.dataField)">
             {{ header.caption }} <span class="sort-indicator">{{ getSortIndicator(header.dataField) }}</span>
@@ -261,7 +254,7 @@
         </ng-container>
       </div>
     </div>
- 
+   
     <!-- Mobile Export Options -->
     <div *ngIf="showMobileExportOptions" class="mobile-export-options">
       <div class="export-header">
@@ -277,15 +270,9 @@
         </button>
       </div>
     </div>
- 
+   
     <!-- Mobile Card List -->
     <div class="mobile-card-list">
-      <div *ngIf="!data || data.length === 0" class="no-data-message">
-        No data provided to display.
-      </div>
-      <div *ngIf="data.length > 0 && paginatedData.length === 0" class="no-data-message">
-        No data matches the current filters or search query.
-      </div>
       <div *ngFor="let item of paginatedData" class="contact-card" (click)="openDetailsModal(item)">
         <div class="card-selection" (click)="$event.stopPropagation()">
           <input type="checkbox"
@@ -309,7 +296,7 @@
         </div>
       </div>
     </div>
- 
+   
     <!-- Mobile Pagination -->
     <div class="mobile-pagination">
       <div class="pagination-controls">
@@ -334,38 +321,78 @@
       <div class="modal-overlay" (click)="closeDetailsModal()"></div>
       <div class="modal-container">
         <div class="modal-header">
-          <h2>{{ modalHeading }}</h2>
+          <h2>{{ isEditingMobile ? 'Edit ' + entityType : modalHeading }}</h2>
           <button class="close-modal-btn" (click)="closeDetailsModal()">×</button>
         </div>
         <div class="modal-body">
-          <div *ngFor="let header of headers" class="detail-item" [hidden]="!columnVisibility[header.dataField]">
-            <div class="detail-label">{{ header.caption }}</div>
-            <div class="detail-value">
-              <ng-container *ngIf="header.cellTemplate !== 'ownerCellTemplate'">
-                {{ getDisplayValue(selectedContact, header.dataField) }}
-              </ng-container>
-              <div *ngIf="header.cellTemplate === 'ownerCellTemplate' && useOwnerTemplate" class="owner-cell">
-                <div class="owner-avatar" [style.backgroundColor]="getOwnerColor(selectedContact[ownerField])">
-                  {{ getOwnerInitial(selectedContact[ownerField]) }}
+          <!-- View Mode -->
+          <ng-container *ngIf="!isEditingMobile && selectedContact">
+            <div *ngFor="let header of headers" class="detail-item" [hidden]="!columnVisibility[header.dataField]">
+              <div class="detail-label">{{ header.caption }}</div>
+              <div class="detail-value">
+                <ng-container *ngIf="header.cellTemplate !== 'ownerCellTemplate'">
+                  {{ selectedContact[header.dataField] || 'N/A' }}
+                </ng-container>
+                <div *ngIf="header.cellTemplate === 'ownerCellTemplate' && useOwnerTemplate" class="owner-cell">
+                  <div class="owner-avatar" [style.backgroundColor]="getOwnerColor(selectedContact[ownerField])">
+                    {{ getOwnerInitial(selectedContact[ownerField]) }}
+                  </div>
+                  <span class="owner-name">{{ selectedContact[ownerField] }}</span>
                 </div>
-                <span class="owner-name">{{ selectedContact[ownerField] }}</span>
               </div>
             </div>
-          </div>
+          </ng-container>
+ 
+          <!-- Edit Mode -->
+          <ng-container *ngIf="isEditingMobile && editedContact">
+      <div *ngFor="let header of headers" class="detail-item" [hidden]="!columnVisibility[header.dataField]">
+        <div class="detail-label">{{ header.caption }}</div>
+        <div class="detail-value">
+
+          <ng-container *ngIf="getLookupDataSource(header.dataField) && header.allowEditing !== false">
+        <select class="mobile-edit-select" [(ngModel)]="editedContact[header.dataField]">
+          <option *ngFor="let item of getLookupDataSource(header.dataField)" [ngValue]="item[getLookupValueExpr(header.dataField)]">
+            {{ item[getLookupDisplayExpr(header.dataField)] }}
+          </option>
+        </select>
+      </ng-container>
+          <ng-container *ngIf="header.dataField === 'status' && header.allowEditing !== false">
+            <select class="mobile-edit-select" [(ngModel)]="editedContact.status">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </ng-container>
+              <ng-container *ngIf="header.dataField !== 'status' && !getLookupDataSource(header.dataField) && header.allowEditing !== false">
+            <input 
+              type="text" 
+              class="mobile-edit-input"
+              [(ngModel)]="editedContact[header.dataField]">
+            </ng-container>
+              
+                <span *ngIf="header.allowEditing === false">{{ editedContact[header.dataField] || 'N/A' }}</span>
+              </div>
+            </div>
+          </ng-container>
         </div>
-        <div class="modal-actions">
-          <button class="modal-action-btn">
-            <i class="fas fa-edit"></i> Edit
-          </button>
-          <button class="modal-action-btn">
-            <i class="fas fa-trash"></i> Delete
-          </button>
-          <button class="modal-action-btn">
-            <i class="fas fa-phone"></i> Call
-          </button>
-          <button class="modal-action-btn">
-            <i class="fas fa-envelope"></i> Email
-          </button>
+        <div class="modal-actions" *ngIf="allowEditing">
+          <!-- View Mode Actions -->
+          <ng-container *ngIf="!isEditingMobile">
+            <button class="modal-action-btn" (click)="editMobileContact()">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+            <button class="modal-action-btn delete" (click)="deleteMobileContact()">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </ng-container>
+          <!-- Edit Mode Actions -->
+          <ng-container *ngIf="isEditingMobile">
+             <button class="modal-action-btn save" (click)="saveMobileContact()">
+              <i class="fas fa-save"></i> Save
+            </button>
+            <button class="modal-action-btn cancel" (click)="cancelMobileEdit()">
+              <i class="fas fa-times"></i> Cancel
+            </button>
+          </ng-container>
         </div>
       </div>
     </div>
