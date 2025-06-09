@@ -82,14 +82,14 @@
           (onEdit)="onEditDeal($event, stage.name)">
         </app-dealbody>
       </div>
-
-      <div *ngIf="stage.hover && !stage.collapsed">
+<div *ngIf="!stage.collapsed">
         <app-dealfooter
           [buttons]="dealButton"
           [stageId]="stage.id"
           (buttonClick)="onButtonClick($event)">
         </app-dealfooter>
       </div>
+ 
     </div>
   </div>
 

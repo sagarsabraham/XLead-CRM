@@ -11,5 +11,5 @@
       <div class="deal-content" appHighlight [appHighlightProbability]="deal.probability">{{deal.probability}}</div>
       <div class="deal-content">{{deal.region}}</div>
     </div>
-    <span class="dx-icon-edit edit-icon" *ngIf="hover" (click)="onEditClick($event)"></span>
+    <span class="dx-icon-edit edit-icon" (click)="onEditClick($event)"></span>
 </div>
