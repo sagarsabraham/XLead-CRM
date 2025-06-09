@@ -324,7 +324,6 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
         const industryField = this.customerFields.find(field => field.dataField === 'industryVertical');
         if (industryField?.editorOptions) industryField.editorOptions.dataSource = this.industryVertical;
 
-        // Process customer data
         this.customerContactMap = results.customerContactMap;
         this.customerDataSource = Object.keys(this.customerContactMap)
           .map(customerName => ({ name: customerName, info: this.customerContactMap[customerName] }))
@@ -680,21 +679,34 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       industryVerticalId: payload.industryVerticalId || null,
       createdBy: payload.createdBy
     };
+ 
     this.isLoading = true;
     this.companyContactService.addCompany(backendPayload)
-      .pipe(finalize(() => { this.isLoading = false; }))
+      .pipe(finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }))
       .subscribe({
-        next: () => {
+        next: (newlyCreatedCustomer) => { 
           this.showToast('Customer added successfully!', 'success');
-          this.loadAllData(); // Reload all data to get the new customer
+          this.customerContactMap[payload.customerName] = {
+            contacts: [], 
+            isActive: true,
+            isHidden: false
+          };
+         
+          this.customerDataSource = [
+            ...this.customerDataSource,
+            { name: payload.customerName, disabled: false }
+          ];
           this.newDeal.customerName = payload.customerName;
           this.onCustomerChange(payload.customerName);
+         
           this.closeQuickCreateCustomerModal();
         },
         error: (err) => {
           console.error('Customer creation failed:', err);
-          this.showToast(err.message || 'Failed to create customer.', 'error');
- 
+          this.showToast('Failed to create customer. Please try again.', 'error');
         }
       });
   }
@@ -713,7 +725,7 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
     this.contactData = { FirstName: '', LastName: '', Designation: '', customerName: '', Email: '', phoneNo: '', countryCode: '+91' };
   }
 
-  addNewContact(newContactData: QuickContactFormData) {
+   addNewContact(newContactData: QuickContactFormData) {
     const fullPhoneNumber = `${newContactData.countryCode} ${newContactData.phoneNo}`;
     const payload: Contact = {
       firstName: newContactData.FirstName,
@@ -734,27 +746,32 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       customerName: payload.customerName,
       createdBy: payload.createdBy
     };
+ 
     this.isLoading = true;
     this.companyContactService.addContact(backendPayload)
-      .pipe(finalize(() => { this.isLoading = false; }))
+      .pipe(finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges(); 
+      }))
       .subscribe({
-        next: () => {
+        next: (newlyCreatedContact) => { 
           this.showToast('Contact added successfully!', 'success');
-          this.loadAllData(); // Reload all data to get the new contact
           const fullName = `${payload.firstName} ${payload.lastName}`.trim();
-          setTimeout(() => {
-            this.newDeal.contactName = fullName;
-            this.onCustomerChange(this.newDeal.customerName, false);
-            this.onContactChange(fullName);
-          }, 500);
+          if (this.customerContactMap[this.newDeal.customerName]) {
+            this.customerContactMap[this.newDeal.customerName].contacts.push(fullName);
+            this.filteredContacts = [...this.customerContactMap[this.newDeal.customerName].contacts];
+          }
+          this.newDeal.contactName = fullName;
+          this.onContactChange(fullName);
           this.closeQuickCreateContactModal();
         },
         error: (err) => {
           console.error('Contact creation failed:', err);
-            this.showToast(err.message || 'Failed to create contact.', 'error');
+          this.showToast('Failed to create contact. Please try again.', 'error');
         }
       });
   }
+ 
 
   openCustomizeFieldModal() {
     this.customizeFieldFormData = {};

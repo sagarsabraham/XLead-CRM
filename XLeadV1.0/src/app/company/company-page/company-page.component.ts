@@ -30,20 +30,6 @@ export class CompanyPageComponent implements OnInit {
         displayExpr: 'industryName' 
       }
     },
-   { 
-      dataField: 'status', 
-      caption: 'Status', 
-    // This lookup configuration is now correct and will work with the fix below
-    {
-      dataField: 'industryVertical',
-      caption: 'Industry Vertical',
-      visible: true,
-      lookup: {
-        dataSource: this.industryVerticalsLookupData, // This binding is correct
-        valueExpr: 'industryName',
-        displayExpr: 'industryName'
-      }
-    },
    {
       dataField: 'status',
       caption: 'Status',
@@ -60,9 +46,7 @@ export class CompanyPageComponent implements OnInit {
     // { dataField: 'owner', caption: 'Owner', visible: true }
   ];
 canEditCustomers = false;
-  canDeleteCustomers = false;
-canEditCustomers = false;
-  canDeleteCustomers = false;
+canDeleteCustomers = false;
   tableData: any[] = [];
   topcardData = [
     { amount: 0, title: 'Total Customers', icon: 'assets/count.svg' },
@@ -76,13 +60,9 @@ canEditCustomers = false;
   error: string | null = null;
 
   private industryVerticalMap: { [id: number]: string } = {};
- 
-  private industryVerticalMap: { [id: number]: string } = {};
+
   private users: any[] = [];
 
-  tableLookups: { [key: string]: any[] } = {};
-
- 
   tableLookups: { [key: string]: any[] } = {};
  
   constructor(
@@ -196,7 +176,6 @@ canEditCustomers = false;
       phone: company.customerPhoneNumber || '',
       website: company.website || '',
       industryVertical: this.industryVerticalMap[company.industryVerticalId] || 'Unknown',
-      industryVertical: this.industryVerticalMap[company.industryVerticalId] || 'Unknown',
       owner: ownerName,
       status: this.mapStatus(company),
     };
@@ -241,7 +220,6 @@ canEditCustomers = false;
       website: finalData.website,
       industryVerticalId: this.getIndustryIdByName(finalData.industryVertical),
       isActive: finalData.status === 'Active',
-      updatedBy: this.authService.getUserId()
       updatedBy: this.authService.getUserId()
     };
  
@@ -292,8 +270,6 @@ canEditCustomers = false;
     const companyId = event.key;
     if (confirm('Are you sure you want to delete this company?')) {
       this.companyService.deleteCompany(companyId, this.authService.getUserId()).subscribe({
-    if (confirm('Are you sure you want to delete this company?')) {
-      this.companyService.deleteCompany(companyId, this.authService.getUserId()).subscribe({
         next: () => {
           console.log('Company deleted successfully');
           this.tableData = this.tableData.filter(c => c.id !== companyId);
@@ -327,10 +303,6 @@ canEditCustomers = false;
       case 0: return '#8a2be2'; 
       case 1: return '#28a745'; 
       case 2: return '#dc3545'; 
-      default: return '#000000';
-      case 0: return '#8a2be2';
-      case 1: return '#28a745';
-      case 2: return '#dc3545';
       default: return '#000000';
     }
   }

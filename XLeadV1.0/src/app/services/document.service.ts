@@ -10,7 +10,6 @@ export interface Attachment {
   dealId: number;
   createdBy: number;
   createdAt: Date;
-  createdAt: Date;
 }
  
 @Injectable({

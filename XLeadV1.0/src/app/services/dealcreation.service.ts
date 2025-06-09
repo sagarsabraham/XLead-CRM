@@ -252,9 +252,8 @@ export class DealService {
     const url = `${this.apiUrl}/${id}/stage`;
     const updateDto = {
       stageName: stageName,
-      UpdatedBy: userId
-    };
-   
+      UpdatedBy: this.authService.userId
+    };   
     return this.http.put<DealRead>(url, updateDto, this.httpOptions)
       .pipe(
         map(response => {

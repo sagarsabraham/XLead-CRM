@@ -22,8 +22,6 @@ export class TableComponent implements AfterViewInit {
   @Input() entityType: string = 'Item';
   @Input() allowEditing: boolean = true; 
   @Input() allowDeleting: boolean = false;
-  @Input() allowEditing: boolean = true;
-  @Input() allowDeleting: boolean = false;
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter<any>();
   @Output() onRowUpdating: EventEmitter<any> = new EventEmitter<any>();
   @Output() onRowRemoving: EventEmitter<any> = new EventEmitter<any>();

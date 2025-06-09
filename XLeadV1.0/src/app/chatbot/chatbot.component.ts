@@ -1,29 +1,24 @@
-// chatbot.component.ts
+import { Component, AfterViewChecked, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core'; 
+import { HttpClient, HttpErrorResponse } from '@angular/common/http'; 
 
-import { Component, AfterViewChecked, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core'; // Added OnInit, OnDestroy
-import { HttpClient, HttpErrorResponse } from '@angular/common/http'; // Added HttpErrorResponse
-// import { Subscription } from 'rxjs'; // If you decide to manage subscriptions explicitly
-
-// --- 1. Define the New API Response Interface/Class ---
 interface AiQueryServerResponse {
-  message: string;        // Informational message from backend
-  results?: any[];        // The actual data rows (array of objects)
-  generatedSql?: string;  // The SQL query generated and executed
-  count?: number;         // Count of results
-  success: boolean;       // Indicates overall success from backend logic
+  message: string;        
+  results?: any[];        
+  generatedSql?: string;  
+  count?: number;        
+  success: boolean;       
 }
 
-// Keep existing interfaces
 interface ChatMessage {
   text: string;
   timestamp: Date;
   isUser: boolean;
   queryType?: QueryType;
   hasResults?: boolean;
-  sqlQuery?: string; // Optional: to display the SQL for AI queries
+  sqlQuery?: string; 
 }
 
-interface QueryResponse { // This was for your older endpoints
+interface QueryResponse { 
   sql: string;
   result?: any[];
   deals?: any[];
@@ -37,13 +32,12 @@ enum QueryType {
   RECENT = 'recent',
   FILTER = 'filter',
   SORT = 'sort',
-  ALL = 'all', // For "show all deals" type specific queries
+  ALL = 'all', 
   TEST = 'test',
-  GENERAL = 'general', // This will now be our primary AI-driven query type
-  AI_QUERY = 'ai_query' // Explicit type if you want to differentiate more
+  GENERAL = 'general', 
+  AI_QUERY = 'ai_query' 
 }
 
-// QueryPattern interface (keep as is or adapt if needed)
 interface QueryPattern {
   type: QueryType;
   patterns: RegExp[];
@@ -56,26 +50,23 @@ interface QueryPattern {
   templateUrl: './chatbot.component.html',
   styleUrls: ['./chatbot.component.css']
 })
-export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnInit
+export class ChatbotComponent implements AfterViewChecked, OnInit { 
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
   @ViewChild('messageInput') private messageInput!: ElementRef;
 
   isCollapsed = true;
   userInput: string = '';
   isTyping: boolean = false;
-  results: any[] = []; // Used for export functionality
+  results: any[] = []; 
   showSuggestions = false;
   suggestions: string[] = [];
   queryHistory: string[] = [];
   showResultsSkeleton = false;
 
-  // --- 2. Update API URL Constants ---
-  private readonly legacyBaseApiUrl = 'https://localhost:7297/api/count'; // Your existing .NET API port for old endpoints
-  private readonly aiQueryApiUrl = 'https://localhost:7297/api/aiquery/process-natural-language'; // NEW AI Endpoint
+  private readonly legacyBaseApiUrl = 'https://localhost:7297/api/count';
+  private readonly aiQueryApiUrl = 'https://localhost:7297/api/aiquery/process-natural-language'; 
 
-  // connectionStatusText: string = 'Connecting...'; // Not used in provided snippet, remove if not needed
 
-  // queryPatterns (Keep or adapt; GENERAL type is key now)
   private queryPatterns: QueryPattern[] = [
     {
       type: QueryType.COUNT,
@@ -84,41 +75,28 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
       examples: ['count all deals', 'how many closed deals', 'total deals this month']
     },
     {
-      type: QueryType.RECENT, // You might keep this for a specific "recent deals" endpoint
-      patterns: [/recent deals|latest deals|new deals/i], // More specific to avoid AI for this
+      type: QueryType.RECENT, 
+      patterns: [/recent deals|latest deals|new deals/i],
       description: 'Recent data queries',
       examples: ['recent deals']
     },
-    // Filter and Sort might now be handled by AI (GENERAL)
-    // {
-    //   type: QueryType.FILTER,
-    //   patterns: [/where|with|having|filter|show me.*with|deals.*amount/i],
-    //   description: 'Filtered queries',
-    //   examples: ['deals with amount > 10000', 'show me deals where stage is closed won']
-    // },
-    // {
-    //   type: QueryType.SORT,
-    //   patterns: [/top|bottom|highest|lowest|sort|order|best|worst/i],
-    //   description: 'Sorted queries',
-    //   examples: ['top 10 deals', 'highest value opportunities', 'sort by amount']
-    // },
+  
     {
       type: QueryType.TEST,
-      patterns: [/test connect|test database|db health|ping db/i], // Made more specific
+      patterns: [/test connect|test database|db health|ping db/i], 
       description: 'System testing',
       examples: ['test database connection', 'check db health']
     },
-    { // Example specific query that might hit an old endpoint or a specific AI instruction
+    {
       type: QueryType.ALL,
       patterns: [/^show all deals$/i, /^list all deals$/i, /^all deals$/i],
       description: 'Show all deals',
       examples: ['show all deals']
     }
-    // GENERAL will be the fallback for AI
   ];
 
 
-  messages: ChatMessage[] = []; // Initialize empty, will be populated by ngOnInit
+  messages: ChatMessage[] = []; 
 
   smartSuggestions = [
     'Show me deals created this week',
@@ -131,12 +109,10 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
   ];
 
   constructor(private http: HttpClient) {
-    // this.loadQueryHistory(); // Moved to ngOnInit
   }
 
   ngOnInit() {
     this.loadQueryHistory();
-    // Initial welcome message
     this.messages.push({
       text: 'Hello! I\'m your Smart XBot assistant. How can I help you with your XLead data today?',
       timestamp: new Date(),
@@ -155,7 +131,6 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
         this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
       }
     } catch (err) {
-      // console.error('Error scrolling to bottom:', err);
     }
   }
 
@@ -176,7 +151,7 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
         isUser: false
       }
     ];
-    this.results = []; // Clear exportable results
+    this.results = []; 
   }
 
   onInputChange() {
@@ -211,12 +186,11 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
     this.userInput = '';
     this.isTyping = true;
     this.showSuggestions = false;
-    this.showResultsSkeleton = true; // Show skeleton immediately
+    this.showResultsSkeleton = true; 
 
     this.handleUserInput(messageText, queryType);
   }
 
-  // sendQuickAction can remain similar, just ensure it uses the new parsing logic
   sendQuickAction(query: string) {
     if (this.isTyping) return;
 
@@ -244,45 +218,42 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
         }
       }
     }
-    // If no specific pattern matches, assume it's a general query for the AI
     return QueryType.GENERAL;
   }
 
   private handleUserInput(input: string, queryType: QueryType) {
     const lowerInput = input.toLowerCase();
 
-    // Log the determined query type
     console.log(`Handling input: "${input}", QueryType: ${queryType}`);
 
     switch (queryType) {
       case QueryType.TEST:
-        this.testDatabaseConnection(); // Assuming this hits a specific endpoint
+        this.testDatabaseConnection(); 
         break;
-      case QueryType.ALL: // Example: "show all deals"
-        this.getLegacyAllDeals(); // Or make it AI driven
+      case QueryType.ALL:
+        this.getLegacyAllDeals(); 
         break;
-      case QueryType.RECENT: // Example "recent deals"
+      case QueryType.RECENT: 
         this.getLegacyRecentDeals();
         break;
-      case QueryType.COUNT: // Specific count like "count closed won deals"
+      case QueryType.COUNT: 
         if (lowerInput.includes('closed won')) {
             this.getLegacyClosedWonCount();
         } else {
-            // Let AI handle other counts
+            
             this.processWithAi(input);
         }
         break;
       case QueryType.GENERAL:
-      case QueryType.AI_QUERY: // If you add this type
-      case QueryType.FILTER:   // Let AI handle these
-      case QueryType.SORT:     // Let AI handle these
+      case QueryType.AI_QUERY:
+      case QueryType.FILTER:   
+      case QueryType.SORT:    
       default:
         this.processWithAi(input);
         break;
     }
   }
 
-  // --- 3. Modify processWithAi (formerly sendGeneralQuery) ---
   private processWithAi(prompt: string) {
     this.http.post<AiQueryServerResponse>(this.aiQueryApiUrl, { naturalLanguageQuery: prompt })
       .subscribe({
@@ -294,7 +265,7 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
           if (response.success && response.results && response.results.length > 0) {
             botText = this.formatAiResults(response.results, response.generatedSql, response.count);
             this.addBotResponse(botText, true, response.generatedSql);
-            this.results = response.results; // For export
+            this.results = response.results;
           } else if (response.success && (!response.results || response.results.length === 0)) {
             botText = `✅ ${response.message || 'Query executed successfully, but no matching records were found.'}`;
             if (response.generatedSql) {
@@ -303,9 +274,9 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
             this.addBotResponse(botText, false, response.generatedSql);
             this.results = [];
           }
-          else { // Handles response.success === false or other non-data yielding success cases
+          else { 
             botText = `⚠️ ${response.message || 'I could not retrieve the data for your query.'}`;
-             if (response.generatedSql) { // Even on failure, backend might send the (failed) SQL
+             if (response.generatedSql) {
               botText += `\n\nAttempted SQL: \`${response.generatedSql}\``;
             }
             this.addBotResponse(botText, false, response.generatedSql);
@@ -315,7 +286,7 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
         error: (err: HttpErrorResponse) => {
           this.isTyping = false;
           this.showResultsSkeleton = false;
-          this.handleApiError(err, prompt); // Use the refined error handler
+          this.handleApiError(err, prompt);
           this.results = [];
         }
       });
@@ -327,23 +298,20 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
       timestamp: new Date(),
       isUser: false,
       hasResults,
-      sqlQuery // Store the SQL if available
+      sqlQuery
     });
   }
 
-  // --- 5. Update handleError (or create a new one for API errors) ---
   private handleApiError(error: HttpErrorResponse, queryContext?: string) {
     let errorMessage = `❌ Oops! I encountered a problem processing your request${queryContext ? ' for: "' + queryContext + '"' : ''}.\n\n`;
 
     if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred.
       errorMessage += `Network/Client Error: ${error.error.message}`;
     } else {
-      // The backend returned an unsuccessful response code.
       errorMessage += `Server Error (Status: ${error.status}):\n`;
       if (error.error && typeof error.error.message === 'string') {
-        errorMessage += error.error.message; // Message from backend's AiQueryResponseDto (e.g., on 500 with custom msg)
-      } else if (typeof error.error === 'string' && error.error.length < 200) { // Check if error.error is a simple string
+        errorMessage += error.error.message; 
+      } else if (typeof error.error === 'string' && error.error.length < 200) { 
         errorMessage += error.error;
       } else if (error.statusText) {
         errorMessage += error.statusText;
@@ -357,9 +325,6 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
   }
 
 
-  // --- Keep/Adapt Legacy Methods if still needed for specific non-AI queries ---
-  // These would hit your older '/api/count/*' endpoints
-
   private getLegacyAllDeals() {
     this.http.post<QueryResponse>(`${this.legacyBaseApiUrl}`, { prompt: 'deals' }).subscribe({
       next: (response) => this.handleLegacyResponse(response, 'All Deals'),
@@ -368,13 +333,12 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
   }
 
   private getLegacyRecentDeals() {
-    // Assuming you have an endpoint for this at legacyBaseApiUrl or a sub-path
-    this.http.get<any[]>(`${this.legacyBaseApiUrl}/RecentDeals`).subscribe({ // Adjust endpoint
+    this.http.get<any[]>(`${this.legacyBaseApiUrl}/RecentDeals`).subscribe({ 
         next: (deals) => {
             this.isTyping = false;
             this.showResultsSkeleton = false;
             if (deals && deals.length > 0) {
-                const formatted = this.formatDeals(deals); // Your existing formatDeals
+                const formatted = this.formatDeals(deals); 
                 this.addBotResponse(formatted, true);
                 this.results = deals;
             } else {
@@ -393,22 +357,20 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
         this.showResultsSkeleton = false;
         const message = `🎯 **Closed Won Deals Count (Legacy)**\n\n**Total:** ${response.closedWonCount} deals`;
         this.addBotResponse(message, true);
-        this.results = [{ 'Closed Won Count': response.closedWonCount }]; // For export
+        this.results = [{ 'Closed Won Count': response.closedWonCount }];
       },
       error: (err: HttpErrorResponse) => this.handleApiError(err, 'fetching closed won count (legacy)')
     });
   }
 
   private testDatabaseConnection() {
-    // This should hit your /TestDatabase endpoint, which might be on legacyBaseApiUrl or a new one
-    this.http.get<any>(`${this.legacyBaseApiUrl}/TestDatabase`).subscribe({ // Adjust endpoint if needed
+    this.http.get<any>(`${this.legacyBaseApiUrl}/TestDatabase`).subscribe({ 
         next: (response) => {
             this.isTyping = false;
             this.showResultsSkeleton = false;
             let message = `✅ **Database Connection Test (Legacy)**\n\n${response.message}\n`;
             if (response.totalDeals !== undefined) message += `\n📊 **Total Deals:** ${response.totalDeals}`;
-            // ... (add more details from response if available)
-            this.addBotResponse(message, true); // Assuming test provides some "result"
+            this.addBotResponse(message, true); 
         },
         error: (err: HttpErrorResponse) => this.handleApiError(err, 'testing database connection (legacy)')
     });
@@ -425,8 +387,8 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
       const formatted = this.formatGeneralResults(response.result, response.sql || `Legacy ${queryName}`, response.count || response.result.length);
       this.addBotResponse(formatted, true);
       this.results = response.result;
-    } else if (response.deals && response.deals.length > 0) { // For specific deal structures
-      const formatted = this.formatDeals(response.deals); // Assuming you have formatDeals
+    } else if (response.deals && response.deals.length > 0) { 
+      const formatted = this.formatDeals(response.deals); 
       this.addBotResponse(formatted, true);
       this.results = response.deals;
     }
@@ -435,25 +397,20 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
       this.results = [];
     }
   }
-
-  // --- Suggestion System (Keep as is) ---
   private getSuggestions(input: string): string[] {
     const lowerInput = input.toLowerCase();
-    const suggestions = new Set<string>(); // Use Set to avoid duplicates easily
+    const suggestions = new Set<string>(); 
 
-    // History matches
     this.queryHistory
       .filter(query => query.toLowerCase().includes(lowerInput))
-      .slice(0, 2) // Limit history suggestions
+      .slice(0, 2)
       .forEach(s => suggestions.add(s));
-
-    // Smart suggestions matches
     this.smartSuggestions
       .filter(suggestion => suggestion.toLowerCase().includes(lowerInput))
-      .slice(0, 3) // Limit smart suggestions
+      .slice(0, 3)
       .forEach(s => suggestions.add(s));
 
-    return Array.from(suggestions).slice(0, 5); // Return unique, limited suggestions
+    return Array.from(suggestions).slice(0, 5); 
   }
 
   private addToHistory(query: string) {
@@ -492,7 +449,7 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
       this.sendMessage();
     } else if (event.key === 'ArrowUp' && this.queryHistory.length > 0 && this.userInput === '') {
         event.preventDefault();
-        this.userInput = this.queryHistory[0]; // Load last query
+        this.userInput = this.queryHistory[0];
     } else if (event.key === 'Escape') {
       this.showSuggestions = false;
     }
@@ -502,7 +459,6 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
-  // --- 6. Review formatAiResults (adapt formatGeneralResults) ---
   private formatAiResults(data: any[], sql?: string, count?: number): string {
     let formatted = `📊 **AI Query Results**\n\n`;
     if (count !== undefined) {
@@ -516,8 +472,6 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
 
     const maxResultsToDisplay = Math.min(5, data?.length || 0);
     if (maxResultsToDisplay === 0 && count === 0) {
-        // This case is typically handled by the response.message from backend
-        // formatted += "No matching records were found.\n";
     } else if (maxResultsToDisplay === 0 && typeof count === 'number' && count > 0) {
         formatted += `Displaying 0 of ${count} records. (More records available, but not shown in this preview).\n`;
     }
@@ -528,7 +482,6 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
       formatted += `**Record ${i + 1}:**\n`;
       Object.keys(row).forEach(key => {
         let value = row[key];
-        // Basic type formatting (can be expanded)
         if (typeof value === 'string' && (value.includes('T00:00:00') || /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value))) {
           try { value = new Date(value).toLocaleDateString(); } catch (e) {/* ignore */}
         } else if (typeof value === 'number' && (key.toLowerCase().includes('amount') || key.toLowerCase().includes('price'))) {
@@ -546,9 +499,7 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
     }
     return formatted;
   }
-
-  // Keep your existing formatting helpers or adapt them
-  private formatDeals(deals: any[]): string { // For legacy if needed
+  private formatDeals(deals: any[]): string { 
     let formatted = `📊 **Recent Deal Activity (Legacy)**\n\n🔥 **${deals.length} deals found**\n\n`;
     deals.slice(0, 10).forEach((deal, index) => {
       formatted += `${index + 1}. **${deal.Name || 'Unnamed Deal'}** — ${this.formatCurrency(deal.Amount)}\n`;
@@ -558,8 +509,6 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
     }
     return formatted;
   }
-
-  // General results formatter (can be used by legacy or as a fallback)
    private formatGeneralResults(results: any[], sql: string, count: number): string {
     let formatted = `📊 **Query Results (Legacy/General)**\n\n🎯 **Records:** ${count}\n🔍 **SQL:** \`${sql}\`\n\n`;
     const maxResults = Math.min(5, results.length);
@@ -595,7 +544,6 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
     } catch { return String(dateStr); }
   }
 
-  // Export functionality (Keep as is, it uses this.results)
   exportResults(format: 'json' | 'csv') {
     if (!this.results || this.results.length === 0) {
       this.addBotResponse('❌ No results to export. Please run a query first.', false);
@@ -612,7 +560,7 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
     link.href = URL.createObjectURL(dataBlob);
     link.download = `xlead-ai-results-${new Date().toISOString().split('T')[0]}.json`;
     link.click();
-    URL.revokeObjectURL(link.href); // Clean up
+    URL.revokeObjectURL(link.href); 
     this.addBotResponse('📁 **Export Complete:** JSON file downloaded.', true);
   }
 
@@ -630,7 +578,7 @@ export class ChatbotComponent implements AfterViewChecked, OnInit { // Added OnI
     link.href = URL.createObjectURL(dataBlob);
     link.download = `xlead-ai-results-${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
-    URL.revokeObjectURL(link.href); // Clean up
+    URL.revokeObjectURL(link.href); 
     this.addBotResponse('📁 **Export Complete:** CSV file downloaded.', true);
   }
 }
