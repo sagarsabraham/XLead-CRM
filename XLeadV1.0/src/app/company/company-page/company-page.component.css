@@ -40,8 +40,8 @@ app-sidebar.sidebar-visible {
   box-sizing: border-box;
 }
 
-Topbar
 .topbar {
+  animation: fadeIn 0.5s ease-in-out;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -54,6 +54,11 @@ Topbar
   font-weight: bold;
   color: #333;
   text-align: left;
+  transition: color 0.3s ease;
+}
+  @keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .total-count {
@@ -124,14 +129,14 @@ Topbar
   }
 
   .container {
-       margin-top: 50px;
+    margin-top: 20px;
     margin-left: 0; 
     width: 100%; 
     padding: 10px; 
   }
 
   .topbar {
-     
+    animation: fadeIn 0.5s ease-in-out;
     flex-direction: column; 
     align-items: flex-start;
     gap: 8px; 
@@ -140,7 +145,13 @@ Topbar
 
   .topbar h1 {
     font-size: 24px;
+    transition: color 0.3s ease;
   }
+
+  @keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
   .total-count {
     font-size: 16px; 
