@@ -29,6 +29,27 @@ export interface DealCreatePayload {
   createdBy: number;
   customFields?: { [key: string]: any };
 }
+export interface DealEditPayload {
+  title: string;
+  amount: number;
+  customerName: string;
+  contactFullName: string;
+  contactEmail: string | null;
+  contactPhoneNumber: string | null;
+  contactDesignation: string | null;
+  serviceId: number | null;
+  accountId: number | null;
+  regionId: number;
+  domainId: number | null;
+  dealStageId: number;
+  revenueTypeId: number;
+  duId: number;
+  countryId: number;
+  description: string | null;
+  probability: number | null;
+  startingDate: string | null;
+  closingDate: string | null;
+}
 export interface DealManagerOverview { 
   id: number;
   dealName: string;
@@ -87,7 +108,7 @@ export interface DealRead {
   contactName?: string;
   salespersonName?: string | null;
   startingDate?: string | null;
-  closingDate?: string | null; // If backend always returns this, can be non-nullable: string
+  closingDate?: string | null; 
   regionName?: string;
   regionId?: number;
   domainName?: string;
@@ -107,7 +128,7 @@ export interface DealRead {
   serviceName?: string; // New field
   serviceId?: number | null; // New field
   createdBy?: number;
-  createdAt?: string; // Should be non-nullable if backend always sends it
+  createdAt?: string; 
   updatedAt?: string;
   customFields?: { [key: string]: any };
 }
@@ -125,7 +146,7 @@ export interface StageHistoryReadDto {
   providedIn: 'root'
 })
 export class DealService {
-  private apiUrl = 'https://localhost:7297/api/Deals'; // Base API URL for deals
+  private apiUrl = 'https://localhost:7297/api/Deals'; 
   private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
  
   constructor(private http: HttpClient,private authService: AuthServiceService) { }
@@ -216,6 +237,11 @@ export class DealService {
 
     console.log(`Fetching deals for user ID: ${currentUserId} from URL: ${url}`);
     return this.http.get<DealRead[]>(url, this.httpOptions) 
+      .pipe(catchError(this.handleError));
+  }
+    updateDeal(id: number, dealData: DealEditPayload): Observable<DealRead> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.put<DealRead>(url, JSON.stringify(dealData), this.httpOptions)
       .pipe(catchError(this.handleError));
   }
  updateDealStage(id: number, stageName: string): Observable<DealRead> {

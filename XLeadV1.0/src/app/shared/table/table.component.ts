@@ -22,7 +22,8 @@ export class TableComponent implements AfterViewInit {
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter<any>();
   @Output() onRowUpdating: EventEmitter<any> = new EventEmitter<any>();
   @Output() onRowRemoving: EventEmitter<any> = new EventEmitter<any>(); 
-
+  
+  @Input() allowDeleting: boolean = false;
   @ViewChild(DxDataGridComponent) dataGrid!: DxDataGridComponent;
   @ViewChild('columnChooserButton', { static: false }) columnChooserButton!: ElementRef;
   @ViewChild('exportButton', { static: false }) exportButton!: ElementRef;

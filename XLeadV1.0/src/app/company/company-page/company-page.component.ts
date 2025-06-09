@@ -1,9 +1,10 @@
 import { Component, HostListener, OnInit } from '@angular/core';
+import { forkJoin } from 'rxjs';
 
 import { UserService } from '../../services/user.service';
-import { CompanyContactService } from 'src/app/services/company-contact.service';
+import { CompanyContactService, CustomerUpdatePayload } from 'src/app/services/company-contact.service';
 import { IndustryVerticalService } from 'src/app/services/industry-vertical.service';
-import { forkJoin } from 'rxjs';
+import { AuthServiceService } from 'src/app/services/auth-service.service';
 
 @Component({
   selector: 'app-company-page',
@@ -11,16 +12,19 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./company-page.component.css']
 })
 export class CompanyPageComponent implements OnInit {
+  currentUserId: number;
+  canGloballyEdit: boolean = false;
+canGloballyDelete: boolean = false;
+isViewingOwnData: boolean = true;
   tableHeaders = [
     { dataField: 'customerName', caption: 'Customer Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'website', caption: 'Website', visible: true },
     { dataField: 'industryVertical', caption: 'Industry Vertical', visible: true },
-   { 
-      dataField: 'status', 
-      caption: 'Status', 
+    {
+      dataField: 'status',
+      caption: 'Status',
       visible: true,
-      // This lookup configuration tells the grid to use a dropdown for editing.
       lookup: {
         dataSource: [
           { value: 'Active', displayValue: 'Active' },
@@ -30,8 +34,9 @@ export class CompanyPageComponent implements OnInit {
         displayExpr: 'displayValue'
       }
     },
-    // { dataField: 'owner', caption: 'Owner', visible: true }
+    
   ];
+  
 
   tableData: any[] = [];
   topcardData = [
@@ -41,121 +46,115 @@ export class CompanyPageComponent implements OnInit {
   ];
 
   totalCompanies = 0;
-  isMobile: boolean = false;
-  isLoading: boolean = true;
+  isMobile = false;
+  isLoading = true;
   error: string | null = null;
 
-  private industryVerticalMap: { [id: number]: string } = {}; // Will be populated dynamically
+  private industryVerticalMap: { [id: number]: string } = {};
   private users: any[] = [];
 
   constructor(
     private companyService: CompanyContactService,
     private userService: UserService,
-    private industryVerticalService: IndustryVerticalService // Added service
+    private industryVerticalService: IndustryVerticalService,
+    private authService: AuthServiceService
   ) {
+    this.currentUserId = this.authService.getUserId();
     this.checkIfMobile();
   }
 
   ngOnInit(): void {
+    this.determinePermissions();
+    if (!this.currentUserId) {
+      this.error = 'User context not available. Cannot load companies.';
+      this.isLoading = false;
+      console.error(this.error);
+      return;
+    }
     this.loadData();
   }
+determinePermissions(): void {
+ 
+  const hasEditOwnCustomer = this.authService.hasPrivilege('EditOwnCustomer');
+  const hasDeleteOwnCustomer = this.authService.hasPrivilege('DeleteOwnCustomer');
+  
+  
+  const isManagerTeamView = this.authService.hasPrivilege('ViewTeamCustomers'); 
 
+  if (isManagerTeamView) {
+    this.canGloballyEdit = false; 
+    this.canGloballyDelete = false;
+    this.isViewingOwnData = false;
+  } else {
+   
+    this.canGloballyEdit = hasEditOwnCustomer; 
+    this.canGloballyDelete = hasDeleteOwnCustomer; 
+    this.isViewingOwnData = true;
+  }
+  console.log(`Company Page Permissions - Edit: ${this.canGloballyEdit}, Delete: ${this.canGloballyDelete}, IsOwnDataView: ${this.isViewingOwnData}`);
+}
   loadData(): void {
     this.isLoading = true;
     this.error = null;
-    
-    // Fetch industry verticals, users, and companies
+
     forkJoin({
       industryVerticals: this.industryVerticalService.getIndustryVertical(),
-      users: this.userService.getUsers()
+      users: this.userService.getUsers(),
+      companies: this.companyService.getCompanies(this.currentUserId)
     }).subscribe({
-      next: ({ industryVerticals, users }) => {
-        console.log('Industry Verticals loaded:', industryVerticals);
-        console.log('Users loaded:', users);
-
-        // Map industry verticals
-        this.industryVerticalMap = industryVerticals.reduce((map: { [id: number]: string }, vertical: any) => {
+      next: ({ industryVerticals, users, companies }) => {
+        this.industryVerticalMap = industryVerticals.reduce((map:{[id:number]:string}, vertical) => {
+          
           map[vertical.id] = vertical.industryName || 'Unknown';
           return map;
         }, {});
-
         this.users = users;
-        this.loadCompanies();
-      },
-      error: (err) => {
-        console.error('Error loading industry verticals or users:', err);
-        // Fallback: Load companies even if industry verticals or users fail
-        this.industryVerticalMap = {}; // Empty map as fallback
-        this.users = [];
-        this.loadCompanies();
-      }
-    });
-  }
-  
-  loadCompanies(): void {
-    this.companyService.getCompanies().subscribe({
-      next: (companies) => {
-        console.log('Companies data:', companies);
-    
-        if (companies.length > 0) {
-          console.log('Sample company:', companies[0]);
-          console.log('createdBy value:', companies[0].createdBy);
-        }
-
-        this.tableData = companies.map(company => this.mapCompanyData(company));
+        this.tableData = companies.map(c => this.mapCompanyData(c));
         this.updateMetrics();
         this.totalCompanies = this.tableData.length;
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error fetching companies:', err);
-        this.error = 'Failed to load companies. Please try again later.';
+        console.error('Error loading data:', err);
+        this.error = err.message || 'Failed to load company data.';
         this.isLoading = false;
-        
-        this.tableData = [
-          {
-            id: '1',
-            customerName: 'Demo Company',
-            phone: '123-456-7890',
-            website: 'demo.com',
-            industryVertical: 'Technology',
-            owner: 'System',
-            status: 'Active'
-          }
-        ];
+      }
+    });
+  }
+
+  loadCompanies(): void {
+    if (!this.currentUserId) {
+      this.error = 'User ID not available.';
+      return;
+    }
+    this.isLoading = true;
+    this.companyService.getCompanies(this.currentUserId).subscribe({
+      next: (companies) => {
+        this.tableData = companies.map(c => this.mapCompanyData(c));
         this.updateMetrics();
+        this.totalCompanies = this.tableData.length;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error refreshing companies:', err);
+        this.error = err.message || 'Could not refresh companies.';
+        this.isLoading = false;
       }
     });
   }
 
   private mapCompanyData(company: any): any {
-    console.log('Mapping company:', company);
-    console.log('Available users:', this.users);
-  
-    const ownerId = company.createdBy || company.CreatedBy || company.createdById || company.userId;
-    console.log('Looking for owner with ID:', ownerId);
-  
-    const ownerIdNum = parseInt(ownerId);
-    let owner = null;
-  
-    if (!isNaN(ownerIdNum)) {
-      owner = this.users.find(u => u.id === ownerIdNum);
-      if (!owner) {
-        owner = this.users.find(u => u.id.toString() === ownerId.toString());
-      }
-    }
-  
-    console.log('Found owner:', owner);
-    const ownerName = owner ? owner.name : 'System';
-  
+    const owner = this.users.find(u => u.id === company.createdBy);
+    const ownerName = owner ? owner.name : (company.createdBy ? `User ${company.createdBy}` : 'System');
+
     return {
       id: this.safeToString(company.id),
       customerName: company.customerName || 'Unnamed Customer',
       phone: company.customerPhoneNumber || '',
       website: company.website || '',
-      industryVertical: this.industryVerticalMap[company.industryVerticalId] || 'Unknown', // Use dynamic map
+      industryVertical: this.industryVerticalMap[company.industryVerticalId] || 'Unknown',
       owner: ownerName,
-      status: this.mapStatus(company),
+      status: typeof company.status === 'string' ? company.status : 'Unknown'
     };
   }
 
@@ -163,87 +162,55 @@ export class CompanyPageComponent implements OnInit {
     return value !== undefined && value !== null ? String(value) : '';
   }
 
-  private mapStatus(company: any): string {
-    if (typeof company.status === 'string') {
-      return company.status;
-    }
-    return 'Unknown';
-  }
-
   private updateMetrics(): void {
     const total = this.tableData.length;
-    const active = this.tableData.filter(company => company.status === 'Active').length;
-    const inactive = this.tableData.filter(company => company.status === 'Not Active' || company.status === 'Inactive').length;
-    
+    const active = this.tableData.filter(c => c.status === 'Active').length;
+    const inactive = this.tableData.filter(c => ['Inactive', 'Not Active'].includes(c.status)).length;
+
     this.topcardData = [
       { amount: total, title: 'Total Customers', icon: 'assets/count.svg' },
       { amount: active, title: 'Active Customers', icon: 'assets/company.svg' },
       { amount: inactive, title: 'Inactive Customers', icon: 'assets/company.svg' }
     ];
   }
-   private getIndustryIdByName(name: string): number | null {
-    const entry = Object.entries(this.industryVerticalMap).find(([id, value]) => value === name);
+
+  private getIndustryIdByName(name: string): number | null {
+    const entry = Object.entries(this.industryVerticalMap).find(([id, val]) => val === name);
     return entry ? parseInt(entry[0], 10) : null;
   }
 
-    handleUpdate(event: any): void {
-    const companyId = event.key;
-    // The event now contains the full old data and just the changed new data.
-    // Merging them gives us the complete final object.
-    const finalData = { ...event.oldData, ...event.newData };
+  handleUpdate(event: any): void {
+  const companyId = event.key;
+  const finalData = { ...event.oldData, ...event.newData };
 
-    // Construct the DTO payload for the backend API
-    const updatePayload = {
-      customerName: finalData.customerName,
-      phoneNo: finalData.phone,
-      website: finalData.website,
-      industryVerticalId: this.getIndustryIdByName(finalData.industryVertical),
-      // The status from the dropdown is now directly a string 'Active' or 'Inactive'.
-      // We convert it back to the required boolean for the API.
-      isActive: finalData.status === 'Active',
-      updatedBy: 3 // Hardcoded user ID for demo.
-    };
+  const updatePayload: CustomerUpdatePayload = { 
+    customerName: finalData.customerName,
+    customerPhoneNumber: finalData.phone, 
+    website: finalData.website,
+    industryVerticalId: this.getIndustryIdByName(finalData.industryVertical),
+    isActive: finalData.status === 'Active',
+    UpdatedBy: this.currentUserId 
+  };
 
-    this.companyService.updateCompany(companyId, updatePayload).subscribe({
-      next: (response) => {
-        console.log('Company updated successfully', response);
-        const index = this.tableData.findIndex(c => c.id === companyId);
-        if (index !== -1) {
-          // Update the local data with the merged data from the event
-          this.tableData[index] = finalData;
-          this.tableData = [...this.tableData];
-          this.updateMetrics();
-        }
-      },
-      error: (err) => {
-        console.error('Failed to update company', err);
-        alert('Failed to update company. Please check the console for details.');
-      }
-    });
-  }
-
-
-  
+  this.companyService.updateCompany(companyId, updatePayload).subscribe({ /* ... */ });
+}
 
   handleDelete(event: any): void {
     const companyId = event.key;
-
-    if (confirm('Are you sure you want to delete this company? ')) {
-      
+    if (confirm('Are you sure you want to delete this company?')) {
       this.companyService.deleteCompany(companyId).subscribe({
         next: () => {
-          console.log('Company deleted successfully');
           this.tableData = this.tableData.filter(c => c.id !== companyId);
           this.updateMetrics();
         },
         error: (err) => {
-          console.error('Failed to delete company', err);
-          alert(err.error?.message || 'Could not delete the company. Please try again.');
+          console.error('Delete failed', err);
+          alert(err.error?.message || 'Could not delete the company.');
         }
       });
     }
   }
-  
+
   @HostListener('window:resize')
   onResize(): void {
     this.checkIfMobile();
@@ -255,14 +222,10 @@ export class CompanyPageComponent implements OnInit {
 
   getIconColor(index: number): string {
     switch (index) {
-      case 0:
-        return '#8a2be2'; 
-      case 1:
-        return '#28a745'; 
-      case 2:
-        return '#dc3545'; 
-      default:
-        return '#000000';
+      case 0: return '#8a2be2'; 
+      case 1: return '#28a745'; 
+      case 2: return '#dc3545'; 
+      default: return '#000000';
     }
   }
 }

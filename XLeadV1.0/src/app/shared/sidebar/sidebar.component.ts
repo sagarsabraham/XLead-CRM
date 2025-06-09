@@ -3,7 +3,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AuthServiceService } from 'src/app/services/auth-service.service';
-import { PrivilegeServiceService, Privilege } from 'src/app/services/privilege-service.service'; // Assuming Privilege is exported from here
+import { PrivilegeServiceService, Privilege } from 'src/app/services/privilege-service.service'; 
 
 interface NavItem {
   iconPath: string;
