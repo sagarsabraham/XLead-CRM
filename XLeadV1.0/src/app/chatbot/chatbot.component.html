@@ -1,0 +1,141 @@
+<div class="chatbot-container" [class.collapsed]="isCollapsed">
+  <!-- Header -->
+  <div class="chatbot-header" (click)="toggleCollapse()">
+    <div class="header-content">
+      <div class="brand">
+        <span class="bot-icon"></span>
+        <h3>Chatbot </h3> <!-- This is the remaining, single header -->
+      </div>
+      <div class="header-actions">
+        <button class="toggle-btn" [class.rotated]="!isCollapsed">
+          <span class="arrow">▲</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Body -->
+  <div class="chatbot-body" *ngIf="!isCollapsed">
+    <!-- Quick Actions (Comment was already here, kept for consistency) -->
+    
+    <!-- Messages Container -->
+    <div class="messages-container" #messagesContainer>
+      <div *ngFor="let message of messages" class="message" [class.user-message]="message.isUser">
+        <div class="message-content">
+          <div class="message-avatar">
+            <span *ngIf="!message.isUser" class="bot-avatar"></span>
+            <span *ngIf="message.isUser" class="user-avatar"></span>
+          </div>
+          <div class="message-bubble">
+            <div class="message-meta">
+              <span class="timestamp">{{ getTimeString(message.timestamp) }}</span>
+              <span *ngIf="message.queryType" class="query-type">{{ message.queryType }}</span>
+              <span *ngIf="message.hasResults" class="results-indicator">📊 Results</span>
+            </div>
+            <div class="message-text" [innerHTML]="message.text"></div>
+            <div *ngIf="!message.isUser && message.sqlQuery" class="message-sql-query">
+    <details>
+        <summary>Executed SQL</summary>
+        <code>{{ message.sqlQuery }}</code>
+    </details>
+  </div>
+</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing Indicator -->
+      <div *ngIf="isTyping" class="message typing-message">
+        <div class="message-content">
+          <div class="message-avatar"><span class="bot-avatar">🤖</span></div>
+          <div class="message-bubble typing-bubble">
+            <div class="typing-indicator"><span></span><span></span><span></span></div>
+            <div class="typing-text">XBot is thinking...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Skeleton -->
+      <div *ngIf="showResultsSkeleton" class="results-skeleton">
+        <div class="skeleton-header"></div>
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+
+    <!-- Results Actions -->
+    <div *ngIf="results.length > 0" class="results-actions">
+      <h5>📊 Export Results ({{ results.length }} items)</h5>
+      <div class="export-buttons">
+        <button class="export-btn json" (click)="exportResults('json')">
+          <span>📄</span> Export JSON
+        </button>
+        <button class="export-btn csv" (click)="exportResults('csv')">
+          <span>📈</span> Export CSV
+        </button>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-area">
+      <!-- Suggestions -->
+      <div *ngIf="showSuggestions" class="suggestions-container">
+        <div class="suggestions-header">
+          <span>💡 Suggestions</span>
+          <button class="close-suggestions" (click)="showSuggestions = false">×</button>
+        </div>
+        <div class="suggestions-list">
+          <button 
+            *ngFor="let suggestion of suggestions" 
+            class="suggestion-item"
+            (click)="selectSuggestion(suggestion)">
+            {{ suggestion }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Input Controls -->
+      <div class="input-controls">
+        <div class="input-wrapper">
+          <textarea
+            #messageInput
+            [(ngModel)]="userInput"
+            (input)="onInputChange()"
+            (keydown)="onInputKeyDown($event)"
+            placeholder="Ask me about your XLead data..."
+            class="message-input"
+            rows="1"
+            [disabled]="isTyping"></textarea>
+          
+          <div class="input-actions">
+            <button 
+              class="send-btn" 
+              (click)="sendMessage()" 
+              [disabled]="!userInput.trim() || isTyping">
+              <span *ngIf="!isTyping">🚀</span>
+              <span *ngIf="isTyping" class="spinner">⏳</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Input Footer -->
+        <div class="input-footer">
+          <div class="input-actions-secondary">
+            <button class="clear-btn" (click)="clearChat()" title="Clear Chat">
+              <span>🗑️</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> <!-- End of chatbot-body -->
+
+  <!-- Collapsed State -->
+  <div class="collapsed-indicator" *ngIf="isCollapsed">
+    <div class="notification-badge" *ngIf="messages.length > 1">{{ messages.length - 1 }}</div>
+    <span class="collapsed-text">Click to open XBot</span>
+  </div><!-- End of chatbot-container -->
+
+<!-- Backdrop for mobile -->
+<div class="chatbot-backdrop" *ngIf="!isCollapsed" (click)="toggleCollapse()"></div>

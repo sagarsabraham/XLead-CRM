@@ -597,7 +597,6 @@ export class PipelinepageComponent implements OnInit {
     { dataField: 'stageName', caption: 'Stage', visible: true }
   ];
  
-  // --- THIS IS THE CORRECTED PROPERTY TYPE ---
   customerContactMap: { [customer: string]: CustomerContactMap } = {};
  
   selectedTabId: string = 'card';
@@ -643,9 +642,29 @@ export class PipelinepageComponent implements OnInit {
   ) {}
  
   ngOnInit(): void {
+    this.updateCollapsedState(); 
     this.loadInitialData();
+    window.addEventListener('resize', this.handleResize.bind(this));
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.handleResize.bind(this));
   }
  
+  private updateCollapsedState(): void {
+    const isMobile = window.innerWidth <= 480;
+    if (isMobile) {
+      this.stages.forEach(stage => stage.collapsed = true);
+    } else {
+      this.stages.forEach(stage => stage.collapsed = false);
+    }
+    this.cdr.detectChanges();
+  }
+
+  private handleResize(): void {
+    this.updateCollapsedState(); 
+  }
+
   loadInitialData(): void {
     console.log('PipelinePage: loadInitialData called');
     this.isLoadingInitialData = true;
@@ -676,7 +695,6 @@ export class PipelinepageComponent implements OnInit {
           }
         });
         console.log('PipelinePage: Successfully fetched deals and contact map.', results);
-        // This assignment will now work without a type error
      
       },
       error: (err) => {
@@ -699,7 +717,6 @@ export class PipelinepageComponent implements OnInit {
     console.log('Table data refreshed:', this._tableData.length, 'deals');
   }
  
-  // --- THIS IS THE CORRECTED METHOD ---
   findCustomerByContact(contactFullName: string | null | undefined): string | null {
     if (!contactFullName || !this.customerContactMap || Object.keys(this.customerContactMap).length === 0) {
       return null;
@@ -820,42 +837,51 @@ export class PipelinepageComponent implements OnInit {
     const previousStageName = this.stages.find(s => s.name === previousStage);
     const currentStageName = this.stages.find(s => s.name === currentStage);
     const deal = previousStageName?.deals[previousIndex];
-   
     if (previousStageName && currentStageName && deal && deal.id) {
       const dealIndexInPrev = previousStageName.deals.findIndex(d => d.id === deal.id);
       if (dealIndexInPrev > -1) {
-        // Set dragging state
-        this.isDraggingDeal = true;
-       
         const [movedDeal] = previousStageName.deals.splice(dealIndexInPrev, 1);
         currentStageName.deals.splice(currentIndex, 0, movedDeal);
- 
+
         console.log(`PipelinePage: Deal "${movedDeal.title}" (ID: ${movedDeal.id}) moved to stage "${currentStage}". Backend update needed.`);
-       
-        // Update backend with proper error handling
         this.dealService.updateDealStage(deal.id, currentStageName.name).subscribe({
-          next: (updatedDeal) => {
-            console.log('Stage updated successfully in backend');
-            // Update the original data with the latest from backend
-            movedDeal.originalData = updatedDeal;
-            this.isDraggingDeal = false;
+        next: (updatedDeal) => {
+            const updatedPipelineDeal: PipelineDeal = {
+              id: updatedDeal.id,
+              title: updatedDeal.dealName,
+              amount: updatedDeal.dealAmount,
+              startDate: this.formatDateForDisplay(updatedDeal.startingDate),
+              closeDate: this.formatDateForDisplay(updatedDeal.closingDate),
+              department: updatedDeal.duName || 'N/A',
+              probability: updatedDeal.probability?.toString() + '%' || '0%',
+              region: updatedDeal.regionName || 'N/A',
+              salesperson: updatedDeal.salespersonName,
+              customerName: updatedDeal.customerName || this.findCustomerByContact(updatedDeal.contactName) || this.extractCustomerNameFallback(updatedDeal) || 'Unknown Customer',
+              account: updatedDeal.accountName || 'N/A',
+              contactName: updatedDeal.contactName || 'N/A',
+              domain: updatedDeal.domainName || 'N/A',
+              revenueType: updatedDeal.revenueTypeName || 'N/A',
+              country: updatedDeal.countryName || 'N/A',
+              description: updatedDeal.description || '',
+              doc: movedDeal.doc,
+              originalData: updatedDeal,
+            };
+            currentStageName.deals[currentIndex] = updatedPipelineDeal;
+            console.log(`Deal "${updatedPipelineDeal.title}" isHidden: ${updatedDeal.isHidden} after moving to stage "${currentStage}".`);
             this.updateStageAmountsAndTopCards();
             this.refreshTableData();
             this.cdr.detectChanges();
-          },
-          error: (err) => {
-            console.error('Failed to update stage in backend:', err);
-            // Revert the move on error
-            const currentIndex = currentStageName.deals.findIndex(d => d.id === movedDeal.id);
-            if (currentIndex > -1) {
-              currentStageName.deals.splice(currentIndex, 1);
-              previousStageName.deals.splice(dealIndexInPrev, 0, movedDeal);
-            }
-            this.isDraggingDeal = false;
-            alert('Failed to update deal stage. Please try again.');
+        },
+        error: (err) => {
+          console.error(`Failed to update deal stage: ${err.message}`);
+            currentStageName.deals.splice(currentIndex, 1);
+            previousStageName.deals.splice(previousIndex, 0, movedDeal);
+            this.updateStageAmountsAndTopCards();
+            this.refreshTableData();
             this.cdr.detectChanges();
-          }
-        });
+            alert(`Error: ${err.message}`);
+        }
+      });
       }
     }
   }

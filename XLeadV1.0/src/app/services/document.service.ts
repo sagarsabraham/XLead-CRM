@@ -22,7 +22,7 @@ export class DocumentService {
   constructor(private http: HttpClient) { }
 
   getAttachments(dealId: number): Observable<Attachment[]> {
-    return this.http.get<Attachment[]>(`${this.apiUrl}/deal/${dealId}`);
+    return this.http.get<Attachment[]>(`${this.apiUrl}/attachments/deal/${dealId}`);
   }
 
   uploadAttachment(file: File, dealId: number): Observable<Attachment> {
@@ -30,6 +30,6 @@ export class DocumentService {
     formData.append('file', file, file.name);
     formData.append('dealId', dealId.toString());
 
-    return this.http.post<Attachment>(`${this.apiUrl}/upload`, formData);
+    return this.http.post<Attachment>(`${this.apiUrl}/attachments/upload`, formData);
   }
 }

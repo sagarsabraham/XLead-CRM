@@ -15,6 +15,8 @@ import { CompanyPageComponent } from './company/company-page/company-page.compon
 import { SharedModule } from './shared/shared.module';
 import { DealInfoModule } from './deal-info/deal-info.module';
 import { HttpClientModule } from '@angular/common/http';
+import { ChatbotComponent } from './chatbot/chatbot.component';
+import { FormsModule } from '@angular/forms';
 
  
 
@@ -28,7 +30,8 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ChatbotComponent
   ],
   imports: [
     DxLoadIndicatorModule,
@@ -40,7 +43,8 @@ const routes: Routes = [
     DxLoadIndicatorModule,
     DashboardModule,
     HttpClientModule,
-    
+    FormsModule,
+
     CompanyModule,
     ContactsModule,
     SharedModule,
