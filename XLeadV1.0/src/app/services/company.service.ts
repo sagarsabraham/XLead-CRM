@@ -1,4 +1,4 @@
-// src/app/services/company.service.ts
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -13,6 +13,6 @@ export class CompanyService {
   constructor(private http: HttpClient) { }
 
   getCompanies(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/api/CompanyContact/companies`);
+    return this.http.get<any[]>(`${this.apiUrl}/api/CustomerContact/customers`);
   }
 }

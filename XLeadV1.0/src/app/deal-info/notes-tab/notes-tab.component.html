@@ -1,31 +1,92 @@
 <div class="dx-card smart-notes-container">
-  <h3>Smart Notes</h3>
-
+  <h4>Notes</h4>
+ 
   <dx-text-box
     [(value)]="newNoteContent"
+    (onInput)="onNoteContentChange($event)"
+    (keyup)="onNoteContentChange($event)"
     placeholder="Write a note..."
     stylingMode="outlined">
   </dx-text-box>
-
- <dx-button
-  text="Add Note"
-  type="default"
-  [disabled]="!newNoteContent.trim()"
-  [class.highlighted-add-button]="newNoteContent.trim().length > 0"
-  (onClick)="addNote()">
-</dx-button>
-
+ 
+  <dx-button
+    text="Add Note"
+    type="default"
+    [disabled]="!newNoteContent.trim() || isLoading"
+    [class.highlighted-add-button]="newNoteContent.trim().length > 0"
+    (onClick)="addNote()">
+  </dx-button>
+ 
   <div *ngFor="let note of notes; let i = index" class="note-template">
-    <div>
-      <strong>{{ note.content }}</strong><br>
-      <small>{{ formatDate(note.createdAt) }}</small>
+    <div class="note-content">
+      <!-- Display mode -->
+      <div *ngIf="editingNoteId !== note.id">
+        <strong>{{ note.noteText }}</strong><br>
+        <small>{{ note.createdByName }} - {{ formatDate(note.createdAt) }}</small>
+        <small class="note-updated" *ngIf="note.updatedAt">
+          <br>(Updated by {{ note.updatedByName }} - {{ formatDate(note.updatedAt) }})
+        </small>
+      </div>
+     
+      <!-- Edit mode -->
+      <div *ngIf="editingNoteId === note.id" class="edit-mode">
+        <dx-text-area
+          [(value)]="editingNoteText"
+          (onInput)="onEditContentChange($event)"
+          [height]="80"
+          placeholder="Edit your note..."
+          stylingMode="outlined">
+        </dx-text-area>
+        <div class="edit-actions">
+          <dx-button
+            text="Save"
+            type="default"
+            icon="check"
+            [disabled]="!editingNoteText.trim() || isLoading"
+            (onClick)="saveEdit()">
+          </dx-button>
+          <dx-button
+            text="Cancel"
+            type="normal"
+            icon="close"
+            [disabled]="isLoading"
+            (onClick)="cancelEditing()">
+          </dx-button>
+        </div>
+      </div>
     </div>
-    <dx-button
-      text="Delete"
-      type="danger"
-      stylingMode="text"
-      (onClick)="deleteNote(i)">
-    </dx-button>
-  
-</div>
+   
+    <!-- Action buttons -->
+    <div class="note-actions" *ngIf="editingNoteId !== note.id">
+      <dx-button
+        text="Edit"
+        type="normal"
+        stylingMode="text"
+        icon="edit"
+        [disabled]="note.createdBy !== currentUserId || isLoading"
+        (onClick)="startEditing(note)">
+      </dx-button>
+      <dx-button
+        text="Delete"
+        type="danger"
+        stylingMode="text"
+        icon="trash"
+        [disabled]="note.createdBy !== currentUserId || isLoading"
+        (onClick)="deleteNote(i)">
+      </dx-button>
+    </div>
+  </div>
+ 
+  <div class="no-notes" *ngIf="!isLoading && notes.length === 0">
+    <p>No notes yet. Add your first note above.</p>
+  </div>
+ 
+  <dx-load-panel
+    [visible]="isLoading"
+    [position]="{ of: '.smart-notes-container' }"
+    [showIndicator]="true"
+    [showPane]="true"
+    [shading]="true"
+    shadingColor="rgba(0,0,0,0.4)">
+  </dx-load-panel>
 </div>

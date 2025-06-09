@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { DealinfopageComponent } from './dealinfopage/dealinfopage.component';
 
 const routes: Routes = [
-  // {path: ':dealId', component: DealinfopageComponent},
   {path: '', component: DealinfopageComponent},
 ];
 

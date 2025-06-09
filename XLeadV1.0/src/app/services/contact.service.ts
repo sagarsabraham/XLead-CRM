@@ -13,6 +13,6 @@ export class ContactService {
   constructor(private http: HttpClient) { }
 
   getContacts(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/api/CompanyContact/contacts`);
+    return this.http.get<any[]>(`${this.apiUrl}/api/CustomerContact/contacts`);
   }
 }

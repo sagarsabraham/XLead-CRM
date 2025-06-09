@@ -1,14 +1,36 @@
 <div class="container">
   <div class="topbar">
     <h1>Pipelines</h1>
-    <app-button
-      *ngFor="let button of dealButton"
-      [label]="button.label"
-      [icon]="button.icon"
-      (onClick)="onAddDeal()"
-    ></app-button>
+    <div class="topbar-actions">
+      <!-- View switching icons -->
+      <div class="view-icons">
+        <span
+          class="view-icon"
+          [class.active]="selectedTabId === 'card'"
+          (click)="switchView('card')"
+          title="Card View">
+          <img src="assets/card-view.svg" alt="Card View" width="20" height="20">
+          <span class="view-label">Card View</span>
+        </span>
+        <span
+          class="view-icon"
+          [class.active]="selectedTabId === 'table'"
+          (click)="switchView('table')"
+          title="Table View">
+          <img src="assets/table-view.svg" alt="Card View" width="24" height="24">
+          <span class="view-label">Table View</span>
+        </span>
+      </div>
+      <!-- Deal button -->
+      <app-button
+        *ngFor="let button of dealButton"
+        [label]="button.label"
+        [icon]="button.icon"
+        (onClick)="onAddDeal()"
+      ></app-button>
+    </div>
   </div>
-
+ 
   <div class="topcard-container">
     <app-topcard
       *ngFor="let card of topcardData; let i = index"
@@ -19,17 +41,7 @@
       [iconColor]="getIconColor(i)">
     </app-topcard>
   </div>
-
-  <!-- Tab Switcher -->
-  <dx-tabs
-    [items]="[
-      { text: 'Card View', id: 'card' },
-      { text: 'Table View', id: 'table' }
-    ]"
-    [selectedIndex]="selectedTabIndex"
-    (onItemClick)="onTabChange($event)">
-  </dx-tabs>
-
+ 
   <!-- Card View -->
   <div *ngIf="selectedTabId === 'card'" class="card-container" cdkDropListGroup [class.content-loading]="isLoadingInitialData">
     <div
@@ -80,7 +92,7 @@
       #pipelineTable>
     </app-table>
   </div>
-
+ 
   <!-- Add Deal Modal -->
   <app-add-deal-modal
     [isVisible]="isModalVisible"

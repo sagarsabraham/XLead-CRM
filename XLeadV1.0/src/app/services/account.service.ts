@@ -18,7 +18,7 @@ export class AccountService {
     constructor(private http: HttpClient) { }
     
     getAllAccounts(): Observable<Account[]> {
-      // Add the full path here
+    
       const url = `${this.apiUrl}/api/Account`;
       console.log('Calling API at:', url);
       return this.http.get<Account[]>(url);

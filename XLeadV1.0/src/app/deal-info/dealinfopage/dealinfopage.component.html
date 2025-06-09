@@ -1,13 +1,11 @@
 <div class="deal-info-page">
-  <!-- Header -->
   <app-deal-header [deal]="deal"></app-deal-header>
  
-  <!-- Status Timeline -->
   <div class="timeline-wrapper">
     <app-status-timeline
       [currentStage]="deal?.stage"
-      (stageChange)="onStageChange($event)"
-    ></app-status-timeline>
+      (stageChange)="onStageChange($event)">
+    </app-status-timeline>
   </div>
  
   <!-- Mobile Tabs -->
@@ -24,10 +22,8 @@
     </div>
   </div>
  
-  <!-- Content Wrapper with Max Width -->
   <div class="content-wrapper">
     <div class="content">
-      <!-- Desktop: Two-column layout -->
       <div class="desktop-layout">
         <div class="left-column">
           <app-deal-info-card
@@ -49,8 +45,10 @@
           <app-doc-upload
             *ngIf="desktopSelectedTabId === 'documents'"
           ></app-doc-upload>
-          <app-notes-tab 
-          *ngIf="desktopSelectedTabId === 'notes'"></app-notes-tab>
+       <app-notes-tab
+  *ngIf="desktopSelectedTabId === 'notes' && dealId"
+  [dealId]="dealId"
+></app-notes-tab>
         </div>
       </div>
  
@@ -74,16 +72,13 @@
           </div>
           <div *ngIf="mobileSelectedTabId === 'documents'" class="tab-section">
             <app-doc-upload></app-doc-upload>
-            
           </div>
-         
-
-<div *ngIf="desktopSelectedTabId === 'notes'">
-
-  <app-notes-tab></app-notes-tab>
+        <div *ngIf="mobileSelectedTabId === 'notes' && dealId" class="tab-section">
+  <app-notes-tab [dealId]="dealId"></app-notes-tab>
 </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+ 
