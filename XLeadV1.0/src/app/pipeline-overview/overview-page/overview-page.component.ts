@@ -60,7 +60,7 @@ export class OverviewPageComponent {
     this.isLoading = true;
     this.errorMessage = null;
  
-    if (!this.authService.hasPrivilege('overview')) {
+    if (!this.authService.hasPrivilege('Overview')) {
         this.errorMessage = "User does not have 'Overview' privilege.";
         this.isLoading = false;
         console.error(this.errorMessage);
@@ -68,29 +68,26 @@ export class OverviewPageComponent {
         return;
     }
  
-    console.log(`OverviewPage: Loading data for manager ID: ${this.managerId}`);
+   
  
     forkJoin({
       deals: this.dealService.getManagerOverviewDeals(this.managerId),
       stageCounts: this.dealService.getManagerOverviewStageCounts(this.managerId)
     }).subscribe({
       next: (results) => {
-        console.log('OverviewPage: Data received from backend.');
        
         this.tableData = results.deals.map(deal => ({
           ...deal,
        
           closingDate: deal.closingDate ? new Date(deal.closingDate).toISOString() : null
         }));
-        console.log('OverviewPage: Table data populated:', this.tableData);
- 
+       
         this.topcardData.forEach(card => {
      
           const foundStage = results.stageCounts.find(sc => sc.stageName === (card.originalTitle || card.title));
           card.amount = foundStage ? foundStage.dealCount : 0;
         });
-        console.log('OverviewPage: Top card data populated:', this.topcardData);
- 
+       
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -115,3 +112,4 @@ export class OverviewPageComponent {
     }
   }
 }
+ 
