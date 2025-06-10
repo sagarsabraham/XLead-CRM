@@ -1,15 +1,27 @@
 <div class="page-container" [ngClass]="{'mobile-view': isMobile}">
   <!-- Sidebar (uncomment if needed) -->
   <!-- <app-sidebar></app-sidebar> -->
- 
+
+  <dx-toast
+    #toastInstance
+    [(visible)]="toastVisible"
+    [message]="toastMessage"
+    [type]="toastType"
+    [displayTime]="3000"
+    position="top center"
+    [width]="300">
+    <div *dxTemplate="let data of 'content'">
+      <span>{{ toastMessage }}</span>
+    </div>
+  </dx-toast>
+
   <div class="container">
-   
     <!-- Loading state -->
     <div *ngIf="isLoading" class="loading-state">
       <div class="spinner"></div>
       <p>Loading companies...</p>
     </div>
- 
+
     <!-- Error state -->
     <div *ngIf="error" class="error-state">
       <div class="error-message">
@@ -19,7 +31,7 @@
         Retry
       </button>
     </div>
- 
+
     <!-- Only show content when data is loaded -->
     <div *ngIf="!isLoading && !error">
       <div class="metric-cards-section">
@@ -37,15 +49,14 @@
         <app-table
           [data]="tableData"
           [headers]="tableHeaders"
-         
           [ownerField]="'owner'"
           [exportFileName]="'Customers'"
           [entityType]="'Customer'"
-           [allowEditing]="canEditCustomers"
+          [allowEditing]="canEditCustomers"
           [allowDeleting]="canDeleteCustomers"
-   (onRowUpdating)="handleUpdate($event)"
-   (onRowRemoving)="handleDelete($event)"
-    [lookupData]="tableLookups" 
+          (onRowUpdating)="handleUpdate($event)"
+          (onRowRemoving)="handleDelete($event)"
+          [lookupData]="tableLookups"
         ></app-table>
       </div>
     </div>
