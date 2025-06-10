@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ContactPageComponent } from './contact-page/contact-page.component';
 
 const routes: Routes = [
-  {path:'',component:ContactPageComponent}
+  { path: '', component: ContactPageComponent, data: { title: 'Contacts' } }
 ];
 
 @NgModule({

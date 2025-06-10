@@ -12,7 +12,8 @@ import { DxLoadIndicatorModule, DxToastModule } from 'devextreme-angular';
     CommonModule,
     ContactsRoutingModule,
     SharedModule,
-    DxLoadIndicatorModule,DxToastModule
+    DxLoadIndicatorModule,
+    DxToastModule
   ],
   exports: [
     ContactPageComponent

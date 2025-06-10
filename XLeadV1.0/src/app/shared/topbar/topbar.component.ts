@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
 
@@ -8,11 +8,6 @@ import { filter, map } from 'rxjs';
   styleUrls: ['./topbar.component.css']
 })
 export class TopbarComponent implements OnInit{
-  // profile = {
-  //   name: 'Subash Joseph',
-  //   role: 'Admin',
-  // };
-
   pageTitle: string = '';
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
@@ -26,13 +21,23 @@ export class TopbarComponent implements OnInit{
       .subscribe(title => {
         this.pageTitle = title || '';
       });
+
+      const initialTitle = this.getRouteTitle(this.activatedRoute);
+      this.pageTitle = initialTitle || 'Default Title';
   }
 
   private getRouteTitle(route: ActivatedRoute): string | undefined {
     let currentRoute = route;
+    let title: string | undefined = undefined;
     while (currentRoute.firstChild) {
       currentRoute = currentRoute.firstChild;
     }
-    return currentRoute.snapshot.data['title'];
+    while (currentRoute && !title) {
+      title = currentRoute.snapshot.data['title'];
+      console.log('Checking route data:', currentRoute.snapshot.data);
+      currentRoute = currentRoute.parent as ActivatedRoute;
+    }
+
+    return title;
   }
 }

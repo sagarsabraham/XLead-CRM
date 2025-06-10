@@ -2,7 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
- 
+
+// --- Imports for the new standardization pattern ---
+import { ApiResponseService } from './apiresponse.service'; // Corrected path and filename
+import { ApiResponse } from '../models/api-response.model';
+
+// --- Interface Definitions (No changes needed here) ---
 export interface Customer {
   customerName: string;
   phoneNo: string;
@@ -11,7 +16,7 @@ export interface Customer {
   countryCode: string;
   createdBy: number;
 }
- 
+
 export interface Contact {
   firstName: string;
   lastName: string;
@@ -22,7 +27,7 @@ export interface Contact {
   countryCode?: string;
   createdBy: number;
 }
- 
+
 export interface ContactCreateDto {
   firstName: string;
   lastName: string;
@@ -32,7 +37,6 @@ export interface ContactCreateDto {
   customerName: string;
   createdBy: number;
 }
- 
 
 export interface CustomerContactMap {
   isActive: boolean;
@@ -40,26 +44,29 @@ export interface CustomerContactMap {
   contacts: string[];
 }
 
- 
+
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyContactService {
   private apiUrl = environment.apiUrl;
- 
-  constructor(private http: HttpClient) {}
- 
+
+  // --- KEY CHANGE 1: Inject both HttpClient and our new ApiResponseService ---
+  constructor(
+    private http: HttpClient,
+    private apiResponseService: ApiResponseService
+  ) {}
+
+  // --- Methods that depend on other methods (No internal changes needed!) ---
+  // These work because the methods they call (e.g., getContacts) are now refactored
+  // to return the unwrapped data, so the `map` operator receives what it expects.
   getContactByNameAndCustomer(contactName: string, customerName: string): Observable<Contact | undefined> {
     console.log('getContactByNameAndCustomer called with contactName:', contactName, 'customerName:', customerName);
     return this.getContacts().pipe(
       map(contacts => {
         const normalizedContactName = contactName.trim().toLowerCase();
-        const normalizedCustomerName = customerName.trim().toLowerCase();
         const foundContact = contacts.find((contact: any) => {
           const fullName = `${contact.firstName} ${contact.lastName}`.trim().toLowerCase();
-          // Assuming the getContacts() response doesn't have customerName directly
-          // This part of your logic might need adjustment if getContacts() API changes
-          // For now, let's assume it works or is handled elsewhere.
           return fullName === normalizedContactName;
         });
         if (!foundContact) {
@@ -69,67 +76,67 @@ export class CompanyContactService {
       })
     );
   }
- 
-  // --- THIS IS THE CORRECTED METHOD ---
-  getCompanyContactMap(): Observable<{ [customer: string]: CustomerContactMap}> {
-    return this.http.get<{ [customer: string]: CustomerContactMap }>(
-      `${this.apiUrl}/api/CustomerContact/customer-contact-map`
-    );
-  }
- 
-  getCompanies(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/api/CustomerContact/customers`);
-  }
- 
-  getContacts(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/api/CustomerContact/contacts`);
-  }
- 
-  addCompany(customer: any): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/api/CustomerContact/customer`,
-      customer,
-      {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json'
-        })
-      }
-    );
-  }
- 
-  addContact(contact: any): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/api/CustomerContact/contact`,
-      contact,
-      {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json'
-        })
-      }
-    );
-  }
- 
+
   getCompanyByName(name: string): Observable<any> {
     return this.getCompanies().pipe(
       map(companies => companies.find((company: any) => company.customerName === name))
     );
   }
 
-    updateCompany(id: number, companyData: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/api/CustomerContact/customer/${id}`, companyData);
+  // --- Refactored methods that make direct API calls ---
+
+  getCompanyContactMap(): Observable<{ [customer: string]: CustomerContactMap }> {
+    const source$ = this.http.get<ApiResponse<{ [customer: string]: CustomerContactMap }>>(
+      `${this.apiUrl}/api/CustomerContact/customer-contact-map`
+    );
+    return this.apiResponseService.handleResponse(source$);
   }
 
-  // Pass userId to the backend for authorization check
+  getCompanies(): Observable<any[]> {
+    const source$ = this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/api/CustomerContact/customers`);
+    return this.apiResponseService.handleResponse(source$);
+  }
+
+  getContacts(): Observable<any[]> {
+    const source$ = this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/api/CustomerContact/contacts`);
+    return this.apiResponseService.handleResponse(source$);
+  }
+
+  addCompany(customer: any): Observable<any> {
+    const source$ = this.http.post<ApiResponse<any>>(
+      `${this.apiUrl}/api/CustomerContact/customer`,
+      customer,
+      { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }
+    );
+    return this.apiResponseService.handleResponse(source$);
+  }
+
+  addContact(contact: any): Observable<any> {
+    const source$ = this.http.post<ApiResponse<any>>(
+      `${this.apiUrl}/api/CustomerContact/contact`,
+      contact,
+      { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }
+    );
+    return this.apiResponseService.handleResponse(source$);
+  }
+
+  updateCompany(id: number, companyData: any): Observable<any> {
+    const source$ = this.http.put<ApiResponse<any>>(`${this.apiUrl}/api/CustomerContact/customer/${id}`, companyData);
+    return this.apiResponseService.handleResponse(source$);
+  }
+
   deleteCompany(id: number, userId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/api/CustomerContact/customer/${id}?userId=${userId}`);
+    const source$ = this.http.delete<ApiResponse<any>>(`${this.apiUrl}/api/CustomerContact/customer/${id}?userId=${userId}`);
+    return this.apiResponseService.handleResponse(source$);
   }
   
   updateContact(id: number, contactData: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/api/CustomerContact/contact/${id}`, contactData);
+    const source$ = this.http.put<ApiResponse<any>>(`${this.apiUrl}/api/CustomerContact/contact/${id}`, contactData);
+    return this.apiResponseService.handleResponse(source$);
   }
 
-  // Pass userId to the backend for authorization check
   deleteContact(id: number, userId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/api/CustomerContact/contact/${id}?userId=${userId}`);
+    const source$ = this.http.delete<ApiResponse<any>>(`${this.apiUrl}/api/CustomerContact/contact/${id}?userId=${userId}`);
+    return this.apiResponseService.handleResponse(source$);
   }
 }

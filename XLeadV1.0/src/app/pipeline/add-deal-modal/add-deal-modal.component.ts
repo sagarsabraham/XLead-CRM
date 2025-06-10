@@ -381,6 +381,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
           const fieldType = typeof deal.customFields![key] === 'number' ? 'Numerical' :
             typeof deal.customFields![key] === 'boolean' ? 'Boolean' :
               typeof deal.customFields![key] === 'string' && parseDate(deal.customFields![key]) ? 'Date' : 'Text';
+            typeof deal.customFields![key] === 'boolean' ? 'Boolean' :
+              typeof deal.customFields![key] === 'string' && parseDate(deal.customFields![key]) ? 'Date' : 'Text';
           this.customFields.push({
             fieldLabel: fieldLabel,
             fieldType: fieldType,
@@ -781,7 +783,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   closeCustomizeFieldModal() {
     this.isCustomizeFieldModalVisible = false;
   }
-
+  showForm = true;
+  
   addCustomField(newField: any) {
     const dataField = `custom_${newField.fieldLabel.toLowerCase().replace(/\s+/g, '_')}`;
     this.customFields.push({
@@ -790,8 +793,30 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       dataField: dataField,
       required: false,
     });
-    this.newDeal[dataField] = newField.fieldType.toLowerCase() === 'boolean' ? false : (newField.fieldType.toLowerCase() === 'numerical' || newField.fieldType.toLowerCase() === 'date' ? null : '');
+    this.newDeal[dataField] = '';
+    console.log("Custom field array", this.customFields);
+    switch (newField.fieldType.toLowerCase()) {
+      case 'text':
+        this.newDeal[dataField] = '';
+        break;
+      case 'numerical':
+        this.newDeal[dataField] = null;
+        break;
+      case 'boolean':
+        this.newDeal[dataField] = false;
+        break;
+      case 'date':
+        this.newDeal[dataField] = null;
+        break;
+      default:
+        this.newDeal[dataField] = '';
+    }
+    this.showForm = false;
     this.cdr.detectChanges();
+    this.showForm = true;
+    this.cdr.detectChanges();
+    console.log("Custom field array", this.customFields);
+    this.showToast('Custom field added successfully!', 'success');
     this.closeCustomizeFieldModal();
   }
 

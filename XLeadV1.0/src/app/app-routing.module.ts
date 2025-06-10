@@ -29,7 +29,7 @@ const routes: Routes = [
   { 
     path: 'overview', loadChildren: () => 
     import('./pipeline-overview/pipeline-overview.module').then(m => m.PipelineOverviewModule),
-    data : {title : 'Pipeline Overview'}
+    data : {title : 'Overview'}
   },
   {
     path: 'dealinfo', loadChildren: () =>

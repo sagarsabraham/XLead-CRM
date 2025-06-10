@@ -186,6 +186,7 @@ export class ContactPageComponent implements OnInit {
         error: (err) => {
           console.error('Failed to delete contact', err);
           this.showToast(err.error?.message || 'Could not delete the contact.', 'error');
+          this.showToast(err.error?.message || 'Could not delete the contact.', 'error');
         }
       });
     

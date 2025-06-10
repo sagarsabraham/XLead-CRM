@@ -1,7 +1,9 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../environments/environment';
+import { ApiResponseService } from './apiresponse.service';
+import { ApiResponse } from '../models/api-response.model';
 
 interface DealStage {
   id: number;
@@ -15,13 +17,16 @@ interface DealStage {
 export class DealstageService {
 
   private apiUrl = environment.apiUrl;
-        
-  constructor(private http: HttpClient) { }
+
+  constructor(
+    private http: HttpClient,
+    private apiResponseService: ApiResponseService
+  ) { }
   
   getAllDealStages(): Observable<DealStage[]> {
-    // Add the full path here
     const url = `${this.apiUrl}/api/DealStage`;
     console.log('Calling API at:', url);
-    return this.http.get<DealStage[]>(url);
+    const source$: Observable<ApiResponse<DealStage[]>> = this.http.get<ApiResponse<DealStage[]>>(url);
+    return this.apiResponseService.handleResponse(source$);
   }
 }

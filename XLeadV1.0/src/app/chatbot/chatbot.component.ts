@@ -2,8 +2,9 @@ import { Component, AfterViewChecked, ViewChild, ElementRef, OnInit, ChangeDetec
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { marked } from 'marked';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ApiResponse } from '../models/api-response.model'; 
 
-// Interfaces
+
 interface AiQueryServerResponse {
   message: string;
   results?: any[];
@@ -43,7 +44,7 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
   smartSuggestions = [];
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private sanitizer: DomSanitizer,
     private cdr: ChangeDetectorRef
   ) {}
@@ -87,12 +88,11 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
   toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
     if (!this.isCollapsed) {
-      // Focus input when expanding
       setTimeout(() => {
         if (this.messageInput?.nativeElement) {
           this.messageInput.nativeElement.focus();
         }
-      }, 300); // Wait for animation to complete
+      }, 300);
     }
   }
 
@@ -136,21 +136,41 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
 
   private processWithAi(prompt: string): void {
     this.isTyping = true;
-    this.results = []; // Clear previous results immediately
+    this.results = [];
     this.shouldScrollToBottom = true;
 
     const apiUrl = `${this.baseApiUrl}/aiquery/process-natural-language`;
-    this.http.post<AiQueryServerResponse>(apiUrl, { naturalLanguageQuery: prompt })
+    this.http.post<ApiResponse<AiQueryServerResponse>>(apiUrl, { naturalLanguageQuery: prompt })
       .subscribe({
-        next: (response) => {
+        next: (wrappedResponse: ApiResponse<AiQueryServerResponse>) => {
+          console.log('Raw Wrapped API Response received in FE:', JSON.stringify(wrappedResponse, null, 2));
           this.isTyping = false;
-          if (response.success) {
-            // Keep the full results for potential future use (like re-adding exports)
-            this.results = response.results || [];
-            // The message from the backend is now the primary content to display
-            this.addBotResponse(response.message, response.generatedSql);
+
+          // Check if the response conforms to the expected ApiResponse structure
+          if (wrappedResponse && typeof wrappedResponse.success === 'boolean') {
+            if (wrappedResponse.success && wrappedResponse.data) {
+              // Outer API call was successful and data (AiQueryServerResponse) is present
+              const aiResponse = wrappedResponse.data;
+
+              // Now check the success status from the AI processing logic
+              if (aiResponse.success) {
+                this.results = aiResponse.results || [];
+                this.addBotResponse(aiResponse.message, aiResponse.generatedSql);
+              } else {
+                // AI processing failed, use its message
+                this.addBotResponse(`⚠️ ${aiResponse.message || 'The AI could not process your request.'}`, aiResponse.generatedSql);
+              }
+            } else {
+              // Outer API call indicated failure (wrappedResponse.success is false),
+              // or success was true but data was missing.
+              const errorMessage = wrappedResponse.message || 'Failed to process the request on the server or data was missing.';
+              this.addBotResponse(`⚠️ ${errorMessage}`);
+              console.warn('API call was not successful or data was missing in wrapped response:', wrappedResponse);
+            }
           } else {
-            this.addBotResponse(`⚠️ ${response.message}`, response.generatedSql);
+            // The response object does not look like our ApiResponse<T>
+            console.error('Received malformed API response:', wrappedResponse);
+            this.addBotResponse('⚠️ Received an unexpected response format from the server.');
           }
         },
         error: (err: HttpErrorResponse) => {
@@ -162,34 +182,63 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
 
   private async addBotResponse(text: string, sqlQuery?: string): Promise<void> {
     try {
-      const parsedHtml = await marked.parse(text);
+      // Ensure text is a string, defaulting to empty if null/undefined to avoid marked.parse error
+      const messageText = text || '';
+      console.log(`[ChatbotComponent] addBotResponse called with text: "${messageText}"`);
+      const parsedHtml = await marked.parse(messageText);
       this.messages.push({
         id: this.generateMessageId(),
-        text,
+        text: messageText,
         parsedText: this.sanitizer.bypassSecurityTrustHtml(parsedHtml),
         timestamp: new Date(),
         isUser: false,
         sqlQuery
       });
-      
+
       this.shouldScrollToBottom = true;
-      this.cdr.detectChanges(); // Manually trigger change detection
+      this.cdr.detectChanges();
     } catch (error) {
-      console.error('Error parsing markdown:', error);
+      console.error('Error parsing markdown:', error, 'Original text was:', text);
+      // Fallback for safety, display raw text if markdown parsing fails
+       this.messages.push({
+        id: this.generateMessageId(),
+        text: `Error displaying message: ${text || '(empty message)'}`,
+        parsedText: this.sanitizer.bypassSecurityTrustHtml(`Error displaying message. Please check console.`),
+        timestamp: new Date(),
+        isUser: false,
+        sqlQuery
+      });
+      this.shouldScrollToBottom = true;
+      this.cdr.detectChanges();
     }
   }
 
   private async handleApiError(error: HttpErrorResponse): Promise<void> {
-    let errorMessage = `**Oops! An error occurred.**\n\n`;
+    console.error('Full API HttpErrorResponse in handleApiError:', JSON.stringify(error, null, 2));
+    let userFriendlyMessage = `**Oops! An error occurred.**\n\n`;
+
     if (error.error instanceof ErrorEvent) {
-      errorMessage += `A network error prevented the request from completing.`;
+      // A client-side or network error occurred.
+      userFriendlyMessage += `A network error prevented the request from completing. Please check your connection.`;
     } else {
-      errorMessage += `The server responded with a status of **${error.status}**.`;
-      if (error.error?.message) {
-        errorMessage += `\n\n> *${error.error.message}*`;
+      // The backend returned an unsuccessful response code.
+      userFriendlyMessage += `The server responded with a status of **${error.status}**.`;
+
+      // Attempt to parse error.error as ApiResponse<any>
+      const errorResponse = error.error as ApiResponse<any>;
+      if (errorResponse && typeof errorResponse.success === 'boolean' && errorResponse.message) {
+        // We have a structured error message from our ApiResponse wrapper
+        userFriendlyMessage += `\n\n> *${errorResponse.message}*`;
+      } else if (typeof error.error === 'string' && error.error.length > 0 && error.error.length < 500) { // Check for simple string error
+         userFriendlyMessage += `\n\n> *${error.error}*`;
+      } else if (error.message) {
+        // Fallback to the HttpErrorResponse's message property (can be generic)
+        userFriendlyMessage += `\n\n> *${error.message}*`;
+      } else {
+        userFriendlyMessage += `\n\nAn unknown server error occurred.`;
       }
     }
-    await this.addBotResponse(errorMessage);
+    await this.addBotResponse(userFriendlyMessage);
   }
 
   private addToHistory(query: string): void {
@@ -235,11 +284,9 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
   autoGrowTextarea(event: any): void {
     const textarea = event.target as HTMLTextAreaElement;
     textarea.style.height = 'auto';
-    // Set a max height to prevent infinite growth
     textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`;
   }
 
-  // TrackBy functions for *ngFor performance optimization
   trackByMessage(index: number, message: ChatMessage): string {
     return message.id;
   }

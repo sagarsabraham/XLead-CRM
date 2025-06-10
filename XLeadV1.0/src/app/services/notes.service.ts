@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment'; 
+import { ApiResponseService } from './apiresponse.service';
+import { ApiResponse } from '../models/api-response.model';
 import { AuthService } from './auth-service.service';
- 
+import { Inject } from '@angular/core';
+
 export interface Note {
-  id?: number;
+  id: number;
   noteText: string;
   dealId?: number;
   createdBy?: number;
@@ -15,77 +18,68 @@ export interface Note {
   updatedByName?: string;
   updatedAt?: Date;
 }
- 
+
 export interface NoteCreate {
   noteText: string;
   dealId: number;
   createdBy: number;
 }
- 
+
 export interface NoteUpdate {
   noteText: string;
   updatedBy: number;
 }
- 
+
 @Injectable({
   providedIn: 'root'
 })
 export class NotesService {
-  private apiUrl = 'https://localhost:7297/api/notes';
+  private apiUrl = `${environment.apiUrl}/api/notes`; 
   private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
- 
   constructor(
     private http: HttpClient,
-    private authService: AuthService
+    @Inject(AuthService) private authService: AuthService,
+    private apiResponseService: ApiResponseService
   ) { }
- 
+
   createNote(note: NoteCreate): Observable<Note> {
-    return this.http.post<Note>(this.apiUrl, note, this.httpOptions)
-      .pipe(catchError(this.handleError));
+    const source$ = this.http.post<ApiResponse<Note>>(this.apiUrl, note, this.httpOptions);
+    return this.apiResponseService.handleResponse(source$);
   }
- 
+
   getNotesByDealId(dealId: number, userId?: number): Observable<Note[]> {
-    const params = new HttpParams().set('userId', (userId || this.authService.userId).toString());
+    const effectiveUserId = userId || this.authService.getUserId();
+    if (!effectiveUserId) {
+        return throwError(() => new Error('User ID is not available for fetching notes.'));
+    }
+    const params = new HttpParams().set('userId', effectiveUserId.toString());
     const options = { ...this.httpOptions, params };
    
-    return this.http.get<Note[]>(`${this.apiUrl}/deal/${dealId}`, options)
-      .pipe(catchError(this.handleError));
+    const source$ = this.http.get<ApiResponse<Note[]>>(`${this.apiUrl}/deal/${dealId}`, options);
+    return this.apiResponseService.handleResponse(source$);
   }
- 
+
   updateNote(id: number, noteText: string, updatedBy?: number): Observable<Note> {
+    const effectiveUserId = updatedBy || this.authService.getUserId();
+     if (!effectiveUserId) {
+        return throwError(() => new Error('User ID is not available for updating a note.'));
+    }
     const updateDto: NoteUpdate = {
       noteText,
-      updatedBy: updatedBy || this.authService.userId
+      updatedBy: effectiveUserId
     };
    
-    return this.http.put<Note>(`${this.apiUrl}/${id}`, updateDto, this.httpOptions)
-      .pipe(catchError(this.handleError));
+    const source$ = this.http.put<ApiResponse<Note>>(`${this.apiUrl}/${id}`, updateDto, this.httpOptions);
+    return this.apiResponseService.handleResponse(source$);
   }
- 
+
   deleteNote(id: number, userId?: number): Observable<void> {
-    const params = new HttpParams().set('userId', (userId || this.authService.userId).toString());
-    const options = { ...this.httpOptions, params };
-   
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, options)
-      .pipe(catchError(this.handleError));
-  }
- 
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'An unknown error occurred!';
-   
-    if (error.status === 403) {
-      errorMessage = 'You do not have permission to perform this action.';
-    } else if (error.error instanceof ErrorEvent) {
-      errorMessage = `Error: ${error.error.message}`;
-    } else {
-      if (error.status === 0) {
-        errorMessage = 'Could not connect to the server. Please check your connection.';
-      } else {
-        errorMessage = `Server error: ${error.status} - ${error.message || error.statusText}`;
-      }
+    const effectiveUserId = userId || this.authService.getUserId();
+     if (!effectiveUserId) {
+        return throwError(() => new Error('User ID is not available for deleting a note.'));
     }
-   
-    return throwError(() => new Error(errorMessage));
+    const params = new HttpParams().set('userId', effectiveUserId.toString());
+    const options = { ...this.httpOptions, params };
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, options);
   }
 }
- 

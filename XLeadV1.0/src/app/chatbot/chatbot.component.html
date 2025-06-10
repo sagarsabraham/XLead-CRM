@@ -15,7 +15,7 @@
     <div class="pulse-ring-2"></div>
     <div class="notification-badge" *ngIf="messages.length > 1" aria-hidden="true"></div>
   </div>
-
+ 
   <!-- EXPANDED STATE -->
   <ng-container *ngIf="!isCollapsed">
     <!-- CHATBOT HEADER -->
@@ -35,9 +35,9 @@
           <h3>XBot</h3>
         </div>
         <div class="header-actions">
-          <button 
-            class="clear-btn" 
-            (click)="clearChat($event)" 
+          <button
+            class="clear-btn"
+            (click)="clearChat($event)"
             title="Clear Chat"
             aria-label="Clear chat history">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -47,8 +47,8 @@
               <line x1="14" y1="11" x2="14" y2="17"></line>
             </svg>
           </button>
-          <button 
-            class="toggle-btn" 
+          <button
+            class="toggle-btn"
             [class.rotated]="!isCollapsed"
             title="Minimize chat"
             aria-label="Minimize chat window">
@@ -59,21 +59,21 @@
         </div>
       </div>
     </div>
-
+ 
     <!-- CHATBOT BODY -->
     <div class="chatbot-body">
       <div class="messages-container" #messagesContainer>
         <!-- Message Loop -->
-        <div *ngFor="let message of messages; trackBy: trackByMessage" 
-             class="message-wrapper" 
+        <div *ngFor="let message of messages; trackBy: trackByMessage"
+             class="message-wrapper"
              [class.user-message]="message.isUser">
           <div class="message-content">
             <div class="message-bubble">
               <!-- Render Markdown for bot messages, plain text for user messages -->
-              <div class="message-text" 
+              <div class="message-text"
                    [innerHTML]="message.isUser ? message.text : message.parsedText">
               </div>
-              
+             
               <!-- Show SQL in a collapsible details tag -->
               <div *ngIf="!message.isUser && message.sqlQuery" class="message-sql-query">
                 <details>
@@ -85,7 +85,7 @@
             <div class="message-timestamp">{{ getTimeString(message.timestamp) }}</div>
           </div>
         </div>
-
+ 
         <!-- Typing Indicator -->
         <div *ngIf="isTyping" class="message-wrapper">
           <div class="message-content">
@@ -99,35 +99,35 @@
           </div>
         </div>
       </div>
-      
+     
       <!-- Smart Suggestions -->
       <div class="suggestions-container" *ngIf="smartSuggestions.length > 0">
-        <button *ngFor="let suggestion of smartSuggestions; trackBy: trackBySuggestion" 
-                class="suggestion-chip" 
+        <button *ngFor="let suggestion of smartSuggestions; trackBy: trackBySuggestion"
+                class="suggestion-chip"
                 (click)="sendQuickAction(suggestion)"
                 [title]="suggestion">
           {{ suggestion }}
         </button>
       </div>
-
+ 
       <!-- INPUT AREA -->
       <div class="input-area">
         <div class="input-wrapper">
-          <textarea 
-            #messageInput 
-            [(ngModel)]="userInput" 
-            (input)="autoGrowTextarea($event)" 
-            (keydown)="onInputKeyDown($event)" 
+          <textarea
+            #messageInput
+            [(ngModel)]="userInput"
+            (input)="autoGrowTextarea($event)"
+            (keydown)="onInputKeyDown($event)"
            
-            class="message-input" 
+            class="message-input"
             rows="1"
             aria-label="Type your message"
             [disabled]="isTyping">
           </textarea>
-          <button 
-            class="send-btn" 
-            (click)="sendMessage()" 
-            [disabled]="!userInput.trim() || isTyping" 
+          <button
+            class="send-btn"
+            (click)="sendMessage()"
+            [disabled]="!userInput.trim() || isTyping"
             title="Send Message"
             aria-label="Send message">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
