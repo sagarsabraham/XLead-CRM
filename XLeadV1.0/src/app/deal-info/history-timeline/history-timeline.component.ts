@@ -1,15 +1,17 @@
 import { Component, Input } from '@angular/core';
  
-
+ 
+ 
 interface HistoryEntry {
   timestamp: string;
   editedBy: string;
   fromStage: string;
   toStage: string;
+  isInitial?: boolean;
 }
  export interface TimelineDisplayEntry {
   timestamp: string;
-  editedByUserId: number; 
+  editedByUserId: number;
   editedByUserName?: string;
   fromStage: string;
   toStage: string;
@@ -23,7 +25,7 @@ interface HistoryEntry {
 export class HistoryTimelineComponent {
   @Input() history: HistoryEntry[] = [];
  
-  
+ 
   get groupedHistory(): { date: string; entries: HistoryEntry[] }[] {
     if (!this.history || this.history.length === 0) return [];
  
@@ -31,7 +33,7 @@ export class HistoryTimelineComponent {
     let currentDate = '';
     let currentGroup: HistoryEntry[] = [];
  
-  
+ 
     const sortedHistory = this.history.slice().sort((a, b) => {
       return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
     });
@@ -61,7 +63,7 @@ export class HistoryTimelineComponent {
       const date = new Date(timestamp);
       if (isNaN(date.getTime())) return 'Invalid date';
  
-    
+   
       const options: Intl.DateTimeFormatOptions = {
         month: 'short',
         day: '2-digit',
@@ -101,3 +103,4 @@ export class HistoryTimelineComponent {
     return today.toLocaleDateString('en-US', options);
   }
 }
+ 

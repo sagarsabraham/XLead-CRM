@@ -53,12 +53,13 @@ app-sidebar {
  
 .topcard-container app-topcard {
   flex: 0.1;
+  margin-left: -22px;
 }
  
 .content {
   flex: 1;
   overflow-y: auto;
-  padding-top: 35px;
+  margin-left: -20px;
 }
  
 /* Table */

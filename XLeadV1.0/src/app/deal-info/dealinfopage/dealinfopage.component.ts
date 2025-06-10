@@ -119,19 +119,13 @@ export class DealinfopageComponent implements OnInit {
  
   loadStageHistory() {
     if (!this.dealId) return;
- 
     this.dealService.getDealStageHistory(this.dealId).subscribe({
       next: (history) => {
         this.processStageHistory(history);
       },
       error: (err) => {
         console.error('Error loading stage history:', err);
-        this.history = [{
-          timestamp: this.formatDate(this.deal?.startDate ? new Date(this.deal.startDate) : new Date()),
-          editedBy: 'System',
-          fromStage: 'Initial',
-          toStage: this.deal?.stage || 'Qualification'
-        }];
+        this.processStageHistory([]);
       }
     });
   }
@@ -258,40 +252,54 @@ processDealDataWithContactInfo(dealData: any) {
   }
  
   processStageHistory(history: any[]) {
-    this.history = [];
-   
-    if (!history || history.length === 0) {
+  this.history = [];
+ 
+  if (!this.deal) {
+    console.error("processStageHistory called before deal data is available.");
+    return;
+  }
+ 
+  const sortedHistory = history ? [...history].sort((a, b) =>
+    new Date(a.createdAt || a.timestamp).getTime() - new Date(b.createdAt || b.timestamp).getTime()
+  ) : [];
+ 
+  let trueInitialStage;
+  if (sortedHistory.length > 0) {
+    trueInitialStage = sortedHistory[0].fromStage || 'Qualification';
+  } else {
+    trueInitialStage = this.deal.stage;
+  }
+ 
+  const creationTimestamp = this.deal.createdAt ? new Date(this.deal.createdAt) : new Date();
+ 
+  this.history.push({
+    isInitial: true,
+    timestamp: this.formatDate(creationTimestamp),
+    fromStage: `Deal '${this.deal.title}' created`,
+    toStage: trueInitialStage
+  });
+ 
+  let previousStage = trueInitialStage;
+ 
+  sortedHistory.forEach(entry => {
+    const toStage = entry.stageDisplayName || entry.stageName || entry.toStage;
+    const fromStage = entry.fromStage || previousStage;
+ 
+    if (fromStage !== toStage) {
       this.history.push({
-        timestamp: this.formatDate(this.deal?.startDate ? new Date(this.deal.startDate) : new Date()),
-        editedBy: 'System',
-        fromStage: 'Initial',
-        toStage: this.deal.stage || 'Qualification'
-      });
-      return;
-    }
-   
-    const sortedHistory = [...history].sort((a, b) => {
-      const dateA = new Date(a.createdAt || a.timestamp);
-      const dateB = new Date(b.createdAt || b.timestamp);
-      return dateA.getTime() - dateB.getTime();
-    });
-   
-    let previousStage = 'Initial';
-   
-    sortedHistory.forEach((entry) => {
-      const date = new Date(entry.createdAt || entry.timestamp);
-      const toStage = entry.stageDisplayName || entry.stageName || entry.toStage;
-      this.history.push({
-        timestamp: this.formatDate(date),
+        isInitial: false,
+        timestamp: this.formatDate(new Date(entry.createdAt || entry.timestamp)),
         editedBy: entry.createdBy || entry.editedBy || 'Unknown User',
-        fromStage: entry.fromStage || previousStage,
+        fromStage: fromStage,
         toStage: toStage
       });
-      previousStage = toStage;
-    });
-   
-    this.history.reverse();
-  }
+    }
+ 
+    previousStage = toStage;
+  });
+ 
+  this.history.reverse();
+}
  
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
