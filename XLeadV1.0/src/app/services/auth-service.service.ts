@@ -9,7 +9,7 @@ interface Privilege {
   providedIn: 'root'
 })
 export class AuthService {
-  userId: number = 2;
+  userId: number = 4;
   privileges: Privilege[] = [];
 
   setPrivileges(privs: Privilege[]) {
