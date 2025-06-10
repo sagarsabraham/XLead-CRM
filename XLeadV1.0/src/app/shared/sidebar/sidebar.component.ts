@@ -33,7 +33,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-   
     this.privilegeService.getPrivileges(this.auth.userId).subscribe(privs => {
       this.auth.setPrivileges(privs);
       this.initializeNavItems();
@@ -41,8 +40,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   private initializeNavItems() {
-    const pipelineRoute = this.getPipelineRoute();
-    console.log('Pipeline route:', pipelineRoute);
+    console.log('Initializing nav items with privileges:', this.auth.privileges);
     
     this.navItems = [
       {
@@ -54,7 +52,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         iconPath: 'assets/Pipeline.png',
         text: 'Pipeline',
-        route: pipelineRoute,
+        route: this.getPipelineActualRoute(),
         isActive: false,
       },
       {
@@ -90,8 +88,27 @@ export class SidebarComponent implements OnInit, OnDestroy {
     const normalizedUrl = url === '/' ? '/dashboard' : url;
     this.navItems = this.navItems.map(item => ({
       ...item,
-      isActive: normalizedUrl === item.route || normalizedUrl.startsWith(item.route + '/'),
+      isActive: this.isRouteActive(normalizedUrl, item.route),
     }));
+  }
+
+  private isRouteActive(currentUrl: string, itemRoute: string): boolean {
+ 
+    if (itemRoute === '/access-denied') {
+      return false;
+    }
+    
+  
+    if (currentUrl === itemRoute) {
+      return true;
+    }
+    
+    
+    if (currentUrl.startsWith(itemRoute + '/')) {
+      return true;
+    }
+    
+    return false;
   }
 
   @HostListener('window:resize', ['$event'])
@@ -120,15 +137,77 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   navigate(route: string) {
+   
+    if (route === '/contacts' && !this.hasContactsAccess()) {
+      console.log('Access denied - insufficient privileges for contacts');
+      this.router.navigate(['/access-denied']);
+      return;
+    }
+    
+    if (route === '/companies' && !this.hasCustomersAccess()) {
+      console.log('Access denied - insufficient privileges for customers');
+      this.router.navigate(['/access-denied']);
+      return;
+    }
+    
+    if ((route === '/pipeline' || route === '/overview') && !this.hasPipelineAccess()) {
+      console.log('Access denied - insufficient privileges for pipeline');
+      this.router.navigate(['/access-denied']);
+      return;
+    }
+
+   
     this.router.navigate([route]);
   }
 
+  getPipelineActualRoute(): string {
+    console.log('Current privileges:', this.auth.privileges);
+    if (this.auth.hasPrivilege('Overview')) {
+      return '/overview';
+    } else if (this.auth.hasPrivilege('PipelineDetailAccess')) {
+      return '/pipeline';
+    } else {
+      return '/pipeline'; 
+    }
+  }
+
+  hasPipelineAccess(): boolean {
+    return this.auth.hasPrivilege('Overview') || this.auth.hasPrivilege('PipelineDetailAccess');
+  }
+
+  hasContactsAccess(): boolean {
+    return this.auth.hasPrivilege('ViewContacts') ;
+  }
+
+  hasCustomersAccess(): boolean {
+    return this.auth.hasPrivilege('ViewCustomers') ;
+  }
+
+ 
   getPipelineRoute(): string {
     console.log('Current privileges:', this.auth.privileges);
     if (this.auth.hasPrivilege('Overview')) {
       return '/overview';
     } else if (this.auth.hasPrivilege('PipelineDetailAccess')) {
       return '/pipeline';
+    } else {
+      return '/access-denied';
+    }
+  }
+
+  getContactsRoute(): string {
+    console.log('Checking contacts privileges:', this.auth.privileges);
+    if (this.auth.hasPrivilege('ViewContacts') ) {
+      return '/contacts';
+    } else {
+      return '/access-denied';
+    }
+  }
+
+  getCustomersRoute(): string {
+    console.log('Checking customers privileges:', this.auth.privileges);
+    if (this.auth.hasPrivilege('ViewCustomers') ) {
+      return '/companies';
     } else {
       return '/access-denied';
     }

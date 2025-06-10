@@ -1,27 +1,37 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { DxToastComponent } from 'devextreme-angular';
 import { forkJoin } from 'rxjs';
 import { AuthService } from 'src/app/services/auth-service.service';
 import { CompanyContactService } from 'src/app/services/company-contact.service';
- 
+
 @Component({
   selector: 'app-contact-page',
   templateUrl: './contact-page.component.html',
   styleUrls: ['./contact-page.component.css']
 })
 export class ContactPageComponent implements OnInit {
+  @ViewChild('toastInstance', { static: false }) toastInstance!: DxToastComponent;
+
+  // Toast properties
+  toastMessage: string = '';
+  toastType: 'info' | 'success' | 'error' | 'warning' = 'info';
+  toastVisible: boolean = false;
+
   tableHeaders = [
     { dataField: 'name', caption: 'Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'email', caption: 'Email', visible: true },
-    { dataField: 'customerName', caption: 'Customer', visible: true,
-      allowEditing:false
-     },
+    { 
+      dataField: 'customerName', 
+      caption: 'Customer', 
+      visible: true,
+      allowEditing: false
+    },
     { dataField: 'designation', caption: 'Designation', visible: true },
     {
       dataField: 'status',
       caption: 'Status',
       visible: true,
-      
       lookup: {
         dataSource: [
           { value: 'Active', displayValue: 'Active' },
@@ -32,64 +42,72 @@ export class ContactPageComponent implements OnInit {
       }
     }
   ];
- 
+
   tableData: any[] = [];
   totalContacts = 0;
   isMobile: boolean = false;
   isSidebarVisible: boolean = false;
   isLoading: boolean = true;
   error: string | null = null;
- canEditContacts = false;
+  canEditContacts = false;
   canDeleteContacts = false;
-  constructor(private contactService: CompanyContactService, private authService: AuthService) {
+  selectedContactIds: string[] = [];
+
+  constructor(
+    private contactService: CompanyContactService, 
+    private authService: AuthService
+  ) {
     this.checkIfMobile();
   }
- 
+
   ngOnInit(): void {
     this.canEditContacts = this.authService.hasPrivilege('EditContact');
     this.canDeleteContacts = this.authService.hasPrivilege('DeleteContact');
     this.loadContacts();
   }
- 
+
+  // Show toast message
+  showToast(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.toastVisible = true;
+  }
+
   private safeToString(value: any): string {
     return value !== undefined && value !== null ? String(value) : '';
   }
- 
+
   loadContacts(): void {
     this.isLoading = true;
     this.error = null;
- 
-   
+
     forkJoin({
       contacts: this.contactService.getContacts(),
       customers: this.contactService.getCompanies()
     }).subscribe({
       next: ({ contacts, customers }) => {
-     
         const customerMap: { [id: number]: string } = {};
         customers.forEach((customer: any) => {
           customerMap[customer.id] = customer.customerName || 'Unknown Customer';
         });
- 
-     
+
         this.tableData = contacts.map(contact => ({
           id: this.safeToString(contact.id || `temp-id-${Math.random().toString(36).substring(2)}`),
           name: contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim(),
           phone: contact.phoneNumber || '',
           email: contact.email || '',
           customerName: contact.customerId ? customerMap[contact.customerId] || 'Unknown Customer' : 'No Customer',
-          designation: contact.designation || 'N/A', 
+          designation: contact.designation || 'N/A',
           status: contact.isActive ? 'Active' : 'Inactive',
           owner: contact.createdBy?.toString() || 'System'
         }));
- 
-     
+
         const ids = this.tableData.map(item => item.id);
         const uniqueIds = new Set(ids);
         if (uniqueIds.size !== ids.length) {
           console.error('Duplicate IDs detected:', ids);
         }
- 
+
         this.totalContacts = this.tableData.length;
         this.isLoading = false;
       },
@@ -100,12 +118,12 @@ export class ContactPageComponent implements OnInit {
       }
     });
   }
- 
+
   @HostListener('window:resize')
   onResize(): void {
     this.checkIfMobile();
   }
- 
+
   private checkIfMobile(): void {
     this.isMobile = window.innerWidth <= 576;
     if (this.isMobile) {
@@ -114,17 +132,15 @@ export class ContactPageComponent implements OnInit {
       this.isSidebarVisible = true;
     }
   }
- 
-  selectedContactIds: string[] = [];
- 
+
   handleSelectionChanged(event: any): void {
     console.log('Selection changed:', event);
     console.log('Selected keys:', event.selectedRowKeys);
     console.log('Selected data:', event.selectedRowsData);
-   
     this.selectedContactIds = event.selectedRowKeys || [];
   }
- handleUpdate(event: any): void {
+
+  handleUpdate(event: any): void {
     const contactId = event.key;
     const finalData = { ...event.oldData, ...event.newData };
 
@@ -141,28 +157,22 @@ export class ContactPageComponent implements OnInit {
     this.contactService.updateContact(contactId, updatePayload).subscribe({
       next: (response) => {
         console.log('Contact updated successfully', response);
-        
-       
         const index = this.tableData.findIndex(c => c.id === contactId);
 
         if (index !== -1) {
-       
           this.tableData[index] = finalData;
-          
-          
           this.tableData = [...this.tableData];
         }
-        
+        this.showToast('Contact updated successfully!', 'success');
       },
       error: (err) => {
         console.error('Failed to update contact', err);
-        alert(err.error?.message || 'Update failed.');
-        this.loadContacts(); 
+        this.showToast(err.error?.message || 'Failed to update contact.', 'error');
+        this.loadContacts();
       }
     });
   }
 
-  
   handleDelete(event: any): void {
     const contactId = event.key;
     if (confirm('Are you sure you want to delete this contact?')) {
@@ -171,16 +181,17 @@ export class ContactPageComponent implements OnInit {
           console.log('Contact deleted successfully');
           this.tableData = this.tableData.filter(c => c.id !== contactId);
           this.totalContacts = this.tableData.length;
+          this.showToast('Contact deleted successfully!', 'success');
         },
         error: (err) => {
           console.error('Failed to delete contact', err);
-          alert(err.error?.message || 'Could not delete the contact.');
+          this.showToast(err.error?.message || 'Could not delete the contact.', 'error');
         }
       });
     }
   }
- 
+
   toggleSidebar(): void {
     this.isSidebarVisible = !this.isSidebarVisible;
   }
-} 
+}
