@@ -13,13 +13,11 @@ import { AuthService } from 'src/app/services/auth-service.service';
 })
 export class CompanyPageComponent implements OnInit {
   @ViewChild('toastInstance', { static: false }) toastInstance!: DxToastComponent;
-  
-  // Toast properties
+
   toastMessage: string = '';
   toastType: 'info' | 'success' | 'error' | 'warning' = 'info';
   toastVisible: boolean = false;
 
-  // Property to hold the data for the Industry Vertical dropdown
   industryVerticalsLookupData: any[] = [];
 
   tableHeaders = [
@@ -84,7 +82,7 @@ export class CompanyPageComponent implements OnInit {
     this.loadData();
   }
 
-  // Show toast message
+ 
   showToast(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
     this.toastMessage = message;
     this.toastType = type;
