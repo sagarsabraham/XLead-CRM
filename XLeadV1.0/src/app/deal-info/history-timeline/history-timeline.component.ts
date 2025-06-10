@@ -1,7 +1,5 @@
 import { Component, Input } from '@angular/core';
  
- 
- 
 interface HistoryEntry {
   timestamp: string;
   editedBy: string;
@@ -9,7 +7,8 @@ interface HistoryEntry {
   toStage: string;
   isInitial?: boolean;
 }
- export interface TimelineDisplayEntry {
+ 
+export interface TimelineDisplayEntry {
   timestamp: string;
   editedByUserId: number;
   editedByUserName?: string;
@@ -17,6 +16,7 @@ interface HistoryEntry {
   toStage: string;
   isInitial?: boolean;
 }
+ 
 @Component({
   selector: 'app-history-timeline',
   templateUrl: './history-timeline.component.html',
@@ -25,14 +25,12 @@ interface HistoryEntry {
 export class HistoryTimelineComponent {
   @Input() history: HistoryEntry[] = [];
  
- 
   get groupedHistory(): { date: string; entries: HistoryEntry[] }[] {
     if (!this.history || this.history.length === 0) return [];
  
     const grouped: { date: string; entries: HistoryEntry[] }[] = [];
     let currentDate = '';
     let currentGroup: HistoryEntry[] = [];
- 
  
     const sortedHistory = this.history.slice().sort((a, b) => {
       return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
@@ -48,7 +46,6 @@ export class HistoryTimelineComponent {
       currentGroup.push(item);
     });
  
-   
     if (currentGroup.length > 0) {
       grouped.push({ date: currentDate, entries: currentGroup });
     }
@@ -60,17 +57,20 @@ export class HistoryTimelineComponent {
     if (!timestamp) return 'Invalid date';
  
     try {
-      const date = new Date(timestamp);
+      // Ensure the timestamp is treated as UTC by appending 'Z' if no timezone is specified
+      const utcTimestamp = timestamp.endsWith('Z') ? timestamp : `${timestamp}Z`;
+      const date = new Date(utcTimestamp);
       if (isNaN(date.getTime())) return 'Invalid date';
  
-   
       const options: Intl.DateTimeFormatOptions = {
         month: 'short',
         day: '2-digit',
-        year: 'numeric'
+        year: 'numeric',
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone // Use user's local timezone
       };
       return date.toLocaleDateString('en-US', options).toUpperCase();
     } catch (e) {
+      console.error('Error parsing date:', e);
       return 'Invalid date';
     }
   }
@@ -79,16 +79,20 @@ export class HistoryTimelineComponent {
     if (!timestamp) return 'Invalid time';
  
     try {
-      const date = new Date(timestamp);
+      // Ensure the timestamp is treated as UTC by appending 'Z' if no timezone is specified
+      const utcTimestamp = timestamp.endsWith('Z') ? timestamp : `${timestamp}Z`;
+      const date = new Date(utcTimestamp);
       if (isNaN(date.getTime())) return 'Invalid time';
  
       const options: Intl.DateTimeFormatOptions = {
         hour: 'numeric',
         minute: '2-digit',
-        hour12: true
+        hour12: true,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone // Use user's local timezone
       };
       return date.toLocaleTimeString('en-US', options);
     } catch (e) {
+      console.error('Error parsing time:', e);
       return 'Invalid time';
     }
   }
@@ -98,9 +102,9 @@ export class HistoryTimelineComponent {
     const options: Intl.DateTimeFormatOptions = {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
     };
     return today.toLocaleDateString('en-US', options);
   }
 }
- 
