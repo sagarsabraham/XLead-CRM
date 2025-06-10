@@ -22,7 +22,7 @@ export class CompanyPageComponent implements OnInit {
 
   tableHeaders = [
     { dataField: 'customerName', caption: 'Customer Name', visible: true },
-    { dataField: 'phone', caption: 'Phone', visible: true },
+    { dataField: 'phoneNo', caption: 'Phone', visible: true },
     { dataField: 'website', caption: 'Website', visible: true },
     { 
       dataField: 'industryVertical', 
@@ -145,7 +145,7 @@ export class CompanyPageComponent implements OnInit {
           {
             id: '1',
             customerName: 'Demo Company',
-            phone: '123-456-7890',
+            phoneNo: '123-456-7890',
             website: 'demo.com',
             industryVertical: 'Technology',
             owner: 'System',
@@ -174,7 +174,7 @@ export class CompanyPageComponent implements OnInit {
     return {
       id: this.safeToString(company.id),
       customerName: company.customerName || 'Unnamed Customer',
-      phone: company.customerPhoneNumber || '',
+      phoneNo: company.customerPhoneNumber || '',
       website: company.website || '',
       industryVertical: this.industryVerticalMap[company.industryVerticalId] || 'Unknown',
       owner: ownerName,
@@ -210,18 +210,25 @@ export class CompanyPageComponent implements OnInit {
     return entry ? parseInt(entry[0], 10) : null;
   }
 
+// ... (rest of the component is the same)
+
   handleUpdate(event: any): void {
     const companyId = event.key;
     const finalData = { ...event.oldData, ...event.newData };
 
+    // REVERTED: The website normalization logic has been removed.
+    // We now send the website value exactly as it is in the grid.
+
     const updatePayload = {
       customerName: finalData.customerName,
-      phoneNo: finalData.phone,
-      website: finalData.website,
+      phoneNo: finalData.phoneNo,
+      website: finalData.website, // Send the raw value
       industryVerticalId: this.getIndustryIdByName(finalData.industryVertical),
       isActive: finalData.status === 'Active',
       updatedBy: this.authService.getUserId()
     };
+    
+    console.log('Sending update payload:', updatePayload);
 
     this.companyService.updateCompany(companyId, updatePayload).subscribe({
       next: (response) => {
@@ -237,15 +244,17 @@ export class CompanyPageComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to update customer', err);
-        this.showToast(err.error?.message || 'Failed to update customer.', 'error');
+        const errorDetails = err.error?.errors ? JSON.stringify(err.error.errors) : (err.error?.message || 'Failed to update customer.');
+        this.showToast(`Update failed: ${errorDetails}`, 'error');
         this.loadCompanies();
       }
     });
   }
 
+// ... (rest of the component is the same)
   handleDelete(event: any): void {
     const companyId = event.key;
-    if (confirm('Are you sure you want to delete this customer?')) {
+  
       this.companyService.deleteCompany(companyId, this.authService.getUserId()).subscribe({
         next: () => {
           console.log('Customer deleted successfully');
@@ -259,7 +268,7 @@ export class CompanyPageComponent implements OnInit {
         }
       });
     }
-  }
+  
 
   @HostListener('window:resize')
   onResize(): void {

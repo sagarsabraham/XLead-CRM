@@ -175,7 +175,7 @@ export class ContactPageComponent implements OnInit {
 
   handleDelete(event: any): void {
     const contactId = event.key;
-    if (confirm('Are you sure you want to delete this contact?')) {
+  
       this.contactService.deleteContact(contactId, this.authService.getUserId()).subscribe({
         next: () => {
           console.log('Contact deleted successfully');
@@ -188,7 +188,7 @@ export class ContactPageComponent implements OnInit {
           this.showToast(err.error?.message || 'Could not delete the contact.', 'error');
         }
       });
-    }
+    
   }
 
   toggleSidebar(): void {
