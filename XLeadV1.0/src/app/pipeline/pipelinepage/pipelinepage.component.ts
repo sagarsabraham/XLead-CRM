@@ -73,8 +73,8 @@ export class PipelinepageComponent implements OnInit {
         precision: 0 
       } 
     },
-    { dataField: 'startDate', caption: 'Start Date', visible: true, dataType: 'date', format: 'dd-MMM-yyyy' },
-    { dataField: 'closeDate', caption: 'Close Date', visible: true, dataType: 'date', format: 'dd-MMM-yyyy' },
+    { dataField: 'startDate', caption: 'Start Date', visible: true},
+    { dataField: 'closeDate', caption: 'Close Date', visible: true},
     { dataField: 'department', caption: 'Department', visible: true },
     { dataField: 'probability', caption: 'Probability', visible: true },
     { dataField: 'region', caption: 'Region', visible: true },
@@ -206,7 +206,9 @@ export class PipelinepageComponent implements OnInit {
       stage.deals.map(deal => ({
         ...deal,
         stageName: stage.name,
-        id: String(deal.id)
+        id: String(deal.id),
+        startDate: this.formatDateForDisplay(deal.startDate), 
+        closeDate: this.formatDateForDisplay(deal.closeDate)
       }))
     );
     console.log('Table data refreshed:', this._tableData.length, 'deals');
