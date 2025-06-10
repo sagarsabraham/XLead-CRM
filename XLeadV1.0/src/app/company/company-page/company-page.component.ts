@@ -88,8 +88,6 @@ canDeleteCustomers = false;
   ngOnInit(): void {
     this.canEditCustomers = this.authService.hasPrivilege('EditCustomer');
     this.canDeleteCustomers = this.authService.hasPrivilege('DeleteCustomer');
-    this.canEditCustomers = this.authService.hasPrivilege('EditCustomer');
-    this.canDeleteCustomers = this.authService.hasPrivilege('DeleteCustomer');
     this.loadData();
   }
  
@@ -240,28 +238,29 @@ canDeleteCustomers = false;
         
       },
       error: (err) => {
-        console.error('Failed to update company', err);
-        this.showToast(err.error?.message || 'Update failed.', 'error');
+        console.error('Failed to update customer', err);
+        const errorDetails = err.error?.errors ? JSON.stringify(err.error.errors) : (err.error?.message || 'Failed to update customer.');
+        this.showToast(`Update failed: ${errorDetails}`, 'error');
         this.loadCompanies();
       }
     });
   }
   handleDelete(event: any): void {
     const companyId = event.key;
-    if (confirm('Are you sure you want to delete this company?')) {
+  
       this.companyService.deleteCompany(companyId, this.authService.getUserId()).subscribe({
         next: () => {
-          console.log('Company deleted successfully');
+          console.log('Customer deleted successfully');
           this.tableData = this.tableData.filter(c => c.id !== companyId);
           this.updateMetrics();
+          this.showToast('Customer deleted successfully!', 'success');
         },
         error: (err) => {
-          console.error('Failed to delete company', err);
-          this.showToast(err.error?.message || 'Could not delete the company.', 'error');
+          console.error('Failed to delete customer', err);
+          this.showToast(err.error?.message || 'Could not delete the customer.', 'error');
         }
       });
     }
-  }
 
   @HostListener('window:resize')
   onResize(): void {

@@ -5,6 +5,7 @@ import { forkJoin } from 'rxjs';
 import { DealstageService } from 'src/app/services/dealstage.service';
 import { Router } from '@angular/router';
 import { DxToastComponent } from 'devextreme-angular';
+import { GridColumn } from 'src/app/shared/table/table.interface';
  
  
 export interface PipelineDeal {
@@ -64,7 +65,7 @@ export class PipelinepageComponent implements OnInit {
     { name: 'Closed Lost', amount: 0, collapsed: false, hover: false, deals: [] }
   ];
  
-  tableHeaders = [
+  tableHeaders: GridColumn[] = [
     { dataField: 'title', caption: 'Deal Name', visible: true },
     { dataField: 'amount', caption: 'Amount', visible: true, dataType: 'number', 
       format: { 
@@ -73,8 +74,8 @@ export class PipelinepageComponent implements OnInit {
         precision: 0 
       } 
     },
-    { dataField: 'startDate', caption: 'Start Date', visible: true},
-    { dataField: 'closeDate', caption: 'Close Date', visible: true},
+    { dataField: 'startDate', caption: 'Start Date', visible: true, dataType: 'date', format: 'dd-MMM-yyyy' },
+    { dataField: 'closeDate', caption: 'Close Date', visible: true, dataType: 'date', format: 'dd-MMM-yyyy' },
     { dataField: 'department', caption: 'Department', visible: true },
     { dataField: 'probability', caption: 'Probability', visible: true },
     { dataField: 'region', caption: 'Region', visible: true },
