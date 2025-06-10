@@ -108,7 +108,7 @@ export interface DealRead {
   contactName?: string;
   salespersonName?: string | null;
   startingDate?: string | null;
-  closingDate?: string | null;
+  closingDate?: string | null; 
   regionName?: string;
   regionId?: number;
   domainName?: string;
@@ -128,7 +128,7 @@ export interface DealRead {
   serviceName?: string; // New field
   serviceId?: number | null; // New field
   createdBy?: number;
-  createdAt?: string;
+  createdAt?: string; 
   updatedAt?: string;
   isHidden?:boolean|null;
   customFields?: { [key: string]: any };
@@ -147,7 +147,7 @@ export interface StageHistoryReadDto {
   providedIn: 'root'
 })
 export class DealService {
-  private apiUrl = 'https://localhost:7297/api/Deals';
+  private apiUrl = 'https://localhost:7297/api/Deals'; 
   private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
  
   constructor(private http: HttpClient,private authService: AuthService) { }
@@ -359,4 +359,3 @@ export class DealService {
     return throwError(() => new Error(errorMessage));
   }
 }
- 

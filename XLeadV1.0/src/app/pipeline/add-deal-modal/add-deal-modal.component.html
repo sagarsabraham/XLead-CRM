@@ -24,7 +24,7 @@
   <div *dxTemplate="let data of 'content'" class="popup-content">
     <div #formContainer class="form-container" (wheel)="onMouseWheel($event)">
       <app-modal-header title="Deal Information" [showOwner]="true"></app-modal-header>
-
+ 
       <dx-form
         
         #dealFormInstance 
@@ -215,7 +215,7 @@
         <dxi-validation-rule type="required" message="Probability is required"></dxi-validation-rule>
         <dxi-validation-rule type="range" [min]="0" [max]="100" message="Probability must be between 0 and 100"></dxi-validation-rule>
       </dxi-item>
-
+ 
       <!-- Additional Information Section for Custom Fields -->
         <dxi-item *ngIf="customFields.length > 0" itemType="group">
           <dxo-label text="Additional Information" cssClass="bold-label section-label"></dxo-label>
@@ -240,16 +240,16 @@
       [customize]="'Customize Fields'"
       [cancelText]="'Cancel'"
       [saveText]="'Save'"
-      
+     
       (onCancel)="handleClose()"
-      (onSave)="handleSubmit()" 
+      (onSave)="handleSubmit()"
       (onCustomize)="openCustomizeFieldModal()">
     </app-modal-buttons>
   </div>
 </dx-popup>
  
-
-
+ 
+ 
 <app-form-modal
   *ngIf="isCustomerModalVisible"
   [isVisible]="isCustomerModalVisible"
@@ -270,7 +270,7 @@
   (onClose)="closeQuickCreateContactModal()"
   (onSubmit)="addNewContact($event)">
 </app-form-modal>
-
+ 
 <!-- Customize Field Modal -->
 <app-form-modal
   *ngIf="isCustomizeFieldModalVisible"
@@ -281,3 +281,4 @@
   (onClose)="closeCustomizeFieldModal()"
   (onSubmit)="addCustomField($event)">
 </app-form-modal>
+ 

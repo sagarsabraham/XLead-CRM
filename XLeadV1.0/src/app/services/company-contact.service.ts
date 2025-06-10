@@ -33,17 +33,13 @@ export interface ContactCreateDto {
   createdBy: number;
 }
  
-// --- NEW INTERFACE TO MATCH THE BACKEND'S RESPONSE ---
+
 export interface CustomerContactMap {
   isActive: boolean;
   isHidden: boolean | null;
   contacts: string[];
 }
- 
-// --- OLD INTERFACE IS NO LONGER NEEDED AND CAN BE REMOVED ---
-// export interface CustomerContactMap {
-//   [customerName: string]: string[];
-// }
+
  
 @Injectable({
   providedIn: 'root'

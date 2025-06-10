@@ -34,21 +34,14 @@ export class StatusTimelineComponent implements OnChanges, OnInit {
     }, 0);
   }
  
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['currentStage']) {
-      console.log('Stage changed from', changes['currentStage'].previousValue, 'to:', changes['currentStage'].currentValue);
-     
-      // Normalize the stage name to handle different formats
-      if (this.currentStage) {
-        this.currentStage = this.normalizeStage(this.currentStage);
-      }
-     
-      // Force change detection
-      if (this.isInitialized) {
-        this.cdr.detectChanges();
-      }
-    }
+ngOnChanges(changes: SimpleChanges): void {
+  if (changes['currentStage'] && changes['currentStage'].currentValue) {
+    const normalized = this.normalizeStage(changes['currentStage'].currentValue);
+    this.currentStage = normalized;
+    console.log('Normalized stage in ngOnChanges:', normalized);
   }
+}
+
  
   private normalizeStage(stage: string): string {
     if (!stage) return 'Qualification'; // Default stage
