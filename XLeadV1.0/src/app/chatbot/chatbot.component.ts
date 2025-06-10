@@ -30,7 +30,7 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
   @ViewChild('messageInput') private messageInput!: ElementRef;
 
-  isCollapsed = false;
+  isCollapsed = true; // Start collapsed by default
   userInput: string = '';
   isTyping: boolean = false;
   results: any[] = [];
@@ -40,11 +40,7 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
   private readonly baseApiUrl = 'https://localhost:7297/api';
   private shouldScrollToBottom = false;
 
-  smartSuggestions = [
-    // 'Show me deals created this week',
-    // 'Top 5 deals by amount',
-    // 'Recent customer contacts',
-  ];
+  smartSuggestions = [];
 
   constructor(
     private http: HttpClient, 
@@ -56,12 +52,6 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
     this.loadQueryHistory();
     this.configureMarked();
     this.addInitialMessage();
-    
-    setTimeout(() => {
-      if (this.messageInput?.nativeElement) {
-        this.messageInput.nativeElement.focus();
-      }
-    }, 100);
   }
 
   ngAfterViewChecked() {
@@ -79,7 +69,7 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
   }
 
   private addInitialMessage(): void {
-    const welcomeMessage = 'Hello! I\'m your Smart XLeadBot assistant. How can I help you?';
+    const welcomeMessage = 'Hello! I\'m your Smart assistant. How can I help you today?';
     this.addBotResponse(welcomeMessage);
   }
 
@@ -97,11 +87,12 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
   toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
     if (!this.isCollapsed) {
+      // Focus input when expanding
       setTimeout(() => {
         if (this.messageInput?.nativeElement) {
           this.messageInput.nativeElement.focus();
         }
-      }, 100);
+      }, 300); // Wait for animation to complete
     }
   }
 
