@@ -108,7 +108,7 @@ export interface DealRead {
   contactName?: string;
   salespersonName?: string | null;
   startingDate?: string | null;
-  closingDate?: string | null;
+  closingDate?: string | null; 
   regionName?: string;
   regionId?: number;
   domainName?: string;
@@ -128,7 +128,7 @@ export interface DealRead {
   serviceName?: string;
   serviceId?: number | null;
   createdBy?: number;
-  createdAt?: string;
+  createdAt?: string; 
   updatedAt?: string;
   isHidden?: boolean | null;
   customFields?: { [key: string]: any };

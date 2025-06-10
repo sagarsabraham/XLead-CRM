@@ -1,49 +1,53 @@
 <div class="page-container" [ngClass]="{'mobile-view': isMobile}">
- 
- 
   <div class="container">
-   
+    <dx-toast
+      #toastInstance
+      [(visible)]="toastVisible"
+      [message]="toastMessage"
+      [type]="toastType"
+      [displayTime]="3000"
+      position="top center"
+      [width]="300">
+      <div *dxTemplate="let data of 'content'">
+        <span>{{ toastMessage }}</span>
+      </div>
+    </dx-toast>
+
     <div class="topbar">
-     
-       
       <div class="total-count">
         Total Contacts: {{ totalContacts }}
       </div>
     </div>
- 
-      <div class="content">
-   
-    <div *ngIf="isLoading" class="loading-state">
-      <div class="spinner"></div>
-      <p>Loading contacts...</p>
-    </div>
-   
-     
-    <div *ngIf="error" class="error-state">
-      <div class="error-message">
-        <i class="fas fa-exclamation-circle"></i> {{ error }}
+
+    <div class="content">
+      <div *ngIf="isLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading contacts...</p>
       </div>
-      <button class="retry-button" (click)="loadContacts()">
-        Retry
-      </button>
-    </div>
- 
-      
-<app-table
-  *ngIf="!isLoading && !error"
-  [data]="tableData"
-  [headers]="tableHeaders"
-  [useOwnerTemplate]="false"
-  [ownerField]="'owner'"
-  [exportFileName]="'Contacts'"
-  (onSelectionChanged)="handleSelectionChanged($event)"
-  [entityType]="'Customer'"
-   [allowEditing]="canEditContacts"
-    [allowDeleting]="canDeleteContacts"
-   (onRowUpdating)="handleUpdate($event)"
-   (onRowRemoving)="handleDelete($event)"
- 
-></app-table>
+
+      <div *ngIf="error" class="error-state">
+        <div class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ error }}
+        </div>
+        <button class="retry-button" (click)="loadContacts()">
+          Retry
+        </button>
+      </div>
+
+      <app-table
+        *ngIf="!isLoading && !error"
+        [data]="tableData"
+        [headers]="tableHeaders"
+        [useOwnerTemplate]="false"
+        [ownerField]="'owner'"
+        [exportFileName]="'Contacts'"
+        (onSelectionChanged)="handleSelectionChanged($event)"
+        [entityType]="'Customer'"
+        [allowEditing]="canEditContacts"
+        [allowDeleting]="canDeleteContacts"
+        (onRowUpdating)="handleUpdate($event)"
+        (onRowRemoving)="handleDelete($event)"
+      ></app-table>
     </div>
   </div>
 </div>

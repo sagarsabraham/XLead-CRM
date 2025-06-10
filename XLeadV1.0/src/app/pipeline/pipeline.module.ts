@@ -27,6 +27,10 @@ import { RegionService } from '../services/region.service';
 import { RevenuetypeService } from '../services/revenuetype.service';
 import { DealstageService } from '../services/dealstage.service';
 
+import { IndustryVerticalService } from '../services/industry-vertical.service';
+import { PrivilegeServiceService } from '../services/privilege-service.service';
+import { SeviceLineService } from '../services/sevice-line.service';
+
 
 @NgModule({
   declarations: [
@@ -72,7 +76,11 @@ import { DealstageService } from '../services/dealstage.service';
     CountryService,
     DuService,
     DealstageService,
-    RevenuetypeService
+    RevenuetypeService,
+    
+    IndustryVerticalService,
+    PrivilegeServiceService,
+    SeviceLineService
   ],
   
   exports: [
