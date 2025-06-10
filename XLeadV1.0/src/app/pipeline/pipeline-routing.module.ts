@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { PipelinepageComponent } from './pipelinepage/pipelinepage.component';
 
 const routes: Routes = [
-  {path: '', component: PipelinepageComponent},
+  { path: '', component: PipelinepageComponent, data: { title: 'Pipelines' } },
 ];
 
 @NgModule({

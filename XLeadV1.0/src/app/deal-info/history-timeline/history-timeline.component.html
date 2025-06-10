@@ -12,12 +12,33 @@
           <div class="line" *ngIf="!last"></div>
         </div>
         <div class="timeline-content">
-          <div class="user-action">
-            <strong>Stage updated by {{ item.editedBy }}</strong>
+ 
+          <!-- START OF MODIFICATION -->
+ 
+          <!-- Display for the initial creation event -->
+          <div *ngIf="item.isInitial">
+            <div class="user-action">
+              <!-- We only show the 'fromStage' which now contains the full message -->
+              <strong>{{ item.fromStage }}</strong>
+            </div>
+            <!-- The 'toStage' is displayed below as the stage name -->
+            <div class="stage-change initial-stage">
+              {{ item.toStage }}
+            </div>
           </div>
-          <div class="stage-change">
-            {{ item.fromStage }} to {{ item.toStage }}
+ 
+          <!-- Display for all subsequent stage updates -->
+          <div *ngIf="!item.isInitial">
+            <div class="user-action">
+              <strong>Stage updated by {{ item.editedBy }}</strong>
+            </div>
+            <div class="stage-change">
+              {{ item.fromStage }} to {{ item.toStage }}
+            </div>
           </div>
+ 
+          <!-- END OF MODIFICATION -->
+ 
         </div>
       </div>
     </div>

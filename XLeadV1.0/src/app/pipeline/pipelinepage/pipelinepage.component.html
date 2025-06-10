@@ -14,7 +14,6 @@
   <div class="topbar">
     <h1>Pipelines</h1>
     <div class="topbar-actions">
-      <!-- View switching icons -->
       <div class="view-icons">
         <span
           class="view-icon"
@@ -33,7 +32,6 @@
           <span class="view-label">Table View</span>
         </span>
       </div>
-      <!-- Deal button -->
       <app-button
         *ngFor="let button of dealButton"
         [label]="button.label"
@@ -53,8 +51,6 @@
       [iconColor]="getIconColor(i)">
     </app-topcard>
   </div>
- 
-  <!-- Card View -->
   <div *ngIf="selectedTabId === 'card'" class="card-container" cdkDropListGroup [class.content-loading]="isLoadingInitialData">
     <div
       *ngFor="let stage of stages; let i = index"
@@ -85,14 +81,13 @@
 <div *ngIf="!stage.collapsed">
         <app-dealfooter
           [buttons]="dealButton"
-          (buttonClick)="onAddDeal()">
+          [stageId]="stage.id"
+          (buttonClick)="onButtonClick($event)">
         </app-dealfooter>
       </div>
  
     </div>
   </div>
- 
-  <!-- Table View -->
  
   <div *ngIf="selectedTabId === 'table'" class="table-view">
     <app-table
@@ -101,16 +96,17 @@
       [useOwnerTemplate]="false"
       [exportFileName]="'pipeline'"
       (onSelectionChanged)="handleSelectionChanged($event)"
+      [entityType]="'Deal'"
       [allowEditing]="false"
       #pipelineTable>
     </app-table>
   </div>
  
-  <!-- Add Deal Modal -->
   <app-add-deal-modal
     [isVisible]="isModalVisible"
     [dealToEdit]="selectedDealForModal()"
     [mode]="isEditMode ? 'edit' : 'add'"
+    [selectedStage]="selectedStageId"
     (onClose)="onModalClose()"
     (onSubmitSuccess)="onDealSubmitSuccess($event)"
     (onSubmitError)="onDealSubmitError($event)">

@@ -3,6 +3,7 @@
   padding: 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
+  margin-left: 10vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   padding-left: 24PX;
   box-sizing: border-box;
@@ -10,7 +11,6 @@
 
  h2 {
     font-size: 32px;
-
     padding: 8px 0;
     font-weight: bold;
     margin-top: 10px;
@@ -18,7 +18,6 @@
   }
 
 .metric-wrapper {
-  /* padding: 1rem 0; */
   width: 100%;
   box-sizing: border-box;
 }
@@ -54,7 +53,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
-  animation: fadeIn 0.5s ease-in-out;
 }
 
 .topbar h1 {
@@ -62,13 +60,8 @@
   margin: 0;
   font-weight: 700;
   color: #1f2937;
-  transition: color 0.3s ease;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 
 @media (max-width: 768px) {
   :host {
@@ -109,7 +102,8 @@
 
 @media (max-width: 480px) {
   :host {
-    margin-top: 50px;
+    margin-left: 0;
+    margin-top: 20px;
     padding: 0.25rem;
   }
 

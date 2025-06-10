@@ -8,7 +8,7 @@ import { AuthService } from './auth-service.service';
 import { Inject } from '@angular/core';
 
 export interface Note {
-  id?: number;
+  id: number;
   noteText: string;
   dealId?: number;
   createdBy?: number;
@@ -80,7 +80,6 @@ export class NotesService {
     }
     const params = new HttpParams().set('userId', effectiveUserId.toString());
     const options = { ...this.httpOptions, params };
-    const source$ = this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`, options);
-    return this.apiResponseService.handleResponse(source$);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, options);
   }
 }

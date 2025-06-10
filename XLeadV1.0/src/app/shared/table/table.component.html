@@ -23,7 +23,7 @@
             <!-- Editing Configuration -->
             <dxo-editing
               [allowUpdating]="allowEditing"
-              [allowDeleting]="allowEditing"
+              [allowDeleting]="allowDeleting"
               mode="row"
               [useIcons]="true"
             >
@@ -42,10 +42,10 @@
               [showNavigationButtons]="true"
             ></dxo-pager>
             <dxo-sorting mode="multiple"></dxo-sorting>
-            <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
-            <dxo-filter-row [visible]="showFilterRow"></dxo-filter-row>
-            <dxo-filter-panel [visible]="showFilterPanel"></dxo-filter-panel>
-            <dxo-search-panel [visible]="showSearchPanel"></dxo-search-panel>
+            <dxo-header-filter [visible]="true"></dxo-header-filter>
+            <dxo-filter-row [visible]="true"></dxo-filter-row>
+            <dxo-filter-panel [visible]="true"></dxo-filter-panel>
+            <dxo-search-panel [visible]="true"></dxo-search-panel>
             <dxo-column-chooser [enabled]="false"></dxo-column-chooser>
             <dxo-export
               [enabled]="true"
@@ -204,12 +204,16 @@
         <button class="mobile-action-btn sort-btn" (click)="showSortOptions = !showSortOptions">
           <i class="fas fa-sort"></i> Sort
         </button>
+        <!-- CORRECTED: Added Filter Button -->
+        <button class="mobile-action-btn" (click)="toggleMobileFilterOptions()">
+          <i class="fas fa-filter"></i> Filter
+        </button>
         <button class="mobile-action-btn" (click)="toggleMobileExportOptions()">
           <i class="fas fa-download"></i> Export
         </button>
       </div>
     </div>
-   
+ 
     <!-- Mobile Column Chooser -->
     <div *ngIf="showColumnChooserMobile" class="mobile-column-chooser">
       <div class="column-chooser-header">
@@ -240,7 +244,7 @@
         </div>
       </div>
     </div>
-   
+ 
     <!-- Mobile Sort Options -->
     <div *ngIf="showSortOptions" class="mobile-sort-options">
       <div class="sort-header">Sort by:</div>
@@ -254,7 +258,26 @@
         </ng-container>
       </div>
     </div>
-   
+ 
+    <!-- CORRECTED: Mobile Filter Options -->
+    <div *ngIf="showMobileFilterOptions" class="mobile-filter-options">
+      <div class="filter-header">
+        <div class="filter-title">Filter by</div>
+        <button class="filter-close" (click)="toggleMobileFilterOptions()">×</button>
+      </div>
+      <div class="filter-actions">
+        <!-- CORRECTED: Removed invalid nesting and (onValueChanged) binding -->
+        <dx-filter-builder
+          [fields]="headers"
+          [(value)]="filterBuilderValue">
+        </dx-filter-builder>
+      </div>
+      <div class="filter-actions-footer">
+        <button class="filter-action-btn clear" (click)="clearMobileFilters()">Clear Filters</button>
+        <button class="filter-action-btn apply" (click)="applyMobileFilters()">Apply Filters</button>
+      </div>
+    </div>
+ 
     <!-- Mobile Export Options -->
     <div *ngIf="showMobileExportOptions" class="mobile-export-options">
       <div class="export-header">
@@ -270,33 +293,45 @@
         </button>
       </div>
     </div>
-   
+ 
     <!-- Mobile Card List -->
-    <div class="mobile-card-list">
-      <div *ngFor="let item of paginatedData" class="contact-card" (click)="openDetailsModal(item)">
-        <div class="card-selection" (click)="$event.stopPropagation()">
-          <input type="checkbox"
-                 [checked]="selectedRowKeys.includes(item.id)"
-                 (change)="toggleSelection(item.id)"
-          >
-        </div>
-        <div class="card-content">
-          <div class="card-primary" *ngIf="cardFields[0]">{{ getDisplayValue(item, cardFields[0]) }}</div>
-          <div class="card-secondary" *ngIf="cardFields[1]">{{ getDisplayValue(item, cardFields[1]) }}</div>
-          <div class="card-tertiary" *ngIf="cardFields[2]">{{ getDisplayValue(item, cardFields[2]) }}</div>
-          <div class="card-owner" *ngIf="useOwnerTemplate && columnVisibility[ownerField]">
-            <div class="owner-avatar small" [style.backgroundColor]="getOwnerColor(item[ownerField])">
-              {{ getOwnerInitial(item[ownerField]) }}
-            </div>
-            <span class="owner-name">{{ item[ownerField] }}</span>
+<!-- Mobile Card List -->
+<div class="mobile-card-list">
+ 
+  <ng-container *ngIf="paginatedData && paginatedData.length > 0; else noDataTemplate">
+    <div *ngFor="let item of paginatedData" class="contact-card" (click)="openDetailsModal(item)">
+      <div class="card-selection" (click)="$event.stopPropagation()">
+        <input type="checkbox"
+               [checked]="selectedRowKeys.includes(item.id)"
+               (change)="toggleSelection(item.id)">
+      </div>
+      <div class="card-content">
+        <div class="card-primary" *ngIf="cardFields[0]">{{ getDisplayValue(item, cardFields[0]) }}</div>
+        <div class="card-secondary" *ngIf="cardFields[1]">{{ getDisplayValue(item, cardFields[1]) }}</div>
+        <div class="card-tertiary" *ngIf="cardFields[2]">{{ getDisplayValue(item, cardFields[2]) }}</div>
+        <div class="card-owner" *ngIf="useOwnerTemplate && columnVisibility[ownerField]">
+          <div class="owner-avatar small" [style.backgroundColor]="getOwnerColor(item[ownerField])">
+            {{ getOwnerInitial(item[ownerField]) }}
           </div>
-        </div>
-        <div class="card-chevron">
-          <i class="fas fa-chevron-right"></i>
+          <span class="owner-name">{{ item[ownerField] }}</span>
         </div>
       </div>
+      <div class="card-chevron">
+        <i class="fas fa-chevron-right"></i>
+      </div>
     </div>
-   
+  </ng-container>
+ 
+  <ng-template #noDataTemplate>
+    <div *ngIf="!masterData || masterData.length === 0" class="no-data-message">
+      No data is available to display.
+    </div>
+    <div *ngIf="masterData && masterData.length > 0" class="no-data-message">
+      No data matches the current filters or search query.
+    </div>
+  </ng-template>
+ 
+</div>
     <!-- Mobile Pagination -->
     <div class="mobile-pagination">
       <div class="pagination-controls">
@@ -331,7 +366,7 @@
               <div class="detail-label">{{ header.caption }}</div>
               <div class="detail-value">
                 <ng-container *ngIf="header.cellTemplate !== 'ownerCellTemplate'">
-                  {{ selectedContact[header.dataField] || 'N/A' }}
+                  {{ getDisplayValue(selectedContact, header.dataField) }}
                 </ng-container>
                 <div *ngIf="header.cellTemplate === 'ownerCellTemplate' && useOwnerTemplate" class="owner-cell">
                   <div class="owner-avatar" [style.backgroundColor]="getOwnerColor(selectedContact[ownerField])">
@@ -345,31 +380,29 @@
  
           <!-- Edit Mode -->
           <ng-container *ngIf="isEditingMobile && editedContact">
-      <div *ngFor="let header of headers" class="detail-item" [hidden]="!columnVisibility[header.dataField]">
-        <div class="detail-label">{{ header.caption }}</div>
-        <div class="detail-value">
-
-          <ng-container *ngIf="getLookupDataSource(header.dataField) && header.allowEditing !== false">
-        <select class="mobile-edit-select" [(ngModel)]="editedContact[header.dataField]">
-          <option *ngFor="let item of getLookupDataSource(header.dataField)" [ngValue]="item[getLookupValueExpr(header.dataField)]">
-            {{ item[getLookupDisplayExpr(header.dataField)] }}
-          </option>
-        </select>
-      </ng-container>
-          <ng-container *ngIf="header.dataField === 'status' && header.allowEditing !== false">
-            <select class="mobile-edit-select" [(ngModel)]="editedContact.status">
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
-          </ng-container>
-              <ng-container *ngIf="header.dataField !== 'status' && !getLookupDataSource(header.dataField) && header.allowEditing !== false">
-            <input 
-              type="text" 
-              class="mobile-edit-input"
-              [(ngModel)]="editedContact[header.dataField]">
-            </ng-container>
-              
-                <span *ngIf="header.allowEditing === false">{{ editedContact[header.dataField] || 'N/A' }}</span>
+            <div *ngFor="let header of headers" class="detail-item" [hidden]="!columnVisibility[header.dataField]">
+              <div class="detail-label">{{ header.caption }}</div>
+              <div class="detail-value">
+                <ng-container *ngIf="getLookupDataSource(header.dataField) && header.allowEditing !== false">
+                  <select class="mobile-edit-select" [(ngModel)]="editedContact[header.dataField]">
+                    <option *ngFor="let item of getLookupDataSource(header.dataField)" [ngValue]="item[getLookupValueExpr(header.dataField)]">
+                      {{ item[getLookupDisplayExpr(header.dataField)] }}
+                    </option>
+                  </select>
+                </ng-container>
+                <ng-container *ngIf="header.dataField === 'status' && header.allowEditing !== false">
+                  <select class="mobile-edit-select" [(ngModel)]="editedContact.status">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+                </ng-container>
+                <ng-container *ngIf="header.dataField !== 'status' && !getLookupDataSource(header.dataField) && header.allowEditing !== false">
+                  <input
+                    type="text"
+                    class="mobile-edit-input"
+                    [(ngModel)]="editedContact[header.dataField]">
+                </ng-container>
+                <span *ngIf="header.allowEditing === false">{{ getDisplayValue(editedContact, header.dataField) }}</span>
               </div>
             </div>
           </ng-container>
@@ -380,7 +413,7 @@
             <button class="modal-action-btn" (click)="editMobileContact()">
               <i class="fas fa-edit"></i> Edit
             </button>
-            <button class="modal-action-btn delete" (click)="deleteMobileContact()">
+            <button *ngIf="allowDeleting" class="modal-action-btn delete" (click)="deleteMobileContact()">
               <i class="fas fa-trash"></i> Delete
             </button>
           </ng-container>

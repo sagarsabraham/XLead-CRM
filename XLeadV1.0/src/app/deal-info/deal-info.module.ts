@@ -15,7 +15,8 @@ import { DxButtonModule,
          DxProgressBarModule,
          DxDataGridModule,
          DxLoadPanelModule,
-         DxTextAreaModule} from 'devextreme-angular';
+         DxTextAreaModule,
+         DxToastModule} from 'devextreme-angular';
 import { StatusTimelineComponent } from './status-timeline/status-timeline.component';
 import { RelatedInfoComponent } from './related-info/related-info.component';
 import { DescriptionComponent } from './description/description.component';
@@ -56,7 +57,8 @@ import { NotesTabComponent } from './notes-tab/notes-tab.component';
     DxTabsModule,
     DxFileUploaderModule,
     DxProgressBarModule,
-    DxDataGridModule
+    DxDataGridModule,
+    DxToastModule
   ],
   providers: [DocumentService]
 })

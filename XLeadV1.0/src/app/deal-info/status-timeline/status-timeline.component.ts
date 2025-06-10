@@ -104,12 +104,10 @@ ngOnChanges(changes: SimpleChanges): void {
   isStageCompleted(index: number): boolean {
     const currentIndex = this.getCurrentStageIndex();
    
-    // For Closed Won, show all previous stages (except Closed Lost) as completed
     if (this.currentStage === 'Closed Won') {
       return index < 4;
     }
    
-    // For Closed Lost, show stages up to Negotiation as completed
     if (this.currentStage === 'Closed Lost') {
       return index < 4;
     }
@@ -118,12 +116,10 @@ ngOnChanges(changes: SimpleChanges): void {
   }
  
   isConnectorCompleted(index: number): boolean {
-    // For Closed Won, show blue connectors up to Closed Won
     if (this.currentStage === 'Closed Won' && index < 4) {
       return true;
     }
    
-    // For other stages, use normal completion logic
     return this.isStageCompleted(index);
   }
 }

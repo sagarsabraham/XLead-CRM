@@ -1,20 +1,19 @@
-
-
 import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { DealRead, DealService } from 'src/app/services/dealcreation.service';
-import { CompanyContactService, CustomerContactMap } from 'src/app/services/company-contact.service'; // Import the new interface
+import { CompanyContactService, CustomerContactMap } from 'src/app/services/company-contact.service'; 
 import { forkJoin } from 'rxjs';
 import { DealstageService } from 'src/app/services/dealstage.service';
 import { Router } from '@angular/router';
 import { DxToastComponent } from 'devextreme-angular';
+import { GridColumn } from 'src/app/shared/table/table.interface';
  
  
 export interface PipelineDeal {
   id: number;
   title: string;
   amount: number;
-  startDate: string;
-  closeDate: string;
+  startDate: Date | null; 
+  closeDate: Date | null; 
   department: string;
   probability: string;
   region: string;
@@ -66,11 +65,17 @@ export class PipelinepageComponent implements OnInit {
     { name: 'Closed Lost', amount: 0, collapsed: false, hover: false, deals: [] }
   ];
  
-  tableHeaders = [
+tableHeaders: GridColumn[] = [
     { dataField: 'title', caption: 'Deal Name', visible: true },
-    { dataField: 'amount', caption: 'Amount', visible: true },
-    { dataField: 'startDate', caption: 'Start Date', visible: true },
-    { dataField: 'closeDate', caption: 'Close Date', visible: true },
+    { dataField: 'amount', caption: 'Amount', visible: true, dataType: 'number',
+      format: {
+        type: 'currency',
+        currency: 'USD',
+        precision: 0
+      }
+    },
+    { dataField: 'startDate', caption: 'Start Date', visible: true, dataType: 'date', format: 'dd-MMM-yyyy' },
+    { dataField: 'closeDate', caption: 'Close Date', visible: true, dataType: 'date', format: 'dd-MMM-yyyy' },
     { dataField: 'department', caption: 'Department', visible: true },
     { dataField: 'probability', caption: 'Probability', visible: true },
     { dataField: 'region', caption: 'Region', visible: true },
@@ -78,7 +83,7 @@ export class PipelinepageComponent implements OnInit {
     { dataField: 'contactName', caption: 'Contact', visible: true },
     { dataField: 'stageName', caption: 'Stage', visible: true }
   ];
- 
+
   customerContactMap: { [customer: string]: CustomerContactMap } = {};
  
   selectedTabId: string = 'card';
@@ -178,7 +183,6 @@ export class PipelinepageComponent implements OnInit {
         this.refreshTableData();
         this.isLoadingInitialData = false;
         this.cdr.detectChanges();
-        // Update stage IDs
         this.stages.forEach(stage => {
           const backendStage = results.stages.find(s => s.displayName === stage.name || s.stageName === stage.name);
           if (backendStage) {
@@ -203,7 +207,9 @@ export class PipelinepageComponent implements OnInit {
       stage.deals.map(deal => ({
         ...deal,
         stageName: stage.name,
-        id: String(deal.id)
+        id: String(deal.id),
+        startDate: this.formatDateForDisplay(deal.startDate), 
+        closeDate: this.formatDateForDisplay(deal.closeDate)
       }))
     );
     console.log('Table data refreshed:', this._tableData.length, 'deals');
@@ -218,12 +224,8 @@ export class PipelinepageComponent implements OnInit {
  
     for (const customerName in this.customerContactMap) {
       if (Object.prototype.hasOwnProperty.call(this.customerContactMap, customerName)) {
-        // 1. Get the customer info object from the map.
         const customerInfo = this.customerContactMap[customerName];
-       
-        // 2. Safely access the 'contacts' array within the object.
         if (customerInfo && Array.isArray(customerInfo.contacts)) {
-          // 3. Perform the 'some' check on the contacts array.
           const found = customerInfo.contacts.some(mappedContact => {
             if (typeof mappedContact === 'string') {
               return mappedContact.trim() === normalizedSearchContact;
@@ -261,8 +263,8 @@ export class PipelinepageComponent implements OnInit {
           id: backendDeal.id,
           title: backendDeal.dealName,
           amount: backendDeal.dealAmount,
-          startDate: this.formatDateForDisplay(backendDeal.startingDate),
-          closeDate: this.formatDateForDisplay(backendDeal.closingDate),
+          startDate: this.parseDate(backendDeal.startingDate), 
+          closeDate: this.parseDate(backendDeal.closingDate),
           department: backendDeal.duName || 'N/A',
           probability: backendDeal.probability?.toString() + '%' || '0%',
           region: backendDeal.regionName || 'N/A',
@@ -287,16 +289,31 @@ export class PipelinepageComponent implements OnInit {
     return match ? match[1].trim() : '';
   }
  
-  formatDateForDisplay(dateInput: string | Date | null | undefined): string {
-    if (!dateInput) return 'N/A';
+  private parseDate(dateInput: string | Date | null | undefined): Date | null {
+    if (!dateInput) return null;
     try {
       const date = new Date(dateInput);
-      return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      if (isNaN(date.getTime())) return null; 
+      return date;
     } catch (e) {
-      return typeof dateInput === 'string' ? dateInput : 'Invalid Date';
+      console.error('Error parsing date:', dateInput, e);
+      return null;
     }
   }
- 
+
+  formatDateForDisplay(dateInput: Date | null | undefined): string {
+    if (!dateInput || isNaN(dateInput.getTime())) return 'N/A';
+    try {
+      const day = dateInput.getDate().toString().padStart(2, '0'); 
+      const month = dateInput.toLocaleString('en-GB', { month: 'short' }); 
+      const year = dateInput.getFullYear();
+      return `${day}-${month}-${year}`; 
+    } catch (e) {
+      console.error('Error formatting date:', dateInput, e);
+      return 'Invalid Date';
+    }
+  }
+
   getIconColor(index: number): string {
     switch (index) {
       case 0:
@@ -342,8 +359,8 @@ export class PipelinepageComponent implements OnInit {
               id: updatedDeal.id,
               title: updatedDeal.dealName,
               amount: updatedDeal.dealAmount,
-              startDate: this.formatDateForDisplay(updatedDeal.startingDate),
-              closeDate: this.formatDateForDisplay(updatedDeal.closingDate),
+              startDate: this.parseDate(updatedDeal.startingDate),
+              closeDate: this.parseDate(updatedDeal.closingDate),
               department: updatedDeal.duName || 'N/A',
               probability: updatedDeal.probability?.toString() + '%' || '0%',
               region: updatedDeal.regionName || 'N/A',
@@ -418,8 +435,8 @@ onButtonClick(event: { label: string, stageId?: number }) {
           dealName: pipelineDeal.title,
           dealAmount: pipelineDeal.amount,
           salespersonName: pipelineDeal.salesperson,
-          startingDate: pipelineDeal.originalData?.startingDate || new Date(pipelineDeal.startDate).toISOString(),
-          closingDate: pipelineDeal.originalData?.closingDate || new Date(pipelineDeal.closeDate).toISOString(),
+          startingDate: pipelineDeal.startDate ? pipelineDeal.startDate.toISOString() : new Date().toISOString(),
+          closingDate: pipelineDeal.closeDate ? pipelineDeal.closeDate.toISOString() : new Date().toISOString(),
           description: pipelineDeal.description,
           probability: parseFloat(pipelineDeal.probability.replace('%','')),
           stageName: pipelineDeal.originalData?.stageName,
@@ -483,8 +500,8 @@ onTableRowClick(event: any): void {
     id: updatedBackendDeal.id,
     title: updatedBackendDeal.dealName,
     amount: updatedBackendDeal.dealAmount,
-    startDate: this.formatDateForDisplay(updatedBackendDeal.startingDate),
-    closeDate: this.formatDateForDisplay(updatedBackendDeal.closingDate),
+    startDate: this.parseDate(updatedBackendDeal.startingDate), 
+    closeDate: this.parseDate(updatedBackendDeal.closingDate),
     department: updatedBackendDeal.duName || 'N/A',
     probability: updatedBackendDeal.probability?.toString() + '%' || '0%',
     region: updatedBackendDeal.regionName || 'N/A',
@@ -504,9 +521,11 @@ onTableRowClick(event: any): void {
     const targetStage = this.stages.find(s => s.id === this.selectedStageId) || this.stages.find(s => s.name === updatedBackendDeal.stageName);
     if (targetStage) {
       targetStage.deals.push(updatedPipelineDeal);
-      targetStage.deals.sort((a, b) =>
-        new Date(a.originalData.closingDate!).getTime() - new Date(b.originalData.closingDate!).getTime()
-      );
+      targetStage.deals.sort((a, b) => {
+          const dateA = a.closeDate ? a.closeDate.getTime() : 0;
+          const dateB = b.closeDate ? b.closeDate.getTime() : 0;
+          return dateA - dateB;
+      });
       this.showToast('Deal created successfully!', 'success');
     } else {
       console.warn('Target stage not found for new deal. Reloading data.');
@@ -526,9 +545,11 @@ onTableRowClick(event: any): void {
  
       if (newTargetStage) {
         newTargetStage.deals.push(updatedPipelineDeal);
-        newTargetStage.deals.sort((a, b) =>
-          new Date(a.originalData.closingDate!).getTime() - new Date(b.originalData.closingDate!).getTime()
-        );
+        newTargetStage.deals.sort((a, b) => {
+            const dateA = a.closeDate ? a.closeDate.getTime() : 0;
+            const dateB = b.closeDate ? b.closeDate.getTime() : 0;
+            return dateA - dateB;
+        });
         this.showToast('Deal updated successfully!', 'success');
       } else {
         console.warn('Target stage not found for updated deal. Reloading data.');
@@ -574,22 +595,17 @@ onTableRowClick(event: any): void {
     refreshDeal(dealId: number): void {
     this.dealService.getDealById(dealId).subscribe({
       next: (updatedDeal) => {
-        // Find and update the deal in the appropriate stage
         for (const stage of this.stages) {
           const dealIndex = stage.deals.findIndex(d => d.id === dealId);
           if (dealIndex > -1) {
-            // Remove from current stage if stage changed
             if (stage.name !== updatedDeal.stageName) {
               stage.deals.splice(dealIndex, 1);
-             
-              // Add to new stage
               const newStage = this.stages.find(s => s.name === updatedDeal.stageName);
               if (newStage) {
                 const pipelineDeal = this.createPipelineDeal(updatedDeal);
                 newStage.deals.push(pipelineDeal);
               }
             } else {
-              // Update in place
               stage.deals[dealIndex] = this.createPipelineDeal(updatedDeal);
             }
             break;
@@ -619,8 +635,8 @@ onTableRowClick(event: any): void {
       id: backendDeal.id,
       title: backendDeal.dealName,
       amount: backendDeal.dealAmount,
-      startDate: this.formatDateForDisplay(backendDeal.startingDate),
-      closeDate: this.formatDateForDisplay(backendDeal.closingDate),
+      startDate: this.parseDate(backendDeal.startingDate), 
+      closeDate: this.parseDate(backendDeal.closingDate),
       department: backendDeal.duName || 'N/A',
       probability: backendDeal.probability?.toString() + '%' || '0%',
       region: backendDeal.regionName || 'N/A',
@@ -646,7 +662,7 @@ onCardClick(deal: PipelineDeal, stageName: string): void {
     state: {
       deal: {
         ...deal.originalData,
-        stageName: deal.originalData?.stageName || stageName, // Ensure stage is included
+        stageName: deal.originalData?.stageName || stageName, 
         currentStage: deal.originalData?.stageName || stageName,
         closingDate: deal.originalData?.closingDate || deal.closeDate
       },

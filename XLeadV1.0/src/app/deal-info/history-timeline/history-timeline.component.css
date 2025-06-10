@@ -13,14 +13,14 @@
  
 .timeline {
   position: relative;
-  max-height: 400px; /* Fixed height for desktop */
-  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 400px; 
+  overflow-y: auto; 
   flex: 1;
-  scrollbar-width: thin; /* Firefox */
+  scrollbar-width: thin;
 }
  
 .timeline::-webkit-scrollbar {
-  width: 6px; /* Chrome, Safari */
+  width: 6px; 
 }
  
 .timeline::-webkit-scrollbar-thumb {
@@ -157,7 +157,7 @@
   }
  
   .timeline {
-    max-height: calc(100vh - 300px); /* Adjusted for mobile */
+    max-height: calc(100vh - 300px);
     overflow-y: auto;
   }
  

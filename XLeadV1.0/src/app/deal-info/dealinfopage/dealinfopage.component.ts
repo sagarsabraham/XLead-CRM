@@ -1,8 +1,9 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DealService } from 'src/app/services/dealcreation.service';
 import { DealstageService } from 'src/app/services/dealstage.service';
  import { CompanyContactService } from 'src/app/services/company-contact.service';
+ import { DxToastComponent } from 'devextreme-angular';
  
 @Component({
   selector: 'app-dealinfopage',
@@ -10,6 +11,7 @@ import { DealstageService } from 'src/app/services/dealstage.service';
   styleUrls: ['./dealinfopage.component.css']
 })
 export class DealinfopageComponent implements OnInit {
+  @ViewChild('toastInstance', { static: false }) toastInstance!: DxToastComponent;
   deal: any = null;
   dealId: number | null = null;
   history: any[] = [];
@@ -20,7 +22,6 @@ export class DealinfopageComponent implements OnInit {
   isLoading: boolean = true;
   isUpdatingStage: boolean = false;
  
-  // Store original customer data to prevent loss
   private originalCustomerData: any = {};
  
   mobileTabs = [
@@ -36,21 +37,32 @@ export class DealinfopageComponent implements OnInit {
     { text: 'Documents', id: 'documents' },
     { text: 'Notes', id: 'notes' }
   ];
+
+  toastMessage: string = '';
+  toastType: 'info' | 'success' | 'error' | 'warning' = 'info';
+  toastVisible: boolean = false;
  
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private dealService: DealService,
     private dealStageService: DealstageService,
-    private companyContactService: CompanyContactService
+    private companyContactService: CompanyContactService,
+    private cdr: ChangeDetectorRef
   ) {}
+
+  showToast(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.toastVisible = true;
+    this.cdr.detectChanges();
+  }
  
   ngOnInit() {
     console.log('=== DEAL INFO PAGE INIT ===');
     this.checkScreenSize();
     this.loadStages();
  
-    // First check if deal data was passed via navigation state
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras?.state || window.history.state;
     this.processDealDataWithContactInfo(state.deal);  
@@ -64,7 +76,6 @@ export class DealinfopageComponent implements OnInit {
       this.processDealData(state.deal);
       this.loadStageHistory();
     } else {
-      // If no deal in state, check route params
       this.route.params.subscribe(params => {
         if (params['id']) {
           this.dealId = +params['id'];
@@ -100,7 +111,7 @@ export class DealinfopageComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading deal:', err);
-        alert('Failed to load deal data');
+        this.showToast('Failed to load deal data.', 'error');
         this.isLoading = false;
       }
     });
@@ -108,20 +119,13 @@ export class DealinfopageComponent implements OnInit {
  
   loadStageHistory() {
     if (!this.dealId) return;
- 
     this.dealService.getDealStageHistory(this.dealId).subscribe({
       next: (history) => {
         this.processStageHistory(history);
       },
       error: (err) => {
         console.error('Error loading stage history:', err);
-        // Create default history entry if endpoint doesn't exist or returns error
-        this.history = [{
-          timestamp: this.formatDate(this.deal?.startDate ? new Date(this.deal.startDate) : new Date()),
-          editedBy: 'System',
-          fromStage: 'Initial',
-          toStage: this.deal?.stage || 'Qualification'
-        }];
+        this.processStageHistory([]);
       }
     });
   }
@@ -233,15 +237,13 @@ processDealDataWithContactInfo(dealData: any) {
   }
 }
  
-  // Helper method to format dates consistently
   private formatDate(date: Date): string {
     if (!date || isNaN(date.getTime())) {
       console.warn('Invalid date detected, using current date');
       date = new Date();
     }
-    // Format as YYYY-MM-DD HH:MM:SS to ensure consistency
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const month = String(date.getMonth() + 1).padStart(2, '0'); 
     const day = String(date.getDate()).padStart(2, '0');
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
@@ -250,43 +252,54 @@ processDealDataWithContactInfo(dealData: any) {
   }
  
   processStageHistory(history: any[]) {
-    this.history = [];
-   
-    if (!history || history.length === 0) {
-      // Add initial creation entry
+  this.history = [];
+ 
+  if (!this.deal) {
+    console.error("processStageHistory called before deal data is available.");
+    return;
+  }
+ 
+  const sortedHistory = history ? [...history].sort((a, b) =>
+    new Date(a.createdAt || a.timestamp).getTime() - new Date(b.createdAt || b.timestamp).getTime()
+  ) : [];
+ 
+  let trueInitialStage;
+  if (sortedHistory.length > 0) {
+    trueInitialStage = sortedHistory[0].fromStage || 'Qualification';
+  } else {
+    trueInitialStage = this.deal.stage;
+  }
+ 
+  const creationTimestamp = this.deal.createdAt ? new Date(this.deal.createdAt) : new Date();
+ 
+  this.history.push({
+    isInitial: true,
+    timestamp: this.formatDate(creationTimestamp),
+    fromStage: `Deal '${this.deal.title}' created`,
+    toStage: trueInitialStage
+  });
+ 
+  let previousStage = trueInitialStage;
+ 
+  sortedHistory.forEach(entry => {
+    const toStage = entry.stageDisplayName || entry.stageName || entry.toStage;
+    const fromStage = entry.fromStage || previousStage;
+ 
+    if (fromStage !== toStage) {
       this.history.push({
-        timestamp: this.formatDate(this.deal?.startDate ? new Date(this.deal.startDate) : new Date()),
-        editedBy: 'System',
-        fromStage: 'Initial',
-        toStage: this.deal.stage || 'Qualification'
-      });
-      return;
-    }
-   
-    // Sort history by date (oldest first)
-    const sortedHistory = [...history].sort((a, b) => {
-      const dateA = new Date(a.createdAt || a.timestamp);
-      const dateB = new Date(b.createdAt || b.timestamp);
-      return dateA.getTime() - dateB.getTime();
-    });
-   
-    let previousStage = 'Initial';
-   
-    sortedHistory.forEach((entry) => {
-      const date = new Date(entry.createdAt || entry.timestamp);
-      const toStage = entry.stageDisplayName || entry.stageName || entry.toStage;
-      this.history.push({
-        timestamp: this.formatDate(date),
+        isInitial: false,
+        timestamp: this.formatDate(new Date(entry.createdAt || entry.timestamp)),
         editedBy: entry.createdBy || entry.editedBy || 'Unknown User',
-        fromStage: entry.fromStage || previousStage,
+        fromStage: fromStage,
         toStage: toStage
       });
-      previousStage = toStage;
-    });
-   
-    // Reverse to show newest first
-    this.history.reverse();
-  }
+    }
+ 
+    previousStage = toStage;
+  });
+ 
+  this.history.reverse();
+}
  
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
@@ -311,7 +324,6 @@ processDealDataWithContactInfo(dealData: any) {
     const oldStage = this.deal.stage;
     this.isUpdatingStage = true;
    
-    // Store current customer data before update
     const preservedData = {
       companyName: this.deal.companyName,
       contactName: this.deal.contactName,
@@ -321,16 +333,12 @@ processDealDataWithContactInfo(dealData: any) {
       companyPhone: this.deal.companyPhone,
       closingDate: this.deal.closingDate
     };
-   
-    // Update the stage immediately for UI feedback
     this.deal = { ...this.deal, stage: newStage };
    
     this.dealService.updateDealStage(this.dealId, newStage).subscribe({
       next: (updatedDeal) => {
-        // Process the updated deal data
         this.processDealData(updatedDeal);
        
-        // Restore preserved customer data if it was lost in the update
         if (!this.deal.companyName || this.deal.companyName === 'N/A' || this.deal.companyName === '') {
           this.deal.companyName = preservedData.companyName || this.originalCustomerData.customerName;
         }
@@ -353,24 +361,22 @@ processDealDataWithContactInfo(dealData: any) {
           this.deal.closingDate = preservedData.closingDate;
         }
        
-        // Add to history immediately
         this.history.unshift({
           timestamp: this.formatDate(new Date()),
-          editedBy: 'Current User', // Replace with actual user from auth service
+          editedBy: 'Current User', 
           fromStage: oldStage,
           toStage: newStage
         });
        
         this.isUpdatingStage = false;
         console.log('Stage updated successfully to:', newStage);
+        this.showToast('Stage updated successfully.', 'success');
        
-        // Refresh stage history from backend
         this.loadStageHistory();
       },
       error: (err) => {
         console.error('Error updating stage:', err);
-        alert('Failed to update stage. Please try again.');
-        // Revert the UI change
+        this.showToast('Failed to update stage. Please try again.', 'error');
         this.deal = { ...this.deal, stage: oldStage };
         this.isUpdatingStage = false;
       }
@@ -382,12 +388,12 @@ processDealDataWithContactInfo(dealData: any) {
    
     if (!this.deal || !this.dealId) {
       console.error('No deal or dealId available');
+      this.showToast('No deal data available.', 'error');
       return;
     }
    
     const oldDescription = this.deal.description;
    
-    // Store current customer data before update
     const preservedData = {
       companyName: this.deal.companyName,
       contactName: this.deal.contactName,
@@ -403,19 +409,15 @@ processDealDataWithContactInfo(dealData: any) {
       stage: this.deal.stage
     };
    
-    // Update the description immediately for UI feedback
     this.deal.description = newDescription;
    
-    // Call the API to update the description
     this.dealService.updateDealDescription(this.dealId, newDescription).subscribe({
       next: (updatedDeal) => {
         console.log('Description update response:', updatedDeal);
        
-        // Don't call processDealData - just update description and preserve everything else
         this.deal = {
           ...this.deal,
           description: newDescription,
-          // Preserve all the important fields
           companyName: preservedData.companyName,
           contactName: preservedData.contactName,
           contactEmail: preservedData.contactEmail,
@@ -430,16 +432,14 @@ processDealDataWithContactInfo(dealData: any) {
           stage: preservedData.stage
         };
        
-        // Update the browser history state with the updated deal
         window.history.replaceState({ deal: this.deal }, '');
        
         console.log('Description updated successfully to:', newDescription);
+        this.showToast('Description updated successfully.', 'success');
       },
       error: (err) => {
         console.error('Error updating description:', err);
-        alert('Failed to update description. Please try again.');
-        // Revert the UI change
-        this.deal.description = oldDescription;
+        this.showToast('Failed to update description. Please try again.', 'error');        this.deal.description = oldDescription;
       }
     });
   }
