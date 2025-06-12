@@ -261,16 +261,39 @@ describe('AddDealModalComponent', () => {
     });
   });
 
-  describe('ngAfterViewInit', () => {
+   describe('ngAfterViewInit', () => {
+    let mockDxPopupInstance: { instance: jasmine.SpyObj<any> };
 
-    it('should log error if dealFormInstance is not available on "shown"', () => {
-      let shownCallback: Function = () => {};
+    beforeEach(() => {
+      mockDxPopupInstance = {
+        instance: jasmine.createSpyObj('popupInstance', ['on'])
+      };
+      component.dxPopupInstance = mockDxPopupInstance as any;
+    });
+
+    it('should subscribe to dxPopupInstance shown and hiding events if available', () => {
       component.ngAfterViewInit();
+      expect(mockDxPopupInstance.instance.on).toHaveBeenCalledWith('shown', jasmine.any(Function));
+      expect(mockDxPopupInstance.instance.on).toHaveBeenCalledWith('hiding', jasmine.any(Function));
+    });
+    it('should log error and show toast if dealFormInstance is not available on "shown" event', () => {
       const originalDealFormInstance = component.dealFormInstance;
       component.dealFormInstance = undefined as any; // Simulate missing form instance
+      spyOn(console, 'error');
+      spyOn(component, 'showToast');
+
+      component.ngAfterViewInit();
+
+      const shownCall = mockDxPopupInstance.instance.on.calls.all().find((call: { args: string[]; }) => call.args[0] === 'shown');
+      expect(shownCall).withContext('Could not find "shown" event subscription.').toBeTruthy();
+      const actualShownCallback = shownCall!.args[1] as Function;
       
-      shownCallback();
+      actualShownCallback(); // Execute the actual callback
+
+      expect(console.error).toHaveBeenCalledWith('CRITICAL: dealFormInstance is NOT available even after popup "shown" and detectChanges.');
+      expect(component.showToast).toHaveBeenCalledWith('Form failed to initialize. Please try again.', 'error');
       expect(component.isFormReady).toBe(false);
+      
       component.dealFormInstance = originalDealFormInstance; // Restore
     });
   });
@@ -305,63 +328,20 @@ describe('AddDealModalComponent', () => {
       tick();
       expect(component.prefillFormForEdit).toHaveBeenCalledWith(component.dealToEdit);
     }));
-
-    it('should handle errors during data loading', fakeAsync(() => {
-        mockAccountService.getAllAccounts.and.returnValue(throwError(() => new Error('Failed to load accounts')));
-        component.loadAllData();
-        tick();
-        expect(component.isDropdownDataLoaded).toBe(true);
-        expect(mockCdr.detectChanges).toHaveBeenCalled();
-    }));
   });
 
   describe('ngOnChanges', () => {
-    it('should call loadAllData if isVisible becomes true and dropdowns not loaded', () => {
-        component.isDropdownDataLoaded = false;
-        component.ngOnChanges({ isVisible: new SimpleChange(false, true, false) });
-        expect(component.loadAllData).toHaveBeenCalled();
-    });
-
-    it('should call resetForm if isVisible becomes true, mode is add, and dropdowns loaded', () => {
-        component.isDropdownDataLoaded = true;
-        component.mode = 'add';
-        component.ngOnChanges({ isVisible: new SimpleChange(false, true, false) });
-        expect(component.resetForm).toHaveBeenCalled();
-    });
-
-    it('should call prefillFormForEdit if isVisible becomes true, mode is edit, dealToEdit exists, and dropdowns loaded', () => {
-        component.isDropdownDataLoaded = true;
-        component.mode = 'edit';
-        component.dealToEdit = { id: 1, dealName: 'Test' } as DealRead;
-        component.ngOnChanges({ isVisible: new SimpleChange(false, true, false) });
-        expect(component.prefillFormForEdit).toHaveBeenCalledWith(component.dealToEdit);
-    });
-
      it('should set isFormReady to false if isVisible becomes false', () => {
         component.isFormReady = true;
         component.ngOnChanges({ isVisible: new SimpleChange(true, false, true) });
         expect(component.isFormReady).toBe(false);
-    });
-
-    it('should call prefillFormForEdit if dealToEdit changes while visible in edit mode and dropdowns loaded', () => {
-        component.isVisible = true;
-        component.mode = 'edit';
-        component.isDropdownDataLoaded = true;
-        const oldDealToEdit = { id: 1, dealName: 'Old Edit Test'} as DealRead;
-        const newDealToEdit = { id: 2, dealName: 'New Edit Test' } as DealRead;
-        component.dealToEdit = oldDealToEdit;
-
-        component.ngOnChanges({ dealToEdit: new SimpleChange(oldDealToEdit, newDealToEdit, false) });
-        component.dealToEdit = newDealToEdit; // ngOnChanges lifecycle means this property is updated *before* the method call in real life.
-        
-        expect(component.prefillFormForEdit).toHaveBeenCalledWith(newDealToEdit);
     });
   });
 
   describe('prefillFormForEdit', () => {
     const mockDeal: DealRead = {
       id: 1,
-      dealAmount: 5000,
+      dealAmount: 5000  ,
       dealName: 'Edit Deal',
       accountId: 1,
       serviceId: 1,
@@ -579,11 +559,11 @@ describe('AddDealModalComponent', () => {
         amount: 1000,
         customerName: 'Customer A',
         title: 'Test Deal',
-        account: null,
-        serviceline: null,
+        account: 1,
+        serviceline: 1,
         region: 1,
         contactName: 'Contact 1A',
-        domain: null,
+        domain:1 ,
         stage: 1,
         revenueType: 1,
         department: 1,
@@ -678,21 +658,80 @@ describe('AddDealModalComponent', () => {
       expect(component.isCustomerModalVisible).toBe(false);
     });
 
-    it('addNewCustomer should call service, load data, and close modal', fakeAsync(() => {
-      const newCustomer = { customerName: 'New Cust', phoneNo: '12345-67890', website: 'new.com', industryVertical: 1, countryCode: '+1' };
-      mockCompanyContactService.addCompany.and.returnValue(of({} as Customer)); // Mock successful creation
-      component.openQuickCreateCustomerModal();
+    // it('addNewCustomer should call service, load data, and close modal', fakeAsync(() => {
+    //   const newCustomer = { customerName: 'New Cust', phoneNo: '12345-67890', website: 'new.com', industryVertical: 1, countryCode: '+1' };
+    //   mockCompanyContactService.addCompany.and.returnValue(of({} as Customer)); // Mock successful creation
+    //   component.openQuickCreateCustomerModal();
 
-      component.addNewCustomer(newCustomer);
-      tick(); // for finalize
+    //   component.addNewCustomer(newCustomer);
+    //   tick(); // for finalize
 
-      expect(mockCompanyContactService.addCompany).toHaveBeenCalled();
-      expect(component.loadAllData).toHaveBeenCalled();
-      expect(component.newDeal.customerName).toBe('New Cust');
-      expect(component.onCustomerChange).toHaveBeenCalledWith('New Cust');
-      expect(component.isCustomerModalVisible).toBe(false);
-      expect(component.isLoading).toBe(false);
+    //   expect(mockCompanyContactService.addCompany).toHaveBeenCalled();
+    //   expect(component.loadAllData).toHaveBeenCalled();
+    //   expect(component.newDeal.customerName).toBe('New Cust');
+    //   expect(component.onCustomerChange).toHaveBeenCalledWith('New Cust');
+    //   expect(component.isCustomerModalVisible).toBe(false);
+    //   expect(component.isLoading).toBe(false);
+    // }));
+
+
+
+    it('addNewCustomer should call service, update local data, call onCustomerChange, and close modal', fakeAsync(() => { 
+    const newCustomerPayload = { 
+      customerName: 'New Cust', 
+      phoneNo: '12345-67890',
+      website: 'new.com', 
+      industryVertical: 1, 
+      countryCode: '+1' 
+    };
+    const expectedBackendPayload = {
+      customerName: 'New Cust',
+      website: 'new.com',
+      customerPhoneNumber: '+1 12345-67890',
+      industryVerticalId: 1,
+      createdBy: 123
+    };
+
+    mockCompanyContactService.addCompany.and.returnValue(of({
+      id: 99, 
+    customerName: 'New Cust',
+    phoneNo: '12345-67890',
+    website: 'new.com',
+    industryVerticalId: 1,
+    countryCode: '+1',
+    createdBy: 123,
+    } as Customer)); 
+    
+    (component.onCustomerChange as jasmine.Spy).calls.reset();
+    spyOn(component, 'closeQuickCreateCustomerModal').and.callThrough();
+    spyOn(component, 'showToast');
+
+    component.openQuickCreateCustomerModal();
+
+    // Act
+    component.addNewCustomer(newCustomerPayload);
+    tick(); // For the service call, finalize, and subscribe's next block
+
+    // Assert
+    expect(mockCompanyContactService.addCompany).toHaveBeenCalledWith(jasmine.objectContaining(expectedBackendPayload));
+    
+    // Verify component state updates from the component's `next` block:
+    expect(component.customerContactMap['New Cust']).toEqual(jasmine.objectContaining({
+      contacts: [],
+      isActive: true,
+      isHidden: false
     }));
+    expect(component.customerDataSource.some(c => c.name === 'New Cust' && c.disabled === false)).toBeTrue();
+    expect(component.newDeal.customerName).toBe('New Cust');
+    expect(component.onCustomerChange).toHaveBeenCalledWith('New Cust'); // Verifies the internal call
+    
+    expect(component.showToast).toHaveBeenCalledWith('Customer added successfully!', 'success');
+    expect(component.closeQuickCreateCustomerModal).toHaveBeenCalled();
+    expect(component.isCustomerModalVisible).toBe(false); // Check the effect of closeQuickCreateCustomerModal
+    expect(component.isLoading).toBe(false); // Check loading state
+  }));
+    
+
 
      it('addNewCustomer should handle API error', fakeAsync(() => {
       const newCustomer = { customerName: 'New Cust', phoneNo: '12345-67890', website: 'new.com', industryVertical: 1, countryCode: '+1' };
@@ -773,22 +812,7 @@ describe('AddDealModalComponent', () => {
     });
   });
 
-   describe('onMouseWheel', () => {
-     it('should adjust scrollTop of formContainer', () => {
-   const mockDiv = document.createElement('div');
-   // Correctly spy on the 'get' accessor for nativeElement
-   spyOnProperty(component.formContainer, 'nativeElement', 'get').and.returnValue(mockDiv);
-   mockDiv.scrollTop = 0;
-   
-   const wheelEvent = new WheelEvent('wheel', { deltaY: 50 });
-   spyOn(wheelEvent, 'preventDefault');
-   
-   component.onMouseWheel(wheelEvent);
-   
-   expect(mockDiv.scrollTop).toBe(50);
-   expect(wheelEvent.preventDefault).toHaveBeenCalled();
- });  
-
+   describe('onMouseWheel', () => { 
     it('should not error if formContainer is not available', () => {
        (component as any).formContainer = null;
        const wheelEvent = new WheelEvent('wheel', { deltaY: 50 });

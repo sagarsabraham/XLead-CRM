@@ -24,7 +24,13 @@ export class OverviewPageComponent {
       dataField: 'closingDate',
       caption: 'Closing Date',
       dataType: 'date',
-      format: 'dd-MMM-yyyy'
+      format: 'dd/MMM/yyyy'
+    }
+      ,  {
+      dataField: 'contactName',
+      caption: 'Contact Name',
+    
+     
     }
   ];
  
