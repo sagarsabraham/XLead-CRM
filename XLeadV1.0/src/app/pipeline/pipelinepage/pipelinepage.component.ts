@@ -6,7 +6,6 @@ import { DealstageService } from 'src/app/services/dealstage.service';
 import { Router } from '@angular/router';
 import { DxToastComponent } from 'devextreme-angular';
 import { GridColumn } from 'src/app/shared/table/table.interface';
-import { GridColumn } from 'src/app/shared/table/table.interface';
  
  
 export interface PipelineDeal {
