@@ -74,8 +74,8 @@ export class PipelinepageComponent implements OnInit {
         precision: 0 
       } 
     },
-    { dataField: 'startDate', caption: 'Start Date', visible: true, dataType: 'date', format: 'dd-MMM-yyyy' },
-    { dataField: 'closeDate', caption: 'Close Date', visible: true, dataType: 'date', format: 'dd-MMM-yyyy' },
+    { dataField: 'startDate', caption: 'Start Date', visible: true, dataType: 'date', format: 'dd/MMM/yyyy' },
+    { dataField: 'closeDate', caption: 'Close Date', visible: true, dataType: 'date', format: 'dd/MMM/yyyy' },
     { dataField: 'department', caption: 'Department', visible: true },
     { dataField: 'probability', caption: 'Probability', visible: true },
     { dataField: 'region', caption: 'Region', visible: true },

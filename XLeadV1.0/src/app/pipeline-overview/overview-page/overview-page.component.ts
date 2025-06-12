@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, HostListener } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { AuthService } from 'src/app/services/auth-service.service';
 import { DealManagerOverview, DealService } from 'src/app/services/dealcreation.service';
+import { GridColumn } from 'src/app/shared/table/table.interface';
  
 @Component({
   selector: 'app-overview-page',
@@ -9,7 +10,7 @@ import { DealManagerOverview, DealService } from 'src/app/services/dealcreation.
   styleUrls: ['./overview-page.component.css']
 })
 export class OverviewPageComponent {
-    tableHeaders = [
+    tableHeaders: GridColumn[] = [
     { dataField: 'salespersonName', caption: 'Salesperson', cellTemplate: 'ownerCellTemplate' },
     { dataField: 'dealName', caption: 'Deal Name' },
     { dataField: 'stageName', caption: 'Stage' },  
@@ -23,7 +24,7 @@ export class OverviewPageComponent {
       dataField: 'closingDate',
       caption: 'Closing Date',
       dataType: 'date',
-      format: 'dd-MMM-yyyy'
+      format: 'dd/MMM/yyyy'
     }
   ];
  

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { DxDataGridComponent } from 'devextreme-angular';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -98,6 +98,18 @@ export class TableComponent implements AfterViewInit {
  
   get searchPlaceholder(): string {
     return `Search ${this.entityType.toLowerCase()}s...`;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['data'] && !changes['data'].firstChange) {
+      // Re-normalize the data and update mobile view
+      this.normalizeData();
+      this.data = this.data.map((item, index) => ({
+        ...item,
+        id: item.id ?? `row-${index + 1}`,
+      }));
+      this.updateMobileData();
+    }
   }
  
 ngOnInit() {
