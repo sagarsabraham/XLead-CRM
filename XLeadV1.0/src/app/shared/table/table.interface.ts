@@ -5,7 +5,7 @@ export interface GridColumn {
   visible?: boolean;
   allowSorting?: boolean;
   allowFiltering?: boolean;
-  allowEditing?: boolean; // Add this property
+  allowEditing?: boolean;
   cellTemplate?: string;
   headerCellTemplate?: string;
   sortOrder?: 'asc' | 'desc' | undefined;

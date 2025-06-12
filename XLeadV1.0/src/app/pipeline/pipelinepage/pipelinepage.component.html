@@ -68,7 +68,7 @@
           [collapsed]="stage.collapsed">
         </app-dealheader>
       </div>
-
+ 
       <div *ngIf="!stage.collapsed">
         <app-dealbody
           [deals]="stage.deals"
@@ -88,7 +88,7 @@
  
     </div>
   </div>
-
+ 
   <div *ngIf="selectedTabId === 'table'" class="table-view">
     <app-table
       [data]="tableData"

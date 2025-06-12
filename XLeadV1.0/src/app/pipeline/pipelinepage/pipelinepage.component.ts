@@ -6,6 +6,7 @@ import { DealstageService } from 'src/app/services/dealstage.service';
 import { Router } from '@angular/router';
 import { DxToastComponent } from 'devextreme-angular';
 import { GridColumn } from 'src/app/shared/table/table.interface';
+import { GridColumn } from 'src/app/shared/table/table.interface';
  
  
 export interface PipelineDeal {
@@ -67,12 +68,12 @@ export class PipelinepageComponent implements OnInit {
  
   tableHeaders: GridColumn[] = [
     { dataField: 'title', caption: 'Deal Name', visible: true },
-    { dataField: 'amount', caption: 'Amount', visible: true, dataType: 'number', 
-      format: { 
-        type: 'currency', 
-        currency: 'USD', 
-        precision: 0 
-      } 
+    { dataField: 'amount', caption: 'Amount', visible: true, dataType: 'number',
+      format: {
+        type: 'currency',
+        currency: 'USD',
+        precision: 0
+      }
     },
     { dataField: 'startDate', caption: 'Start Date', visible: true, dataType: 'date', format: 'dd/MMM/yyyy' },
     { dataField: 'closeDate', caption: 'Close Date', visible: true, dataType: 'date', format: 'dd/MMM/yyyy' },
@@ -83,7 +84,7 @@ export class PipelinepageComponent implements OnInit {
     { dataField: 'contactName', caption: 'Contact', visible: true },
     { dataField: 'stageName', caption: 'Stage', visible: true }
   ];
- 
+
   customerContactMap: { [customer: string]: CustomerContactMap } = {};
  
   selectedTabId: string = 'card';
@@ -330,15 +331,7 @@ export class PipelinepageComponent implements OnInit {
   }
  
   toggleCollapse(index: number): void {
-    const isMobile = window.innerWidth <= 480;
-    if (isMobile) {
-      this.stages.forEach((stage, i) => {
-        stage.collapsed = i !== index;
-      });
-    } else {
-      this.stages[index].collapsed = !this.stages[index].collapsed;
-    }
-    this.cdr.detectChanges();
+    this.stages[index].collapsed = !this.stages[index].collapsed;
   }
  
   onMouseEnter(index: number): void {
@@ -409,6 +402,7 @@ export class PipelinepageComponent implements OnInit {
     this._selectedDealForModalInput = null;
     this._currentlyEditingPipelineDeal = null;
     this.isModalVisible = true;
+    this.selectedStageId = stageId || null;
   }
 onButtonClick(event: { label: string, stageId?: number }) {
     if (event.label === 'Deal') {

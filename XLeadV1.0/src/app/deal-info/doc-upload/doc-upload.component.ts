@@ -51,11 +51,9 @@ export class DocUploadComponent implements OnInit {
     try {
       const newDocument = await lastValueFrom(this.documentService.uploadAttachment(file, this.dealId));
       notify(`'${file.name}' uploaded successfully.`, 'success', 3000);
- 
-      // Add the new attachment to the top of the list
+
       this.attachments.unshift(newDocument);
-     
-      // Reset the file uploader so the same file can be uploaded again if needed
+
       uploaderInstance.reset();
  
     } catch (error) {

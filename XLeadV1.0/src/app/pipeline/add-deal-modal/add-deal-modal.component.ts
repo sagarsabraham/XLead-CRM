@@ -1,21 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { DxFormComponent, DxPopupComponent,DxToastComponent } from 'devextreme-angular';
 import { finalize } from 'rxjs/operators';
-import { CountryService } from 'src/app/services/country.service';
-import { DuService } from 'src/app/services/du.service';
-import { RevenuetypeService } from 'src/app/services/revenuetype.service';
-import { AccountService } from '../../services/account.service';
-import { RegionService } from '../../services/region.service';
-import { DomainService } from '../../services/domain.service';
-import { DealstageService } from 'src/app/services/dealstage.service';
-import { Customer, CompanyContactService, Contact } from 'src/app/services/company-contact.service';
-import { DealService, DealCreatePayload, DealRead,DealEditPayload } from 'src/app/services/dealcreation.service';
-import { DxValidationRule } from '../form-modal/form-modal.component';
-import { SeviceLineService } from 'src/app/services/sevice-line.service';
-import { IndustryVerticalService } from 'src/app/services/industry-vertical.service';
-import { AuthService } from 'src/app/services/auth-service.service';
-import { CountryCodeService } from 'src/app/services/country-code.service';
-import { forkJoin } from 'rxjs';
 
 export interface QuickContactFormData {
   FirstName: string;
@@ -52,6 +37,23 @@ export interface CustomerContactMap {
   isHidden: boolean | null;
   contacts: string[];
 }
+
+
+import { CountryService } from 'src/app/services/country.service';
+import { DuService } from 'src/app/services/du.service';
+import { RevenuetypeService } from 'src/app/services/revenuetype.service';
+import { AccountService } from '../../services/account.service';
+import { RegionService } from '../../services/region.service';
+import { DomainService } from '../../services/domain.service';
+import { DealstageService } from 'src/app/services/dealstage.service';
+import { Customer, CompanyContactService, Contact } from 'src/app/services/company-contact.service';
+import { DealService, DealCreatePayload, DealRead,DealEditPayload } from 'src/app/services/dealcreation.service';
+import { DxValidationRule } from '../form-modal/form-modal.component';
+import { SeviceLineService } from 'src/app/services/sevice-line.service';
+import { IndustryVerticalService } from 'src/app/services/industry-vertical.service';
+import { AuthService } from 'src/app/services/auth-service.service';
+import { CountryCodeService } from 'src/app/services/country-code.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-add-deal-modal',
@@ -379,6 +381,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
           const fieldType = typeof deal.customFields![key] === 'number' ? 'Numerical' :
             typeof deal.customFields![key] === 'boolean' ? 'Boolean' :
               typeof deal.customFields![key] === 'string' && parseDate(deal.customFields![key]) ? 'Date' : 'Text';
+            typeof deal.customFields![key] === 'boolean' ? 'Boolean' :
+              typeof deal.customFields![key] === 'string' && parseDate(deal.customFields![key]) ? 'Date' : 'Text';
           this.customFields.push({
             fieldLabel: fieldLabel,
             fieldType: fieldType,
@@ -582,7 +586,6 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
       serviceline: null,
       region: null,
       contactName: '',
-      contactId: null,
       domain: null,
       stage: null,
       revenueType: null,
@@ -780,8 +783,8 @@ export class AddDealModalComponent implements OnInit, OnChanges, AfterViewInit {
   closeCustomizeFieldModal() {
     this.isCustomizeFieldModalVisible = false;
   }
-
   showForm = true;
+  
   addCustomField(newField: any) {
     const dataField = `custom_${newField.fieldLabel.toLowerCase().replace(/\s+/g, '_')}`;
     this.customFields.push({

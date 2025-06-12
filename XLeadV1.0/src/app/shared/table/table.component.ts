@@ -30,7 +30,7 @@ export class TableComponent implements AfterViewInit {
   @ViewChild('exportButton', { static: false }) exportButton!: ElementRef;
   @ViewChild('columnChooserDropdown', { static: false }) columnChooserDropdown!: ElementRef;
   @ViewChild('exportOptionsDropdown', { static: false }) exportOptionsDropdown!: ElementRef;
- 
+
   pageSize: number = 10;
   allowedPageSizes: number[] = [5, 10, 20];
   selectedRowKeys: string[] = [];
@@ -55,7 +55,7 @@ export class TableComponent implements AfterViewInit {
     '#673ab7',
     '#009688',
   ];
- 
+
   isMobile: boolean = false;
   showSortOptions: boolean = false;
   showColumnChooserMobile: boolean = false;
@@ -91,11 +91,11 @@ export class TableComponent implements AfterViewInit {
   constructor(private cdr: ChangeDetectorRef) {
     this.initializeHeaders();
   }
- 
+
   get modalHeading(): string {
     return `${this.entityType} Details`;
   }
- 
+
   get searchPlaceholder(): string {
     return `Search ${this.entityType.toLowerCase()}s...`;
   }
@@ -515,7 +515,7 @@ ngAfterViewInit(): void {
     this.onSelectionChanged.emit(event);
     this.cdr.detectChanges();
   }
- 
+
   openDetailsModal(contact: any): void {
     this.selectedContact = contact;
     this.editedContact = { ...contact };
@@ -523,7 +523,7 @@ ngAfterViewInit(): void {
     this.isEditingMobile = false;
     this.cdr.detectChanges();
   }
- 
+
   closeDetailsModal(): void {
     this.isDetailsModalOpen = false;
     this.selectedContact = null;
@@ -614,12 +614,12 @@ ngAfterViewInit(): void {
     this.updateMobileData();
     this.cdr.detectChanges();
   }
- 
+
   getSortIndicator(field: string): string {
     if (this.sortField !== field) return '';
     return this.sortDirection === 'asc' ? '↑' : '↓';
   }
- 
+
   searchMobile(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.searchQuery = input.value.toLowerCase();
@@ -692,7 +692,7 @@ ngAfterViewInit(): void {
     console.log('Total pages:', total);
     return total || 1;
   }
- 
+
   goToNextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
@@ -700,7 +700,7 @@ ngAfterViewInit(): void {
       this.cdr.detectChanges();
     }
   }
- 
+
   goToPreviousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
@@ -708,7 +708,7 @@ ngAfterViewInit(): void {
       this.cdr.detectChanges();
     }
   }
- 
+
   toggleSelectAllOnPage(): void {
     const currentPageItems = this.paginatedData;
     const currentPageIds = currentPageItems.map((item) => String(item.id));
@@ -723,24 +723,24 @@ ngAfterViewInit(): void {
         }
       });
     }
- 
+
     this.emitSelectionChange();
     this.cdr.detectChanges();
   }
- 
+
   areAllOnPageSelected(): boolean {
     const currentPageItems = this.paginatedData;
     const currentPageIds = currentPageItems.map((item) => String(item.id));
     return currentPageIds.length > 0 && currentPageIds.every((id) => this.selectedRowKeys.includes(id));
   }
- 
+
   areSomeOnPageSelected(): boolean {
     const currentPageItems = this.paginatedData;
     const currentPageIds = currentPageItems.map((item) => String(item.id));
     const selectedCount = currentPageIds.filter((id) => this.selectedRowKeys.includes(id)).length;
     return selectedCount > 0 && selectedCount < currentPageIds.length;
   }
- 
+
   toggleSelection(id: string): void {
     const stringId = String(id);
     const index = this.selectedRowKeys.indexOf(stringId);
@@ -750,18 +750,18 @@ ngAfterViewInit(): void {
     } else {
       this.selectedRowKeys.splice(index, 1);
     }
- 
+
     this.emitSelectionChange();
     this.cdr.detectChanges();
   }
- 
+
   setPageSize(size: number): void {
     this.mobilePageSize = size;
     this.currentPage = 1;
     this.updateMobileData();
     this.cdr.detectChanges();
   }
- 
+
   toggleColumnChooserMobile(): void {
     this.showColumnChooserMobile = !this.showColumnChooserMobile;
     this.showSortOptions = false;
@@ -769,7 +769,7 @@ ngAfterViewInit(): void {
     this.showMobileFilterOptions = false;
     this.cdr.detectChanges();
   }
- 
+
   toggleMobileExportOptions(): void {
     this.showMobileExportOptions = !this.showMobileExportOptions;
     this.showSortOptions = false;
@@ -777,7 +777,7 @@ ngAfterViewInit(): void {
     this.showMobileFilterOptions = false;
     this.cdr.detectChanges();
   }
- 
+
   exportMobile(format: 'excel' | 'csv'): void {
     this.exportData(format);
     this.showMobileExportOptions = false;
@@ -800,23 +800,23 @@ ngAfterViewInit(): void {
     });
     this.cdr.detectChanges();
   }
- 
+
   toggleColumnChooser(event: Event): void {
     event.stopPropagation();
     this.showCustomColumnChooser = !this.showCustomColumnChooser;
     this.showExportModal = false;
     this.clickedInsideDropdown = true;
- 
+
     if (this.showCustomColumnChooser) {
       setTimeout(() => {
         this.positionDropdown(this.columnChooserButton, this.columnChooserDropdown);
         this.cdr.detectChanges();
       });
     }
- 
+
     this.cdr.detectChanges();
   }
- 
+
   toggleColumnVisibility(dataField: string): void {
     this.columnVisibility[dataField] = !this.columnVisibility[dataField];
     if (!this.isMobile && this.dataGrid?.instance) {
@@ -829,16 +829,16 @@ ngAfterViewInit(): void {
     this.clickedInsideDropdown = true;
     this.cdr.detectChanges();
   }
- 
+
   areAllColumnsSelected(): boolean {
     return this.headers.every((header) => this.columnVisibility[header.dataField]);
   }
- 
+
   areSomeColumnsSelected(): boolean {
     const visibleCount = this.headers.filter((header) => this.columnVisibility[header.dataField]).length;
     return visibleCount > 0 && visibleCount < this.headers.length;
   }
- 
+
   toggleAllColumns(): void {
     const allSelected = this.areAllColumnsSelected();
     this.headers.forEach((header) => {
@@ -854,13 +854,13 @@ ngAfterViewInit(): void {
       .map((header) => header.dataField);
     this.cdr.detectChanges();
   }
- 
+
   onExportButtonClick(event: Event): void {
     event.stopPropagation();
     this.showExportModal = !this.showExportModal;
     this.showCustomColumnChooser = false;
     this.clickedInsideDropdown = true;
- 
+
     if (this.showExportModal) {
       setTimeout(() => {
         this.positionDropdown(this.exportButton, this.exportOptionsDropdown);
@@ -869,7 +869,7 @@ ngAfterViewInit(): void {
     } else {
       this.closeDropdowns();
     }
- 
+
     this.cdr.detectChanges();
   }
  
@@ -878,17 +878,17 @@ ngAfterViewInit(): void {
     this.clickedInsideDropdown = true;
     this.cdr.detectChanges();
   }
- 
+
   onExportOptionsDropdownClick(event: Event): void {
     event.stopPropagation();
     this.clickedInsideDropdown = true;
     this.cdr.detectChanges();
   }
- 
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
- 
+
     if (this.clickedInsideDropdown) {
       this.clickedInsideDropdown = false;
       return;
@@ -904,7 +904,7 @@ ngAfterViewInit(): void {
       this.showCustomColumnChooser = false;
       changesDetected = true;
     }
- 
+
     if (this.showExportModal && !clickedOnExportButton && !clickedInExportDropdown) {
       this.showExportModal = false;
       changesDetected = true;
@@ -914,7 +914,7 @@ ngAfterViewInit(): void {
       this.cdr.detectChanges();
     }
   }
- 
+
   @HostListener('window:scroll')
   onResizeOrScroll(): void {
     if (this.showCustomColumnChooser) {
@@ -925,7 +925,7 @@ ngAfterViewInit(): void {
     }
     this.cdr.detectChanges();
   }
- 
+
   handleSelectionChanged(event: any): void {
     console.log('=== DESKTOP SELECTION EVENT ===');
     console.log('DevExtreme event:', event);
@@ -940,7 +940,7 @@ ngAfterViewInit(): void {
     this.emitSelectionChange();
     this.cdr.detectChanges();
   }
- 
+
   toggleSort(column: GridColumn): void {
     const currentSortOrder = column.sortOrder;
     let newSortOrder: 'asc' | 'desc' | undefined;
@@ -952,7 +952,7 @@ ngAfterViewInit(): void {
     } else {
       newSortOrder = undefined;
     }
- 
+
     column.sortOrder = newSortOrder;
     if (!this.isMobile && this.dataGrid?.instance) {
       this.dataGrid.instance.clearSorting();
@@ -967,32 +967,32 @@ ngAfterViewInit(): void {
  
   exportData(format: 'excel' | 'csv'): void {
     this.closeDropdowns();
- 
+
     const exportFormats: { [key: string]: ExportFormat } = {
       excel: { format: 'excel', fileType: 'xlsx', fileExtension: 'xlsx' },
       csv: { format: 'csv', fileType: 'csv', fileExtension: 'csv' },
     };
- 
+
     const { fileType, fileExtension } = exportFormats[format];
     const workbook = XLSX.utils.book_new();
     const exportData: any[] = [];
- 
+
     const visibleHeaders = this.headers.filter((header) => this.columnVisibility[header.dataField]);
     const headerRow = visibleHeaders.map((header) => header.caption);
     exportData.push(headerRow);
- 
+
     let rowsToExport = this.data;
     if (this.selectedRowKeys.length > 0) {
       rowsToExport = this.data.filter((row) => this.selectedRowKeys.includes(String(row.id)));
     }
- 
+
     rowsToExport.forEach((row) => {
       const rowData = visibleHeaders.map((header) => row[header.dataField] ?? 'N/A');
       exportData.push(rowData);
     });
- 
+
     const worksheet = XLSX.utils.aoa_to_sheet(exportData);
- 
+
     if (format === 'excel') {
       for (let col = 0; col < headerRow.length; col++) {
         const cellAddress = XLSX.utils.encode_cell({ r: 0, c: col });
@@ -1005,14 +1005,14 @@ ngAfterViewInit(): void {
       }
       worksheet['!cols'] = headerRow.map(() => ({ wpx: 120 }));
     }
- 
+
     XLSX.utils.book_append_sheet(workbook, worksheet, this.exportFileName);
- 
+
     const fileName = `${this.exportFileName}.${fileExtension}`;
     const excelBuffer = XLSX.write(workbook, { bookType: fileType, type: 'array' });
     const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(data, fileName);
- 
+
     this.exportMessage = 'Export Completed';
     this.showExportMessage = true;
     this.cdr.detectChanges();
@@ -1021,11 +1021,11 @@ ngAfterViewInit(): void {
       this.cdr.detectChanges();
     }, 3000);
   }
- 
+
   onExporting(event: any): void {
     event.cancel = true;
   }
- 
+
   private hashString(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -1035,24 +1035,24 @@ ngAfterViewInit(): void {
     }
     return Math.abs(hash);
   }
- 
+
   getOwnerColor(owner: string): string {
     if (!owner || typeof owner !== 'string') {
       return this.ownerColors[0];
     }
- 
+
     const hash = this.hashString(owner.toLowerCase());
     const colorIndex = hash % this.ownerColors.length;
     return this.ownerColors[colorIndex];
   }
- 
+
   getOwnerInitial(owner: string): string {
     if (!owner || typeof owner !== 'string') {
       return '';
     }
     return owner.charAt(0).toUpperCase();
   }
- 
+
   getSortIcon(column: GridColumn): string {
     const sortOrder = column.sortOrder;
     if (sortOrder === 'asc') {
@@ -1062,7 +1062,7 @@ ngAfterViewInit(): void {
     }
     return '↕';
   }
- 
+
   getSortIconClass(column: GridColumn): string {
     const sortOrder = column.sortOrder;
     return sortOrder ? 'sort-icon active' : 'sort-icon';
@@ -1072,7 +1072,7 @@ ngAfterViewInit(): void {
     if (!buttonRef?.nativeElement || !dropdownRef?.nativeElement) {
       return;
     }
- 
+
     const button = buttonRef.nativeElement as HTMLElement;
     const dropdown = dropdownRef.nativeElement as HTMLElement;
     const rect = button.getBoundingClientRect();
@@ -1080,31 +1080,31 @@ ngAfterViewInit(): void {
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     const dropdownHeight = dropdown.offsetHeight || 300;
- 
+
     let left = rect.left + window.scrollX;
     const top = rect.bottom + window.scrollY + 5;
- 
+
     if (left + dropdownWidth > viewportWidth) {
       left = rect.right + window.scrollX - dropdownWidth;
     }
- 
+
     if (left < 0) {
       left = 0;
     }
- 
+
     if (top + dropdownHeight > viewportHeight + window.scrollY) {
       const topAbove = rect.top + window.scrollY - dropdownHeight - 5;
       dropdown.style.top = `${topAbove}px`;
     } else {
       dropdown.style.top = `${top}px`;
     }
- 
+
     dropdown.style.position = 'absolute';
     dropdown.style.left = `${left}px`;
     dropdown.style.right = '';
     this.cdr.detectChanges();
   }
- 
+
   closeDropdowns(): void {
     this.showCustomColumnChooser = false;
     this.showExportModal = false;
@@ -1115,18 +1115,18 @@ ngAfterViewInit(): void {
     this.clickedInsideDropdown = false;
     this.cdr.detectChanges();
   }
- 
+
   private configureDataGrid(): void {
     if (!this.dataGrid?.instance) {
       return;
     }
- 
+
     this.dataGrid.instance.option('columnResizingMode', 'widget');
- 
+
     this.headers.forEach((header) => {
       this.dataGrid.instance.columnOption(header.dataField, 'minWidth', 150);
     });
- 
+
     if (this.headers.length > 0) {
       const firstColumnDataField = this.headers[0].dataField;
       this.dataGrid.instance.columnOption(firstColumnDataField, 'fixed', true);
@@ -1146,7 +1146,7 @@ ngAfterViewInit(): void {
       scrollByContent: true,
       scrollByThumb: true,
     });
- 
+
     this.dataGrid.instance.option('width', '100%');
     this.dataGrid.instance.refresh();
     this.cdr.detectChanges();

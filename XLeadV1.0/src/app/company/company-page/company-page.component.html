@@ -42,15 +42,14 @@
         <app-table
           [data]="tableData"
           [headers]="tableHeaders"
-         
           [ownerField]="'owner'"
           [exportFileName]="'Customers'"
           [entityType]="'Customer'"
-           [allowEditing]="canEditCustomers"
+          [allowEditing]="canEditCustomers"
           [allowDeleting]="canDeleteCustomers"
-   (onRowUpdating)="handleUpdate($event)"
-   (onRowRemoving)="handleDelete($event)"
-    [lookupData]="tableLookups" 
+          (onRowUpdating)="handleUpdate($event)"
+          (onRowRemoving)="handleDelete($event)"
+          [lookupData]="tableLookups"
         ></app-table>
       </div>
     </div>

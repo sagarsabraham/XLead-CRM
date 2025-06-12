@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { PipelineDeal } from '../pipelinepage/pipelinepage.component';
  
 @Component({
   selector: 'app-dealcard',

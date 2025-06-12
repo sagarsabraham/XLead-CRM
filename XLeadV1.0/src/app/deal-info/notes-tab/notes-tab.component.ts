@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { NotesService, Note, NoteCreate } from 'src/app/services/notes.service';
 import { AuthService } from 'src/app/services/auth-service.service';
 import { confirm } from 'devextreme/ui/dialog';
- 
+
 @Component({
   selector: 'app-notes-tab',
   templateUrl: './notes-tab.component.html',
@@ -12,34 +12,36 @@ import { confirm } from 'devextreme/ui/dialog';
 })
 export class NotesTabComponent implements OnInit, OnDestroy {
   @Input() dealId!: number | null;
- 
+
   newNoteContent: string = '';
   notes: Note[] = [];
   isLoading: boolean = false;
   currentUserId: number;
- 
+
+  // Edit functionality properties
   editingNoteId: number | null = null;
   editingNoteText: string = '';
- 
+
   private destroy$ = new Subject<void>();
- 
+
   constructor(
     private notesService: NotesService,
     private authService: AuthService
   ) {
     this.currentUserId = this.authService.userId;
   }
- 
+
   ngOnInit(): void {
     if (this.dealId) {
       this.loadNotes();
     }
   }
- 
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
   onNoteContentChange(event: any): void {
     if (event && event.value !== undefined) {
       this.newNoteContent = event.value;
@@ -47,7 +49,7 @@ export class NotesTabComponent implements OnInit, OnDestroy {
       this.newNoteContent = event.target.value;
     }
   }
- 
+
   onEditContentChange(event: any): void {
     if (event && event.value !== undefined) {
       this.editingNoteText = event.value;
@@ -55,12 +57,12 @@ export class NotesTabComponent implements OnInit, OnDestroy {
       this.editingNoteText = event.target.value;
     }
   }
- 
+
   loadNotes(): void {
     if (!this.dealId) return;
-   
+
     this.isLoading = true;
-   
+
     this.notesService.getNotesByDealId(this.dealId, this.currentUserId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -75,18 +77,18 @@ export class NotesTabComponent implements OnInit, OnDestroy {
         }
       });
   }
- 
+
   addNote(): void {
     if (!this.newNoteContent.trim() || this.isLoading || !this.dealId) return;
- 
+
     const newNote: NoteCreate = {
       noteText: this.newNoteContent.trim(),
       dealId: this.dealId,
       createdBy: this.currentUserId
     };
- 
+
     this.isLoading = true;
-   
+
     this.notesService.createNote(newNote)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -102,24 +104,24 @@ export class NotesTabComponent implements OnInit, OnDestroy {
         }
       });
   }
- 
+
   startEditing(note: Note): void {
     if (note.createdBy !== this.currentUserId) return;
-   
+
     this.editingNoteId = note.id!;
     this.editingNoteText = note.noteText;
   }
- 
+
   cancelEditing(): void {
     this.editingNoteId = null;
     this.editingNoteText = '';
   }
- 
+
   saveEdit(): void {
     if (!this.editingNoteId || !this.editingNoteText.trim() || this.isLoading) return;
- 
+
     this.isLoading = true;
-   
+
     this.notesService.updateNote(this.editingNoteId, this.editingNoteText.trim(), this.currentUserId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -128,7 +130,6 @@ export class NotesTabComponent implements OnInit, OnDestroy {
           if (index !== -1) {
             this.notes[index] = updatedNote;
           }
-         
           this.cancelEditing();
           this.isLoading = false;
         },
@@ -139,30 +140,30 @@ export class NotesTabComponent implements OnInit, OnDestroy {
         }
       });
   }
- 
-  deleteNote(index: number): void {
-    const note = this.notes[index];
+
+  deleteNote(note: Note): void {
     if (!note.id || note.createdBy !== this.currentUserId) return;
+
     const result = confirm(
       '<i class="dx-icon-warning"></i><br/>Are you sure you want to delete this note?<br/><br/>This action cannot be undone.',
       'Delete Note'
     );
-   
+
     result.then((dialogResult) => {
       if (dialogResult) {
-        this.performDelete(index, note.id!);
+        this.performDelete(note.id);
       }
     });
   }
- 
-  private performDelete(index: number, noteId: number): void {
+
+  private performDelete(noteId: number): void {
     this.isLoading = true;
-   
+
     this.notesService.deleteNote(noteId, this.currentUserId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          this.notes.splice(index, 1);
+          this.notes = this.notes.filter(n => n.id !== noteId);
           this.isLoading = false;
         },
         error: (err) => {
@@ -172,16 +173,16 @@ export class NotesTabComponent implements OnInit, OnDestroy {
         }
       });
   }
- 
+
   private showError(message: string): void {
     console.error(message);
   }
- 
+
   formatDate(date: Date | string): string {
     if (!date) return '';
-   
+
     const dateObj = new Date(date);
-   
+
     return dateObj.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -192,11 +193,4 @@ export class NotesTabComponent implements OnInit, OnDestroy {
       hour12: true
     });
   }
- 
-  openChatbot(): void {
-    console.log('Chatbot opened');
-  }
 }
- 
-
- 

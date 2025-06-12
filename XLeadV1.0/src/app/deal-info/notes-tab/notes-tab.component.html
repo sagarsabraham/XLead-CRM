@@ -72,7 +72,7 @@
         stylingMode="text"
         icon="trash"
         [disabled]="note.createdBy !== currentUserId || isLoading"
-        (onClick)="deleteNote(i)">
+        (onClick)="deleteNote(note)">
       </dx-button>
     </div>
   </div>

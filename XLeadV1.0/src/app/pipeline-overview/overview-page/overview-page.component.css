@@ -7,6 +7,7 @@
 .page-container {
   display: flex;
   width: 100%;
+  margin-left: -4vh;
 }
  
 app-sidebar {
@@ -43,6 +44,7 @@ app-sidebar {
  
 .metric-cards-section {
   margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
 }
  
 .topcard-container {
@@ -53,13 +55,11 @@ app-sidebar {
  
 .topcard-container app-topcard {
   flex: 0.1;
-  margin-left: -22px;
 }
  
 .content {
   flex: 1;
   overflow-y: auto;
-  margin-left: -20px;
 }
  
 /* Table */

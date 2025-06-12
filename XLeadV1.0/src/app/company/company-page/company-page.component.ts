@@ -20,14 +20,14 @@ export class CompanyPageComponent implements OnInit {
     { dataField: 'customerName', caption: 'Customer Name', visible: true },
     { dataField: 'phone', caption: 'Phone', visible: true },
     { dataField: 'website', caption: 'Website', visible: true },
-    { 
-      dataField: 'industryVertical', 
-      caption: 'Industry Vertical', 
+    {
+      dataField: 'industryVertical',
+      caption: 'Industry Vertical',
       visible: true,
       lookup: {
-        dataSource: this.industryVerticalsLookupData, 
-        valueExpr: 'industryName', 
-        displayExpr: 'industryName' 
+        dataSource: this.industryVerticalsLookupData,
+        valueExpr: 'industryName',
+        displayExpr: 'industryName'
       }
     },
    {
@@ -57,13 +57,13 @@ canDeleteCustomers = false;
   isMobile: boolean = false;
   isLoading: boolean = true;
   error: string | null = null;
-
+ 
   private industryVerticalMap: { [id: number]: string } = {};
-
+ 
   private users: any[] = [];
-
+ 
   tableLookups: { [key: string]: any[] } = {};
-
+ 
   toastMessage: string = '';
   toastType: 'info' | 'success' | 'error' | 'warning' = 'info';
   toastVisible: boolean = false;
@@ -77,7 +77,7 @@ canDeleteCustomers = false;
   ) {
     this.checkIfMobile();
   }
-
+ 
   showToast(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
     this.toastMessage = message;
     this.toastType = type;
@@ -94,7 +94,7 @@ canDeleteCustomers = false;
   loadData(): void {
     this.isLoading = true;
     this.error = null;
-    
+   
    
     forkJoin({
       industryVerticals: this.industryVerticalService.getIndustryVertical(),
@@ -103,9 +103,9 @@ canDeleteCustomers = false;
       next: ({ industryVerticals, users }) => {
         console.log('Industry Verticals loaded:', industryVerticals);
         console.log('Users loaded:', users);
-        this.industryVerticalsLookupData.length = 0; 
+        this.industryVerticalsLookupData.length = 0;
         this.industryVerticalsLookupData.push(...industryVerticals);
-
+ 
         this.industryVerticalMap = industryVerticals.reduce((map: { [id: number]: string }, vertical: any) => {
           map[vertical.id] = vertical.industryName || 'Unknown';
           return map;
@@ -171,7 +171,7 @@ canDeleteCustomers = false;
         owner = this.users.find(u => u.id.toString() === ownerId.toString());
       }
     }
-  
+ 
  
     const ownerName = owner ? owner.name : 'System';
  
@@ -216,7 +216,7 @@ canDeleteCustomers = false;
     handleUpdate(event: any): void {
     const companyId = event.key;
     const finalData = { ...event.oldData, ...event.newData };
-
+ 
     const updatePayload = {
       customerName: finalData.customerName,
       phoneNo: finalData.phone,
@@ -235,7 +235,7 @@ canDeleteCustomers = false;
           this.tableData = [...this.tableData];
           this.updateMetrics();
         }
-        
+       
       },
       error: (err) => {
         console.error('Failed to update customer', err);
@@ -247,7 +247,7 @@ canDeleteCustomers = false;
   }
   handleDelete(event: any): void {
     const companyId = event.key;
-  
+ 
       this.companyService.deleteCompany(companyId, this.authService.getUserId()).subscribe({
         next: () => {
           console.log('Customer deleted successfully');
@@ -261,7 +261,7 @@ canDeleteCustomers = false;
         }
       });
     }
-
+ 
   @HostListener('window:resize')
   onResize(): void {
     this.checkIfMobile();
@@ -273,9 +273,9 @@ canDeleteCustomers = false;
  
   getIconColor(index: number): string {
     switch (index) {
-      case 0: return '#8a2be2'; 
-      case 1: return '#28a745'; 
-      case 2: return '#dc3545'; 
+      case 0: return '#8a2be2';
+      case 1: return '#28a745';
+      case 2: return '#dc3545';
       default: return '#000000';
     }
   }
