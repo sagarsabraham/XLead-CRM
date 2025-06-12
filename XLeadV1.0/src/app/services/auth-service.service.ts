@@ -12,6 +12,7 @@ export class AuthService {
   userId: number = 2;
   privileges: Privilege[] = [];
 
+
   setPrivileges(privs: Privilege[]) {
     this.privileges = privs;
     console.log('Privileges set:', this.privileges); 

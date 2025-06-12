@@ -87,6 +87,7 @@ export class TableComponent implements AfterViewInit {
     ],
     phone: [{ type: 'pattern', pattern: /^[0-9-+\s()]*$/, message: 'Invalid phone number' }],
   };
+  public filteredData: any[] = [];
  
   constructor(private cdr: ChangeDetectorRef) {
     this.initializeHeaders();
@@ -248,6 +249,7 @@ ngAfterViewInit(): void {
  
     if (!this.data || this.data.length === 0) {
       console.log('No input data available');
+      this.filteredData = []; 
       this.paginatedData = [];
       this.cdr.detectChanges();
       return;
@@ -256,6 +258,7 @@ ngAfterViewInit(): void {
     if (!this.headers || this.headers.length === 0) {
       console.log('No headers provided, using raw data');
       this.paginatedData = this.data.slice(0, this.mobilePageSize);
+      this.filteredData = [...this.data];
       this.cardFields = Object.keys(this.data[0] || {}).slice(0, 3);
       this.cdr.detectChanges();
       return;
