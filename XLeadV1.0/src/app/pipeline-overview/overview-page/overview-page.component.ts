@@ -26,6 +26,12 @@ export class OverviewPageComponent {
       dataType: 'date',
       format: 'dd/MMM/yyyy'
     }
+      ,  {
+      dataField: 'contactName',
+      caption: 'Contact Name',
+    
+     
+    }
   ];
  
  

@@ -115,7 +115,7 @@ app-sidebar.sidebar-visible {
 @media (max-width: 576px) {
   .page-container.mobile-view {
     flex-direction: column;
-   
+    margin-left: 0;
   }
 
   app-sidebar {
