@@ -19,10 +19,10 @@ RUN npm run build --prod
 FROM nginx:alpine
 
 # Copy the built application from the build stage
-COPY --from=build /app/dist/ /usr/share/nginx/html
+COPY --from=build /app/dist/xlead-v1.0 /usr/share/nginx/html/
 
 # Copy custom nginx configuration (optional)
-# COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80
 EXPOSE 80
