@@ -3,11 +3,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-// --- Imports for the new standardization pattern ---
-import { ApiResponseService } from './apiresponse.service'; // Corrected path and filename
+import { ApiResponseService } from './apiresponse.service'; 
 import { ApiResponse } from '../models/api-response.model';
 
-// --- Interface Definitions (No changes needed here) ---
 export interface Customer {
   customerName: string;
   phoneNo: string;
@@ -51,15 +49,10 @@ export interface CustomerContactMap {
 export class CompanyContactService {
   private apiUrl = environment.apiUrl;
 
-  // --- KEY CHANGE 1: Inject both HttpClient and our new ApiResponseService ---
   constructor(
     private http: HttpClient,
     private apiResponseService: ApiResponseService
   ) {}
-
-  // --- Methods that depend on other methods (No internal changes needed!) ---
-  // These work because the methods they call (e.g., getContacts) are now refactored
-  // to return the unwrapped data, so the `map` operator receives what it expects.
   getContactByNameAndCustomer(contactName: string, customerName: string): Observable<Contact | undefined> {
     console.log('getContactByNameAndCustomer called with contactName:', contactName, 'customerName:', customerName);
     return this.getContacts().pipe(
@@ -83,7 +76,6 @@ export class CompanyContactService {
     );
   }
 
-  // --- Refactored methods that make direct API calls ---
 
   getCompanyContactMap(): Observable<{ [customer: string]: CustomerContactMap }> {
     const source$ = this.http.get<ApiResponse<{ [customer: string]: CustomerContactMap }>>(
